@@ -1,9 +1,9 @@
 # Your Project's Title...
-Your project's description...
+This is the implementation of [Ingredion](https://www.ingredion.com/na/en-us.html) website on Edge Delivery Services.
 
 ## Environments
-- Preview: https://main--{repo}--{owner}.aem.page/
-- Live: https://main--{repo}--{owner}.aem.live/
+- Preview: https://main--ingredion--aemsites.aem.page/
+- Live: https://main--ingredion--aemsites.aem.live/
 
 ## Installation
 
