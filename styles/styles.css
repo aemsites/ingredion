@@ -18,6 +18,16 @@
   --text-color: #131313;
   --link-color: #3b63fb;
   --link-hover-color: #1d3ecf;
+  --blue: #0073d8;
+  --dark-blue: #273691;
+  --green: #6cb33e;
+  --lilac: #6266b9;
+  --orange: #ff7017;
+  --dark-purple: #6a0c5f;
+  --purple: #b41f75;
+  --red: #db2807;
+  --teal: #006a71;
+  --yellow: #ffe115;
 
   /* fonts */
   --body-font-family: roboto, roboto-fallback, sans-serif;
