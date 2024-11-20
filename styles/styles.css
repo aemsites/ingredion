@@ -24,6 +24,9 @@
   --red: #db2807;
   --teal: #006a71;
   --yellow: #ffe115;
+  --white: #fff;
+  --dark-grey: #373738;
+  --dark-green: #4f6e18;
 
   /* fonts */
   --body-font-family: roboto, roboto-fallback, sans-serif;
@@ -172,48 +175,54 @@ a:hover {
 }
 
 /* buttons */
-a.button:any-link,
-button {
-  box-sizing: border-box;
+a.button, .button {
   display: inline-block;
-  max-width: 100%;
-  margin: 12px 0;
-  border: 2px solid transparent;
-  border-radius: 2.4em;
-  padding: 0.5em 1.2em;
-  font-family: var(--body-font-family);
-  font-style: normal;
-  font-weight: 500;
-  line-height: 1.25;
+  cursor: pointer;
+  min-width: 10rem;
+  font-size: 1rem;
+  border-radius: .125rem;
   text-align: center;
-  text-decoration: none;
-  background-color: var(--link-color);
-  color: var(--background-color);
-  cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.5rem;
+  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  letter-spacing: .03125rem;
 }
 
-a.button:hover,
-a.button:focus,
-button:hover,
-button:focus {
-  background-color: var(--link-hover-color);
-  cursor: pointer;
+.button.default {
+  background: var(--green);
+  color: var(--dark-grey);
+  padding: 1rem;
+  text-transform: capitalize;
 }
 
-button:disabled,
-button:disabled:hover {
-  background-color: var(--light-color);
-  cursor: unset;
+.button.default:hover {
+  background: var(--purple);
+  color: var(--white);
 }
 
-a.button.secondary,
-button.secondary {
-  background-color: unset;
-  border: 2px solid currentcolor;
-  color: var(--text-color);
+.button.secondary {
+  background: transparent;
+  color: var(--green);
+  border: 2px solid var(--green);
+  padding: .875rem;
+  text-transform: capitalize;
+}
+
+.button.secondary:hover {
+  border-color: var(--dark-green);
+  color: var(--dark-green);
+}
+
+.button.transparent {
+  background: transparent;
+  border: 2px solid var(--white);
+  color: var(--white);
+  padding: .875rem;
+  min-width: 15.625rem;
+}
+
+.button.transparent:hover {
+  border-color: var(--light-grey);
+  color: var(--light-grey);
 }
 
 main img {
