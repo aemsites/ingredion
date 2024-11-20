@@ -184,7 +184,7 @@ a.button, .button {
   text-align: center;
   line-height: 1.5rem;
   font-family: MiloPro-Bold, Helvetica, sans-serif;
-  letter-spacing: .03125rem;
+  letter-spacing: .0313rem;
 }
 
 .button.default {
