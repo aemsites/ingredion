@@ -5,23 +5,24 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
   grid-gap: 24px;
-}
 
-.cards > ul > li {
-  border: 1px solid #dadada;
-  background-color: var(--background-color);
-}
+  > li {
+    border: 1px solid #dadada;
+    background: var(--theme-clr-background);
+    color: var(--theme-clr-text);
 
-.cards .cards-card-body {
-  margin: 16px;
-}
+    img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+  }
 
-.cards .cards-card-image {
-  line-height: 0;
-}
+  .cards-card-body {
+    margin: 16px;
+  }
 
-.cards > ul > li img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  .cards-card-image {
+    line-height: 0;
+  }
 }
