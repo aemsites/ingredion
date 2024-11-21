@@ -52,6 +52,15 @@
   --nav-height: 64px;
 }
 
+/* theme colors */
+.red { --theme-clr-background: var(--red); --theme-clr-text: #fff }
+.blue { --theme-clr-background: var(--blue); --theme-clr-text: #fff }
+.green { --theme-clr-background: var(--green); --theme-clr-text: #fff }
+.lilac { --theme-clr-background: var(--orange); --theme-clr-text: #fff }
+.orange { --theme-clr-background: var(--purple); --theme-clr-text: #fff }
+.purple { --theme-clr-background: var(--purple); --theme-clr-text: #fff }
+.teal { --theme-clr-background: var(--teal); --theme-clr-text: #fff }
+
 /* fallback fonts */
 @font-face {
   font-family: roboto-condensed-fallback;
