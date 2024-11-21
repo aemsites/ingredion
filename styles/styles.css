@@ -287,11 +287,21 @@ main .section.highlight {
   line-height: 1.75rem;
   margin: 0 .9375rem 0 0;
   display: inline-block;
-  font-size: .75rem;
+  font-size: .625rem;
   font-family: var(--body-bold-font-family);
   letter-spacing: .015625rem;
   color: var(--text-color);
   padding: .3125rem 0;
+}
+
+@media (width >= 768px) {
+  .section.footer-utility li {
+    font-size: .75rem;
+  }
+}
+
+.section.footer-utility li a {
+  word-break: auto-phrase;
 }
 
 .section.footer-utility li a:hover {
@@ -327,7 +337,7 @@ main .section.highlight {
   position: relative;
 }
 
-@media (width >= 900px) {
+@media (width >= 1080px) {
   .section.tab,
   .section.mobile {
     display: none;
