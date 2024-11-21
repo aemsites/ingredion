@@ -32,15 +32,15 @@ footer .footer p {
     font-size: 1rem;
   }
 
-  footer ul li:nth-child(2) ul:first-of-type {
-    flex-direction: row;
-  }
-
   footer ul ul:first-of-type {
     padding: 10px 0;
     display: flex;
     gap: 10px;
     flex-direction: column;
+  }
+
+  footer ul li:nth-child(2) ul:first-of-type {
+    flex-direction: row;
   }
 
   footer ul ul:first-of-type li {
@@ -53,6 +53,12 @@ footer .footer p {
     justify-content: center;
     gap: 20px;
   }
+
+  footer ul ul:first-of-type li a {
+    text-decoration: none;
+    letter-spacing: .0156rem;
+    line-height: 2rem;
+  }
   
   footer ul li:nth-child(2) ul li a {
     background: var(--footer-social-icons-background-color);
@@ -64,9 +70,13 @@ footer .footer p {
     justify-content: center;
     border-radius: 50%;
   }
+
+  footer ul ul:first-of-type li a:hover {
+    color: var(--green);
+  }
   
   footer ul li:nth-child(2) ul li a:hover {
-    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, .2);
+    box-shadow: 0 5px 10px 0 rgba(0 0 0 / 20%);
   }
   
   footer ul li:nth-child(2) ul li a span {
@@ -75,15 +85,5 @@ footer .footer p {
     justify-content: center;
     height: 100%;
     position: relative;
-  }
-
-  footer ul ul:first-of-type li a {
-    text-decoration: none;
-    letter-spacing: .015625rem;
-    line-height: 2rem;
-  }
-
-  footer ul ul:first-of-type li a:hover {
-    color: var(--green);
   }
 }

@@ -46,7 +46,7 @@
   }
   
   .accordion.footer details summary::after {
-    font-family: ingredion-icon;
+    font-family: ingredion-icon, sans-serif;
     content: "\e926";
     color: var(--green);
     position: absolute;
@@ -73,18 +73,17 @@
   .accordion.footer details[open] .accordion-item-body {
     border-top: none;
     margin: .5rem .9375rem 1.5rem;
-    /* font-family: var(--body-font-family); */
     font-family: OpenSans,Helvetica,sans-serif;
     font-size: 1rem;
     line-height: 1.5rem;
-    letter-spacing: .015625rem;
+    letter-spacing: .0156rem;
   }
 
   .accordion.footer details[open] .accordion-item-body p a {
     color: var(--text-color);
     font-size: 1rem;
     line-height: 2.5rem;
-    letter-spacing: .015625rem;
+    letter-spacing: .0156rem;
     padding: 10px 0;
     text-decoration: none;
   }

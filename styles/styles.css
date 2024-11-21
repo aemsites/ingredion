@@ -31,9 +31,9 @@
   --border-color: #d8d9d9;
 
   /* fonts */
-  --body-font-family: OpenSans,Helvetica,sans-serif;
-  --body-bold-font-family: OpenSans-Bold, Helvetica, sans-serif;
-  --heading-font-family: MiloPro-Bold,Helvetica,sans-serif;
+  --body-font-family: opensans,helvetica,sans-serif;
+  --body-bold-font-family: opensans-bold, helvetica, sans-serif;
+  --heading-font-family: milopro-bold,helvetica,sans-serif;
 
   /* body sizes */
   --body-font-size-m: 22px;
@@ -298,7 +298,7 @@ main .section.highlight {
   display: inline-block;
   font-size: .625rem;
   font-family: var(--body-bold-font-family);
-  letter-spacing: .015625rem;
+  letter-spacing: .0156rem;
   color: var(--text-color);
   padding: .3125rem 0;
 }
@@ -311,10 +311,6 @@ main .section.highlight {
 
 .section.footer-utility li a {
   word-break: auto-phrase;
-}
-
-.section.footer-utility li a:hover {
-  text-decoration: none;
 }
 
 .section.social-share p {
@@ -336,8 +332,12 @@ main .section.highlight {
   border-radius: 50%;
 }
 
+.section.footer-utility li a:hover {
+  text-decoration: none;
+}
+
 .section.social-share p a:hover {
-  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, .2);
+  box-shadow: 0 5px 10px 0 rgba(0 0 0 / 20%);
 }
 
 .section.social-share p span {
