@@ -49,7 +49,7 @@
   --heading-font-size-xs: 22px;
 
   /* nav height */
-  --nav-height: 64px;
+  --nav-height: 208px;
 }
 
 /* theme colors */
@@ -100,7 +100,6 @@
 body {
   display: none;
   margin: 0;
-  background-color: var(--background-color);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
