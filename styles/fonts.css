@@ -36,6 +36,21 @@
 }
 
 @font-face {
+  font-family: OpenSans-Bold;
+  src: url('../fonts/OpenSans-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: OpenSans-Regular;
+  src: url('../fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: ingredion-icon;
+  src: url('../fonts/ingredion-icon.ttf') format('truetype');
+}
+
+@font-face {
   font-family: MiloPro-Bold;
   font-style: normal;
   font-display: swap;
