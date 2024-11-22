@@ -1,49 +1,44 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { loadFragment } from '../fragment/fragment.js';
-import { div, nav, span, img, form, input, button } from '../../scripts/dom-helpers.js';
-import { getRegionLocale, throttle} from '../../scripts/utils.js';
+import { div, nav, span, img, form, input, button, a } from '../../scripts/dom-helpers.js';
+import { getRegionLocale, throttle } from '../../scripts/utils.js';
 
 async function buildDropDowns($header) {
   const links = [...$header.querySelectorAll('a[href*="/dropdowns"]')];
-  let openDropdown = null;
+  let activeDropdown = null;
 
   // Array of promises for loading fragments in parallel
   const linkPromises = links.map(async (link) => {
     const subNavPath = link.getAttribute('href');
-    if (!subNavPath) return;
-
+    // remove href to prevent navigation or show link in status bar
+    link.removeAttribute('href');
+    link.setAttribute('data-dropdown', 'true');
     const subNavFrag = await loadFragment(subNavPath);
     const $dropDown = div({ class: 'dropdown' });
     while (subNavFrag.firstElementChild) $dropDown.append(subNavFrag.firstElementChild);
-    link.insertAdjacentElement('afterend', $dropDown);
+    link.parentElement.append($dropDown);
 
-    const eventType = link.closest('.utility') ? 'click' : 'mouseenter';
-    const handleEvent = throttle((event) => {
-      event.preventDefault();
-      if (openDropdown && openDropdown !== $dropDown) {
-        openDropdown.parentElement.classList.remove('active');
+    const eventType = link.closest('.utility') ? 'click' : 'pointerenter';
+
+    const openDropdown = throttle(() => {
+      if (activeDropdown && activeDropdown !== $dropDown) {
+        activeDropdown.parentElement.classList.remove('active');
       }
       $dropDown.parentElement.classList.add('active');
-      openDropdown = $dropDown;
-    }, eventType === 'mouseenter' ? 100 : 0);
+      activeDropdown = $dropDown;
+    }, 100);
 
-    link.addEventListener(eventType, handleEvent);
+    link.addEventListener(eventType, openDropdown);
   });
 
-  // close dropdown if clicked outside
+  // close dropdown if clicked outside of it
+  // This is getting fired when on mobile and clicking on a dropdown link, need to prevent it
   document.addEventListener('click', (event) => {
-    if (openDropdown && !openDropdown.contains(event.target) && !event.target.closest('a[href*="/dropdowns"]')) {
-      openDropdown.parentElement.classList.remove('active');
-      openDropdown = null;
+    if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('a[data-dropdown]')) {
+      activeDropdown.parentElement.classList.remove('active');
+      activeDropdown = null;
     }
   }, true);
-
-  document.addEventListener('click', (event) => {
-    if (openDropdown && !openDropdown.contains(event.target) && !event.target.matches('a')) {
-      openDropdown.parentElement.classList.remove('active');
-      openDropdown = null;
-    }
-  });
 
   await Promise.all(linkPromises);
 }
@@ -60,7 +55,7 @@ export default async function decorate(block) {
   const navSections = navFrag.querySelectorAll('main > div');
   const $header = document.querySelector('header');
 
-  const $cart = div({ class: 'cart' },
+  const $cart = a({ class: 'cart', href: `/${region}/${locale}/sample-cart.html`, 'aria-label': 'Cart' },
     span({ class: 'icon-cart' }, '\u{e919}'),
     span({ class: 'count hide' }),
   );
@@ -70,12 +65,12 @@ export default async function decorate(block) {
   );
 
   const $logoNav = nav({ class: 'logo-search' },
-    div({ class: 'logo' },
+    a({ class: 'logo', href: `/${region}/${locale}.html`, 'aria-label': 'Home' },
       img({ src: '/icons/ingredion.svg', width: 120, alt: 'Ingredion logo' }),
     ),
     form({ class: 'search' },
       div({ class: 'category-dropdown' }, 'All'),
-      input({ id: 'search-key', 'aria-label': 'Search Input' }),
+      input({ id: 'search', 'aria-label': 'Search Input' }),
       button({ type: 'submit', class: 'icon-search', 'aria-label': 'Search Button' }),
     ),
     ...Array.from(navSections[1].querySelectorAll(':scope > *')),
