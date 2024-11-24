@@ -51,38 +51,47 @@ export default async function decorate(block) {
   if (locale.length !== 5) locale = 'en-us';
   const navPath = `/${region}/${locale}/header/header`;
   const navFrag = await loadFragment(navPath, false);
-
-  const navSections = navFrag.querySelectorAll('main > div');
   const $header = document.querySelector('header');
+  const navSections = navFrag.querySelectorAll('main > div');
 
-  const $cart = a({ class: 'cart', href: `/${region}/${locale}/sample-cart.html`, 'aria-label': 'Cart' },
-    span({ class: 'icon-cart' }, '\u{e919}'),
-    span({ class: 'count hide' }),
+  const $btnCart = button({ class: 'icon-cart', href: `/${region}/${locale}/sample-cart.html`, 'aria-label': 'Cart' },
+    '\u{e919}',
+    span({ class: 'count hide' }, '0'),
   );
 
-  const $utilityNav = nav({ class: 'utility' },
+  const $btnBurger = button({ class: 'icon-burger', 'aria-label': 'Menu' });
+
+  $btnBurger.addEventListener('click', () => {
+    $header.classList.toggle('mobile-view');
+  });
+
+  const $navUtility = nav({ class: 'utility' },
     ...Array.from(navSections[0].querySelectorAll(':scope > *')),
   );
 
-  const $logoNav = nav({ class: 'logo-search' },
+  const $navLogoSearch = nav({ class: 'logo-search' },
     a({ class: 'logo', href: `/${region}/${locale}.html`, 'aria-label': 'Home' },
       img({ src: '/icons/ingredion.svg', width: 120, alt: 'Ingredion logo' }),
     ),
-    form({ class: 'search' },
-      div({ class: 'category-dropdown' }, 'All'),
-      input({ id: 'search', 'aria-label': 'Search Input' }),
-      button({ type: 'submit', class: 'icon-search', 'aria-label': 'Search Button' }),
+    div({ class: 'search-wrapper' },
+      form({ class: 'search', id: 'searchForm' },
+        div({ class: 'category-dropdown' }, 'All'),
+        input({ id: 'search', 'aria-label': 'Search Input' }),
+        button({ type: 'submit', class: 'icon-search', 'aria-label': 'Search Button' }),
+      ),
+      button({ type: 'submit', form: 'searchForm', class: 'button-search', 'aria-label': 'Search Button' }, 'Search'),
     ),
     ...Array.from(navSections[1].querySelectorAll(':scope > *')),
   );
 
-  const $categoryNav = nav({ class: 'category' }, ...Array.from(navSections[2].querySelectorAll(':scope > *')));
+  const $navCategory = nav({ class: 'category' }, ...Array.from(navSections[2].querySelectorAll(':scope > *')));
 
   $header.append(
-    $utilityNav,
-    $cart,
-    $logoNav,
-    $categoryNav,
+    $navUtility,
+    $navLogoSearch,
+    $navCategory,
+    $btnCart,
+    $btnBurger,
   );
 
   await buildDropDowns($header);

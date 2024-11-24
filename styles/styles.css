@@ -112,7 +112,7 @@ body.appear {
 }
 
 header {
-  height: var(--nav-height);
+  /*height: var(--nav-height);*/
 }
 
 header .header,
