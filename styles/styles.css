@@ -112,7 +112,13 @@ body.appear {
 }
 
 header {
-  /*height: var(--nav-height);*/
+  /* CLS fixes */
+  min-height: 208px;
+
+  @media (width < 1200px) { min-height: 132px }
+
+  /* push header down when sidekick is loaded */
+  helix-sidekick ~ & { top: 49px }
 }
 
 header .header,

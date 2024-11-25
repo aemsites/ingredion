@@ -1,4 +1,4 @@
-/* stylelint-disable max-line-length */
+/* stylelint-disable max-line-length, font-family-no-missing-generic-family-keyword */
 @font-face {
   font-family: ingredion-icon;
   src: url('../fonts/ingredion-icon.ttf') format('truetype');

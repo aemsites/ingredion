@@ -4,7 +4,7 @@ const VALID_LOCALES = ['en-us', 'es-mx', 'pt-br', 'es-co', 'es-ar', 'en-uk', 'en
 
 /**
  * Retrieves the region and locale from the URL path.
- * If the region or locale is not valid, it defaults to 'na' and 'en-us' respectively.
+ * If the region or locale is not valid, it defaults to 'na' and 'en-us'
  * @returns {Array} An array containing the region and locale.
  */
 export function getRegionLocale() {
@@ -29,7 +29,7 @@ export function getRegionLocale() {
  */
 export function throttle(fn, wait) {
   let lastCall = 0;
-  return function (...args) {
+  return function throttled(...args) {
     const now = Date.now();
     if (now - lastCall >= wait) {
       lastCall = now;
