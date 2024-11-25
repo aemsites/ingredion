@@ -15,16 +15,23 @@ export default function decorate(block) {
          div.append(imageAnchor);
          } else div.className = 'cards-card-body';      
     });
-    const btnContainer = li.querySelector('.button-container');
-    if (btnContainer) {
-      btnContainer.classList.remove('button-container');
-      const a = btnContainer.querySelector('a');
-      const span = document.createElement('span');
-      span.className = 'icon-green-arrow';
-      a.append(span);
-      const imageAnchor = li.querySelector('.cards-card-image a');
-      imageAnchor.href = a.href;
-      imageAnchor.setAttribute('aria-label', a.href);
+    const btnContainers = li.querySelectorAll('.button-container');
+    if (btnContainers) {
+      btnContainers.forEach((btnContainer, index) => {
+        if (btnContainers.length === 1 || index > 0) {
+          const a = btnContainer.querySelector('a');
+          const span = document.createElement('span');
+          span.className = 'icon-green-arrow';
+          a.append(span);
+          const imageAnchor = li.querySelector('.cards-card-image a');
+          imageAnchor.href = a.href;
+          imageAnchor.setAttribute('aria-label', a.href);
+          btnContainer.classList.add('secondary-cta');
+        } else {
+          btnContainer.classList.add('heading');
+        }
+        btnContainer.classList.remove('button-container');
+      });      
   }
     ul.append(li);
   });
