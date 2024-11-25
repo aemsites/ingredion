@@ -26,6 +26,8 @@
   --purple: #b41f75;
   --dark-purple: #6a0c5f;
   --dark-grey: #373738;
+  --footer-social-icons-background-color: #00549e;
+  --border-color: #d8d9d9;
   --light-grey: #efefef;
 
   /* theme colors */
@@ -33,8 +35,10 @@
   --theme-clr-text: var(--text-color);
 
   /* fonts */
-  --body-font-family:  opensans, helvetica, sans-serif;
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
+  --body-font-family: opensans,helvetica,sans-serif;
+  --body-bold-font-family: opensans-bold, helvetica, sans-serif;
+  --heading-font-family: milopro-bold,helvetica,sans-serif;
+
 
   /* body sizes */
   --body-font-size-m: 22px;
@@ -289,4 +293,89 @@ main .section.highlight {
   background-color: var(--light-color);
   margin: 0;
   padding: 40px 0;
+}
+
+.section.center {
+  text-align: center;
+}
+
+.section.desktop {
+  display: none;
+}
+
+.section.footer-utility {
+  border-top: 1px solid var(--border-color);
+}
+
+.section.footer-utility ul {
+  display: flex;
+  padding: .625rem .9375rem .625rem 0;
+}
+
+.section.footer-utility li {
+  list-style: none;
+  line-height: 1.75rem;
+  margin: 0 .9375rem 0 0;
+  display: inline-block;
+  font-size: .625rem;
+  font-family: var(--body-bold-font-family);
+  letter-spacing: .0156rem;
+  color: var(--text-color);
+  padding: .3125rem 0;
+}
+
+@media (width >= 768px) {
+  .section.footer-utility li {
+    font-size: .75rem;
+  }
+}
+
+.section.footer-utility li a {
+  word-break: auto-phrase;
+}
+
+.section.social-share p {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.section.social-share p a {
+  background: var(--footer-social-icons-background-color);
+  height: 2rem;
+  width: 2rem;
+  padding: 0;
+  margin: 2rem;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.section.footer-utility li a:hover {
+  text-decoration: none;
+}
+
+.section.social-share p a:hover {
+  box-shadow: 0 5px 10px 0 rgba(0 0 0 / 20%);
+}
+
+.section.social-share p span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+}
+
+@media (width >= 1080px) {
+  .section.tab,
+  .section.mobile {
+    display: none;
+  }
+
+  .section.desktop {
+    display: block;
+  }
 }
