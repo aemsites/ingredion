@@ -44,6 +44,8 @@ export default async function decorate(block) {
       }
 
       col.querySelectorAll('a').forEach((a) => {
+        a.classList.add('table', 'link');
+
         const { nextSibling } = a;
 
         if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE) {
@@ -56,9 +58,9 @@ export default async function decorate(block) {
         }
       });
 
-      const buttons = col.querySelectorAll('.button.primary');
+      const buttons = col.querySelectorAll('.button');
       buttons.forEach((button) => {
-        button.classList.remove('button', 'primary');
+        button.classList.remove('button');
         button.classList.add('table', 'link');
       });
 

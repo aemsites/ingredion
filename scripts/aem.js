@@ -393,8 +393,8 @@ function decorateButtons(element) {
       const up = a.parentElement;
       const twoup = a.parentElement.parentElement;
       if (!a.querySelector('img')) {
-        if ((up.tagName === 'P' || up.tagName === 'DIV') && up.querySelectorAll('a').length >= 1) {
-          a.className = 'button primary'; // default
+        if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {
+          a.className = 'button'; // default
           up.classList.add('button-container');
         }
         if (

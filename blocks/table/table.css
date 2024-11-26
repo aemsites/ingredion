@@ -40,6 +40,8 @@
 .table table td ul {
     list-style-type: disc;
     padding-left: 1.875rem;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .table table td ul li {
