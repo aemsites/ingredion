@@ -1,0 +1,110 @@
+/* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
+
+
+.header-dropdown-container,
+.header-dropdown-wrapper {
+    height: inherit;
+}
+
+.header-dropdown {
+    display: flex;
+    width: 100%;
+    height: inherit;
+
+
+    ul.list {
+        flex-basis: 33.33%;
+        list-style: none;
+        margin: 0;
+        padding-top: 30px;
+        min-height: 100%;
+        border-right: 1px solid var(--border-color);
+
+        li {
+            position: relative;
+            padding: 20px 0 10px 30px;
+            font-weight: bold;
+
+            &.active {
+                background: var(--light-grey);
+                color: var(--green);
+            }
+
+            &::after {
+                content: '';
+                position: absolute;
+                right: 16px;
+                top: 50%;
+                transform: translateY(-50%) rotate(-90deg);
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 5px solid var(--green);
+            }
+        }
+    }
+
+    .items {
+        flex-basis: 66.67%;
+        display: flex;
+        flex-wrap: wrap;
+
+        .item {
+            display: none;
+            width: 100%;
+            &.active  { display: flex }
+
+            > div {
+                flex: 0 0 50%;
+                max-width: 50%;
+                padding: 20px 40px;
+                &:first-child { border-right: 1px solid var(--border-color)}
+            }
+
+            ul {
+                list-style: none;
+                margin: 0;
+
+                li {
+                    line-height: 2.1rem;
+                    font-size: .95rem;
+
+                    a {
+                        color: var(--text-color);
+                        text-decoration: none;
+                        &:hover { color: var(--green) }
+                    }
+                }
+
+
+            }
+
+            picture {
+                display: block;
+                width: 100%;
+                height: 200px;
+                overflow: hidden;
+
+                img {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+
+
+        }
+    }
+}
+
+.dropdown {
+    .default-content-wrapper .button-container {
+        position: relative;
+        z-index: 9;
+        height: 50px;
+        margin-top: -50px;
+        text-align: center;
+        background: var(--light-grey);
+    }
+}
+

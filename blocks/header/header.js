@@ -3,25 +3,27 @@ import { loadFragment } from '../fragment/fragment.js';
 import { div, nav, span, img, form, input, button, a } from '../../scripts/dom-helpers.js';
 import { getRegionLocale, throttle } from '../../scripts/utils.js';
 
-const isMobile = window.matchMedia('(width < 1200px)');
+const isMobile = window.matchMedia('(width < 1080px)');
 
 async function buildDropDowns($header) {
   const links = [...$header.querySelectorAll('a[href*="/dropdowns"]')];
   let activeDropdown = null;
 
-  // load dropdown fragments in parallel
-  const linkPromises = links.map(async (link) => {
+  function getEventType(link) {
+    return link.closest('.utility') || isMobile.matches ? 'click' : 'pointerenter';
+  }
+
+  async function attachDropdown(link) {
     const subNavPath = link.getAttribute('href');
-    // remove href to prevent clicks and hide from status bar
     link.removeAttribute('href');
     link.setAttribute('data-dropdown', 'true');
+
+    // Load fragment and append dropdown content
     const subNavFrag = await loadFragment(subNavPath);
     const $dropDown = div({ class: 'dropdown' });
     while (subNavFrag.firstElementChild) $dropDown.append(subNavFrag.firstElementChild);
     link.parentElement.append($dropDown);
-
-    // click in utility nav, hover in category nav
-    const eventType = link.closest('.utility') ? 'click' : 'pointerenter';
+    let eventType = getEventType(link);
 
     const openDropdown = throttle(() => {
       if (activeDropdown && activeDropdown !== $dropDown) {
@@ -32,9 +34,19 @@ async function buildDropDowns($header) {
     }, 100);
 
     link.addEventListener(eventType, openDropdown);
-  });
 
-  // close dropdown if clicked outside of it
+    // update event on viewport change
+    isMobile.addEventListener('change', () => {
+      link.removeEventListener(eventType, openDropdown);
+      eventType = getEventType(link);
+      link.addEventListener(eventType, openDropdown);
+    });
+  }
+
+  // load dropdowns attach event listeners in parallel
+  const linkPromises = links.map(attachDropdown);
+
+  // close dropdown if clicked outside
   document.addEventListener('click', (event) => {
     if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('a[data-dropdown]')) {
       activeDropdown.parentElement.classList.remove('active');
