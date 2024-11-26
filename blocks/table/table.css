@@ -1,0 +1,77 @@
+.table table {
+    max-width: 76.5rem;
+    margin: 5rem auto;
+    border-collapse: collapse;
+    display: block;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table div {
+    text-align: left;
+}
+
+.table table td, 
+.table table th {
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: 0.0156rem;
+}
+
+.table table th {
+    background: var(--light-grey);
+    font-family: OpenSans-Bold, Helvetica, sans-serif;
+    text-align: center;
+}
+
+.table table td {
+    font-family: OpenSans-Regular, Helvetica, sans-serif;
+    text-align: left;
+    background: transparent;
+}
+
+.table table tr:nth-child(2n+2) td {
+    background: color-mix(in srgb, rgb(239 239 239) 50%, transparent);
+}
+
+.table table td ul {
+    list-style-type: disc;
+    padding-left: 1.875rem;
+}
+
+.table table td ul li {
+    padding-left: .625rem;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    text-align: left;
+    color: var(--text-color);
+}
+
+.table p {
+    margin: 0;
+}
+
+.table table td p {
+    text-align: left;
+    color: var(--text-color);
+}
+
+.table table td h2, 
+.table table td h3, 
+.table table td p {
+    color: var(--text-color);
+}
+
+.table.link {
+    color: var(--green);
+    text-decoration: underline;
+    margin: auto;
+}
+
+.table.link:hover {
+    color: var(--dark-green);
+}
