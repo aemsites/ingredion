@@ -104,6 +104,9 @@
   .cards.slim > ul > li:not(:first-of-type) {
     display: none;
   }
+  .cards.slim > ul > li {
+    margin: auto;
+  }
 }
 
 .cards.slim .cards-card-body {
