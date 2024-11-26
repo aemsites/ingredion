@@ -1,57 +1,62 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, ul, li, a } from '../../scripts/dom-helpers.js';
+import { div, ul, li } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 const isMobile = window.matchMedia('(width < 1080px)');
 
-export default function decorate(block) {
-  const $list = ul({ class: 'list' });
-  const $items = div({ class: 'items' });
+function buildSubMenu(block) {
+  const $navList = ul({ class: 'nav-list', 'data-height': '' });
+  const $navItems = div({ class: 'nav-items' });
 
-  [...block.children].forEach((row, rowI) => {
-    const $item = div({ class: 'item' });
+  const removeActiveItem = () => {
+    [...$navItems.children].forEach((item) => item.classList.remove('active'));
+    [...$navList.children].forEach((listItem) => listItem.classList.remove('active'));
+  };
 
-    // set first as active
-    if (rowI === 0) $item.classList.add('active');
+  const setActiveItem = (row, rowN) => {
+    removeActiveItem();
+    row.classList.add('active');
+    const matchingItem = $navItems.querySelector(`.item[data-item="${rowN}"]`);
+    if (matchingItem) matchingItem.classList.add('active');
+  };
 
-    [...row.children].forEach((col, colI) => {
-      // optimized image
+  [...block.children].forEach((row, rowN) => {
+    const $item = div({ class: 'item', 'data-item': rowN });
+
+    // set first item as active
+    if (rowN === 0) $item.classList.add('active');
+
+    [...row.children].forEach((col, colN) => {
+      // replace image with optimized version
       const img = col.querySelector('img');
       if (img) {
-        const newImg = createOptimizedPicture(img.src, 'alt', true, [{ width: '400px' }]);
+        const newImg = createOptimizedPicture(img.src, img.alt || 'image', false, [{ width: '400' }]);
         img.replaceWith(newImg);
       }
 
-      if (colI === 0) {
-        const $section = li({ 'data-item': rowI }, col.textContent);
-
-        // Add "active" class to the first <li>
-        if (rowI === 0) $section.classList.add('active');
-
-        // Add click event to $section
-        $section.addEventListener('click', () => {
-          // remove "active" item
-          [...$items.children].forEach((item) => item.classList.remove('active'));
-          [...$list.children].forEach((listItem) => listItem.classList.remove('active'));
-
-          // add "active" item
-          const matchingItem = $items.querySelector(`.item[data-item="${rowI}"]`);
-          matchingItem.classList.add('active');
-          $section.classList.add('active');
-        });
-
-        $list.append($section);
+      if (colN === 0) {
+        // build section list
+        const $section = li({ 'data-item': rowN }, col.textContent);
+        $section.addEventListener('click', () => setActiveItem($section, rowN));
+        // set first item as active
+        if (rowN === 0) $section.classList.add('active');
+        $navList.append($section);
       } else {
+        col.setAttribute('data-height', '');
         $item.append(col);
       }
-
-      // Set item attribute to row index
-      $item.setAttribute('data-item', rowI);
     });
 
-    $items.append($item);
+    $navItems.append($item);
   });
 
   block.innerHTML = '';
-  block.append($list, $items);
+  block.append($navList, $navItems);
+}
+export default function decorate(block) {
+  // set height
+  // const heightClass = [...block.classList].find((c) => c.startsWith('height-'));
+  // if (heightClass) block.style.height = heightClass.slice(7);
+
+  if (block.classList.contains('submenu')) buildSubMenu(block);
 }

@@ -23,6 +23,7 @@ async function buildDropDowns($header) {
     const $dropDown = div({ class: 'dropdown' });
     while (subNavFrag.firstElementChild) $dropDown.append(subNavFrag.firstElementChild);
     link.parentElement.append($dropDown);
+
     let eventType = getEventType(link);
 
     const openDropdown = throttle(() => {
@@ -44,7 +45,7 @@ async function buildDropDowns($header) {
   }
 
   // load dropdowns attach event listeners in parallel
-  const linkPromises = links.map(attachDropdown);
+  const dropdownPromise = links.map(attachDropdown);
 
   // close dropdown if clicked outside
   document.addEventListener('click', (event) => {
@@ -54,7 +55,34 @@ async function buildDropDowns($header) {
     }
   }, true);
 
-  await Promise.all(linkPromises);
+  await Promise.all(dropdownPromise)
+    .then(() => {
+      // get height of child elements and set max height on dropdown
+      $header.querySelectorAll('.dropdown').forEach((dropdown) => {
+        // get all data-height items and calculate max height
+        const heights = Array.from(dropdown.querySelectorAll('[data-height]'))
+          .map((el) => {
+            const height = el.clientHeight;
+            el.removeAttribute('data-height');
+            return height;
+          });
+
+        // set max height
+        let maxHeight = Math.max(0, ...heights);
+
+        // add height of default-content-wrapper if it exists
+        const defaultContentWrapper = dropdown.querySelector('.default-content-wrapper');
+        if (defaultContentWrapper) maxHeight += defaultContentWrapper.clientHeight;
+
+        // set max height on dropdown
+        dropdown.style.height = `${maxHeight}px`;
+        dropdown.classList.add('set');
+      });
+    })
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error('Error:', error);
+    });
 }
 
 export default async function decorate(block) {
