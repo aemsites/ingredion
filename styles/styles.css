@@ -211,15 +211,16 @@ a.button, .button {
   letter-spacing: .0313rem;
 }
 
-.button.default {
+.button {
   background: var(--green);
   color: var(--dark-grey);
   padding: 1rem;
   text-transform: capitalize;
 }
 
-.button.default:hover {
+.button:hover {
   background: var(--purple);
+  text-decoration: none;
   color: var(--theme-clr-background);
 }
 
@@ -299,10 +300,6 @@ main .section.highlight {
   text-align: center;
 }
 
-.section.desktop {
-  display: none;
-}
-
 .section.footer-utility {
   border-top: 1px solid var(--border-color);
 }
@@ -369,13 +366,44 @@ main .section.highlight {
   position: relative;
 }
 
-@media (width >= 1080px) {
-  .section.tab,
-  .section.mobile {
+.tab {
+  display: none;
+}
+
+.desktop {
+  display: none;
+}
+
+.mobile {
+  display: block;
+}
+
+/* Media Queries - Tablet */
+@media (width >= 768px) {
+  .mobile {
     display: none;
   }
 
-  .section.desktop {
+  .desktop {
+    display: none;
+  }
+
+  .tab {
+    display: block;
+  }
+}
+
+/* Media Queries - Desktop */
+@media (width >= 1080px) {
+  .mobile {
+    display: none;
+  }
+
+  .tab {
+    display: none;
+  }
+
+  .desktop {
     display: block;
   }
 }
