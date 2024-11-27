@@ -13,7 +13,7 @@ export function getRegionLocale() {
     .split('/')
     .filter((segment) => segment);
   // fallback values 'na' and 'en-us'
-  let [region = 'na', locale = 'en-us'] = segments.slice(1, 3);
+  let [region = 'na', locale = 'en-us'] = segments;
   // validate region and locale
   if (!VALID_REGIONS.includes(region)) region = 'na';
   if (!VALID_LOCALES.includes(locale)) locale = 'en-us';
