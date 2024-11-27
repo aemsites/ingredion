@@ -16,7 +16,7 @@ export default function decorate(block) {
       img.src,
       img.alt,
       false,
-      [{ width: '750' }];
+      [{ width: '750' }],
     );
     pic.replaceWith(optimizedPicture);
   }
