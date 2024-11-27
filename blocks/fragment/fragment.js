@@ -17,7 +17,7 @@ import {
  * @param {string} path The path to the fragment
  * @returns {HTMLElement} The root element of the fragment
  */
-export async function loadFragment(path, decorateBlock = true) {
+export async function loadFragment(path) {
   if (path && path.startsWith('/')) {
     const resp = await fetch(`${path}.plain.html`);
     if (resp.ok) {
@@ -33,7 +33,7 @@ export async function loadFragment(path, decorateBlock = true) {
       resetAttributeBase('img', 'src');
       resetAttributeBase('source', 'srcset');
 
-      if (decorateBlock) decorateMain(main);
+      decorateMain(main);
       await loadSections(main);
       return main;
     }

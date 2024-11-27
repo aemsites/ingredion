@@ -151,22 +151,6 @@
     background-color: #ccc;
     border-radius: 50%;
     cursor: pointer;
-=======
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  grid-gap: 24px;
-
-  > li {
-    border: 1px solid #dadada;
-    background: var(--theme-clr-background);
-    color: var(--theme-clr-text);
-
-
-    img {
-      width: 100%;
-      aspect-ratio: 4 / 3;
-      object-fit: cover;
-    }
   }
 
   .dot.active {
@@ -191,7 +175,6 @@
     }
   }
 }
-
 
 .cards.video[data-embed-loaded='false']:not(.placeholder) {
   aspect-ratio: 16 / 9;
@@ -332,5 +315,3 @@
   text-align: left;
   color: var(--dark-green);
 }
-
-
