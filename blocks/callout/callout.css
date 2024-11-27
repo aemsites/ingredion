@@ -94,36 +94,3 @@
     }
   }
 }
-
-
-/* @media (width >= 900px) {
-  .callout > div {
-    align-items: stretch;
-    flex-direction: row;
-    gap: 0;
-  }
-
-  .callout-image,
-  .callout-content {
-    width: 50%;
-    height: 100%;
-    flex: 0 0 50%;
-  }
-
-  .callout-content {
-    padding-left: 0;
-    padding-right: 2.5rem;
-    margin: 7.25rem clamp(1rem, 5vw, 5.969rem);
-  }
-
-  .callout > div > div {
-    flex: 1;
-    order: unset;
-  }
-} */
-
-/* @media (width < 76.5rem) {
-  .callout {
-    max-width: 100%;
-  }
-} */
