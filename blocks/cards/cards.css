@@ -4,11 +4,16 @@
   padding: 0;
 }
 
+.cards .button {
+  padding: 0;
+  background: none;
+}
+
 @media (width >= 1080px) {
   .cards > ul {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
-    gap: 20px 40px;
+    gap: 40px 20px;
   }
 }
 
@@ -16,7 +21,7 @@
   .cards > ul {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(85%, 1fr));
-    column-gap: 40px 20px;
+    gap: 20px 40px;
   }
 }
 
