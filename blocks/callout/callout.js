@@ -14,9 +14,9 @@ export default function decorate(block) {
     const img = pic.querySelector('img');
     const optimizedPicture = createOptimizedPicture(
       img.src,
-      img.alt, 
+      img.alt,
       false,
-      [{ width: '750' }]
+      [{ width: '750' }];
     );
     pic.replaceWith(optimizedPicture);
   }
