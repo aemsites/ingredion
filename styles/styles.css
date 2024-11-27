@@ -20,14 +20,14 @@
   --green: #6cb33e;
   --dark-green: #4f6e18;
   --yellow: #ffe115;
-   --orange: #ff7017;
+  --orange: #ff7017;
   --red: #db2807;
   --lilac: #6266b9;
   --purple: #b41f75;
   --dark-purple: #6a0c5f;
   --dark-grey: #373738;
   --footer-social-icons-background-color: #00549e;
-  --border-color: #d8d9d9;
+  --border-color: #d8d8d8;
   --light-grey: #efefef;
 
   /* theme colors */
@@ -38,6 +38,7 @@
   --body-font-family: opensans,helvetica,sans-serif;
   --body-bold-font-family: opensans-bold, helvetica, sans-serif;
   --heading-font-family: milopro-bold,helvetica,sans-serif;
+
 
   /* body sizes */
   --body-font-size-m: 22px;
@@ -53,7 +54,7 @@
   --heading-font-size-xs: 22px;
 
   /* nav height */
-  --nav-height: 64px;
+  --nav-height: 208px;
 }
 
 /* theme colors */
@@ -104,7 +105,6 @@
 body {
   display: none;
   margin: 0;
-  background-color: var(--background-color);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
@@ -116,7 +116,13 @@ body.appear {
 }
 
 header {
-  height: var(--nav-height);
+  /* CLS fixes */
+  min-height: 208px;
+
+  @media (width < 1200px) { min-height: 132px }
+
+  /* push header down when sidekick is loaded */
+  helix-sidekick ~ & { top: 49px }
 }
 
 header .header,
@@ -191,10 +197,6 @@ a:any-link {
   word-break: break-word;
 }
 
-a:hover {
-  color: var(--link-hover-color);
-  text-decoration: underline;
-}
 
 /* buttons */
 a.button, .button {
@@ -237,8 +239,8 @@ a.button, .button {
 
 .button.transparent {
   background: transparent;
-  border: 2px solid var(--white);
-  color: var(--white);
+  border: 2px solid var(--theme-clr-background);
+  color: var(--theme-clr-background);
   padding: .875rem;
   min-width: 15.625rem;
 }
