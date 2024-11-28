@@ -43,10 +43,13 @@
           margin-top: 1.5rem;
           min-width: 15.625rem;
           padding: .875rem;
-          border: 2px solid;
+          border: 2px solid var(--theme-clr-text);
+          color: var(--theme-clr-text);
         }
         > a:hover {
           text-decoration: none;
+          border-color: var(--light-grey);
+          color: var(--light-grey);
         }
       }
     }
