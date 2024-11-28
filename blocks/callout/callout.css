@@ -23,15 +23,15 @@
       padding: 5rem .9375rem;
   
       h3 {
-        font-family: MiloPro-Bold, Helvetica, sans-serif;
+        font-family: var(--heading-font-family);
         font-size: var(--heading-font-size-m);
         letter-spacing: -.03125rem;
         margin: auto;
       }
   
       p {
-        font-family: OpenSans, Helvetica, sans-serif;
-        font-size: 1rem;
+        font-family: var(--body-font-family);
+        font-size: var(--body-font-size-s);
         line-height: 1.5rem;
         letter-spacing: .015625rem;
         margin: auto;

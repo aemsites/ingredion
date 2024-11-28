@@ -34,7 +34,7 @@
   --theme-clr-text: var(--text-color);
 
   /* fonts */
-  --body-font-family: opensans,helvetica,sans-serif;
+  --body-font-family: opensans-regular,helvetica,sans-serif;
   --body-bold-font-family: opensans-bold, helvetica, sans-serif;
   --heading-font-family: milopro-bold,helvetica,sans-serif;
   --ingredion-icon-font-family: ingredion-icon;
