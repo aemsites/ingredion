@@ -27,7 +27,7 @@
       font-family: MiloPro-Bold, Helvetica, sans-serif;
       font-size: var(--heading-font-size-m);
       letter-spacing: -.03125rem;
-      margin: 0 0 1rem;
+      margin: auto;
     }
 
     p {
@@ -35,10 +35,11 @@
       font-size: 1rem;
       line-height: 1.5rem;
       letter-spacing: .015625rem;
+      margin: auto;
     }
 
     .button-container {
-      margin: 0;
+      margin: auto;
       > a {
         display: inline-block;
         margin-top: 1.5rem;
