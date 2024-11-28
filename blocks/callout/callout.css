@@ -1,6 +1,8 @@
 .section .callout-wrapper {
   padding: 0;
   margin-bottom: 50px;
+  max-width: 1224px;
+  width: 100%;
 }
 
 .callout {
@@ -67,6 +69,8 @@
 @media (min-width: 1080px) {
 
   .callout {
+    max-width: 1224px;
+    width: 100%;
     > div {
       flex-direction: row;
       height: 560px;
