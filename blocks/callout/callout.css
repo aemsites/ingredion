@@ -1,9 +1,14 @@
+.section .callout-wrapper {
+  padding: 0;
+  margin-bottom: 50px;
+}
+
 .callout {
   > div {
     display: flex;
     flex-direction: column;
     background: var(--theme-clr-background);
-    height: 42.625rem;
+    height: 682px;
 
     .callout-image {
       flex: 1;
@@ -20,13 +25,14 @@
     .callout-content {
       height: 50%;
       color: var(--theme-clr-text);
-      padding: 5rem .9375rem;
+      padding: 80px 15px;
   
       h3 {
         font-family: var(--heading-font-family);
         font-size: var(--heading-font-size-m);
         letter-spacing: -.03125rem;
         margin: auto;
+        margin-bottom: 16px;
       }
   
       p {
@@ -35,6 +41,7 @@
         line-height: 1.5rem;
         letter-spacing: .015625rem;
         margin: auto;
+        margin-bottom: 16px;
       }
   
       .button-container {
@@ -57,18 +64,12 @@
 
 }
 
-.callout-wrapper {
-  padding: 0 !important;
-  margin-bottom: 3.125rem !important;
-}
-
 @media (min-width: 1080px) {
 
   .callout {
     > div {
       flex-direction: row;
-      gap: 0;
-      height: 35rem;
+      height: 560px;
 
       .callout-image {
         width: 50%;
@@ -78,19 +79,14 @@
       .callout-content {
         width: 50%;
         height: 100%;
-        align-self: center;
+        padding-top: 100px;
         h3 {
-          font-size: var(--heading-font-size-xl);
-          max-width: 26.3125rem;
-          padding: 0 2.5rem;
-          margin-bottom: 16px;
+          font-size: 32px;
+          max-width: 381px;
+          margin-top: 16px;
         }
         p {
-          max-width: 26.3125rem;
-          padding: 0 2.5rem;
-        }
-        .button-container {
-          padding: 0 2.5rem;
+          max-width: 381px;
         }
       }
     }
