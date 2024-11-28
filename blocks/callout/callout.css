@@ -40,19 +40,13 @@
       .button-container {
         margin: auto;
         > a {
-          display: inline-block;
           margin-top: 1.5rem;
           min-width: 15.625rem;
           padding: .875rem;
-          background: 0 0;
-          border: 2px solid #fff;
-          border-radius: .125rem;
-          font-family: MiloPro-Bold, Helvetica, sans-serif;
-          font-size: 1rem;
-          text-align: center;
-          line-height: 1.5rem;
-          letter-spacing: .03125rem;
-          color: #fff;
+          border: 2px solid var(--theme-clr-text);
+        }
+        > a:hover {
+          text-decoration: none;
         }
       }
     }
