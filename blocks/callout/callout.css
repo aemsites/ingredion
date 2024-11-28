@@ -29,7 +29,8 @@
   
       h3 {
         font-family: var(--heading-font-family);
-        font-size: var(--heading-font-size-m);
+        font-size: 22px;
+        line-height: 2.5rem;
         letter-spacing: -.03125rem;
         margin: auto;
         margin-bottom: 16px;
@@ -37,7 +38,7 @@
   
       p {
         font-family: var(--body-font-family);
-        font-size: var(--body-font-size-s);
+        font-size: 16px;
         line-height: 1.5rem;
         letter-spacing: .015625rem;
         margin: auto;
@@ -90,6 +91,18 @@
         p {
           max-width: 381px;
         }
+      }
+    }
+  }
+}
+
+@media (width < 786px) {
+  .callout {
+    > div {
+      height: auto;
+      
+      .callout-image {
+        flex: none;
       }
     }
   }
