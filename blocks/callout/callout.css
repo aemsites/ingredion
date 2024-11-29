@@ -36,13 +36,18 @@
         margin-bottom: 16px;
       }
   
-      p {
+      p, ul, li {
         font-family: var(--body-font-family);
         font-size: 1rem;
         line-height: 1.5rem;
         letter-spacing: .0156rem;
         margin: auto;
         margin-bottom: 16px;
+      }
+
+      ul {
+        padding-left: 20px;
+        list-style-type: disc;
       }
   
       .button-container {
@@ -83,7 +88,6 @@
       .callout-content {
         width: 50%;
         height: 100%;
-        padding-top: 100px;
 
         h3 {
           font-size: 32px;
@@ -91,7 +95,7 @@
           margin-top: 16px;
         }
 
-        p {
+        p, ul, li {
           max-width: 381px;
         }
       }
