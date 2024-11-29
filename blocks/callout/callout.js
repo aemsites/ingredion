@@ -22,5 +22,7 @@ export default function decorate(block) {
       [{ width: '750' }],
     );
     pic.replaceWith(optimizedPicture);
+  } else {
+    block.classList.add('text-only');
   }
 }
