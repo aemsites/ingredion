@@ -26,7 +26,6 @@
   --purple: #b41f75;
   --dark-purple: #6a0c5f;
   --dark-grey: #373738;
-  --footer-social-icons-background-color: #00549e;
   --border-color: #d8d8d8;
   --light-grey: #efefef;
 
@@ -267,6 +266,38 @@ main img {
   width: 100%;
 }
 
+.icon-linkedin {
+  background: #00549e;
+}
+
+.icon-facebook {
+  background: #273691;
+}
+
+.icon-instagram {
+  background: #b41f75;
+}
+
+.icon-youtube {
+  background: #cd201f;
+}
+
+.icon-soundcloud {
+  background: #f47b20;
+}
+
+.icon-twitter {
+  background: #6f9ad3;
+}
+
+.icon-youku {
+  background: #b3749a;
+}
+
+.icon-wechat {
+  background: #6cb33e;
+}
+
 /* sections */
 main > .section {
   margin: 40px 0;
@@ -333,20 +364,15 @@ main .section.highlight {
 
 .section.social-share p {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  flex-wrap: wrap;
+  max-width: 13rem;
+  margin: auto;
 }
 
 .section.social-share p a {
-  background: var(--footer-social-icons-background-color);
-  height: 2rem;
-  width: 2rem;
   padding: 0;
-  margin: 2rem;
+  margin: 1rem 0.625rem;
   min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border-radius: 50%;
 }
 
@@ -362,8 +388,11 @@ main .section.highlight {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
   position: relative;
+  border-radius: 50%;
+  height: 2rem;
+  width: 2rem;
+  padding: 4px;
 }
 
 .tab {

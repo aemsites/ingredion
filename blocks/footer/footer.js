@@ -1,12 +1,13 @@
 import { loadFragment } from '../fragment/fragment.js';
+import { getRegionLocale } from '../../scripts/utils.js';
 
 /**
  * loads and decorates the footer
  * @param {Element} block The footer block element
  */
 export default async function decorate(block) {
-  // load footer as fragment
-  const footerPath = new URL('footer', window.location).pathname;
+  const [region, locale] = getRegionLocale();
+  const footerPath = `/${region}/${locale}/footer/footer`;
   const fragment = await loadFragment(footerPath);
 
   // decorate footer DOM

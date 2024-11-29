@@ -50,8 +50,9 @@ footer .footer p {
 
   footer ul li:nth-child(2) ul li {
     display: flex;
-    justify-content: center;
     gap: 20px;
+    max-width: 13rem;
+    flex-wrap: wrap;
   }
 
   footer ul ul:first-of-type li a {
@@ -61,13 +62,6 @@ footer .footer p {
   }
   
   footer ul li:nth-child(2) ul li a {
-    background: var(--footer-social-icons-background-color);
-    height: 2rem;
-    width: 2rem;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     border-radius: 50%;
   }
 
@@ -80,10 +74,12 @@ footer .footer p {
   }
   
   footer ul li:nth-child(2) ul li a span {
+    height: 2rem;
+    width: 2rem;
+    padding: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
-    position: relative;
+    border-radius: 50%;
   }
 }
