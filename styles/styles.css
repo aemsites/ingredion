@@ -64,6 +64,7 @@
 .orange { --theme-clr-background: var(--purple); --theme-clr-text: #fff }
 .purple { --theme-clr-background: var(--purple); --theme-clr-text: #fff }
 .teal { --theme-clr-background: var(--teal); --theme-clr-text: #fff }
+.dark-purple { --theme-clr-background: var(--dark-purple); --theme-clr-text: #fff }
 
 /* fallback fonts */
 @font-face {
