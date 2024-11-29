@@ -31,7 +31,7 @@
         font-family: var(--heading-font-family);
         font-size: 1.5rem;
         line-height: 2.5rem;
-        letter-spacing: -.03125rem;
+        letter-spacing: -.0313rem;
         margin: auto;
         margin-bottom: 16px;
       }
@@ -40,13 +40,14 @@
         font-family: var(--body-font-family);
         font-size: 1rem;
         line-height: 1.5rem;
-        letter-spacing: .015625rem;
+        letter-spacing: .0156rem;
         margin: auto;
         margin-bottom: 16px;
       }
   
       .button-container {
         margin: auto;
+
         > a {
           margin-top: 1.5rem;
           min-width: 15.625rem;
@@ -54,6 +55,7 @@
           border: 2px solid var(--theme-clr-text);
           color: var(--theme-clr-text);
         }
+
         > a:hover {
           text-decoration: none;
           border-color: var(--light-grey);
@@ -62,14 +64,13 @@
       }
     }
   }
-
 }
 
-@media (min-width: 1080px) {
-
+@media (width >= 1080px) {
   .callout {
     max-width: 1224px;
     width: 100%;
+
     > div {
       flex-direction: row;
       height: 560px;
@@ -83,11 +84,13 @@
         width: 50%;
         height: 100%;
         padding-top: 100px;
+
         h3 {
           font-size: 32px;
           max-width: 381px;
           margin-top: 16px;
         }
+
         p {
           max-width: 381px;
         }
