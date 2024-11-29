@@ -32,8 +32,6 @@
         font-size: 1.5rem;
         line-height: 2.5rem;
         letter-spacing: -.0313rem;
-        margin: auto;
-        margin-bottom: 16px;
       }
   
       p, ul, li {
@@ -41,8 +39,6 @@
         font-size: 1rem;
         line-height: 1.5rem;
         letter-spacing: .0156rem;
-        margin: auto;
-        margin-bottom: 16px;
       }
 
       ul {
@@ -51,11 +47,9 @@
       }
   
       .button-container {
-        margin: auto;
-        flex: 1;
+        margin-top: 1.5rem;
 
         > a {
-          margin-top: 1.5rem;
           min-width: 15.625rem;
           padding: .875rem;
           border: 2px solid var(--theme-clr-text);
@@ -128,8 +122,13 @@
       }
 
       .callout-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
         width: 50%;
         height: 100%;
+        padding: 100px;
 
         h3 {
           font-size: 32px;
