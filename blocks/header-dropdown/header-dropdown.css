@@ -1,7 +1,7 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
 
 .header-dropdown-container,
-.header-dropdown-wrapper, .nav {
+.header-dropdown-wrapper {
     height: inherit;
 }
 
