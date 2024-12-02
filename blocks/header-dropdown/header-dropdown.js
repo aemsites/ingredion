@@ -2,9 +2,10 @@
 import { div, ul, li } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
-const isMobile = window.matchMedia('(width < 1080px)');
+// const isMobile = window.matchMedia('(width < 1080px)');
 
 function buildSubMenu(block) {
+  block.classList.add(`columns-${[...block.firstElementChild.children].length}`);
   const $navList = ul({ class: 'nav-list', 'data-height': '' });
   const $navItems = div({ class: 'nav-items' });
 

@@ -74,7 +74,6 @@ header {
             /* sub menu */
             .dropdown {
                 position: absolute;
-                /*left: -9999px;*/
                 z-index: 1;
                 background: #fff;
                 width: 100vw;
@@ -315,11 +314,6 @@ header {
             &:nth-child(3) > li {
                 padding-right: 0;
                 margin-right: 0;
-
-                > .dropdown {
-                    max-width: 65rem;
-                    min-width: 50rem;
-                }
             }
         }
     }

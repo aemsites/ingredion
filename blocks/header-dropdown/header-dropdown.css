@@ -1,11 +1,9 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
 
-
 .header-dropdown-container,
 .header-dropdown-wrapper, .nav {
     height: inherit;
 }
-
 
 .header-dropdown {
     display: flex;
@@ -13,7 +11,7 @@
     height: inherit;
     min-height: 300px;
 
-    /* used to determine height */
+    /* used to determine height - attr removed after load */
     [data-height] {
         position: absolute;
         left: -9999px;
@@ -53,9 +51,9 @@
     }
 }
 
-
-
 .header-dropdown.static {
+    padding: 0 40px;
+
     > div {
         display: flex;
         width: 100%;
@@ -64,13 +62,10 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            padding: 30px 20px;
+            padding: 30px 20px 60px;
         }
     }
 }
-
-
-
 
 .header-dropdown.submenu {
     ul.nav-list {
@@ -81,9 +76,13 @@
         min-height: 100%;
         border-right: 1px solid var(--border-color);
 
+        .columns-2 & {
+            min-width: 320px;
+        }
+
         li {
             position: relative;
-            padding: 12px 0 12px 30px;
+            padding: 12px 0 12px 60px;
             font-weight: bold;
             cursor: pointer;
 
@@ -118,12 +117,17 @@
             .loaded & { display: none }
             .loaded &.active  { display: flex; }
 
-
             > div {
                 flex: 0 0 50%;
                 max-width: 50%;
                 padding: 20px 40px;
                 &:first-child { border-right: 1px solid var(--border-color)}
+
+                .columns-2 & {
+                    min-width: 490px;
+                    max-width: 490px;
+                    border-right: 0;
+                }
             }
 
         }
@@ -138,13 +142,13 @@
         justify-content: center;
         align-items: center;
         height: 50px;
-        /*margin-top: -50px;*/
         background: var(--light-grey);
         color: var(--green);
 
         p { margin: 0 }
     }
 
+    /* overwrite buttons to make text links */
     .button-container {
         a {
             position: relative;
