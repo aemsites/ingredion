@@ -9,11 +9,12 @@
   > div {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     background: var(--theme-clr-background);
-    height: 682px;
+    height: auto;
 
     .callout-image {
-      flex: 1;
+      flex: none;
       height: 322px;
   
       picture, picture img {
