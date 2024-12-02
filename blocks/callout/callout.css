@@ -45,22 +45,16 @@
         padding-left: 20px;
         list-style-type: disc;
       }
+    }
   
-      .button-container {
-        margin-top: 1.5rem;
+    .button-container {
+      margin-top: 1.5rem;
 
-        > a {
-          min-width: 15.625rem;
-          padding: .875rem;
-          border: 2px solid var(--theme-clr-text);
-          color: var(--theme-clr-text);
-        }
-
-        > a:hover {
-          text-decoration: none;
-          border-color: var(--light-grey);
-          color: var(--light-grey);
-        }
+      a {
+        min-width: 15.625rem;
+        padding: .875rem;
+        border: 2px solid var(--theme-clr-text);
+        color: var(--theme-clr-text);
       }
     }
   }
@@ -97,13 +91,15 @@
         border: 2px solid var(--theme-clr-text);
         color: var(--theme-clr-text);
       }
-
-      a:hover {
-        text-decoration: none;
-        border-color: var(--light-grey);
-        color: var(--light-grey);
-      }
     }
+  }
+}
+
+.callout .button-container {
+  a:hover {
+    text-decoration: none;
+    border-color: var(--light-grey);
+    color: var(--light-grey);
   }
 }
 
