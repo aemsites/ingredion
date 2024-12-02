@@ -53,10 +53,27 @@ function buildSubMenu(block) {
   block.innerHTML = '';
   block.append($navList, $navItems);
 }
+
+function buldStaticDropdown(block) {
+  block.classList.add('static');
+
+  [...block.children].forEach((row) => {
+    [...row.children].forEach((col) => {
+      col.setAttribute('data-height', '');
+      const img = col.querySelector('img');
+      if (img) {
+        const newImg = createOptimizedPicture(img.src, img.alt || 'image', false, [{ width: '400' }]);
+        img.replaceWith(newImg);
+      }
+    });
+  });
+}
+
 export default function decorate(block) {
   // set height
   // const heightClass = [...block.classList].find((c) => c.startsWith('height-'));
   // if (heightClass) block.style.height = heightClass.slice(7);
 
   if (block.classList.contains('submenu')) buildSubMenu(block);
+  else buldStaticDropdown(block);
 }

@@ -9,7 +9,6 @@ const VALID_LOCALES = ['en-us', 'es-mx', 'pt-br', 'es-co', 'es-ar', 'en-uk', 'en
  */
 export function getRegionLocale() {
   const segments = window.location.pathname
-    .replace(/\.html$/, '')
     .split('/')
     .filter((segment) => segment);
   // fallback values 'na' and 'en-us'

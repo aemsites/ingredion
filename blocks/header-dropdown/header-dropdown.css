@@ -2,17 +2,16 @@
 
 
 .header-dropdown-container,
-.header-dropdown-wrapper {
+.header-dropdown-wrapper, .nav {
     height: inherit;
 }
+
 
 .header-dropdown {
     display: flex;
     width: 100%;
     height: inherit;
     min-height: 300px;
-    /*overflow: hidden;*/
-
 
     /* used to determine height */
     [data-height] {
@@ -21,7 +20,59 @@
         visibility: hidden;
     }
 
+    ul {
+        list-style: none;
+        margin: 0;
 
+        li {
+            line-height: 2.1rem;
+            font-size: .95rem;
+
+            a {
+                display: block;
+                color: var(--text-color);
+                text-decoration: none;
+                &:hover { color: var(--green) }
+            }
+        }
+    }
+
+    picture {
+        display: block;
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+        margin-bottom: 30px;
+
+        img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+}
+
+
+
+.header-dropdown.static {
+    > div {
+        display: flex;
+        width: 100%;
+
+        > div {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding: 30px 20px;
+        }
+    }
+}
+
+
+
+
+.header-dropdown.submenu {
     ul.nav-list {
         flex-basis: 33.33%;
         list-style: none;
@@ -64,8 +115,8 @@
         .item {
             display: flex;
             width: 100%;
-            .set & { display: none }
-            .set &.active  { display: flex; }
+            .loaded & { display: none }
+            .loaded &.active  { display: flex; }
 
 
             > div {
@@ -75,39 +126,6 @@
                 &:first-child { border-right: 1px solid var(--border-color)}
             }
 
-            ul {
-                list-style: none;
-                margin: 0;
-
-                li {
-                    line-height: 2.1rem;
-                    font-size: .95rem;
-
-                    a {
-                        display: block;
-                        color: var(--text-color);
-                        text-decoration: none;
-                        &:hover { color: var(--green) }
-                    }
-                }
-
-
-            }
-
-            picture {
-                display: block;
-                width: 100%;
-                height: 200px;
-                overflow: hidden;
-                margin-bottom: 30px;
-
-                img {
-                    display: block;
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-            }
         }
     }
 }
@@ -120,7 +138,7 @@
         justify-content: center;
         align-items: center;
         height: 50px;
-        margin-top: -50px;
+        /*margin-top: -50px;*/
         background: var(--light-grey);
         color: var(--green);
 
@@ -133,6 +151,8 @@
             text-align: left;
             text-transform: uppercase;
             color: var(--green);
+            background: transparent;
+            padding: 0;
 
             /* arrow */
             &::after {

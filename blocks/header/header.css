@@ -74,18 +74,22 @@ header {
             /* sub menu */
             .dropdown {
                 position: absolute;
+                /*left: -9999px;*/
                 z-index: 1;
                 background: #fff;
-                height: 412px;
                 width: 100vw;
                 top: 32px;
                 left: 0;
                 right: 0;
-                display: none;
                 color: var(--text-color);
-                box-shadow: 0 0 20px 0 rgba(0 0 0 / 10%);
 
-                .active & { display: block }
+                .loaded & {
+                    display: none;
+                }
+
+                .loaded .active & {
+                    display: block;
+                }
             }
         }
 
@@ -190,7 +194,7 @@ header {
             }
 
             /* only show on mobile */
-            button.button-search { display: none }
+            .button-search { display: none }
         }
     }
 
@@ -287,17 +291,16 @@ header {
                     right: 40px;
                     z-index: 1;
                     background: #fff;
-
-
-                    /*display: none;*/
-
                     color: var(--text-color);
                     font-weight: normal;
                     max-width: 85rem;
-                    /*overflow: hidden;*/
-                    box-shadow: inset 0 0 20px 0 rgba(0 0 0 / 10%);
-                    .active & {
-                        /*display: block;*/
+                    box-shadow: inset 0 10px 10px -10px rgba(0 0 0 / 10%),
+                    0 10px 10px rgba(0 0 0 / 10%);
+
+                    .loaded & { display: none }
+
+                    .loaded .active & {
+                        display: block;
                         left: 40px;
                     }
                 }
@@ -306,7 +309,7 @@ header {
             /* right UL styles */
             &:nth-child(2) > li, &:nth-child(3) > li {
                 font-weight: normal;
-                > .dropdown { left: auto }
+                .loaded & > .dropdown { left: auto }
             }
 
             &:nth-child(3) > li {
@@ -326,6 +329,7 @@ header {
         .menu-open & {
             position: fixed;
             top: 0;
+            z-index: 1;
             height: 100%;
             overflow-y: auto;
             background: var(--light-grey);
@@ -362,7 +366,6 @@ header {
                 &::before {
                     content: "\e932";
                     color: var(--green);
-
                 }
                 .menu-open &::before { content: '\e91c' }
             }

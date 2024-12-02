@@ -15,6 +15,7 @@ async function buildDropDowns($header) {
 
   async function attachDropdown(link) {
     const subNavPath = link.getAttribute('href');
+    // remove to prevent click action and from being shown in the browser
     link.removeAttribute('href');
     link.setAttribute('data-dropdown', 'true');
 
@@ -57,7 +58,7 @@ async function buildDropDowns($header) {
 
   await Promise.all(dropdownPromise)
     .then(() => {
-      // get height of child elements and set max height on dropdown
+      // get height of child elements with data-height attr and set max height on dropdown
       $header.querySelectorAll('.dropdown').forEach((dropdown) => {
         // get all data-height items and calculate max height
         const heights = Array.from(dropdown.querySelectorAll('[data-height]'))
@@ -66,18 +67,15 @@ async function buildDropDowns($header) {
             el.removeAttribute('data-height');
             return height;
           });
-
         // set max height
         let maxHeight = Math.max(0, ...heights);
-
-        // add height of default-content-wrapper if it exists
-        const defaultContentWrapper = dropdown.querySelector('.default-content-wrapper');
-        if (defaultContentWrapper) maxHeight += defaultContentWrapper.clientHeight;
-
+        // if row exists add height to max height
+        const $row = dropdown.querySelector('.section.row');
+        if ($row) maxHeight += $row.clientHeight;
         // set max height on dropdown
         dropdown.style.height = `${maxHeight}px`;
-        dropdown.classList.add('set');
       });
+      $header.classList.add('loaded');
     })
     .catch((error) => {
       // eslint-disable-next-line no-console
@@ -107,7 +105,7 @@ export default async function decorate(block) {
     document.body.classList.toggle('menu-open');
   });
 
-  const $logo = a({ class: 'logo', href: `/${region}/${locale}.html`, 'aria-label': 'Home' },
+  const $logo = a({ class: 'logo', href: `/${region}/${locale}/`, 'aria-label': 'Home' },
     img({ src: '/icons/ingredion.svg', width: 120, alt: 'Ingredion logo' }),
   );
 
