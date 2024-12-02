@@ -5,7 +5,6 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 // const isMobile = window.matchMedia('(width < 1080px)');
 
 function buildSubMenu(block) {
-  block.classList.add(`columns-${[...block.firstElementChild.children].length}`);
   const $navList = ul({ class: 'nav-list', 'data-height': '' });
   const $navItems = div({ class: 'nav-items' });
 
@@ -71,9 +70,7 @@ function buldStaticDropdown(block) {
 }
 
 export default function decorate(block) {
-  // set height
-  // const heightClass = [...block.classList].find((c) => c.startsWith('height-'));
-  // if (heightClass) block.style.height = heightClass.slice(7);
+  block.classList.add(`columns-${[...block.firstElementChild.children].length}`);
 
   if (block.classList.contains('submenu')) buildSubMenu(block);
   else buldStaticDropdown(block);

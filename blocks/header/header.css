@@ -71,7 +71,7 @@ header {
                 -webkit-font-smoothing: antialiased;
             }
 
-            /* sub menu */
+            /* region dropdown menu */
             .dropdown {
                 position: absolute;
                 z-index: 1;
@@ -81,6 +81,7 @@ header {
                 left: 0;
                 right: 0;
                 color: var(--text-color);
+                box-shadow: 0 10px 10px rgba(0 0 0 / 10%);
 
                 .loaded & {
                     display: none;
@@ -88,6 +89,30 @@ header {
 
                 .loaded .active & {
                     display: block;
+                }
+
+                .row .default-content-wrapper {
+                    background: #fff;
+                    align-items: start;
+                    justify-content: left;
+                    padding: 30px 0 80px calc(16vw + 20px);
+
+                    h4 {
+                        text-align: left !important;
+                        color: var(--text-color);
+                        font-size: 1.5rem;
+                    }
+                }
+
+                .header-dropdown.static.columns-4 {
+                    padding: 0 16vw;
+                    white-space: nowrap;
+
+                    > div {
+                        > div {
+                            padding: 0 0 60px 20px;
+                        }
+                    }
                 }
             }
         }

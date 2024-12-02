@@ -21,6 +21,7 @@ async function buildDropDowns($header) {
 
     // Load fragment and append dropdown content
     const subNavFrag = await loadFragment(subNavPath);
+    if (!subNavFrag) { link.remove(); return; }
     const $dropDown = div({ class: 'dropdown' });
     while (subNavFrag.firstElementChild) $dropDown.append(subNavFrag.firstElementChild);
     link.parentElement.append($dropDown);

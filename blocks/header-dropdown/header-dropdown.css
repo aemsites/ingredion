@@ -57,6 +57,9 @@
     > div {
         display: flex;
         width: 100%;
+        height: inherit;
+
+
 
         > div {
             display: flex;
@@ -134,7 +137,7 @@
     }
 }
 
-.dropdown {
+.row {
     /* bottom gray bar links */
     .default-content-wrapper {
         position: relative;
