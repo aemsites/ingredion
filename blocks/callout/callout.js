@@ -8,7 +8,9 @@ export default function decorate(block) {
   const textWrapper = title.closest('div');
   textWrapper.classList.add('callout-content');
 
-  link.classList.add('transparent');
+  if (!block.classList.contains('transparent')) {
+    link.classList.add('transparent');
+  }
 
   if (pic) {
     const picWrapper = pic.closest('div');
