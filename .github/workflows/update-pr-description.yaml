@@ -1,4 +1,5 @@
 # automatically update <branch> in PR description with the branch name
+
 name: Update PR Description
 
 on:
