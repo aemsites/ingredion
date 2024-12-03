@@ -3,25 +3,30 @@ import { loadFragment } from '../fragment/fragment.js';
 import { div, nav, span, img, form, input, button, a } from '../../scripts/dom-helpers.js';
 import { getRegionLocale, throttle } from '../../scripts/utils.js';
 
-const isMobile = window.matchMedia('(width < 1200px)');
+const isMobile = window.matchMedia('(width < 1080px)');
 
 async function buildDropDowns($header) {
   const links = [...$header.querySelectorAll('a[href*="/dropdowns"]')];
   let activeDropdown = null;
 
-  // load dropdown fragments in parallel
-  const linkPromises = links.map(async (link) => {
+  function getEventType(link) {
+    return link.closest('.utility') || isMobile.matches ? 'click' : 'pointerenter';
+  }
+
+  async function attachDropdown(link) {
     const subNavPath = link.getAttribute('href');
-    // remove href to prevent clicks and hide from status bar
+    // remove to prevent click action and from being shown in the browser
     link.removeAttribute('href');
     link.setAttribute('data-dropdown', 'true');
+
+    // Load fragment and append dropdown content
     const subNavFrag = await loadFragment(subNavPath);
+    if (!subNavFrag) { link.remove(); return; }
     const $dropDown = div({ class: 'dropdown' });
     while (subNavFrag.firstElementChild) $dropDown.append(subNavFrag.firstElementChild);
     link.parentElement.append($dropDown);
 
-    // click in utility nav, hover in category nav
-    const eventType = link.closest('.utility') ? 'click' : 'pointerenter';
+    let eventType = getEventType(link);
 
     const openDropdown = throttle(() => {
       if (activeDropdown && activeDropdown !== $dropDown) {
@@ -32,9 +37,19 @@ async function buildDropDowns($header) {
     }, 100);
 
     link.addEventListener(eventType, openDropdown);
-  });
 
-  // close dropdown if clicked outside of it
+    // update event on viewport change
+    isMobile.addEventListener('change', () => {
+      link.removeEventListener(eventType, openDropdown);
+      eventType = getEventType(link);
+      link.addEventListener(eventType, openDropdown);
+    });
+  }
+
+  // load dropdowns attach event listeners in parallel
+  const dropdownPromise = links.map(attachDropdown);
+
+  // close dropdown if clicked outside
   document.addEventListener('click', (event) => {
     if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('a[data-dropdown]')) {
       activeDropdown.parentElement.classList.remove('active');
@@ -42,7 +57,31 @@ async function buildDropDowns($header) {
     }
   }, true);
 
-  await Promise.all(linkPromises);
+  await Promise.all(dropdownPromise)
+    .then(() => {
+      // get height of child elements with data-height attr and set max height on dropdown
+      $header.querySelectorAll('.dropdown').forEach((dropdown) => {
+        // get all data-height items and calculate max height
+        const heights = Array.from(dropdown.querySelectorAll('[data-height]'))
+          .map((el) => {
+            const height = el.clientHeight;
+            el.removeAttribute('data-height');
+            return height;
+          });
+        // set max height
+        let maxHeight = Math.max(0, ...heights);
+        // if row exists add height to max height
+        const $row = dropdown.querySelector('.section.row');
+        if ($row) maxHeight += $row.clientHeight;
+        // set max height on dropdown
+        dropdown.style.height = `${maxHeight}px`;
+      });
+      $header.classList.add('loaded');
+    })
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error('Error:', error);
+    });
 }
 
 export default async function decorate(block) {
@@ -67,7 +106,7 @@ export default async function decorate(block) {
     document.body.classList.toggle('menu-open');
   });
 
-  const $logo = a({ class: 'logo', href: `/${region}/${locale}.html`, 'aria-label': 'Home' },
+  const $logo = a({ class: 'logo', href: `/${region}/${locale}/`, 'aria-label': 'Home' },
     img({ src: '/icons/ingredion.svg', width: 120, alt: 'Ingredion logo' }),
   );
 
