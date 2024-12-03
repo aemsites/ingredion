@@ -13,6 +13,17 @@ header {
     background: #fff;
     box-shadow: 0 0 20px 0 rgba(0 0 0 / 10%);
 
+    /* em used as sup for TM */
+    a, p {
+        em:where(:only-child:last-child) {
+            font-size: .6em;
+            vertical-align: super;
+            line-height: 1;
+            font-style: normal;
+            margin-top: -6px;
+        }
+    }
+
     button.icon-cart {
         position: absolute;
         top: 6px;
@@ -286,15 +297,6 @@ header {
                     cursor: default;
                     transition: all 100ms;
                     .active & { color: var(--green) }
-
-                    /* em used as sup */
-                    > em {
-                        font-size: .6em;
-                        vertical-align: super;
-                        line-height: 1;
-                        font-style: normal;
-                        margin-top: -6px;
-                    }
 
                     /* arrow */
                     &::after {
