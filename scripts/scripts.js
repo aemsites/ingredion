@@ -58,6 +58,20 @@ function buildAutoBlocks(main) {
 */
 
 /**
+ * Decorate links
+ * @param {Element} main The container element
+ */
+function decorateLinks(main) {
+  main.querySelectorAll('a').forEach((link) => {
+    // add aria-label to links with icons for SEO
+    if (link.querySelector('span.icon')) {
+      const iconName = link.querySelector('img').getAttribute('data-icon-name');
+      link.setAttribute('aria-label', iconName);
+    }
+  });
+}
+
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
@@ -69,6 +83,7 @@ export function decorateMain(main) {
   // buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  decorateLinks(main);
 }
 
 /**
