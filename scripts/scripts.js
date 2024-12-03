@@ -63,7 +63,7 @@ function buildAutoBlocks(main) {
  */
 function decorateLinks(main) {
   main.querySelectorAll('a').forEach((link) => {
-    // add aria-label to links with icons for SEO
+    // add aria-label to links with icons for Accessibility
     if (link.querySelector('span.icon')) {
       const iconName = link.querySelector('img').getAttribute('data-icon-name');
       link.setAttribute('aria-label', iconName);

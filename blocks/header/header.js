@@ -113,7 +113,7 @@ export default async function decorate(block) {
   const $searchBar = div({ class: 'search-bar' },
     form({ class: 'search', id: 'searchForm' },
       div({ class: 'search-box' },
-        div({ class: 'category-dropdown' }, 'All'),
+        div({ class: 'category-select' }, 'All'),
         input({ id: 'search', 'aria-label': 'Search Input' }),
         button({ type: 'submit', class: 'icon-search', 'aria-label': 'Search Button' }),
       ),

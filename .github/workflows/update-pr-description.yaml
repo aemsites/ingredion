@@ -1,0 +1,28 @@
+# automatically update <branch> in PR description with the branch name
+
+name: Update PR Description
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  update-description:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update PR description
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const branchName = context.payload.pull_request.head.ref;
+            const prBody = context.payload.pull_request.body;
+            const updatedBody = prBody.replace('<branch>', branchName);
+
+            if (prBody !== updatedBody) {
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                body: updatedBody,
+              });
+            }

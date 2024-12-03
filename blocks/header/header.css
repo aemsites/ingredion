@@ -169,7 +169,7 @@ header {
                     box-shadow: 2px 8px 20px 0 rgba(0 0 0 / 10%);
                 }
 
-                .category-dropdown {
+                .category-select {
                     position: relative;
                     border-radius: 2px;
                     border-right: 1px solid var(--border-color);
@@ -316,6 +316,7 @@ header {
                     left: -9999px;
                     right: 40px;
                     z-index: 1;
+                    margin-top: -1px;
                     background: #fff;
                     color: var(--text-color);
                     font-weight: normal;
