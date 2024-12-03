@@ -8,7 +8,11 @@ export default function decorate(block) {
       img.src,
       img.alt,
       false,
-      [{ width: '750' }],
+      [
+        { media: '(min-width: 1080px)', width: '2000' },
+        { media: '(min-width: 768px)', width: '750' },
+        { width: '300' },
+      ],
     );
     pic.replaceWith(optimizedPicture);
   }
