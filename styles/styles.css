@@ -96,10 +96,10 @@
   }
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*  {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
@@ -160,8 +160,13 @@ ol,
 ul,
 pre,
 blockquote {
-  margin-top: 0.8em;
-  margin-bottom: 0.25em;
+  margin: 0.8em 0 .25em;
+}
+
+ol,
+ul {
+  margin-left: 1em;
+  li { margin-left: 1em; }
 }
 
 code,
@@ -190,7 +195,7 @@ button {
 
 /* links */
 a:any-link {
-  color: var(--link-color);
+  color: var(--green);
   text-decoration: none;
   word-break: break-word;
 }

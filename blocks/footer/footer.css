@@ -3,96 +3,17 @@
 footer {
   font-size: var(--body-font-size-xs);
   border-top: 1px solid var(--border-color);
-}
 
-footer .footer > div {
-  margin: auto;
-  max-width: 1200px;
-  padding: 0 24px 24px;
-}
+  .footer > div {
+    margin: auto;
+    max-width: 1200px;
+    padding: 0 24px 24px;
 
-footer .footer p {
-  margin: 0;
-}
-
-@media (width >= 1080px) {
-  footer .footer > div {
-    padding: 0 32px 24px;
+    @media (width >= 1080px) {
+      padding: 0 32px 24px;
+    }
   }
 
-  footer ul:first-of-type {
-    display: flex;
-    justify-content: left;
-    padding: 5rem 0;
-    gap: 5rem;
-  }
-
-  footer ul:first-of-type li {
-    list-style: none;
-    font-weight: bold;
-    font-size: 1rem;
-  }
-
-  footer ul ul:first-of-type {
-    padding: 10px 0;
-    display: flex;
-    gap: 10px;
-    flex-direction: column;
-  }
-
-  footer ul li:nth-child(2) ul:first-of-type {
-    flex-direction: row;
-  }
-
-  footer ul ul:first-of-type li {
-    list-style: none;
-    font-weight: normal;
-  }
-
-  footer ul li:nth-child(2) ul li {
-    display: flex;
-    gap: 20px;
-    max-width: 13rem;
-    flex-wrap: wrap;
-  }
-
-  footer ul ul:first-of-type li a {
-    text-decoration: none;
-    letter-spacing: .0156rem;
-    line-height: 2rem;
-  }
-
-  footer ul li:nth-child(2) ul li a {
-    border-radius: 50%;
-  }
-
-  footer ul ul:first-of-type li a:hover {
-    color: var(--green);
-  }
-
-  footer ul li:nth-child(2) ul li a:hover {
-    box-shadow: 0 5px 10px 0 rgba(0 0 0 / 20%);
-  }
-
-  /*
-    lets use descriptive selectors when we can - instead of nth-child which can be brittle
-    footer ul li:nth-child(2) ul li a span {
-  */
-  footer ul .icon-linkedin {
-    height: 2rem;
-    width: 2rem;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-  }
-}
-
-/*
-  these styles were moved from styles.css & converted to nesting
-*/
-footer {
   .footer-utility {
     border-top: 1px solid var(--border-color);
 
@@ -149,6 +70,78 @@ footer {
         width: 2rem;
         padding: 4px;
       }
+    }
+  }
+
+  @media (width >= 1080px) {
+    ul:first-of-type {
+      display: flex;
+      justify-content: left;
+      padding: 5rem 0;
+      gap: 5rem;
+    }
+
+    ul:first-of-type li {
+      list-style: none;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    ul ul:first-of-type {
+      padding: 10px 0;
+      display: flex;
+      gap: 10px;
+      flex-direction: column;
+    }
+
+    ul li:nth-child(2) ul:first-of-type {
+      flex-direction: row;
+    }
+
+    ul ul:first-of-type li {
+      list-style: none;
+      font-weight: normal;
+    }
+
+    ul li:nth-child(2) ul li {
+      display: flex;
+      gap: 20px;
+      max-width: 13rem;
+      flex-wrap: wrap;
+    }
+
+    ul ul:first-of-type li a {
+      color: var(--text-color);
+      text-decoration: none;
+      letter-spacing: .0156rem;
+      line-height: 2rem;
+    }
+
+    ul li:nth-child(2) ul li a {
+      border-radius: 50%;
+    }
+
+    ul ul:first-of-type li a:hover {
+      color: var(--green);
+    }
+
+    ul li:nth-child(2) ul li a:hover {
+      box-shadow: 0 5px 10px 0 rgba(0 0 0 / 20%);
+    }
+
+    /*
+      lets use descriptive selectors when we can
+      - nth-child is not descriptive and can be brittle
+      footer ul li:nth-child(2) ul li a span {
+    */
+    ul .icon-linkedin {
+      height: 2rem;
+      width: 2rem;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
     }
   }
 }

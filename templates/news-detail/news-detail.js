@@ -56,6 +56,13 @@ export default function decorate(doc) {
     div({ class: 'line-break' }),
   );
 
+  // center align ### paragraphs
+  $content.querySelectorAll('p').forEach((p) => {
+    if (p.textContent.trim() === '###') {
+      p.classList.add('centered');
+    }
+  });
+
   $main.prepend($hero);
   $content.prepend($header);
 }

@@ -65,6 +65,13 @@
         box-shadow: 4px 20px 40px 4px rgba(0 0 0 / 10%);
         padding: 1.4rem 6.5625rem 12.5rem;
 
+        p.centered { text-align: center }
+
+        /*ul, li {*/
+        /*  margin: initial !important;*/
+        /*  padding: initial !important;*/
+        /*}*/
+
         .header {
           margin-bottom: 40px;
 
