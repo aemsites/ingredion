@@ -125,12 +125,10 @@ header {
   helix-sidekick ~ & { top: 49px }
 }
 
-header .header,
 footer .footer {
   visibility: hidden;
 }
 
-header .header[data-block-status="loaded"],
 footer .footer[data-block-status="loaded"] {
   visibility: visible;
 }
@@ -251,6 +249,7 @@ a.button, .button {
 }
 
 main img {
+  display: block;
   max-width: 100%;
   width: auto;
   height: auto;
@@ -332,6 +331,7 @@ main .section.highlight {
   text-align: center;
 }
 
+/* these are footer specific - moved to footer.css
 .section.footer-utility {
   border-top: 1px solid var(--border-color);
 }
@@ -395,6 +395,7 @@ main .section.highlight {
   width: 2rem;
   padding: 4px;
 }
+*/
 
 .tab {
   display: none;

@@ -1,5 +1,6 @@
+/* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
+
 footer {
-  background-color: var(--light-color);
   font-size: var(--body-font-size-xs);
   border-top: 1px solid var(--border-color);
 }
@@ -60,7 +61,7 @@ footer .footer p {
     letter-spacing: .0156rem;
     line-height: 2rem;
   }
-  
+
   footer ul li:nth-child(2) ul li a {
     border-radius: 50%;
   }
@@ -68,12 +69,14 @@ footer .footer p {
   footer ul ul:first-of-type li a:hover {
     color: var(--green);
   }
-  
+
   footer ul li:nth-child(2) ul li a:hover {
     box-shadow: 0 5px 10px 0 rgba(0 0 0 / 20%);
   }
-  
-  footer ul li:nth-child(2) ul li a span {
+
+  /* lets use descriptive selectors when we can - instead of nth-child which can be brittle
+  footer ul li:nth-child(2) ul li a span { */
+  footer ul .icon-linkedin {
     height: 2rem;
     width: 2rem;
     padding: 4px;
@@ -81,5 +84,67 @@ footer .footer p {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+  }
+}
+
+/* moved from styles.css */
+.section {
+  &.footer-utility {
+    border-top: 1px solid var(--border-color);
+
+    ul {
+      display: flex;
+      padding: .625rem .9375rem .625rem 0;
+
+      li {
+        list-style: none;
+        line-height: 1.75rem;
+        margin: 0 .9375rem 0 0;
+        display: inline-block;
+        font-size: .625rem;
+        font-family: var(--body-bold-font-family);
+        letter-spacing: .0156rem;
+        color: var(--text-color);
+        padding: .3125rem 0;
+
+        @media (width >= 768px) {
+          font-size: .75rem;
+        }
+
+        a {
+          word-break: auto-phrase;
+          &:hover { text-decoration: none }
+        }
+      }
+    }
+  }
+
+  &.social-share {
+    p {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 13rem;
+      margin: auto;
+
+      a {
+        padding: 0;
+        margin: 1rem 0.625rem;
+        min-width: 0;
+        border-radius: 50%;
+        &:hover { box-shadow: 0 5px 10px 0 rgba(0 0 0 / 20%) }
+      }
+
+      /* icon on mobile */
+      span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border-radius: 50%;
+        height: 2rem;
+        width: 2rem;
+        padding: 4px;
+      }
+    }
   }
 }
