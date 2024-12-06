@@ -1,0 +1,120 @@
+
+.breadcrumbs {
+  ul {
+    list-style: none;
+
+    li {
+      display: inline;
+      position: relative;
+      font-family: OpenSans, Helvetica, sans-serif;
+      font-size: .75rem;
+      color: #373738;
+      letter-spacing: .016rem;
+      line-height: 1.5rem;
+
+      a {
+        text-decoration: none;
+        color: #373738;
+        letter-spacing: .02rem;
+        &:hover { color: var(--green) }
+
+        &::after {
+          content: '\e904';
+          font-family: ingredion-icon;
+          color: #4d4f53;
+          -webkit-font-smoothing: antialiased;
+        }
+      }
+    }
+  }
+}
+
+.news-detail {
+  main {
+    position: relative;
+    padding-top: 12.5rem;
+
+    .hero {
+      position: absolute;
+      top: 0;
+      height: 33.75rem;
+      width: 100%;
+      margin: 0;
+      z-index: -1;
+
+      picture {
+        object-fit: cover;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+
+    .section {
+      margin: 0;
+
+      .default-content-wrapper {
+        max-width: 76.4375rem;
+        width: calc(100% - 80px);
+        margin: 0 auto;
+        border-radius: 4px;
+        background: #fff;
+        box-shadow: 4px 20px 40px 4px rgba(0 0 0 / 10%);
+        padding: 1.4rem 6.5625rem 12.5rem;
+
+        .header {
+          margin-bottom: 40px;
+
+          h2 {
+            margin: 56px 0 20px;
+          }
+
+          .category-tags {
+            font-size: .75rem;
+            line-height: 1.2;
+            font-family: OpenSans-Bold, Helvetica, sans-serif;
+            letter-spacing: .015625rem;
+            color: #373738;
+          }
+
+          .description {
+            font-size: 1.375rem;
+            color: #373738;
+            line-height: 2rem;
+            margin-top: 1rem;
+          }
+
+          .social-share {
+            margin: 80px 0;
+
+            .icon-linkedin {
+              height: 2rem;
+              width: 2rem;
+              padding: 4px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 50%;
+
+              img {
+                width: 20px;
+                height: 20px;
+              }
+            }
+
+          }
+
+          .line-break {
+            box-sizing: border-box;
+            height: 3px;
+            width: 104px;
+            background: #6cb33e;
+          }
+        }
+      }
+    }
+  }
+}
