@@ -77,7 +77,14 @@ function createSlide(row, slideIndex, carouselId) {
   slide.classList.add('carousel-slide');
 
   row.querySelectorAll(':scope > div').forEach((column, colIdx) => {
-    column.classList.add(`carousel-slide-${colIdx === 0 ? 'image' : 'content'}`);
+    console.log(column);
+    if (column.querySelector('picture')) {
+      column.className = 'slide-image';
+      const imageAnchor = document.createElement('a');
+      const picture = column.querySelector('picture');
+      imageAnchor.append(picture);
+      column.append(imageAnchor);
+    } else column.className = 'slide-body';
     slide.append(column);
   });
 
