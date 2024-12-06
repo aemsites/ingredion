@@ -61,7 +61,7 @@
     scroll-snap-align: start;
     display: flex;
     flex-direction: column;
-    box-shadow: 4px 20px 40px 0 rgba(0, 0, 0, .1)
+    box-shadow: 4px 20px 40px 0 #000
   }
   
   .carousel .carousel-slide-indicators {
