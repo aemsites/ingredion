@@ -10,10 +10,11 @@ export default function decorate(doc) {
   );
   // const $content = Array.from(main.querySelectorAll('.default-content-wrapper *'));
   const $content = $main.querySelector('.default-content-wrapper');
-  const $h2 = getMetadata('teaser-title');
-  const $description = getMetadata('teaser-description');
-  const $publishedDate = getMetadata('published-date');
-  const $categories = getMetadata('categories');
+  const teaserTitle = getMetadata('teaser-title');
+  const teaserDescription = getMetadata('teaser-description');
+  const type = getMetadata('type');
+  const publishedDate = getMetadata('published-date');
+  const categories = getMetadata('categories');
 
   const $breadcrumbs = nav({ class: 'breadcrumbs' });
   // todo: update breadcrumbs - static HTML for now
@@ -36,13 +37,14 @@ export default function decorate(doc) {
 
   const $header = div({ class: 'header' },
     $breadcrumbs,
-    h2($h2),
+    div({ class: 'type' }, type),
+    h2(teaserTitle),
     div({ class: 'category-tags' },
-      $publishedDate,
+      publishedDate,
       ' | ',
-      $categories,
+      categories,
     ),
-    div({ class: 'description' }, $description),
+    div({ class: 'description' }, teaserDescription),
     div({ class: 'social-share' },
       a({
         class: 'icon-linkedin',

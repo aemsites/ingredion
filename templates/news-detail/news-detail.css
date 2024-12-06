@@ -68,8 +68,16 @@
         .header {
           margin-bottom: 40px;
 
+          .type {
+            margin-top: 56px;
+            color: #c5aa2e;
+            font-family: MiloPro-Bold, Helvetica, sans-serif;
+            font-size: 1.25rem;
+            line-height: 1.2;
+          }
+
           h2 {
-            margin: 56px 0 20px;
+            margin: 14px 0 20px;
           }
 
           .category-tags {
