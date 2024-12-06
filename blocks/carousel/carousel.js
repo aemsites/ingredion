@@ -76,8 +76,7 @@ function createSlide(row, slideIndex, carouselId) {
   slide.setAttribute('id', `carousel-${carouselId}-slide-${slideIndex}`);
   slide.classList.add('carousel-slide');
 
-  row.querySelectorAll(':scope > div').forEach((column, colIdx) => {
-    console.log(column);
+  row.querySelectorAll(':scope > div').forEach((column) => {
     if (column.querySelector('picture')) {
       column.className = 'slide-image';
       const imageAnchor = document.createElement('a');
