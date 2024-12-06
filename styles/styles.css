@@ -182,10 +182,6 @@ pre {
   white-space: pre;
 }
 
-main > div {
-  margin: 40px 16px;
-}
-
 input,
 textarea,
 select,
@@ -253,193 +249,79 @@ a.button, .button {
   color: var(--light-grey);
 }
 
-main img {
-  display: block;
-  max-width: 100%;
-  width: auto;
-  height: auto;
+main {
+  img {
+    display: block;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+  }
+
+  > div {
+    margin: 40px 16px;
+  }
+
+  /* sections */
+  > .section {
+    margin: 40px 0;
+    &:first-of-type { margin-top: 0 }
+
+    > div {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 24px;
+
+      @media (width >= 900px) {
+        padding: 0 32px;
+      }
+    }
+
+
+  }
 }
 
 .icon {
   display: inline-block;
-  height: 24px;
-  width: 24px;
-}
 
-.icon img {
-  height: 100%;
-  width: 100%;
-}
-
-.icon-linkedin {
-  background: #00549e;
-}
-
-.icon-facebook {
-  background: #273691;
-}
-
-.icon-instagram {
-  background: #b41f75;
-}
-
-.icon-youtube {
-  background: #cd201f;
-}
-
-.icon-soundcloud {
-  background: #f47b20;
-}
-
-.icon-twitter {
-  background: #6f9ad3;
-}
-
-.icon-youku {
-  background: #b3749a;
-}
-
-.icon-wechat {
-  background: #6cb33e;
-}
-
-/* sections */
-main > .section {
-  margin: 40px 0;
-}
-
-main > .section > div {
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 24px;
-}
-
-main > .section:first-of-type {
-  margin-top: 0;
-}
-
-@media (width >= 900px) {
-  main > .section > div {
-    padding: 0 32px;
+  img {
+    height: 100%;
+    width: 100%;
   }
+
+  &.icon-linkedin,
+  &.icon-facebook,
+  &.icon-instagram,
+  &.icon-youtube,
+  &.icon-soundcloud,
+  &.icon-twitter,
+  &.icon-youku,
+  &.icon-wechat {
+    height: 2rem;
+    width: 2rem;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  &.icon-linkedin { background: #00549e }
+  &.icon-facebook { background: #273691 }
+  &.icon-instagram { background: #b41f75 }
+  &.icon-youtube { background: #cd201f }
+  &.icon-soundcloud { background: #f47b20 }
+  &.icon-twitter { background: #6f9ad3 }
+  &.icon-youku { background: #b3749a }
+  &.icon-wechat { background: #6cb33e }
 }
 
-/* section metadata */
-main .section.light,
-main .section.highlight {
-  background-color: var(--light-color);
-  margin: 0;
-  padding: 40px 0;
-}
+
+
+
 
 .section.center {
   text-align: center;
 }
 
-/* these are footer specific - moved to footer.css
-.section.footer-utility {
-  border-top: 1px solid var(--border-color);
-}
 
-.section.footer-utility ul {
-  display: flex;
-  padding: .625rem .9375rem .625rem 0;
-}
 
-.section.footer-utility li {
-  list-style: none;
-  line-height: 1.75rem;
-  margin: 0 .9375rem 0 0;
-  display: inline-block;
-  font-size: .625rem;
-  font-family: var(--body-bold-font-family);
-  letter-spacing: .0156rem;
-  color: var(--text-color);
-  padding: .3125rem 0;
-}
-
-@media (width >= 768px) {
-  .section.footer-utility li {
-    font-size: .75rem;
-  }
-}
-
-.section.footer-utility li a {
-  word-break: auto-phrase;
-}
-
-.section.social-share p {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 13rem;
-  margin: auto;
-}
-
-.section.social-share p a {
-  padding: 0;
-  margin: 1rem 0.625rem;
-  min-width: 0;
-  border-radius: 50%;
-}
-
-.section.footer-utility li a:hover {
-  text-decoration: none;
-}
-
-.section.social-share p a:hover {
-  box-shadow: 0 5px 10px 0 rgba(0 0 0 / 20%);
-}
-
-.section.social-share p span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  border-radius: 50%;
-  height: 2rem;
-  width: 2rem;
-  padding: 4px;
-}
-*/
-
-.tab {
-  display: none;
-}
-
-.desktop {
-  display: none;
-}
-
-.mobile {
-  display: block;
-}
-
-/* Media Queries - Tablet */
-@media (width >= 768px) {
-  .mobile {
-    display: none;
-  }
-
-  .desktop {
-    display: none;
-  }
-
-  .tab {
-    display: block;
-  }
-}
-
-/* Media Queries - Desktop */
-@media (width >= 1080px) {
-  .mobile {
-    display: none;
-  }
-
-  .tab {
-    display: none;
-  }
-
-  .desktop {
-    display: block;
-  }
-}

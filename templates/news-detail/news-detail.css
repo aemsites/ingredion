@@ -1,34 +1,3 @@
-
-.breadcrumbs {
-  ul {
-    list-style: none;
-
-    li {
-      display: inline;
-      position: relative;
-      font-family: OpenSans, Helvetica, sans-serif;
-      font-size: .75rem;
-      color: #373738;
-      letter-spacing: .016rem;
-      line-height: 1.5rem;
-
-      a {
-        text-decoration: none;
-        color: #373738;
-        letter-spacing: .02rem;
-        &:hover { color: var(--green) }
-
-        &::after {
-          content: '\e904';
-          font-family: ingredion-icon;
-          color: #4d4f53;
-          -webkit-font-smoothing: antialiased;
-        }
-      }
-    }
-  }
-}
-
 .news-detail {
   main {
     position: relative;
@@ -63,14 +32,9 @@
         border-radius: 4px;
         background: #fff;
         box-shadow: 4px 20px 40px 4px rgba(0 0 0 / 10%);
-        padding: 1.4rem 6.5625rem 12.5rem;
+        padding: 2.2rem 6.5625rem 12.5rem;
 
         p.centered { text-align: center }
-
-        /*ul, li {*/
-        /*  margin: initial !important;*/
-        /*  padding: initial !important;*/
-        /*}*/
 
         .header {
           margin-bottom: 40px;
@@ -91,13 +55,13 @@
             font-size: .75rem;
             line-height: 1.2;
             font-family: OpenSans-Bold, Helvetica, sans-serif;
-            letter-spacing: .015625rem;
-            color: #373738;
+            letter-spacing: .02rem;
+            color: var(--text-color);
           }
 
           .description {
             font-size: 1.375rem;
-            color: #373738;
+            color: var(--text-color);
             line-height: 2rem;
             margin-top: 1rem;
           }
@@ -126,7 +90,7 @@
             box-sizing: border-box;
             height: 3px;
             width: 104px;
-            background: #6cb33e;
+            background: var(--green);
           }
         }
       }

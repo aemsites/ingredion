@@ -4,6 +4,8 @@ footer {
   font-size: var(--body-font-size-xs);
   border-top: 1px solid var(--border-color);
 
+  ul { margin: 0 }
+
   .footer > div {
     margin: auto;
     max-width: 1200px;
@@ -33,10 +35,11 @@ footer {
         padding: .3125rem 0;
 
         @media (width >= 768px) {
-          font-size: .75rem;
+          font-size: .75rem !important;
         }
 
         a {
+          color: var(--text-color);
           word-break: auto-phrase;
           &:hover { text-decoration: none }
         }
@@ -129,19 +132,48 @@ footer {
       box-shadow: 0 5px 10px 0 rgba(0 0 0 / 20%);
     }
 
-    /*
-      lets use descriptive selectors when we can
-      - nth-child is not descriptive and can be brittle
-      footer ul li:nth-child(2) ul li a span {
-    */
-    ul .icon-linkedin {
-      height: 2rem;
-      width: 2rem;
-      padding: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-    }
+  }
+}
+
+/* todo: revisit this approach so we are not duplicating content in footer.docx */
+.tab {
+  display: none;
+}
+
+.desktop {
+  display: none;
+}
+
+.mobile {
+  display: block;
+}
+
+/* Media Queries - Tablet */
+@media (width >= 768px) {
+  .mobile {
+    display: none;
+  }
+
+  .desktop {
+    display: none;
+  }
+
+  .tab {
+    display: block;
+  }
+}
+
+/* Media Queries - Desktop */
+@media (width >= 1080px) {
+  .mobile {
+    display: none;
+  }
+
+  .tab {
+    display: none;
+  }
+
+  .desktop {
+    display: block;
   }
 }
