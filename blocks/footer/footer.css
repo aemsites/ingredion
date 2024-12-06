@@ -74,8 +74,10 @@ footer .footer p {
     box-shadow: 0 5px 10px 0 rgba(0 0 0 / 20%);
   }
 
-  /* lets use descriptive selectors when we can - instead of nth-child which can be brittle
-  footer ul li:nth-child(2) ul li a span { */
+  /*
+    lets use descriptive selectors when we can - instead of nth-child which can be brittle
+    footer ul li:nth-child(2) ul li a span {
+  */
   footer ul .icon-linkedin {
     height: 2rem;
     width: 2rem;
@@ -87,9 +89,11 @@ footer .footer p {
   }
 }
 
-/* moved from styles.css */
-.section {
-  &.footer-utility {
+/*
+  these styles were moved from styles.css & converted to nesting
+*/
+footer {
+  .footer-utility {
     border-top: 1px solid var(--border-color);
 
     ul {
@@ -119,7 +123,7 @@ footer .footer p {
     }
   }
 
-  &.social-share {
+  .social-share {
     p {
       display: flex;
       flex-wrap: wrap;
