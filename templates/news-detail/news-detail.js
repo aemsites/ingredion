@@ -16,7 +16,36 @@ export default function decorate(doc) {
   const type = getMetadata('type');
   const publishedDate = getMetadata('published-date');
   const categories = getMetadata('categories');
+  const socialShare = getMetadata('social-share');
   const $breadcrumbs = breadcrumbs();
+
+  const socialShareLinks = socialShare.split(',')
+    .map((platform) => {
+      const platformLink = platform.trim().toLowerCase();
+      if (platformLink === 'linkedin') {
+        return a({
+          class: 'icon icon-linkedin',
+          href: `https://www.linkedin.com/cws/share?url=${window.location.href}`,
+          'aria-label': 'LinkedIn',
+        }, img({ src: '/icons/linkedin.svg', alt: 'LinkedIn' }));
+      }
+      if (platformLink === 'facebook') {
+        return a({
+          class: 'icon icon-facebook',
+          href: `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`,
+          'aria-label': 'Facebook',
+        }, img({ src: '/icons/facebook.svg', alt: 'Facebook' }));
+      }
+      if (platformLink === 'x') {
+        return a({
+          class: 'icon icon-x',
+          href: `https://x.com/intent/tweet?url=${window.location.href}`,
+          'aria-label': 'X',
+        }, img({ src: '/icons/x.svg', alt: 'X' }));
+      }
+      return null; // Return null for unsupported platforms
+    })
+    .filter(Boolean); // Filter out null entries
 
   const $header = div({ class: 'header' },
     $breadcrumbs,
@@ -29,12 +58,7 @@ export default function decorate(doc) {
     ),
     div({ class: 'description' }, teaserDescription),
     div({ class: 'social-share' },
-      a({
-        class: 'icon icon-linkedin',
-        href: 'https://www.linkedin.com/cws/share?url=https://www.ingredion.com/content/ingredion-com/na/en-us/news-events/news/Pea-protein-improved-dispersibility-RTM-beverages.html',
-        'aria-label': 'LinkedIn' },
-      img({ src: '/icons/linkedin.svg', alt: 'LinkedIn' }),
-      ),
+      ...socialShareLinks,
     ),
     div({ class: 'line-break' }),
   );

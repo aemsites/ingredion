@@ -55,7 +55,7 @@
 
   /* nav height */
   --nav-height: 208px;
-  --max-page-width: 1200px;
+  --max-page-width: 1220px;
 }
 
 /* theme colors */
@@ -284,16 +284,16 @@ main {
   &.icon-instagram,
   &.icon-youtube,
   &.icon-soundcloud,
-  &.icon-twitter,
+  &.icon-x,
   &.icon-youku,
   &.icon-wechat {
     height: 2rem;
     width: 2rem;
     padding: 4px;
-    display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    margin-right: 10px;
   }
 
   &.icon-linkedin { background: #00549e }
@@ -301,7 +301,7 @@ main {
   &.icon-instagram { background: #b41f75 }
   &.icon-youtube { background: #cd201f }
   &.icon-soundcloud { background: #f47b20 }
-  &.icon-twitter { background: #6f9ad3 }
+  &.icon-x { background: #000 }
   &.icon-youku { background: #b3749a }
   &.icon-wechat { background: #6cb33e }
 }
