@@ -66,30 +66,13 @@
             margin-top: 1rem;
           }
 
-          .social-share {
-            margin: 80px 0;
-
-            .icon-linkedin {
-              height: 2rem;
-              width: 2rem;
-              padding: 4px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              border-radius: 50%;
-
-              img {
-                width: 20px;
-                height: 20px;
-              }
-            }
-
-          }
+          .social-share { margin: 40px 0 55px }
 
           .line-break {
             box-sizing: border-box;
             height: 3px;
             width: 104px;
+            margin-bottom: 70px;
             background: var(--green);
           }
         }
