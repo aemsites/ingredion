@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* stylelint-disable declaration-block-single-line-max-declarations */
+/* stylelint-disable declaration-block-single-line-max-declarations, no-descending-specificity */
 
 :root {
   /* colors */
@@ -169,7 +169,6 @@ pre {
 pre {
   padding: 16px;
   border-radius: 8px;
-  background-color: var(--light-color);
   overflow-x: auto;
   white-space: pre;
 }
@@ -294,6 +293,7 @@ main {
     justify-content: center;
     border-radius: 50%;
     margin-right: 10px;
+    &:hover { box-shadow: 0 5px 10px 0 rgba(0 0 0 / 20%) }
   }
 
   &.icon-linkedin { background: #00549e }
