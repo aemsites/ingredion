@@ -9,7 +9,7 @@ export default function decorate(doc) {
   const $hero = div({ class: 'hero' },
     $picture,
   );
-  // const $content = Array.from(main.querySelectorAll('.default-content-wrapper *'));
+
   const $content = $main.querySelector('.default-content-wrapper');
   const teaserTitle = getMetadata('teaser-title');
   const teaserDescription = getMetadata('teaser-description');
