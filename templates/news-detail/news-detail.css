@@ -41,8 +41,8 @@
 
           .type {
             margin-top: 56px;
-            color: #c5aa2e;
-            font-family: MiloPro-Bold, Helvetica, sans-serif;
+            color: var(--mustard);
+            font-family: var(--heading-font-family);
             font-size: 1.25rem;
             line-height: 1.2;
           }
@@ -54,7 +54,7 @@
           .category-tags {
             font-size: .75rem;
             line-height: 1.2;
-            font-family: OpenSans-Bold, Helvetica, sans-serif;
+            font-family: var(--body-bold-font-family);
             letter-spacing: .02rem;
             color: var(--text-color);
           }
