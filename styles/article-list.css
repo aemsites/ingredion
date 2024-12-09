@@ -1,0 +1,94 @@
+.article-list {
+  --border-color: #d8d9d9;
+
+  display: flex;
+
+  .filter {
+    width: 275px;
+  }
+
+  .articles {
+    flex: 1;
+
+    .card {
+      display: flex;
+      border: 1px solid var(--border-color);
+      margin-top: 2.5rem;
+      padding: 2.6rem 2.5rem 2.5rem 3.2rem;
+
+      .thumb {
+        flex: none;
+        width: 235px;
+        height: 185px;
+        font-size: 0;
+        background: #ddd;
+        img { width: 100% }
+      }
+
+      .info {
+        margin: 0 0 0 40px;
+        min-height: 220px;
+
+        h4 {
+          margin: 0;
+        }
+
+        p {
+          margin: 10px 0 15px;
+        }
+
+        hr { margin-top: 20px }
+
+        @media (width <= 768px) {
+          h3 { font-size: var(--body-font-size-l) }
+
+          .btn {
+            scale: .8;
+            margin-left: -12px;
+          }
+        }
+      }
+    }
+  }
+
+  .pagination {
+    margin: 40px 0;
+    min-height: 60px;
+
+    button {
+      line-height: 2rem;
+      font-size: 1rem;
+      padding: 0 12px;
+      margin: 0 2px;
+      color: var(--text-color);
+      background: transparent;
+      border: 0;
+      border-radius: 2px;
+      cursor: pointer;
+
+      &:hover { background: #eee }
+
+      &.active {
+        color: #fff;
+        background: var(--green);
+        cursor: default;
+      }
+
+      &:disabled {
+        color: #ddd;
+        background: #fff;
+        cursor: default;
+      }
+
+      &.prev::before, &.next::after {
+        display: inline-block;
+        content: "\e904";
+        font-family: ingredion-icon;
+        -webkit-font-smoothing: antialiased;
+        transform: translateY(1px);
+      }
+      &.prev::before { transform: rotate(180deg) translateY(-1px) }
+
+    }
+  }
+}
