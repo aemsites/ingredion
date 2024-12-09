@@ -55,6 +55,7 @@
 
   /* nav height */
   --nav-height: 208px;
+  --max-page-width: 1200px;
 }
 
 /* theme colors */
@@ -259,7 +260,7 @@ main {
     &:first-of-type { margin-top: 0 }
 
     > div {
-      max-width: 1200px;
+      max-width: var(--max-page-width);
       margin: auto;
       padding: 0 24px;
 

@@ -1,15 +1,19 @@
 .news-detail {
   main {
     position: relative;
-    padding-top: 12.5rem;
 
     .hero {
-      position: absolute;
+      position: relative;
       top: 0;
-      height: 33.75rem;
-      width: 100%;
+      height: 330px;
+      width: 100vw;
       margin: 0;
       z-index: -1;
+
+      @media (width > 1080px) {
+        position: absolute;
+        height: 540px;
+      }
 
       picture {
         object-fit: cover;
@@ -24,15 +28,20 @@
 
     .section {
       margin: 0;
+      padding-top: 20px;
+
+      @media (width > 1080px) { padding-top: 200px }
 
       .default-content-wrapper {
-        max-width: 76.4375rem;
-        width: calc(100% - 80px);
-        margin: 0 auto;
-        border-radius: 4px;
-        background: #fff;
-        box-shadow: 4px 20px 40px 4px rgba(0 0 0 / 10%);
-        padding: 2.2rem 6.5625rem 12.5rem;
+        @media (width > 1080px) {
+          background: #fff;
+          max-width: var(--max-page-width);
+          width: calc(100% - 80px);
+          margin: 0 auto;
+          border-radius: 4px;
+          box-shadow: 4px 20px 40px 4px rgba(0 0 0 / 10%);
+          padding: 2.2rem 6.5625rem 12.5rem;
+        }
 
         p.centered { text-align: center }
 
