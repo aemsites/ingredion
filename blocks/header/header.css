@@ -24,6 +24,8 @@ header {
         }
     }
 
+    ul, li { margin: 0 }
+
     button.icon-cart {
         position: absolute;
         top: 6px;
@@ -248,6 +250,7 @@ header {
 
     .btn-tech-doc-samples a {
         background: var(--green);
+        color: var(--text-color);
         font-size: .95rem;
         font-weight: bold;
         padding: .6rem 1.95rem;
