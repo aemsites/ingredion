@@ -1,11 +1,21 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, h2, a, img } from '../../scripts/dom-helpers.js';
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 import { breadcrumbs } from '../../scripts/breadcrumbs.js';
 
 export default function decorate(doc) {
   const $main = doc.querySelector('main');
   const $picture = $main.querySelector('picture');
+  if ($picture) {
+    const pic = $picture.querySelector('img');
+    const picBreakpoints = [
+      { media: '(min-width: 1080px)', width: '2000' },
+      { media: '(min-width: 600px)', width: '800' },
+      { width: '600' },
+    ];
+    const picOpt = createOptimizedPicture(pic.src, pic.alt, true, picBreakpoints);
+    pic.replaceWith(picOpt);
+  }
   const $hero = div({ class: 'hero' },
     $picture,
   );
