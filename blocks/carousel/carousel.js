@@ -98,17 +98,22 @@ function createSlide(row, slideIndex, carouselId) {
 let carouselId = 0;
 export default async function decorate(block) {
   carouselId += 1;
-  block.setAttribute('id', `carousel-${carouselId}`);
   const rows = block.querySelectorAll(':scope > div');
   const isSingleSlide = rows.length < 2;
 
-  const placeholders = await fetchPlaceholders();
+  const placeholders = await fetchPlaceholders(); 
 
-  block.setAttribute('role', 'region');
-  block.setAttribute('aria-roledescription', placeholders.carousel || 'Carousel');
+  const carouselContainer = document.createElement('div');
+  carouselContainer.classList.add('carousel-container');
 
-  const container = document.createElement('div');
-  container.classList.add('carousel-slides-container');
+  const slidesContainer = document.createElement('div');
+  slidesContainer.classList.add('carousel-slides-container');
+
+  const overview = document.createElement('div');
+  overview.classList.add('carousel-overview');
+
+  carouselContainer.append(overview);
+  carouselContainer.append(slidesContainer);
 
   const slidesWrapper = document.createElement('ul');
   slidesWrapper.classList.add('carousel-slides');
@@ -130,25 +135,29 @@ export default async function decorate(block) {
       <button type="button" class="slide-next" aria-label="${placeholders.nextSlide || 'Next Slide'}"></button>
     `;
 
-    container.append(slideNavButtons);
+    slidesContainer.append(slideNavButtons);
   }
 
   rows.forEach((row, idx) => {
-    const slide = createSlide(row, idx, carouselId);
-    slidesWrapper.append(slide);
+    if (idx === 0) {
+      overview.append(row);
+    } else {
+      const slide = createSlide(row, idx, carouselId);
+      slidesWrapper.append(slide);
 
-    if (slideIndicators) {
-      const indicator = document.createElement('li');
-      indicator.classList.add('carousel-slide-indicator');
-      indicator.dataset.targetSlide = idx;
-      indicator.innerHTML = `<button type="button" aria-label="${placeholders.showSlide || 'Show Slide'} ${idx + 1} ${placeholders.of || 'of'} ${rows.length}"></button>`;
-      slideIndicators.append(indicator);
+      if (slideIndicators) {
+        const indicator = document.createElement('li');
+        indicator.classList.add('carousel-slide-indicator');
+        indicator.dataset.targetSlide = idx;
+        indicator.innerHTML = `<button type="button" aria-label="${placeholders.showSlide || 'Show Slide'} ${idx + 1} ${placeholders.of || 'of'} ${rows.length}"></button>`;
+        slideIndicators.append(indicator);
+      }
+      row.remove();
     }
-    row.remove();
   });
 
-  container.append(slidesWrapper);
-  block.prepend(container);
+  slidesContainer.append(slidesWrapper);
+  block.prepend(carouselContainer);
 
   if (!isSingleSlide) {
     bindEvents(block);
