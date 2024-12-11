@@ -5,15 +5,25 @@
 .carousel .carousel-container {
   display: flex;
   flex-direction: row;
-  overflow: hidden;
+  position: relative;
 }
+
+  .carousel .carousel-overview {
+    flex-shrink: 0;
+    z-index: 1;
+    width: 200px;
+  }
   
   .carousel .carousel-slides {
     display: flex;
+    overflow-x: auto; 
     scroll-behavior: smooth;
-    scroll-snap-type: x mandatory;  
-    overflow-x: auto;
+    scroll-snap-type: x mandatory;
     gap: 20px;
+    flex-grow: 1; 
+    position: absolute;
+    top: 0; 
+    width: 100%;
   }
 
   .slide-body h3 {
