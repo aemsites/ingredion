@@ -67,7 +67,8 @@
     scroll-snap-align: start;
     display: flex;
     flex-direction: column;
-    box-shadow: 4px 20px 40px 0 rgba(0, 0, 0, .1)
+    box-shadow: 4px 20px 40px 0 rgba(0, 0, 0, .1);
+    user-select: none;
   }
   
   .carousel .carousel-slide-indicators {
@@ -119,7 +120,6 @@
     z-index: 1;
   }
   
-  /* stylelint-disable-next-line no-descending-specificity */
   .carousel .carousel-navigation-buttons button {
     position: relative;
     width: 44px;

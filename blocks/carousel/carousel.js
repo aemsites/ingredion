@@ -1,74 +1,35 @@
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
-function updateActiveSlide(slide) {
-  const block = slide.closest('.carousel');
-  const slideIndex = parseInt(slide.dataset.slideIndex, 10);
-  block.dataset.activeSlide = slideIndex;
-
-  const slides = block.querySelectorAll('.carousel-slide');
-
-  slides.forEach((aSlide, idx) => {
-    aSlide.setAttribute('aria-hidden', idx !== slideIndex);
-    aSlide.querySelectorAll('a').forEach((link) => {
-      if (idx !== slideIndex) {
-        link.setAttribute('tabindex', '-1');
-      } else {
-        link.removeAttribute('tabindex');
-      }
-    });
-  });
-
-  const indicators = block.querySelectorAll('.carousel-slide-indicator');
-  indicators.forEach((indicator, idx) => {
-    if (idx !== slideIndex) {
-      indicator.querySelector('button').removeAttribute('disabled');
-    } else {
-      indicator.querySelector('button').setAttribute('disabled', 'true');
-    }
-  });
-}
-
-function showSlide(block, slideIndex = 0) {
-  const slides = block.querySelectorAll('.carousel-slide');
-  let realSlideIndex = slideIndex < 0 ? slides.length - 1 : slideIndex;
-  if (slideIndex >= slides.length) realSlideIndex = 0;
-  const activeSlide = slides[realSlideIndex];
-
-  activeSlide.querySelectorAll('a').forEach((link) => link.removeAttribute('tabindex'));
-  block.querySelector('.carousel-slides').scrollTo({
-    top: 0,
-    left: activeSlide.offsetLeft,
-    behavior: 'smooth',
-  });
-}
-
 function bindEvents(block) {
-  const slideIndicators = block.querySelector('.carousel-slide-indicators');
-  if (!slideIndicators) return;
-
-  slideIndicators.querySelectorAll('button').forEach((button) => {
-    button.addEventListener('click', (e) => {
-      const slideIndicator = e.currentTarget.parentElement;
-      showSlide(block, parseInt(slideIndicator.dataset.targetSlide, 10));
+    const slidesContainer = block.querySelector('.carousel-slides');
+  
+    let isDragging = false;
+    let startX = 0;
+    let scrollLeft = 0;
+  
+    slidesContainer.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      slidesContainer.setPointerCapture(e.pointerId);
+      startX = e.clientX; 
+      scrollLeft = slidesContainer.scrollLeft; 
+      e.preventDefault();
     });
-  });
-
-  block.querySelector('.slide-prev').addEventListener('click', () => {
-    showSlide(block, parseInt(block.dataset.activeSlide, 10) - 1);
-  });
-  block.querySelector('.slide-next').addEventListener('click', () => {
-    showSlide(block, parseInt(block.dataset.activeSlide, 10) + 1);
-  });
-
-  const slideObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) updateActiveSlide(entry.target);
+  
+    slidesContainer.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const x = e.clientX; 
+      const walk = x - startX;
+      slidesContainer.scrollLeft = scrollLeft - walk; 
     });
-  }, { threshold: 0.5 });
-  block.querySelectorAll('.carousel-slide').forEach((slide) => {
-    slideObserver.observe(slide);
-  });
-}
+  
+    slidesContainer.addEventListener('pointerup', () => {
+      isDragging = false;
+    });
+  
+    slidesContainer.addEventListener('pointercancel', () => {
+      isDragging = false;
+    });
+  }
 
 function createSlide(row, slideIndex, carouselId) {
   const slide = document.createElement('li');
