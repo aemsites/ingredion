@@ -2,8 +2,15 @@
     "project": "Ingredion",
     "plugins": [
         {
+          "id": "library",
+          "title": "Library",
+          "environments": [ "edit" ],
+          "url": "https://main--ingredion--aemsites.aem.live/tools/sidekick/library.html",
+          "includePaths": [ "**.docx**" ]
+        },
+        {
             "id": "asset-library",
-            "title": "My Assets",
+            "title": "Assets",
             "environments": [ "edit" ],
             "url": "https://author1uswest1-28589214.stage.ingredion.adobecqms.net/aem/assetpicker.html",
             "isPalette": true,
