@@ -1,6 +1,5 @@
 {
     "project": "Ingredion",
-    "host": "ingredion.com",
     "plugins": [
         {
             "id": "asset-library",
