@@ -2,34 +2,36 @@ import { fetchPlaceholders } from '../../scripts/aem.js';
 
 function bindEvents(block) {
     const slidesContainer = block.querySelector('.carousel-slides');
-  
+
     let isDragging = false;
     let startX = 0;
     let scrollLeft = 0;
-  
-    slidesContainer.addEventListener('pointerdown', (e) => {
-      isDragging = true;
-      slidesContainer.setPointerCapture(e.pointerId);
-      startX = e.clientX; 
-      scrollLeft = slidesContainer.scrollLeft; 
-      e.preventDefault();
+
+    slidesContainer.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+
+    slidesContainer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        e.preventDefault();
+        slidesContainer.classList.add('active');
+        startX = e.clientX;
+        scrollLeft = slidesContainer.scrollLeft;
     });
-  
-    slidesContainer.addEventListener('pointermove', (e) => {
-      if (!isDragging) return;
-      const x = e.clientX; 
-      const walk = x - startX;
-      slidesContainer.scrollLeft = scrollLeft - walk; 
+
+    slidesContainer.addEventListener('mouseup', () => {
+        isDragging = false;
+        slidesContainer.classList.remove('active');
     });
-  
-    slidesContainer.addEventListener('pointerup', () => {
-      isDragging = false;
+
+    slidesContainer.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.clientX;
+        const walk = x - startX;
+        slidesContainer.scrollLeft = scrollLeft - walk;
     });
-  
-    slidesContainer.addEventListener('pointercancel', () => {
-      isDragging = false;
-    });
-  }
+
+    slidesContainer.addEventListener('dragstart', (e) => e.preventDefault());
+}
 
 function createSlide(row, slideIndex, carouselId) {
   const slide = document.createElement('li');
