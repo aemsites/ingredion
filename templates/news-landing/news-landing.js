@@ -46,8 +46,6 @@ export default async function decorate(doc) {
     ),
   );
 
-
-
   const $newsCard = (article) => div({ class: 'card' },
     a({ class: 'thumb', href: article.path },
       createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
@@ -59,7 +57,6 @@ export default async function decorate(doc) {
       a({ class: theme === 'list-style' ? 'button' : 'link', href: article.path }, 'Learn More'),
     ),
   );
-
 
   const $newsPage = div({ class: 'article-list' },
     $breadcrumbs,

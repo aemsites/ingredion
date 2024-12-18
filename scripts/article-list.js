@@ -1,5 +1,5 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
-import { div, button, ul, li, a, small, span } from './dom-helpers.js';
+import { div, button, ul, li, a, small } from './dom-helpers.js';
 
 /**
  * Get the current page number from the URL query parameters.
@@ -163,7 +163,7 @@ export default class ArticleList {
       }
     }
 
-    const $next = button({ class: 'next' }, );
+    const $next = button({ class: 'next' });
     $next.addEventListener('click', () => {
       if (this.currentPage < totalPages - 1) {
         this.currentPage += 1;

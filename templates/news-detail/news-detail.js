@@ -1,5 +1,5 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h2, a, picture, img } from '../../scripts/dom-helpers.js';
+import { div, h2, a, img } from '../../scripts/dom-helpers.js';
 import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 import { breadcrumbs } from '../../scripts/breadcrumbs.js';
 

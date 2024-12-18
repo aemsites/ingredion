@@ -183,18 +183,6 @@ header {
                     padding: 0 .625rem;
                     font-size: .875rem;
                     color: #b2b4b3;
-
-                    /* arrow */
-                    /*&::after {*/
-                    /*    content: '';*/
-                    /*    position: absolute;*/
-                    /*    right: 16px;*/
-                    /*    top: 50%;*/
-                    /*    transform: translateY(-50%);*/
-                    /*    border-left: 6px solid transparent;*/
-                    /*    border-right: 6px solid transparent;*/
-                    /*    border-top: 8px solid var(--green);*/
-                    /*}*/
                 }
 
                 input#search {
