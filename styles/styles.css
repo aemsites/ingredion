@@ -261,11 +261,6 @@ main {
     > div {
       max-width: var(--max-page-width);
       margin: auto;
-      padding: 0 24px;
-
-      @media (width >= 900px) {
-        padding: 0 32px;
-      }
     }
   }
 }

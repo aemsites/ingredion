@@ -24,16 +24,33 @@ export function getRegionLocale() {
  * called once every specified number of milliseconds.
  * @param {Function} fn - The function to throttle.
  * @param {number} wait - Number of milliseconds to wait before calling again.
+ * @param hoverWait
  * @returns {Function} A throttled version of the input function.
  */
-export function throttle(fn, wait) {
+export function throttle(fn, wait, hoverWait) {
   let lastCall = 0;
-  return function throttled(...args) {
+  let hoverTimer;
+  let isHovered = false;
+  return function throttled(event, ...args) {
     const now = Date.now();
-    if (now - lastCall >= wait) {
-      lastCall = now;
-      fn.apply(this, args);
-    }
+    // clear any previous timer when hover starts
+    if (hoverTimer) clearTimeout(hoverTimer);
+    isHovered = true;
+    hoverTimer = setTimeout(() => {
+      if (isHovered && now - lastCall >= wait) {
+        lastCall = now;
+        fn.apply(this, args);
+      }
+    }, hoverWait);
+    // attach event listener to cancel if mouse leaves
+    event.target.addEventListener(
+      'mouseleave',
+      () => {
+        isHovered = false;
+        clearTimeout(hoverTimer);
+      },
+      { once: true },
+    );
   };
 }
 

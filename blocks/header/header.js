@@ -34,7 +34,7 @@ async function buildDropDowns($header) {
       }
       $dropDown.parentElement.classList.add('active');
       activeDropdown = $dropDown;
-    }, 100);
+    }, 100, 140); // small delay to prevent unintentional events
 
     link.addEventListener(eventType, openDropdown);
 
@@ -113,7 +113,9 @@ export default async function decorate(block) {
   const $searchBar = div({ class: 'search-bar' },
     form({ class: 'search', id: 'searchForm' },
       div({ class: 'search-box' },
-        div({ class: 'category-select' }, 'All'),
+        div({ class: 'category select-dropdown' },
+          div({ class: 'selected' }, 'All'),
+        ),
         input({ id: 'search', 'aria-label': 'Search Input' }),
         button({ type: 'submit', class: 'icon-search', 'aria-label': 'Search Button' }),
       ),

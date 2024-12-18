@@ -1,4 +1,5 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
+@import url('/styles/forms.css');
 
 body.menu-open {
     overflow: hidden;
@@ -171,10 +172,10 @@ header {
                     box-shadow: 2px 8px 20px 0 rgba(0 0 0 / 10%);
                 }
 
-                .category-select {
-                    position: relative;
-                    border-radius: 2px;
-                    border-right: 1px solid var(--border-color);
+                .category .selected {
+                    border-top: 0;
+                    border-left: 0;
+                    border-bottom: 0;
                     height: 2.375rem;
                     width: 7.5rem;
                     display: flex;
@@ -184,16 +185,16 @@ header {
                     color: #b2b4b3;
 
                     /* arrow */
-                    &::after {
-                        content: '';
-                        position: absolute;
-                        right: 16px;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        border-left: 6px solid transparent;
-                        border-right: 6px solid transparent;
-                        border-top: 8px solid var(--green);
-                    }
+                    /*&::after {*/
+                    /*    content: '';*/
+                    /*    position: absolute;*/
+                    /*    right: 16px;*/
+                    /*    top: 50%;*/
+                    /*    transform: translateY(-50%);*/
+                    /*    border-left: 6px solid transparent;*/
+                    /*    border-right: 6px solid transparent;*/
+                    /*    border-top: 8px solid var(--green);*/
+                    /*}*/
                 }
 
                 input#search {

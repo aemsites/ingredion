@@ -1,3 +1,132 @@
 @import url('/styles/article-list.css');
+@import url('/styles/forms.css');
+
+.news-landing {
+  &.list-style {
+    .filter-results-wrapper {
+      display: flex;
+
+      .filter {
+        width: 275px;
+      }
+
+      .results {
+        flex: 1;
+
+        .card {
+          display: flex;
+          border: 1px solid var(--border-color);
+          margin-top: 2.5rem;
+          padding: 2.6rem 2.5rem 2.5rem 3.2rem;
+
+          .thumb {
+            flex: none;
+            width: 235px;
+            height: 185px;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+
+          .info {
+            margin: 0 0 0 40px;
+            min-height: 220px;
+
+            h4 {
+              margin: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.card-style {
+    .filter-results-wrapper {
+      /*display: flex;*/
+      /*flex-direction: column;*/
+
+      .filter {
+        width: 100%;
+      }
+
+      .results {
+        .articles {
+          display: flex;
+          flex-flow: row wrap;
+          justify-content: space-between;
 
 
+          .card {
+            display: flex;
+            flex-direction: column;
+            max-width: 24rem;
+            flex-basis: 33%;
+            margin: 2.5rem 0;
+            border: 1px solid var(--border-color);
+            height: auto;
+            min-height: 35rem;
+            transition: all 0.3s ease-in-out;
+
+            &:hover {
+              transform: translateY(-10px);
+            }
+
+            .thumb {
+              flex: none;
+              width: 100%;
+              height: 15rem;
+
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
+            }
+
+            .info {
+              padding: 30px 20px;
+
+              h4 {
+                margin: 0;
+              }
+
+              .link {
+                display: flex;
+                align-items: center;
+                text-decoration: underline;
+                font-weight: bold;
+                font-family: var(--heading-font-family);
+
+                /* arrow */
+                &::after {
+                  content: '';
+                  margin-left: 6px;
+                  transform: rotate(-90deg);
+                  border-left: 6px solid transparent;
+                  border-right: 6px solid transparent;
+                  border-top: 8px solid var(--green);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .controls {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+
+        .per-page {
+          font-size: .8rem;
+        }
+      }
+
+
+    }
+  }
+}

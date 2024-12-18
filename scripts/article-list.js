@@ -1,6 +1,5 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
-
-import { button, ul, li, a, small } from './dom-helpers.js';
+import { div, button, ul, li, a, small, span } from './dom-helpers.js';
 
 /**
  * Get the current page number from the URL query parameters.
@@ -34,15 +33,20 @@ export default class ArticleList {
     paginationMaxBtns = 7,
     categoryContainer,
     categoryPath,
+    countContainer,
+    perPageContainer,
   }) {
     this.jsonPath = jsonPath;
     this.articleContainer = articleContainer;
     this.articleCard = articleCard;
-    this.articlesPerPage = articlesPerPage;
+    this.articlesPerPageOptions = articlesPerPage.split(',').map(Number);
+    [this.articlesPerPage] = this.articlesPerPageOptions;
     this.paginationContainer = paginationContainer;
     this.paginationMaxBtns = paginationMaxBtns;
     this.categoryContainer = categoryContainer;
     this.categoryPath = categoryPath;
+    this.countContainer = countContainer;
+    this.perPageContainer = perPageContainer; // Initialize it
     this.currentPage = getPageN();
     this.totalArticles = 0;
     this.category = null;
@@ -65,7 +69,7 @@ export default class ArticleList {
   async updateArticles() {
     const page = this.currentPage;
     let articles = this.allArticles;
-    // Filter articles by category if present
+    // filter articles by category if present
     if (this.category) {
       articles = articles.filter((article) => {
         const articleCategories = article.categories.toLowerCase().replace(/\s+/g, '-');
@@ -73,13 +77,14 @@ export default class ArticleList {
       });
     }
 
-    // Sort articles by publish date in descending order
+    // sort articles by publish date in descending order
     articles = articles.sort((A, B) => parseInt(B.publisheddate, 10) - parseInt(A.publisheddate, 10));
 
-    // Update total articles count and render the current page's articles
+    // update total articles count and render the current page's articles
     this.totalArticles = articles.length;
     this.renderArticles(articles.slice(page * this.articlesPerPage, (page + 1) * this.articlesPerPage));
     this.updatePagination();
+    this.updateCount();
   }
 
   /**
@@ -173,6 +178,59 @@ export default class ArticleList {
     this.updateUrl();
   }
 
+  updateCount() {
+    if (!this.countContainer) return;
+
+    const start = this.currentPage * this.articlesPerPage + 1;
+    const end = Math.min((this.currentPage + 1) * this.articlesPerPage, this.totalArticles);
+    const countText = `Items ${start}–${end} of ${this.totalArticles}`;
+    this.countContainer.textContent = countText;
+  }
+
+  createPerPageDropdown() {
+    if (!this.perPageContainer) return;
+
+    const currentCount = this.articlesPerPage;
+    const $currentSelection = div({ class: 'selected' }, `${currentCount} per page`);
+    const $dropdown = ul({ class: 'options' });
+
+    this.articlesPerPageOptions.forEach((option) => {
+      const $li = li({ class: option === this.articlesPerPage ? 'active' : '' }, `${option.toString()} per page`);
+      $li.addEventListener('click', () => {
+        if (this.articlesPerPage !== option) {
+          this.articlesPerPage = option;
+          this.currentPage = 0;
+          this.updateArticles();
+          this.updatePagination();
+        }
+
+        // udpate active class
+        Array.from($dropdown.children).forEach((child) => {
+          child.classList.remove('active');
+        });
+        $li.classList.add('active');
+
+        // close the dropdown and update the displayed value
+        $currentSelection.textContent = `${option} per page`;
+        $dropdown.classList.remove('open');
+      });
+      $dropdown.appendChild($li);
+    });
+
+    // toggle dropdown visibility
+    $currentSelection.addEventListener('click', (event) => {
+      event.stopPropagation();
+      $dropdown.classList.toggle('open');
+    });
+
+    // close dropdown if clicked outside
+    document.addEventListener('click', () => {
+      $dropdown.classList.remove('open');
+    });
+
+    this.perPageContainer.append($currentSelection, $dropdown);
+  }
+
   updateFilterList() {
     const categories = {};
 
@@ -246,14 +304,17 @@ export default class ArticleList {
 
       this.getCategory();
 
-      // If categoryFilter is defined, render it
+      // Render category filters if applicable
       if (this.categoryContainer) this.updateFilterList();
 
-      // If articleCard & articleContainer are defined, render them
+      // Render articles and pagination
       if (this.articleCard && this.articleContainer) {
         await this.updateArticles();
         window.addEventListener('popstate', (event) => this.onPopState(event));
       }
+
+      // Render per-page dropdown
+      if (this.perPageContainer) this.createPerPageDropdown();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Error fetching articles:', error);
