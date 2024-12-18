@@ -2,6 +2,7 @@ import { fetchPlaceholders } from '../../scripts/aem.js';
 
 function bindEvents(block) {
     const slidesContainer = block.querySelector('.carousel-slides');
+    const slides = Array.from(slidesContainer.children);
 
     let isDragging = false;
     let startX = 0;
@@ -9,27 +10,54 @@ function bindEvents(block) {
 
     slidesContainer.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
 
+    // Helper function to calculate the slide width
+    const getSlideWidth = () => slides[0]?.getBoundingClientRect().width || 0;
+
+    // Snap to the nearest slide
+    const snapToSlide = () => {
+        const slideWidth = getSlideWidth();
+        const scrollPosition = slidesContainer.scrollLeft;
+        const closestSlideIndex = Math.round(scrollPosition / slideWidth);
+        slidesContainer.scrollTo({
+            left: closestSlideIndex * slideWidth,
+            behavior: 'smooth',
+        });
+    };
+
+    // Mouse down to start dragging
     slidesContainer.addEventListener('mousedown', (e) => {
         isDragging = true;
-        e.preventDefault();
-        slidesContainer.classList.add('active');
+        slidesContainer.classList.add('dragging');
         startX = e.clientX;
         scrollLeft = slidesContainer.scrollLeft;
     });
 
-    slidesContainer.addEventListener('mouseup', () => {
-        isDragging = false;
-        slidesContainer.classList.remove('active');
-    });
-
+    // Mouse move for smooth scrolling
     slidesContainer.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
         e.preventDefault();
         const x = e.clientX;
-        const walk = x - startX;
-        slidesContainer.scrollLeft = scrollLeft - walk;
+        const distance = x - startX;
+        slidesContainer.scrollLeft = scrollLeft - distance;
     });
 
+    // Mouse up to stop dragging and snap to slide
+    slidesContainer.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        slidesContainer.classList.remove('dragging');
+        snapToSlide();
+    });
+
+    // Ensure snap when the mouse leaves the container
+    slidesContainer.addEventListener('mouseleave', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        slidesContainer.classList.remove('dragging');
+        snapToSlide();
+    });
+
+    // Prevent dragstart for images
     slidesContainer.addEventListener('dragstart', (e) => e.preventDefault());
 }
 
