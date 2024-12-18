@@ -17,8 +17,7 @@
   .carousel .carousel-slides {
     display: flex;
     overflow-x: auto; 
-    scroll-behavior: smooth;
-    scroll-snap-type: x mandatory;
+    scroll-behavior: auto;
     gap: 20px;
     flex-grow: 1; 
     position: absolute;
