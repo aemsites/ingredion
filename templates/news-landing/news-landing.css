@@ -1,5 +1,4 @@
 @import url('/styles/article-list.css');
-@import url('/styles/forms.css');
 
 .news-landing {
   &.list-style {

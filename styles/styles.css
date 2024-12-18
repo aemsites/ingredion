@@ -11,6 +11,8 @@
  */
 /* stylelint-disable declaration-block-single-line-max-declarations, no-descending-specificity */
 
+@import url('/styles/dropdown.css');
+
 :root {
   /* colors */
   --text-color: #373738;

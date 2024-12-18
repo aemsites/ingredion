@@ -1,5 +1,4 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
-@import url('/styles/forms.css');
 
 body.menu-open {
     overflow: hidden;
