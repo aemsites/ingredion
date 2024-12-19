@@ -29,9 +29,11 @@ export default {
   }) => {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
+    createColorBlock(document, main);
     createIngredientBlock(document, main);
     createContactUs(main, document);
     createMetadata(main, document, url, html);
+
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
       'header',
@@ -43,12 +45,12 @@ export default {
       'iframe',
       'noscript',
       '.popup',
-    ]);    
+    ]);
     WebImporter.rules.transformBackgroundImages(main, document);
     WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
     WebImporter.rules.convertIcons(main, document);
-    
-    
+
+
     const path = ((u) => {
       let p = new URL(u).pathname;
       if (p.endsWith('/')) {
@@ -91,49 +93,47 @@ const createMetadata = (main, document, url, html) => {
     el.src = img.content;
     meta.Image = el;
   }
-
-  // path
-  meta.Path = new URL(url).pathname.split('.html')[0];
-
   // page name
   meta['Page Name'] = getPageName(document);
   const teaserTitle = getMetadataProp(document, '.heading > h2');
   if (teaserTitle) meta['teaser-title'] = teaserTitle;
   const teaserDescription = getMetadataProp(document, '.rte-block--large-body-text');
-  if (teaserDescription) meta['teaser-description'] = teaserDescription;  
+  if (teaserDescription) meta['teaser-description'] = teaserDescription;
   const dateCategory = getMetadataProp(document, '.date-category-tags');
   if (dateCategory) {
     meta['published-date'] = dateCategory.split('|')[0].trim();
     meta['categories'] = dateCategory.split('|')[1] ? dateCategory.split('|')[1].trim() : '';
   }
-  meta['type'] = getMetadataProp(document, '.category-label');  
+  meta['type'] = getMetadataProp(document, '.category-label');
+  const socialShare = getSocialShare(document);
+  if (socialShare) meta['social-share'] = socialShare;
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
   main.append(block);
   return meta;
 };
 
 export function getMetadataProp(document, queryString) {
-  let metaDataField; 
+  let metaDataField;
   const metadata = document.querySelector(queryString);
   if (metadata) {
     metaDataField = metadata.textContent ? metadata.textContent.replace(/[\n\t]/gm, '') : metadata.content;
     metadata.remove();
-  }  
+  }
   return metaDataField;
 }
 
-function createIngredientBlock (document, main) {
+function createIngredientBlock(document, main) {
   const relatedIngredients = document.querySelector('.relatedIngredients');
-  if (!relatedIngredients) return;  
+  if (!relatedIngredients) return;
   const resultProdCards = document.querySelectorAll('.result-prod-card');
   if (!resultProdCards) {
     const cells = [['related ingredient']];
     const heading = relatedIngredients.querySelector('.heading > h2').textContent;
-    const subHeading = relatedIngredients.querySelector('.rte-block').textContent;    
-    cells.push([heading, ]);
-    cells.push([subHeading, ]);   
+    const subHeading = relatedIngredients.querySelector('.rte-block').textContent;
+    cells.push([heading,]);
+    cells.push([subHeading,]);
     const table = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(table);       
+    main.append(table);
   } else {
     resultProdCards.forEach((resultProdCard) => {
       const cells = [['related ingredient']];
@@ -153,11 +153,11 @@ function createIngredientBlock (document, main) {
       let rightSide = '';
       buttons.forEach((button) => {
         rightSide += `<a href = '${button.getAttribute('href')}'>${button.innerText}</a><br>`;
-      });  
-      cells.push([leftSide, ]);
-      cells.push([rightSide, ]);
+      });
+      cells.push([leftSide,]);
+      cells.push([rightSide,]);
       const table = WebImporter.DOMUtils.createTable(cells, document);
-      main.append(table);    
+      main.append(table);
     });
   }
   relatedIngredients.remove();
@@ -168,12 +168,18 @@ function createContactUs(main, document) {
   const contactUs = document.querySelector('.contact-banner__wrapper');
   if (contactUs) {
     const heading = contactUs.querySelector('.heading > h3').textContent;
-    const contactDetailsHeading = contactUs.querySelector('.contact-banner__primary .heading > h4').textContent;
-    const contactDetails = contactUs.querySelector('.rte-block').textContent;
+    let contactDetailsHeading = contactUs.querySelector('.contact-banner__primary .heading > h4') ?
+      contactUs.querySelector('.contact-banner__primary .heading > h4').textContent : null;
+    let contactDetails = contactUs.querySelector('.rte-block').textContent;
+    if (!contactDetailsHeading) {
+      contactDetailsHeading = contactUs.querySelector('.contact-banner__primary').textContent;
+      contactDetails = contactUs.querySelector('.contact-banner__secondary').textContent;
+    }
+
     const cells = [['contact us']];
-    cells.push([heading, ]);
-    cells.push([contactDetailsHeading, ]);
-    cells.push([contactDetails, ]);
+    cells.push([heading,]);
+    cells.push([contactDetailsHeading,]);
+    cells.push([contactDetails,]);
     const contactUsBlock = WebImporter.DOMUtils.createTable(cells, document);
     main.append(contactUsBlock);
     contactUs.remove();
@@ -182,6 +188,54 @@ function createContactUs(main, document) {
 
 function getPageName(document) {
   const breadcrumbElement = document.querySelector('.breadcrumbs > ul > li:last-of-type > a');
-  if (!breadcrumbElement) return '';  
-  else return breadcrumbElement.textContent;  
+  if (!breadcrumbElement) return '';
+  else return breadcrumbElement.textContent;
+}
+
+function getSocialShare(document) {
+  const socialShare = document.querySelector('.social-share');
+  const socialMetaProp = [];
+  const facebook = socialShare.querySelector('.icon-Facebook');
+  if (facebook) {
+    socialMetaProp.push('facebook');
+  }
+  const twitter = socialShare.querySelector('.icon-Twitter');
+  if (twitter) {
+    socialMetaProp.push('X');
+  }
+  if (socialMetaProp.length === 0) return;
+  else return socialMetaProp.join(', ');
+}
+
+function createColorBlock(document) {
+  const colorBlocks = document.querySelectorAll('.colorBlockQuote');
+  colorBlocks.forEach((colorBlock) => {
+    const colorBlockQuote = colorBlock.querySelector('.colorblock-quote');
+    if (!colorBlockQuote) return;
+    const color = toHex(colorBlockQuote.style.backgroundColor); console.log(color);
+    const cells = [[`colorblock(${color}) `]];
+    const heading = colorBlockQuote.querySelector('.heading > h1').textContent;
+    cells.push([heading]);
+    const subHeading = colorBlockQuote.querySelector('.heading > h3');
+    if (subHeading) cells.push([subHeading.textContent,]);
+    const label = colorBlockQuote.querySelector('.label-text');
+    if (label) cells.push([label.textContent,]);
+    const table = WebImporter.DOMUtils.createTable(cells, document);
+    colorBlock.append(table);
+    colorBlockQuote.remove();
+  });
+}
+
+function toHex(rgb) {
+
+  // Grab the numbers
+  const match = rgb.match(/\d+/g);
+
+  // `map` over each number and return its hex
+  // equivalent making sure to `join` the array up
+  // and attaching a `#` to the beginning of the string 
+  return `#${match.map(color => {
+    const hex = Number(color).toString(16);
+    return hex.length === 1 ? `0${hex}` : hex;
+  }).join('')}`;
 }
