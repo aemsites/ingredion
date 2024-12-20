@@ -1,64 +1,64 @@
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
 function bindEvents(block) {
-    const slidesContainer = block.querySelector('.carousel-slides');
-    const slides = Array.from(slidesContainer.children);
+  const slidesContainer = block.querySelector('.carousel-slides');
+  const slides = Array.from(slidesContainer.children);
 
-    let isDragging = false;
-    let startX = 0;
-    let scrollLeft = 0;
+  let isDragging = false;
+  let startX = 0;
+  let scrollLeft = 0;
 
-    slidesContainer.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+  slidesContainer.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
 
-    // Helper function to calculate the slide width
-    const getSlideWidth = () => slides[0]?.getBoundingClientRect().width || 0;
+  // Helper function to calculate the slide width
+  const getSlideWidth = () => slides[0]?.getBoundingClientRect().width || 0;
 
-    // Snap to the nearest slide
-    const snapToSlide = () => {
-        const slideWidth = getSlideWidth();
-        const scrollPosition = slidesContainer.scrollLeft;
-        const closestSlideIndex = Math.round(scrollPosition / slideWidth);
-        slidesContainer.scrollTo({
-            left: closestSlideIndex * slideWidth,
-            behavior: 'smooth',
-        });
-    };
-
-    // Mouse down to start dragging
-    slidesContainer.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        slidesContainer.classList.add('dragging');
-        startX = e.clientX;
-        scrollLeft = slidesContainer.scrollLeft;
+  // Snap to the nearest slide
+  const snapToSlide = () => {
+    const slideWidth = getSlideWidth();
+    const scrollPosition = slidesContainer.scrollLeft;
+    const closestSlideIndex = Math.round(scrollPosition / slideWidth);
+    slidesContainer.scrollTo({
+      left: closestSlideIndex * slideWidth,
+      behavior: 'smooth',
     });
+  };
 
-    // Mouse move for smooth scrolling
-    slidesContainer.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        const x = e.clientX;
-        const distance = x - startX;
-        slidesContainer.scrollLeft = scrollLeft - distance;
-    });
+  // Mouse down to start dragging
+  slidesContainer.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    slidesContainer.classList.add('dragging');
+    startX = e.clientX;
+    scrollLeft = slidesContainer.scrollLeft;
+  });
 
-    // Mouse up to stop dragging and snap to slide
-    slidesContainer.addEventListener('mouseup', () => {
-        if (!isDragging) return;
-        isDragging = false;
-        slidesContainer.classList.remove('dragging');
-        snapToSlide();
-    });
+  // Mouse move for smooth scrolling
+  slidesContainer.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.clientX;
+    const distance = x - startX;
+    slidesContainer.scrollLeft = scrollLeft - distance;
+  });
 
-    // Ensure snap when the mouse leaves the container
-    slidesContainer.addEventListener('mouseleave', () => {
-        if (!isDragging) return;
-        isDragging = false;
-        slidesContainer.classList.remove('dragging');
-        snapToSlide();
-    });
+  // Mouse up to stop dragging and snap to slide
+  slidesContainer.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    slidesContainer.classList.remove('dragging');
+    snapToSlide();
+  });
 
-    // Prevent dragstart for images
-    slidesContainer.addEventListener('dragstart', (e) => e.preventDefault());
+  // Ensure snap when the mouse leaves the container
+  slidesContainer.addEventListener('mouseleave', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    slidesContainer.classList.remove('dragging');
+    snapToSlide();
+  });
+
+  // Prevent dragstart for images
+  slidesContainer.addEventListener('dragstart', (e) => e.preventDefault());
 }
 
 function createSlide(row, slideIndex, carouselId) {
@@ -92,7 +92,7 @@ export default async function decorate(block) {
   const rows = block.querySelectorAll(':scope > div');
   const isSingleSlide = rows.length < 2;
 
-  const placeholders = await fetchPlaceholders(); 
+  const placeholders = await fetchPlaceholders();
 
   const carouselContainer = document.createElement('div');
   carouselContainer.classList.add('carousel-container');
@@ -108,16 +108,14 @@ export default async function decorate(block) {
 
   const slidesWrapper = document.createElement('ul');
   slidesWrapper.classList.add('carousel-slides');
-  block.prepend(slidesWrapper);
 
   let slideIndicators;
   if (!isSingleSlide) {
     const slideIndicatorsNav = document.createElement('nav');
-    slideIndicatorsNav.setAttribute('aria-label', placeholders.carouselSlideControls || 'Carousel Slide Controls');
     slideIndicators = document.createElement('ul');
     slideIndicators.classList.add('carousel-slide-indicators');
     slideIndicatorsNav.append(slideIndicators);
-    block.append(slideIndicatorsNav);
+    block.prepend(slideIndicatorsNav);
 
     const slideNavButtons = document.createElement('div');
     slideNavButtons.classList.add('carousel-navigation-buttons');
@@ -128,6 +126,10 @@ export default async function decorate(block) {
 
     slidesContainer.append(slideNavButtons);
   }
+
+  carouselContainer.append(overview);
+  carouselContainer.append(slidesContainer);
+  block.append(slidesWrapper);
 
   rows.forEach((row, idx) => {
     if (idx === 0) {

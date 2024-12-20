@@ -6,7 +6,6 @@
 .carousel {
   min-height: 604px;
 
-
   .carousel-container {
   display: flex;
   flex-direction: row;
@@ -48,13 +47,26 @@
           scroll-snap-align: start;
           display: flex;
           flex-direction: column;
-          box-shadow: 4px 20px 40px 0 rgba(0, 0, 0, .1);
+          box-shadow: 4px 20px 40px 0 rgba(0 0 0 / 10%);
           user-select: none;
           margin-top: 50px;
           margin-bottom: 50px; 
         }
       }
     }
+  }
+
+  .carousel-navigation-buttons button {
+    position: relative;
+    background: #fff;
+    border-radius: 50%;
+    width: 40px;
+    height: 2.5rem;
+    top: 30px;
+    z-index: 10;
+    box-shadow: 4px 10px 15px 0 rgba(0 0 0 / 10%);
+    left: unset;
+    right: 200px;
   }
 }
 
@@ -144,21 +156,12 @@
     justify-content: space-between;
     z-index: 1;
   }
-  
-  .carousel .carousel-navigation-buttons button {
-    position: relative;
-    width: 44px;
-    height: 44px;
-    margin: 0;
-    border-radius: 50%;
-    padding: 0;
-    background-color: rgba(19 19 19 / 25%);
-    transition: background-color 0.2s;
-  }
-  
+
   .carousel .carousel-navigation-buttons button:hover,
   .carousel .carousel-navigation-buttons button:focus-visible {
-    background-color: rgba(19 19 19 / 75%);
+    outline: 0;
+    background: 0 0;
+    color: transparent;
   }
   
   .carousel .carousel-navigation-buttons button::after {
