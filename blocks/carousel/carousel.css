@@ -51,6 +51,7 @@
         > .carousel-slide {
           padding: 1.25rem 1.5rem;
           min-width: 399px; 
+          min-height: 464px;
           scroll-snap-align: start;
           display: flex;
           flex-direction: column;
