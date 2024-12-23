@@ -115,7 +115,7 @@ export default async function decorate(block) {
     slideIndicators = document.createElement('ul');
     slideIndicators.classList.add('carousel-slide-indicators');
     slideIndicatorsNav.append(slideIndicators);
-    block.prepend(slideIndicatorsNav);
+    slidesContainer.prepend(slideIndicatorsNav);
 
     const slideNavButtons = document.createElement('div');
     slideNavButtons.classList.add('carousel-navigation-buttons');
