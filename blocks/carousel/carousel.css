@@ -61,7 +61,7 @@
         }
       }
 
-      .carousel-slide-indicators {
+      > nav > .carousel-slide-indicators {
         display: flex;
         background-color: var(--light-color);
         line-height: 0;
@@ -80,8 +80,17 @@
             border-radius: 50%;
             background-color: var(--green);
             opacity: 0.25;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, opacity 0.2s;
             cursor: pointer;
+
+            &:hover,
+            &:focus-visible {
+              opacity: 0.75;
+            }
+      
+            &:disabled {
+              opacity: 1;
+            }
           }
         }
       }
@@ -131,24 +140,6 @@
       height: 100%;
       object-fit: contain;
     }
-  }
-  
-  .carousel .carousel-slides::-webkit-scrollbar {
-    display: none;
-  }
-
-  .carousel .carousel-slide-indicator button:hover {
-    opacity: 0.75;
-  }
-
-  .carousel .carousel-slide-indicator button:disabled {
-    opacity: 1;
-  }
-  
-  .carousel .carousel-slide-indicator button:disabled,
-  .carousel .carousel-slide-indicator button:hover,
-  .carousel .carousel-slide-indicator button:focus-visible {
-    background-color: var(--green);
   }
   
   .carousel .carousel-navigation-buttons {
