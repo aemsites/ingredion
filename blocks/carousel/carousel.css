@@ -106,10 +106,8 @@
         border: none;
         outline: 0;
         z-index: 1;
-        background: yellow;
     
         > button {
-          background: yellowgreen;
           position: absolute;
           background: #fff;
           border-radius: 50%;
@@ -128,7 +126,7 @@
           &.slide-next {
             right: 140px;
 
-            &&::after {
+            &::after {
               transform: translate(-50%, -50%) rotate(45deg);
               left: calc(50% - 2px);
             }
@@ -153,7 +151,7 @@
             cursor: pointer;
             outline: 0;
             background: 0 0;
-            color: transparent;
+            color: var(--dark-grey);
           }
         }
       }
