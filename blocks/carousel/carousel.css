@@ -55,7 +55,8 @@
 
         > .carousel-slide {
           padding: 1.25rem 1.5rem;
-          min-width: 399px; 
+          min-width: 44%;
+          flex: 1 1 auto;
           min-height: 464px;
           scroll-snap-align: start;
           display: flex;
@@ -196,6 +197,48 @@
 
     .carousel-slides-container > nav > .carousel-slide-indicators > li > button:disabled {
       opacity: 1;
+    }
+  }
+}
+
+@media (width < 1080px) {
+  .carousel {
+    .carousel-container {
+      flex-direction: column;
+      margin: auto;
+
+      .carousel-overview {
+        text-align: center;
+        width: 100%;
+        height: auto;
+        margin: 0;
+
+        > div > div {
+          > h3 {
+            font-size: 2rem;
+          }
+        }
+      }
+
+      .carousel-slides-container {
+        width: 100%;
+        height: auto;
+        
+        > .carousel-slides {
+          > .carousel-slide {
+            min-height: auto;
+            display: flex;
+            width: 630px;
+            min-width: 60%;
+
+            > .slide-body {
+              > h3 {
+                font-size: var(--heading-font-size-m);
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
