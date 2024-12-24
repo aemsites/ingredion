@@ -203,6 +203,8 @@
 
 @media (width < 1080px) {
   .carousel {
+    min-height: 900px;
+    
     .carousel-container {
       flex-direction: column;
       margin: auto;
