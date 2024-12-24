@@ -68,7 +68,7 @@ function adjustIndicators() {
   if (window.innerWidth < 1080) {
     const slideHeight = slides.offsetHeight;
     indicators.style.top = `${slideHeight + 40}px`;
-    indicators.style.justifyContent = `center`;
+    indicators.style.justifyContent = 'center';
   } else {
     indicators.style.position = '';
     indicators.style.top = '';
