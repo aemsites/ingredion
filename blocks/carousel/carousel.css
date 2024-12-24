@@ -97,17 +97,51 @@
     }
   }
 
-  .carousel-navigation-buttons button {
+  .carousel-navigation-buttons {
     position: relative;
-    background: #fff;
-    border-radius: 50%;
-    width: 40px;
-    height: 2.5rem;
-    top: 30px;
-    z-index: 10;
-    box-shadow: 4px 10px 15px 0 rgba(0 0 0 / 10%);
-    left: unset;
-    right: 200px;
+    display: block;
+    line-height: 0;
+    font-size: 0;
+    cursor: pointer;
+    transform: translate(0, -50%);
+    padding: 0;
+    border: none;
+    outline: 0;
+    z-index: 1;
+
+    button {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      width: 40px;
+      height: 2.5rem;
+      top: 30px;
+      z-index: 10;
+      box-shadow: 4px 10px 15px 0 rgba(0, 0, 0, .1);
+
+      &.slide-prev {
+        left: unset;
+        right: 200px;
+      }
+
+      &.slide-next {
+        right: 140px;
+      }
+
+      &::after {
+        display: block;
+        content: '';
+        border: 2px solid;
+        border-bottom: 0;
+        border-left: 0;
+        height: 12px;
+        width: 12px;
+        position: absolute;
+        top: 50%;
+        left: calc(50% + 2px);
+        transform: translate(-50%, -50%) rotate(-135deg);
+      }
+    }
   }
 }
 
@@ -142,37 +176,11 @@
     }
   }
   
-  .carousel .carousel-navigation-buttons {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 12px;
-    right: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 1;
-  }
-
   .carousel .carousel-navigation-buttons button:hover,
   .carousel .carousel-navigation-buttons button:focus-visible {
     outline: 0;
     background: 0 0;
     color: transparent;
-  }
-  
-  .carousel .carousel-navigation-buttons button::after {
-    display: block;
-    content: '';
-    border: 2px solid;
-    border-bottom: 0;
-    border-left: 0;
-    height: 12px;
-    width: 12px;
-    position: absolute;
-    top: 50%;
-    left: calc(50% + 2px);
-    transform: translate(-50%, -50%) rotate(-135deg);
   }
   
   .carousel .carousel-navigation-buttons button.slide-next::after {
