@@ -61,6 +61,21 @@ function bindEvents(block) {
   slidesContainer.addEventListener('dragstart', (e) => e.preventDefault());
 }
 
+function adjustIndicators() {
+  const indicators = document.querySelector('.carousel-slides-container > nav > .carousel-slide-indicators');
+  const slides = document.querySelector('.carousel-slides');
+
+  if (window.innerWidth < 1080) {
+    const slideHeight = slides.offsetHeight;
+    indicators.style.top = `${slideHeight + 40}px`;
+    indicators.style.justifyContent = `center`;
+  } else {
+    indicators.style.position = '';
+    indicators.style.top = '';
+    indicators.style.justifyContent = '';
+  }
+}
+
 function createSlide(row, slideIndex, carouselId) {
   const slide = document.createElement('li');
   slide.dataset.slideIndex = slideIndex;
@@ -155,4 +170,7 @@ export default async function decorate(block) {
   if (!isSingleSlide) {
     bindEvents(block);
   }
+
+  window.addEventListener('resize', adjustIndicators);
+  document.addEventListener('DOMContentLoaded', adjustIndicators);
 }
