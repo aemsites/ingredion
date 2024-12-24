@@ -28,7 +28,13 @@
 
         > h3 {
           font-size: 2.5rem;
-          letter-spacing: -.03125rem;
+          letter-spacing: -.0313rem;
+        }
+
+        > p {
+          font-size: var(--body-font-size-s);
+          line-height: 1.5rem;
+          letter-spacing: 0.0156rem;
         }
       }
     }
@@ -58,38 +64,36 @@
           user-select: none;
           margin-top: 50px;
           margin-bottom: 50px; 
-        }
-      }
 
-      > nav > .carousel-slide-indicators {
-        display: flex;
-        background-color: var(--light-color);
-        line-height: 0;
-        list-style: none;
-        position: relative;
-        top: 16px;
-    
-        > li {
-          margin: 0;
-    
-          > button {
-            width: 9px;
-            height: 9px;
-            border: 0;
-            margin: 5px;
-            border-radius: 50%;
-            background-color: var(--green);
-            opacity: 0.25;
-            transition: background-color 0.2s, opacity 0.2s;
-            cursor: pointer;
-
-            &:hover,
-            &:focus-visible {
-              opacity: 0.75;
+          > .slide-body {
+            > h3 {
+              letter-spacing: -0.0313rem;
+              font-size: 32px;
             }
-      
-            &:disabled {
-              opacity: 1;
+            
+            > p {
+              font-size: var(--body-font-size-s);
+              line-height: 1.5rem;
+              letter-spacing: 0.0156rem;
+            }
+
+            > a {
+              display: unset;
+              margin-top: 8px;
+              text-decoration: underline;
+              color: var(--dark-green);
+            }
+          }
+
+          > .slide-image {
+            height: 9.75rem;
+            margin: 1.25rem 0 2.5rem;
+            box-sizing: border-box;
+        
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
             }
           }
         }
@@ -116,7 +120,7 @@
           height: 2.5rem;
           top: 20px;
           z-index: 10;
-          box-shadow: 4px 10px 15px 0 rgba(0, 0, 0, .1);
+          box-shadow: 4px 10px 15px 0 rgba(0 0 0 / 10%);
     
           &.slide-prev {
             left: unset;
@@ -151,43 +155,47 @@
             opacity: .75;
             border-color: var(--dark-grey);
           }
+        }
+      }
 
-          &:hover, &:focus-visible {
+      > nav > .carousel-slide-indicators {
+        display: flex;
+        background-color: var(--light-color);
+        line-height: 0;
+        list-style: none;
+        position: relative;
+        top: 16px;
+    
+        > li {
+          margin: 0;
+    
+          > button {
+            width: 9px;
+            height: 9px;
+            border: 0;
+            margin: 5px;
+            border-radius: 50%;
+            background-color: var(--green);
+            opacity: 0.25;
+            transition: background-color 0.2s, opacity 0.2s;
             cursor: pointer;
           }
         }
       }
     }
-  }
-}
 
-  .slide-body h3 {
-    letter-spacing: -0.0313rem;
-    font-size: 32px;
-  }
-  
-  .slide-body p,
-  .carousel-overview p {
-    font-size: var(--body-font-size-s);
-    line-height: 1.5rem;
-    letter-spacing: 0.0156rem;
-  }
-  
-  .slide-body a {
-    display: unset;
-    margin-top: 8px;
-    text-decoration: underline;
-    color: var(--dark-green);
-  }
-  
-  .carousel-slide .slide-image {
-    height: 9.75rem;
-    margin: 1.25rem 0 2.5rem;
-    box-sizing: border-box;
+    .carousel-slides-container > .carousel-navigation-buttons > button:hover,
+    .carousel-slides-container > .carousel-navigation-buttons > button:focus-visible {
+      cursor: pointer;
+    }
 
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+    .carousel-slides-container > nav > .carousel-slide-indicators > li > button:hover,
+    .carousel-slides-container > nav > .carousel-slide-indicators > li > button:focus-visible {
+      opacity: .75;
+    }
+
+    .carousel-slides-container > nav > .carousel-slide-indicators > li > button:disabled {
+      opacity: 1;
     }
   }
+}
