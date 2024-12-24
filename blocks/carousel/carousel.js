@@ -61,14 +61,23 @@ function bindEvents(block) {
   slidesContainer.addEventListener('dragstart', (e) => e.preventDefault());
 }
 
-function adjustIndicators() {
+function adjustIndicators(retries = 10) {
   const indicators = document.querySelector('.carousel-slides-container > nav > .carousel-slide-indicators');
   const slides = document.querySelector('.carousel-slides');
 
   if (window.innerWidth < 1080) {
     const slideHeight = slides.offsetHeight;
-    indicators.style.top = `${slideHeight + 40}px`;
-    indicators.style.justifyContent = 'center';
+    if (slideHeight > 0) {
+      // Height is valid, apply styles
+      indicators.style.top = `${slideHeight + 40}px`; // Adjust position dynamically
+      indicators.style.justifyContent = 'center';
+    } else if (retries > 0) {
+      // Retry after a short delay if height is not yet computed
+      console.warn(`Retrying... Remaining attempts: ${retries}`);
+      setTimeout(() => adjustIndicators(retries - 1), 1); // Retry after 1ms
+    } else {
+      console.error('Failed to compute slide height after multiple retries.');
+    }
   } else {
     indicators.style.position = '';
     indicators.style.top = '';
@@ -171,6 +180,6 @@ export default async function decorate(block) {
     bindEvents(block);
   }
 
+  adjustIndicators();
   window.addEventListener('resize', adjustIndicators);
-  document.addEventListener('DOMContentLoaded', adjustIndicators);
 }
