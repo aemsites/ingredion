@@ -4,7 +4,7 @@ function showSlide(block, slideIndex = 0) {
   const slides = block.querySelectorAll('.carousel-slide');
   let realSlideIndex = slideIndex < 1 ? slides.length - 1 : slideIndex;
   if (slideIndex > slides.length) realSlideIndex = 1;
-  const activeSlide = slides[realSlideIndex-1];
+  const activeSlide = slides[realSlideIndex - 1];
   const style = window.getComputedStyle(activeSlide);
   const leftMargin = parseFloat(style.marginLeft);
   const scrollOffset = activeSlide.offsetWidth + leftMargin;
@@ -81,7 +81,7 @@ function bindEvents(block) {
   slideIndicators.querySelectorAll('button').forEach((button) => {
     button.addEventListener('click', (e) => {
       const slideIndicator = e.currentTarget.parentElement;
-      showSlide(block, parseInt(slideIndicator.dataset.targetSlide));
+      showSlide(block, parseInt(slideIndicator.dataset.targetSlide, 10));
     });
   });
 }
@@ -97,11 +97,7 @@ function adjustIndicators(retries = 10) {
       indicators.style.top = `${slideHeight + 40}px`; // Adjust position dynamically
       indicators.style.justifyContent = 'center';
     } else if (retries > 0) {
-      // Retry after a short delay if height is not yet computed
-      console.warn(`Retrying... Remaining attempts: ${retries}`);
       setTimeout(() => adjustIndicators(retries - 1), 1); // Retry after 1ms
-    } else {
-      console.error('Failed to compute slide height after multiple retries.');
     }
   } else {
     indicators.style.position = '';

@@ -181,12 +181,6 @@
             transition: background-color 0.2s, opacity 0.2s;
             cursor: pointer;
           }
-
-          &:active {
-            > button {
-              opacity: 1;
-            }
-          }
         }
       }
     }
@@ -225,6 +219,7 @@
           > h3 {
             font-size: 2rem;
           }
+
           > p {
             font-size: 1rem;
           }
@@ -246,6 +241,7 @@
               > h3 {
                 font-size: 1.5rem;
               }
+              
               > p {
                 font-size: 1rem;
               }
