@@ -31,8 +31,11 @@ function bindEvents(block) {
     const slideWidth = getSlideWidth();
     const scrollPosition = slidesContainer.scrollLeft;
     const closestSlideIndex = Math.round(scrollPosition / slideWidth);
+    const style = window.getComputedStyle(slides[0]);
+    const leftMargin = parseFloat(style.marginLeft);
+    const snapOffset = slideWidth + leftMargin;
     slidesContainer.scrollTo({
-      left: closestSlideIndex * slideWidth,
+      left: closestSlideIndex * snapOffset,
       behavior: 'smooth',
     });
   };
@@ -78,7 +81,7 @@ function bindEvents(block) {
   slideIndicators.querySelectorAll('button').forEach((button) => {
     button.addEventListener('click', (e) => {
       const slideIndicator = e.currentTarget.parentElement;
-      showSlide(block, parseInt(slideIndicator.dataset.targetSlide, 10));
+      showSlide(block, parseInt(slideIndicator.dataset.targetSlide));
     });
   });
 }
