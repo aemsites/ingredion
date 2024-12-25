@@ -159,27 +159,30 @@
         }
       }
 
-      > nav > .carousel-slide-indicators {
-        display: flex;
-        background-color: var(--light-color);
-        line-height: 0;
-        list-style: none;
+      > nav {
         position: relative;
         top: 16px;
-    
-        > li {
-          margin: 0;
-    
-          > button {
-            width: 9px;
-            height: 9px;
-            border: 0;
-            margin: 5px;
-            border-radius: 50%;
-            background-color: var(--green);
-            opacity: 0.25;
-            transition: background-color 0.2s, opacity 0.2s;
-            cursor: pointer;
+
+        > .carousel-slide-indicators {
+          display: flex;
+          background-color: var(--light-color);
+          line-height: 0;
+          list-style: none;
+      
+          > li {
+            margin: 0;
+      
+            > button {
+              width: 9px;
+              height: 9px;
+              border: 0;
+              margin: 5px;
+              border-radius: 50%;
+              background-color: var(--green);
+              opacity: 0.25;
+              transition: background-color 0.2s, opacity 0.2s;
+              cursor: pointer;
+            }
           }
         }
       }
