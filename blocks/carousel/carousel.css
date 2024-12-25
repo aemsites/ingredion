@@ -219,6 +219,9 @@
           > h3 {
             font-size: 2rem;
           }
+          > p {
+            font-size: 1rem;
+          }
         }
       }
 
@@ -235,7 +238,10 @@
 
             > .slide-body {
               > h3 {
-                font-size: var(--heading-font-size-m);
+                font-size: 1.5rem;
+              }
+              > p {
+                font-size: 1rem;
               }
             }
           }
