@@ -15,6 +15,31 @@ function showSlide(block, slideIndex = 0) {
   });
 }
 
+function updateActiveSlide(block, slideIndex) {
+  block.dataset.activeSlide = slideIndex;
+
+  const slides = block.querySelectorAll('.carousel-slide');
+
+  slides.forEach((aSlide, idx) => {
+    aSlide.querySelectorAll('a').forEach((link) => {
+      if (idx !== slideIndex) {
+        link.setAttribute('tabindex', '-1');
+      } else {
+        link.removeAttribute('tabindex');
+      }
+    });
+  });
+
+  const indicators = block.querySelectorAll('.carousel-slide-indicator');
+  indicators.forEach((indicator, idx) => {
+    if (idx !== slideIndex) {
+      indicator.querySelector('button').removeAttribute('disabled');
+    } else {
+      indicator.querySelector('button').setAttribute('disabled', 'true');
+    }
+  });
+}
+
 function bindEvents(block) {
   const slidesContainer = block.querySelector('.carousel-slides');
   const slides = Array.from(slidesContainer.children);
@@ -38,6 +63,8 @@ function bindEvents(block) {
       left: closestSlideIndex * snapOffset,
       behavior: 'smooth',
     });
+
+    updateActiveSlide(block, closestSlideIndex);
   };
 
   // Mouse down to start dragging
@@ -81,7 +108,9 @@ function bindEvents(block) {
   slideIndicators.querySelectorAll('button').forEach((button) => {
     button.addEventListener('click', (e) => {
       const slideIndicator = e.currentTarget.parentElement;
-      showSlide(block, parseInt(slideIndicator.dataset.targetSlide, 10));
+      const targetSlideIndex = parseInt(slideIndicator.dataset.targetSlide, 10);
+      showSlide(block, targetSlideIndex);
+      updateActiveSlide(block, targetSlideIndex - 1);
     });
   });
 }
@@ -188,6 +217,9 @@ export default async function decorate(block) {
         indicator.classList.add('carousel-slide-indicator');
         indicator.dataset.targetSlide = idx;
         indicator.innerHTML = `<button type="button" aria-label="${placeholders.showSlide || 'Show Slide'} ${idx + 1} ${placeholders.of || 'of'} ${rows.length}"></button>`;
+        if (idx === 1) {
+          indicator.querySelector('button').setAttribute('disabled', 'true');
+        }
         slideIndicators.append(indicator);
       }
       row.remove();
