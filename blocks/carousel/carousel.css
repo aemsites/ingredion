@@ -181,6 +181,12 @@
             transition: background-color 0.2s, opacity 0.2s;
             cursor: pointer;
           }
+
+          &:active {
+            > button {
+              opacity: 1;
+            }
+          }
         }
       }
     }

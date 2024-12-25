@@ -1,5 +1,20 @@
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
+function showSlide(block, slideIndex = 0) {
+  const slides = block.querySelectorAll('.carousel-slide');
+  let realSlideIndex = slideIndex < 1 ? slides.length - 1 : slideIndex;
+  if (slideIndex > slides.length) realSlideIndex = 1;
+  const activeSlide = slides[realSlideIndex-1];
+  const style = window.getComputedStyle(activeSlide);
+  const leftMargin = parseFloat(style.marginLeft);
+  const scrollOffset = activeSlide.offsetWidth + leftMargin;
+
+  block.querySelector('.carousel-slides').scrollTo({
+    left: activeSlide.offsetLeft - scrollOffset,
+    behavior: 'smooth',
+  });
+}
+
 function bindEvents(block) {
   const slidesContainer = block.querySelector('.carousel-slides');
   const slides = Array.from(slidesContainer.children);
@@ -7,8 +22,6 @@ function bindEvents(block) {
   let isDragging = false;
   let startX = 0;
   let scrollLeft = 0;
-
-  slidesContainer.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
 
   // Helper function to calculate the slide width
   const getSlideWidth = () => slides[0]?.getBoundingClientRect().width || 0;
@@ -59,6 +72,15 @@ function bindEvents(block) {
 
   // Prevent dragstart for images
   slidesContainer.addEventListener('dragstart', (e) => e.preventDefault());
+
+  const slideIndicators = block.querySelector('.carousel-slide-indicators');
+  if (!slideIndicators) return;
+  slideIndicators.querySelectorAll('button').forEach((button) => {
+    button.addEventListener('click', (e) => {
+      const slideIndicator = e.currentTarget.parentElement;
+      showSlide(block, parseInt(slideIndicator.dataset.targetSlide, 10));
+    });
+  });
 }
 
 function adjustIndicators(retries = 10) {
