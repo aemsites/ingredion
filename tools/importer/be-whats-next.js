@@ -12,6 +12,21 @@
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
 
+const colorMapping = new Map([
+  ['#0073d8', 'blue'],
+  ['#273691', 'dark-blue'],
+  ['#006a71', 'teal'],
+  ['#6cb33e', 'green'],
+  ['#4f6e18', 'dark-green'],
+  ['#ffe115', 'yellow'],
+  ['#c5aa2e', 'mustard'],
+  ['#ff7017', 'orange'],
+  ['#db2807', 'red'],
+  ['#6266b9', 'lilac'],
+  ['#b41f75', 'purple'],
+  ['#6a0c5f', 'dark-purple'],
+  ['#ffffff', 'transparent']
+]);
 
 export default {
   /**
@@ -29,9 +44,8 @@ export default {
   }) => {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
-    createColorBlock(document, main);
-    createIngredientBlock(document, main);
-    createContactUs(main, document);
+    createCalloutBlock(document, main);
+    createCardsBlock(document, main);
     createMetadata(main, document, url, html);
 
     // attempt to remove non-content elements
@@ -122,70 +136,6 @@ export function getMetadataProp(document, queryString) {
   return metaDataField;
 }
 
-function createIngredientBlock(document, main) {
-  const relatedIngredients = document.querySelector('.relatedIngredients');
-  if (!relatedIngredients) return;
-  const resultProdCards = document.querySelectorAll('.result-prod-card');
-  if (!resultProdCards) {
-    const cells = [['related ingredient']];
-    const heading = relatedIngredients.querySelector('.heading > h2').textContent;
-    const subHeading = relatedIngredients.querySelector('.rte-block').textContent;
-    cells.push([heading,]);
-    cells.push([subHeading,]);
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(table);
-  } else {
-    resultProdCards.forEach((resultProdCard) => {
-      const cells = [['related ingredient']];
-      const heading = resultProdCard.querySelector('.product-name').textContent;
-      const h3 = resultProdCard.querySelector('.rte-block > h3');
-      const subHeading = h3 ? h3.textContent : '';
-      const pTag = resultProdCard.querySelector('.rte-block > p');
-      const description = pTag ? pTag.textContent : '';
-      const ctas = resultProdCard.querySelectorAll('.cta-icon');
-      let ctaAnchor = ''
-      ctas.forEach((cta) => {
-        ctaAnchor += `<a href = '${cta.getAttribute('href')}'>${cta.innerText}</a>`;
-      });
-      const leftSide = `<h4>${heading}</h4><h3>${subHeading}</h3><p>${description}</p>${ctaAnchor}`;
-      const resultCardButtons = document.querySelector('.result-card__buttons');
-      const buttons = resultCardButtons.querySelectorAll('a');
-      let rightSide = '';
-      buttons.forEach((button) => {
-        rightSide += `<a href = '${button.getAttribute('href')}'>${button.innerText}</a><br>`;
-      });
-      cells.push([leftSide,]);
-      cells.push([rightSide,]);
-      const table = WebImporter.DOMUtils.createTable(cells, document);
-      main.append(table);
-    });
-  }
-  relatedIngredients.remove();
-  return;
-}
-
-function createContactUs(main, document) {
-  const contactUs = document.querySelector('.contact-banner__wrapper');
-  if (contactUs) {
-    const heading = contactUs.querySelector('.heading > h3').textContent;
-    let contactDetailsHeading = contactUs.querySelector('.contact-banner__primary .heading > h4') ?
-      contactUs.querySelector('.contact-banner__primary .heading > h4').textContent : null;
-    let contactDetails = contactUs.querySelector('.rte-block').textContent;
-    if (!contactDetailsHeading) {
-      contactDetailsHeading = contactUs.querySelector('.contact-banner__primary').textContent;
-      contactDetails = contactUs.querySelector('.contact-banner__secondary').textContent;
-    }
-
-    const cells = [['contact us']];
-    cells.push([heading,]);
-    cells.push([contactDetailsHeading,]);
-    cells.push([contactDetails,]);
-    const contactUsBlock = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(contactUsBlock);
-    contactUs.remove();
-  }
-}
-
 function getPageName(document) {
   const breadcrumbElement = document.querySelector('.breadcrumbs > ul > li:last-of-type > a');
   if (!breadcrumbElement) return '';
@@ -207,24 +157,68 @@ function getSocialShare(document) {
   else return socialMetaProp.join(', ');
 }
 
-function createColorBlock(document) {
-  const colorBlocks = document.querySelectorAll('.colorBlockQuote');
-  colorBlocks.forEach((colorBlock) => {
-    const colorBlockQuote = colorBlock.querySelector('.colorblock-quote');
-    if (!colorBlockQuote) return;
-    const color = toHex(colorBlockQuote.style.backgroundColor);
-    const cells = [[`colorblock(${color}) `]];
-    const heading = colorBlockQuote.querySelector('.heading > h1').textContent;
-    cells.push([heading]);
-    const subHeading = colorBlockQuote.querySelector('.heading > h3');
-    if (subHeading) cells.push([subHeading.textContent,]);
-    const label = colorBlockQuote.querySelector('.label-text');
-    if (label) cells.push([label.textContent,]);
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    colorBlock.append(table);
-    colorBlockQuote.remove();
+function createCalloutBlock(document, main) {
+  const callOutBlocks = document.querySelectorAll('.colorblock-img-text__wrapper');
+  let calloutImg = '';
+  let backgroundColor = '';
+  let heading = '';
+  let rteText = '';
+  let ctalink = ''; 
+  callOutBlocks.forEach((callOut) => {
+    let imageLeft;
+    [...callOut.children].forEach((child, index) => {
+      if (child.classList.contains('colorblock-img-text__image')) {
+        const image = child.querySelector('picture > img');
+        calloutImg = document.createElement('img');
+        calloutImg.src = image.src;
+        if (callOut.classList.contains('colorblock-img-text--imgRight')) imageLeft = false;
+        else imageLeft = true;
+      } else if (child.classList.contains('colorblock-img-text__text')) {
+        backgroundColor = colorMapping.get(toHex(child.style.backgroundColor).toLowerCase());
+        heading = child.querySelector('.colorblock-img-text__text--wrapper .heading > h3').textContent;
+        rteText = child.querySelector('.colorblock-img-text__text--wrapper .rte-block');
+        if (rteText) {
+          rteText = rteText.innerHTML;
+        }
+        ctalink = child.querySelector('.colorblock-img-text__text--wrapper .secondary-cta-link') ? 
+          child.querySelector('.colorblock-img-text__text--wrapper .secondary-cta-link').outerHTML : '';
+        if (ctalink === '') {
+          ctalink = child.querySelector('.colorblock-img-text__text--wrapper .primary-cta') ? 
+            child.querySelector('.colorblock-img-text__text--wrapper .primary-cta').outerHTML : '';
+        }
+      }
+      child.remove();
+    });
+    const cells = backgroundColor === '' ? [['Callout']] : [[`Callout (${backgroundColor})`]];
+    if (imageLeft) cells.push([calloutImg, `<h3>${heading}</h3> ${rteText} ${ctalink}`]);
+    else cells.push([`<h3>${heading}</h3> ${rteText} ${ctalink}`, calloutImg]);
+    const callOutBlock = WebImporter.DOMUtils.createTable(cells, document); 
+    callOut.appendChild(callOutBlock);    
   });
 }
+
+function createCardsBlock(document, main) {
+  const cardsBlocks = document.querySelectorAll('.referenceContentCards .section__content');
+  cardsBlocks.forEach((cardsBlock) => {
+    const cells = [['Cards']];
+    const cards = cardsBlock.querySelectorAll('.content-card');
+    let cardsList = [];
+    cards.forEach((card, index) => {      
+      const cardImg = card.querySelector('.content-card__image > a > picture').outerHTML;
+      const cardHeading = card.querySelector('.content-card__text .heading > h3').textContent;
+      const cardText = card.querySelector('.content-card__text .rte-block').textContent;
+      const cardLink = card.querySelector('.content-card__text > a').outerHTML;
+      cardsList.push(`${cardImg} ${cardHeading} ${cardText} ${cardLink}`);
+      if ((index + 1) % 3 === 0) {
+        cells.push([cardsList[0], cardsList[1], cardsList[2]]);
+        cardsList = [];
+      }      
+    });
+    const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
+    cardsBlock.replaceWith(cardsTable);
+  });
+}
+
 
 function toHex(rgb) {
 
