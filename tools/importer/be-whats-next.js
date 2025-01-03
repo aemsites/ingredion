@@ -46,6 +46,7 @@ export default {
     const main = document.body;
     createCalloutBlock(document, main);
     createCardsBlock(document, main);
+    createVideoBlock(document, main);
     createMetadata(main, document, url, html);
 
     // attempt to remove non-content elements
@@ -158,7 +159,7 @@ function getSocialShare(document) {
 }
 
 function createCalloutBlock(document, main) {
-  const callOutBlocks = document.querySelectorAll('.colorblock-img-text__wrapper');
+  let callOutBlocks = document.querySelectorAll('.colorblock-img-text__wrapper');
   let calloutImg = '';
   let backgroundColor = '';
   let heading = '';
@@ -195,30 +196,131 @@ function createCalloutBlock(document, main) {
     const callOutBlock = WebImporter.DOMUtils.createTable(cells, document); 
     callOut.appendChild(callOutBlock);    
   });
+  callOutBlocks = document.querySelectorAll('.colorblock-text-cta__wrapper');
+  callOutBlocks.forEach((callOut) => {
+    [...callOut.children].forEach((child) => {
+      if (child.classList.contains('colorblock-text-cta__text')) {
+        heading = child.querySelector('.heading > h3').textContent;
+        rteText = child.querySelector('.rte-block');
+        if (rteText) {
+          rteText = rteText.innerHTML;
+        }
+      } else if (child.classList.contains('secondary-cta-link')) {
+        ctalink = child.outerHTML;
+      }
+      child.remove();
+    });
+    const cells = [['Callout']];
+    cells.push([`<h3>${heading}</h3> ${rteText} ${ctalink}`]);
+    const callOutBlock = WebImporter.DOMUtils.createTable(cells, document); 
+    callOut.replaceWith(callOutBlock);    
+  });
 }
 
 function createCardsBlock(document, main) {
-  const cardsBlocks = document.querySelectorAll('.referenceContentCards .section__content');
+  let cardsBlocks = document.querySelectorAll('.section__content--columns-3');
   cardsBlocks.forEach((cardsBlock) => {
     const cells = [['Cards']];
     const cards = cardsBlock.querySelectorAll('.content-card');
     let cardsList = [];
-    cards.forEach((card, index) => {      
-      const cardImg = card.querySelector('.content-card__image > a > picture').outerHTML;
-      const cardHeading = card.querySelector('.content-card__text .heading > h3').textContent;
-      const cardText = card.querySelector('.content-card__text .rte-block').textContent;
-      const cardLink = card.querySelector('.content-card__text > a').outerHTML;
-      cardsList.push(`${cardImg} ${cardHeading} ${cardText} ${cardLink}`);
-      if ((index + 1) % 3 === 0) {
-        cells.push([cardsList[0], cardsList[1], cardsList[2]]);
-        cardsList = [];
+    cards.forEach((card, index) => {    
+      let cardImg = card.querySelector('.content-card__image > a > picture') ? card.querySelector('.content-card__image > a > picture') : card.querySelector('.content-card__image > picture');
+      if (cardImg) cardImg = cardImg.outerHTML;
+      else cardImg = '';
+      const cardHeading = card.querySelector('.content-card__text .heading > h3') ? card.querySelector('.content-card__text .heading > h3').textContent : '';
+      const cardText = card.querySelector('.content-card__text .rte-block') ? card.querySelector('.content-card__text .rte-block').textContent : '';
+      const cardLink = card.querySelector('.content-card__text > a') ? card.querySelector('.content-card__text > a').outerHTML : '';
+      cardsList.push(`${cardImg} <h3>${cardHeading}<h3> ${cardText} ${cardLink}`);
+      if (index === cards.length - 1) {
+        for (let i = 0; i < cardsList.length; i += 3) {
+          if (cardsList[i + 2] === undefined) cells.push([cardsList[i], cardsList[i + 1]]);
+          else if (cardsList[i + 1] === undefined) cells.push([cardsList[i]]);
+          else cells.push([cardsList[i], cardsList[i + 1], cardsList[i + 2]]);          
+        }
       }      
+    });
+    const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
+    cardsBlock.replaceWith(cardsTable);
+  });
+  cardsBlocks = document.querySelectorAll('.card-slider__wrapper');
+  cardsBlocks.forEach((cardsBlock) => {
+    const cells = [['Cards(slim)']];
+    const cards = cardsBlock.querySelectorAll('.card');    
+    cards.forEach((card, index) => {      
+      const cardImg = card.querySelector('.card__image > picture').outerHTML;
+      const cardHeading = card.querySelector('.card__text .heading > h4').textContent;
+      const cardText = card.querySelector('.card__text .rte-block').textContent;
+      const cardLinkText = card.querySelector('.card__text .secondary-cta');
+      let cardLink = document.createElement('a');
+      cardLink.href = cardLinkText.parentElement.href;
+      cardLink.textContent = cardLinkText.textContent;
+      cells.push([`${cardImg} ${cardHeading} ${cardText} ${cardLink.outerHTML}`]);      
+    });
+    const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
+    cardsBlock.replaceWith(cardsTable);
+  });
+  cardsBlocks = document.querySelectorAll('.section__content--columns-2');
+  cardsBlocks.forEach((cardsBlock) => {
+    const cells = [['Cards']];
+    const cards = cardsBlock.querySelectorAll('.content-card');
+    let cardsList = [];
+    cards.forEach((card, index) => {    
+      let cardImg = card.querySelector('.content-card__image > a > picture') ? card.querySelector('.content-card__image > a > picture') : card.querySelector('.content-card__image > picture');
+      if (cardImg) cardImg = cardImg.outerHTML;
+      else cardImg = '';
+      const cardHeading = card.querySelector('.content-card__text .heading > h3') ? card.querySelector('.content-card__text .heading > h3').textContent : '';
+      const cardText = card.querySelector('.content-card__text .rte-block') ? card.querySelector('.content-card__text .rte-block').textContent : '';
+      const cardLink = card.querySelector('.content-card__text > a') ? card.querySelector('.content-card__text > a').outerHTML : '';
+      cardsList.push(`${cardImg} <h3>${cardHeading}<h3> ${cardText} ${cardLink}`);
+      if (index === cards.length - 1) {
+        for (let i = 0; i < cardsList.length; i += 2) {
+          if (cardsList[i + 1] === undefined) cells.push([cardsList[i]]);
+          else cells.push([cardsList[i], cardsList[i + 1]]);          
+        }
+      }      
+    });
+    const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
+    cardsBlock.replaceWith(cardsTable);
+  });
+
+  cardsBlocks = document.querySelectorAll('.fourColumnTeaserGrid .section__content');
+  cardsBlocks.forEach((cardsBlock) => {
+    const cells = [['Cards(4-column-teaser)']];
+    const cards = cardsBlock.querySelectorAll('.link-card');
+    let cardsList = [];
+    cards.forEach((card, index) => {    
+      let cardImg = card.querySelector('picture');
+      card.removeChild(cardImg.parentElement);
+      if (cardImg) cardImg = cardImg.outerHTML;
+      else cardImg = '';      
+      cardsList.push(`${cardImg} <a href='${card.href}'>${card.textContent}</a>`);
+      if (index === cards.length - 1) {
+        for (let i = 0; i < cardsList.length; i += 4) {
+          if (cardsList[i + 1] === undefined) cells.push([cardsList[i]]);
+          else if (cardsList[i + 2] === undefined) cells.push([cardsList[i], cardsList[i + 1]]);
+          else if (cardsList[i + 3] === undefined) cells.push([cardsList[i], cardsList[i + 1], cardsList[i + 2]]);
+          else cells.push([cardsList[i], cardsList[i + 1], cardsList[i + 2], cardsList[i + 3]]);                
+        }
+      }
     });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
     cardsBlock.replaceWith(cardsTable);
   });
 }
 
+function createVideoBlock(document, main) {
+  let videoBlocks = document.querySelectorAll('.video-banner');
+  videoBlocks.forEach((videoBlock) => {
+    const cells = [['Video']];
+    let videoURL = videoBlock.getAttribute('data-video-url');
+    const picture = videoBlock.querySelector('.video-banner__wrapper > picture').outerHTML;
+    const videoID = videoURL.split('/').at(-1);
+    videoURL = `https://vimeo.com/${videoID}`;
+    cells.push([`${picture} ${videoURL}`]);
+    const videoTable = WebImporter.DOMUtils.createTable(cells, document);
+    videoBlock.replaceWith(videoTable);
+  });
+}
 
 function toHex(rgb) {
 
