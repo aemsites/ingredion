@@ -253,6 +253,7 @@ a.button,
     cursor: pointer;
     display: flex;
     position: relative;
+    user-select: none;
 }
 
 .scroll-top-btn-button {
