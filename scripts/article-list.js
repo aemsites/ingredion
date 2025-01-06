@@ -1,5 +1,5 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
-import { div, button, ul, li, a, small, h3, h4, h5, span } from './dom-helpers.js';
+import { a, button, div, h3, h4, h5, li, small, span, ul } from './dom-helpers.js';
 
 function getUrlParams() {
   return new URLSearchParams(window.location.search);
@@ -107,11 +107,9 @@ export default class ArticleList {
   }
 
   updatePagination() {
-    if (!this.paginationContainer) return;
-    this.paginationContainer.innerHTML = '';
-
     // Exit if paginationContainer isn't present or article count is less than max page count
     if (!this.paginationContainer || this.totalArticles < this.articlesPerPage) return;
+    this.paginationContainer.innerHTML = '';
 
     const p = document.createDocumentFragment();
 
@@ -182,11 +180,9 @@ export default class ArticleList {
 
   updateCount() {
     if (!this.countContainer) return;
-
     const start = this.currentPage * this.articlesPerPage + 1;
     const end = Math.min((this.currentPage + 1) * this.articlesPerPage, this.totalArticles);
-    const countText = `Items ${start}–${end} of ${this.totalArticles}`;
-    this.countContainer.textContent = countText;
+    this.countContainer.textContent = `Items ${start}–${end} of ${this.totalArticles}`;
   }
 
   createPerPageDropdown() {
@@ -211,11 +207,11 @@ export default class ArticleList {
           window.history.pushState(null, '', url);
         }
 
-        // update active class
+        // update selected class
         Array.from($dropdown.children).forEach((child) => {
-          child.classList.remove('active');
+          child.classList.remove('selected');
         });
-        $li.classList.add('active');
+        $li.classList.add('selected');
 
         // close the dropdown and update the displayed value
         $currentSelection.textContent = `${option} per page`;
@@ -238,10 +234,14 @@ export default class ArticleList {
     this.perPageContainer.append($currentSelection, $dropdown);
   }
 
+  getFilteredArticles() {
+    return this.allArticles.filter((article) => this.tags.every((tag) => article.tags.toLowerCase().replace(/\s+/g, '-').includes(tag)));
+  }
+
   updateFilterList() {
     this.filterContainer.innerHTML = '';
     const tags = {};
-    const filteredArticles = this.allArticles.filter((article) => this.tags.every((tag) => article.tags.toLowerCase().replace(/\s+/g, '-').includes(tag)));
+    const filteredArticles = this.getFilteredArticles();
 
     // Rebuild tag counts based on the current filtered articles
     filteredArticles.forEach((article) => {
@@ -255,7 +255,11 @@ export default class ArticleList {
     Object.keys(tags).forEach((rawTag) => {
       const [heading, tag] = rawTag.split(' : ')[1].split(' / ');
       if (!groupedTags[heading]) groupedTags[heading] = [];
-      groupedTags[heading].push({ tag: tag.toLowerCase().replace(/\s+/g, '-'), name: tag, count: tags[rawTag] });
+      groupedTags[heading].push({
+        tag: tag.toLowerCase().replace(/\s+/g, '-'), // cleaned tag
+        original: tag, // original value
+        count: tags[rawTag],
+      });
     });
 
     const $filter = document.createDocumentFragment();
@@ -264,11 +268,19 @@ export default class ArticleList {
 
     // if filters are selected
     if (this.tags.length > 0) {
-      const $appliedFilterHeadding = h4('Filters Applied');
+      const $appliedFilterHeading = h4('Filters Applied');
       const $appliedFilters = ul({ class: 'applied-filters' });
 
       this.tags.forEach((tag) => {
-        const $li = li(tag, span({ class: 'icon-close' }, '\ue91c'));
+        let originalName = tag;
+
+        // find the original name
+        Object.values(groupedTags).forEach((group) => {
+          const foundTag = group.find((item) => item.tag === tag);
+          if (foundTag) originalName = foundTag.original;
+        });
+
+        const $li = li(originalName, span({ class: 'icon-close' }, '\ue91c'));
         $li.addEventListener('click', () => {
           this.tags = this.tags.filter((t) => t !== tag); // Remove tag
           this.currentPage = 0;
@@ -290,28 +302,27 @@ export default class ArticleList {
       });
       $appliedFilters.append($clearAll);
 
-      this.filterContainer.append($appliedFilterHeadding, $appliedFilters);
+      this.filterContainer.append($appliedFilterHeading, $appliedFilters);
     }
 
     // build filter groups
     Object.keys(groupedTags).sort().forEach((heading) => {
       const $groupHeading = h5(heading);
-
       const $filters = ul({ class: 'filters' });
 
-      groupedTags[heading].forEach(({ tag, name, count }) => {
-        const isActive = this.tags.includes(tag);
+      groupedTags[heading].forEach(({ tag, original, count }) => {
+        const isSelected = this.tags.includes(tag);
         const $li = li(
-          { class: isActive ? 'active' : '' },
-          a({ href: `?tags=${tag}` }, `${name} `, small(`(${count})`)),
+          { class: isSelected ? 'selected' : '' },
+          a({ href: `?tags=${tag}` }, original, small(`(${count})`)),
         );
 
         $li.addEventListener('click', (event) => {
           event.preventDefault(); // Prevent default navigation
-          if (isActive) {
-            this.tags = this.tags.filter((t) => t !== tag); // remove tag if active
+          if (isSelected) {
+            this.tags = this.tags.filter((t) => t !== tag); // Remove tag if selected
           } else {
-            this.tags.push(tag); // add tag to the list
+            this.tags.push(tag); // Add tag if not selected
           }
 
           this.currentPage = 0;
