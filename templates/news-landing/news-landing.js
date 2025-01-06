@@ -35,7 +35,6 @@ export default async function decorate(doc) {
     $breadcrumbs,
     div({ class: 'filter-results-wrapper' },
       div({ class: 'filter' },
-        h3('Filter Options'),
         $filters,
       ),
       div({ class: 'results' },

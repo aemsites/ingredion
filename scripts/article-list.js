@@ -1,5 +1,5 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
-import { div, button, ul, li, a, small, h5 } from './dom-helpers.js';
+import { div, button, ul, li, a, small, h3, h4, h5, span } from './dom-helpers.js';
 
 function getUrlParams() {
   return new URLSearchParams(window.location.search);
@@ -62,9 +62,7 @@ export default class ArticleList {
   renderArticles(articles) {
     this.articleContainer.innerHTML = '';
     const article = document.createDocumentFragment();
-    articles.forEach((card) => {
-      article.appendChild(this.articleCard(card));
-    });
+    articles.forEach((card) => article.appendChild(this.articleCard(card)));
     this.articleContainer.appendChild(article);
   }
 
@@ -82,7 +80,6 @@ export default class ArticleList {
     }
 
     // Sort articles by publish date in descending order
-    // articles = articles.sort((A, B) => parseInt(B.publisheddate, 10) - parseInt(A.publisheddate, 10));
     articles = articles.sort((A, B) => new Date(B.publishDate) - new Date(A.publishDate));
 
     // Update total articles count and render the current page's articles
@@ -242,6 +239,7 @@ export default class ArticleList {
   }
 
   updateFilterList() {
+    this.filterContainer.innerHTML = '';
     const tags = {};
     const filteredArticles = this.allArticles.filter((article) => this.tags.every((tag) => article.tags.toLowerCase().replace(/\s+/g, '-').includes(tag)));
 
@@ -256,45 +254,48 @@ export default class ArticleList {
     const groupedTags = {};
     Object.keys(tags).forEach((rawTag) => {
       const [heading, tag] = rawTag.split(' : ')[1].split(' / ');
-
       if (!groupedTags[heading]) groupedTags[heading] = [];
       groupedTags[heading].push({ tag: tag.toLowerCase().replace(/\s+/g, '-'), name: tag, count: tags[rawTag] });
     });
 
     const $filter = document.createDocumentFragment();
-    const $appliedFilters = ul({ class: 'applied-filters' });
+    const $filterHeading = h3('Filters Options');
+    $filter.append($filterHeading);
 
-    this.tags.forEach((tag) => {
-      const $li = li({ class: 'active' }, `${tag} X`);
-      $li.addEventListener('click', () => {
-        this.tags = this.tags.filter((t) => t !== tag); // Remove tag
-        this.currentPage = 0; // Reset to the first page
-        this.updateArticles(); // Filter and render articles
-        this.updateUrl(); // Update the browser URL
-        this.updateFilterList(); // Update filters UI
-      });
-      $appliedFilters.appendChild($li);
-    });
-
-    // Add a "Clear All" button if there are active filters
+    // if filters are selected
     if (this.tags.length > 0) {
+      const $appliedFilterHeadding = h4('Filters Applied');
+      const $appliedFilters = ul({ class: 'applied-filters' });
+
+      this.tags.forEach((tag) => {
+        const $li = li(tag, span({ class: 'icon-close' }, '\ue91c'));
+        $li.addEventListener('click', () => {
+          this.tags = this.tags.filter((t) => t !== tag); // Remove tag
+          this.currentPage = 0;
+          this.updateArticles();
+          this.updateUrl();
+          this.updateFilterList();
+        });
+        $appliedFilters.appendChild($li);
+      });
+
+      // clear all button
       const $clearAll = li({ class: 'clear-all' }, 'Clear All');
       $clearAll.addEventListener('click', () => {
         this.tags = []; // Clear all tags
-        this.currentPage = 0; // Reset to the first page
-        this.updateArticles(); // Filter and render articles
-        this.updateUrl(); // Update the browser URL
-        this.updateFilterList(); // Update filters UI
+        this.currentPage = 0;
+        this.updateArticles();
+        this.updateUrl();
+        this.updateFilterList();
       });
-      $appliedFilters.appendChild($clearAll);
+      $appliedFilters.append($clearAll);
+
+      this.filterContainer.append($appliedFilterHeadding, $appliedFilters);
     }
 
-    this.filterContainer.innerHTML = '';
-    this.filterContainer.appendChild($appliedFilters);
-
+    // build filter groups
     Object.keys(groupedTags).sort().forEach((heading) => {
-      const $heading = h5();
-      $heading.textContent = heading;
+      const $groupHeading = h5(heading);
 
       const $filters = ul({ class: 'filters' });
 
@@ -308,9 +309,9 @@ export default class ArticleList {
         $li.addEventListener('click', (event) => {
           event.preventDefault(); // Prevent default navigation
           if (isActive) {
-            this.tags = this.tags.filter((t) => t !== tag); // Remove tag if active
+            this.tags = this.tags.filter((t) => t !== tag); // remove tag if active
           } else {
-            this.tags.push(tag); // Add tag to the list
+            this.tags.push(tag); // add tag to the list
           }
 
           this.currentPage = 0;
@@ -322,7 +323,7 @@ export default class ArticleList {
         $filters.appendChild($li);
       });
 
-      $filter.append($heading, $filters);
+      $filter.append($groupHeading, $filters);
     });
 
     this.filterContainer.appendChild($filter);
@@ -362,16 +363,13 @@ export default class ArticleList {
   /**
    * Render the article list and initialize event listeners.
    */
-  /**
-   * Render the article list and initialize event listeners.
-   */
   async render() {
     try {
       const response = await fetch(this.jsonPath);
       const json = await response.json();
       this.allArticles = json.data;
 
-      this.getTags(); // Get tags from the URL
+      this.getTags();
 
       // Read perPage from URL if available, otherwise fallback to default
       const urlParams = getUrlParams();
