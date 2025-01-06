@@ -6,6 +6,14 @@
   - per-page dropdown
 */
 .article-list {
+  .filter {
+    .active {
+      color: red;
+    }
+  }
+
+
+
   .pagination {
     font-size: .8rem;
 

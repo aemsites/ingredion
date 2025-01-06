@@ -20,8 +20,8 @@ function getPageN() {
  * @param {number} [options.articlesPerPage=10] - The number of articles per page.
  * @param {HTMLElement} [options.paginationContainer] - The container for pagination controls.
  * @param {number} [options.paginationMaxBtns=7] - The maximum number of pagination buttons.
- * @param {HTMLElement} [options.categoryContainer] - The container for category filters.
- * @param {string} [options.categoryPath] - The root path for category filtering.
+ * @param {HTMLElement} [options.tagContainer] - The container for tag filters.
+ * @param {string} [options.tagPath] - The root path for tag filtering.
  */
 export default class ArticleList {
   constructor({
@@ -31,8 +31,7 @@ export default class ArticleList {
     articlesPerPage = 10,
     paginationContainer,
     paginationMaxBtns = 7,
-    categoryContainer,
-    categoryPath,
+    filterContainer,
     countContainer,
     perPageContainer,
   }) {
@@ -43,13 +42,12 @@ export default class ArticleList {
     [this.articlesPerPage] = this.articlesPerPageOptions;
     this.paginationContainer = paginationContainer;
     this.paginationMaxBtns = paginationMaxBtns;
-    this.categoryContainer = categoryContainer;
-    this.categoryPath = categoryPath;
+    this.filterContainer = filterContainer;
     this.countContainer = countContainer;
     this.perPageContainer = perPageContainer; // Initialize it
     this.currentPage = getPageN();
     this.totalArticles = 0;
-    this.category = null;
+    this.tag = null;
     this.allArticles = [];
   }
 
@@ -69,11 +67,11 @@ export default class ArticleList {
   async updateArticles() {
     const page = this.currentPage;
     let articles = this.allArticles;
-    // filter articles by category if present
-    if (this.category) {
+    // filter articles by tag if present
+    if (this.tag) {
       articles = articles.filter((article) => {
-        const articleCategories = article.categories.toLowerCase().replace(/\s+/g, '-');
-        return articleCategories.includes(this.category);
+        const articleTags = article.tags.toLowerCase().replace(/\s+/g, '-');
+        return articleTags.includes(this.tag);
       });
     }
 
@@ -92,7 +90,7 @@ export default class ArticleList {
    * @param {number} n - The page number.
    * @returns {HTMLElement} The pagination button element.
    */
-  pageBtn(n) {
+  createPageBtn(n) {
     const $pageBtn = button({ class: n === this.currentPage ? 'active' : '' }, (n + 1).toString());
     $pageBtn.addEventListener('click', () => {
       if (this.currentPage !== n) {
@@ -127,7 +125,7 @@ export default class ArticleList {
     const totalPages = Math.ceil(this.totalArticles / this.articlesPerPage);
 
     if (totalPages <= this.paginationMaxBtns + 2) {
-      Array.from({ length: totalPages }, (_, i) => p.appendChild(this.pageBtn(i)));
+      Array.from({ length: totalPages }, (_, i) => p.appendChild(this.createPageBtn(i)));
     } else {
       const half = Math.floor((this.paginationMaxBtns - 3) / 2); // Buttons on either side of active
       const extra = (this.paginationMaxBtns - 1) % 2; // Remainder (if maxBtns is an even number)
@@ -146,20 +144,20 @@ export default class ArticleList {
       }
 
       // First button + space
-      p.appendChild(this.pageBtn(0));
+      p.appendChild(this.createPageBtn(0));
       if (startPage > 1) p.appendChild($spaceBtn.cloneNode(true));
 
       // Middle buttons
       for (let i = startPage; i <= endPage; i += 1) {
-        p.appendChild(this.pageBtn(i));
+        p.appendChild(this.createPageBtn(i));
       }
 
       // Space + last button
       if (endPage < totalPages - 2) {
         p.appendChild($spaceBtn.cloneNode(true));
-        p.appendChild(this.pageBtn(totalPages - 1));
+        p.appendChild(this.createPageBtn(totalPages - 1));
       } else if (endPage === totalPages - 2) {
-        p.appendChild(this.pageBtn(totalPages - 1));
+        p.appendChild(this.createPageBtn(totalPages - 1));
       }
     }
 
@@ -232,40 +230,119 @@ export default class ArticleList {
   }
 
   updateFilterList() {
-    const categories = {};
+    const tags = {};
 
     this.allArticles.forEach((article) => {
-      article.categories.split(', ').forEach((category) => {
-        if (!categories[category]) {
-          categories[category] = 0;
+      article.tags.split(', ').forEach((tag) => {
+        const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
+
+        if (!tags[cleanedTag]) {
+          tags[cleanedTag] = 0;
         }
-        categories[category] += 1;
+        tags[cleanedTag] += 1;
       });
     });
 
-    const $categories = ul({ class: 'filter' });
+    const groupedTags = {};
 
-    Object.keys(categories).sort().forEach((category) => {
-      const cat = category.toLowerCase().replace(/\s+/g, '-');
-      const $li = li({ class: this.category === cat ? 'active' : '' },
-        a({
-          href: this.categoryPath + cat,
-        }, `${category} `,
-        small(`(${categories[category]})`)));
-      $li.addEventListener('click', (event) => {
-        if (this.articleCard && this.articleContainer) event.preventDefault();
-        this.category = cat;
-        this.currentPage = 0;
-        this.updateArticles();
-        this.updateUrl();
-        this.updateFilterList();
-      });
-      $categories.appendChild($li);
+    Object.keys(tags).forEach((rawTag) => {
+      const [heading, tag] = rawTag.split(' : ')[1].split(' / ');
+
+      if (!groupedTags[heading]) groupedTags[heading] = [];
+      groupedTags[heading].push({ tag: tag.toLowerCase().replace(/\s+/g, '-'), name: tag, count: tags[rawTag] });
     });
 
-    this.categoryContainer.innerHTML = '';
-    this.categoryContainer.appendChild($categories);
+    const $filter = document.createDocumentFragment();
+
+    Object.keys(groupedTags).sort().forEach((heading) => {
+      const $heading = document.createElement('h5');
+      $heading.textContent = heading;
+
+      const $ul = document.createElement('ul');
+
+      groupedTags[heading].forEach(({ tag, name, count }) => {
+        const $li = li(
+          { class: this.tag === tag ? 'active' : '' },
+          a({ href: `?tag=${tag}` }, `${name} `, small(`(${count})`))
+        );
+
+        $li.addEventListener('click', (event) => {
+          event.preventDefault(); // Prevent default navigation
+          this.tag = tag; // Update the current tag
+          this.currentPage = 0; // Reset to the first page
+          this.updateArticles(); // Filter and render articles
+          this.updateUrl(); // Update the browser URL
+          this.updateFilterList(); // Update filter UI
+        });
+
+        $ul.appendChild($li);
+      });
+
+      $filter.appendChild($heading);
+      $filter.appendChild($ul);
+    });
+
+    this.filterContainer.innerHTML = '';
+    this.filterContainer.appendChild($filter);
   }
+
+
+  // updateFilterList() {
+  //   const tags = {};
+  //
+  //   this.allArticles.forEach((article) => {
+  //     article.tags.split(', ').forEach((tag) => {
+  //       // Clean each tag by removing extra quotes and trimming spaces
+  //       const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
+  //
+  //       if (!tags[cleanedTag]) {
+  //         tags[cleanedTag] = 0;
+  //       }
+  //       tags[cleanedTag] += 1;
+  //     });
+  //   });
+  //
+  //   const groupedTags = {};
+  //
+  //   // Group tags by headings
+  //   Object.keys(tags).forEach((rawTag) => {
+  //     const [heading, tag] = rawTag.split(' : ')[1].split(' / ');
+  //
+  //     if (!groupedTags[heading]) groupedTags[heading] = [];
+  //     groupedTags[heading].push({ tag: tag.toLowerCase().replace(/\s+/g, '-'), name: tag, count: tags[rawTag] });
+  //   });
+  //
+  //   // Generate the HTML structure
+  //   const $filter = document.createDocumentFragment();
+  //
+  //   Object.keys(groupedTags).sort().forEach((heading) => {
+  //     const $heading = document.createElement('h5');
+  //     $heading.textContent = heading;
+  //
+  //     const $ul = document.createElement('ul');
+  //
+  //     groupedTags[heading].forEach(({ tag, name, count }) => {
+  //       const $li = li({ class: this.tag === tag ? 'active' : '' },
+  //         a({ href: `?tag=${tag}` }, `${name} `, small(`(${count})`)),
+  //       );
+  //       $li.addEventListener('click', (event) => {
+  //         if (this.articleCard && this.articleContainer) event.preventDefault();
+  //         this.tag = tag;
+  //         this.currentPage = 0;
+  //         this.updateArticles();
+  //         this.updateUrl();
+  //         this.updateFilterList();
+  //       });
+  //       $ul.appendChild($li);
+  //     });
+  //
+  //     $filter.appendChild($heading);
+  //     $filter.appendChild($ul);
+  //   });
+  //
+  //   this.filterContainer.innerHTML = '';
+  //   this.filterContainer.appendChild($filter);
+  // }
 
   scrollTop() {
     const { top } = this.articleContainer.getBoundingClientRect();
@@ -273,22 +350,33 @@ export default class ArticleList {
     window.scrollTo({ top: scrollToY, behavior: 'smooth' });
   }
 
-  getCategory() {
-    [this.category] = window.location.pathname.replace(this.categoryPath, '').split('/');
+  gettag() {
+    const urlParams = new URLSearchParams(window.location.search);
+    this.tag = urlParams.get('tag') || null;
   }
 
   updateUrl() {
     const url = new URL(window.location);
-    url.pathname = this.categoryPath + this.category;
     // Only update ?page if it is not 0
-    if (this.currentPage !== 0) url.searchParams.set('page', this.currentPage);
-    else url.searchParams.delete('page');
-    // Only update if category exists
-    if (this.category) window.history.pushState(null, '', url);
+    if (this.currentPage !== 0) {
+      url.searchParams.set('page', this.currentPage);
+    } else {
+      url.searchParams.delete('page');
+    }
+
+    // Update the ?tag parameter if tag is set
+    if (this.tag) {
+      url.searchParams.set('tag', this.tag);
+    } else {
+      url.searchParams.delete('tag');
+    }
+
+    // Update the browser's history
+    window.history.pushState(null, '', url);
   }
 
   onPopState() {
-    this.getCategory();
+    this.gettag();
     this.updateFilterList();
     this.updateArticles();
   }
@@ -296,20 +384,44 @@ export default class ArticleList {
   /**
    * Render the article list and initialize event listeners.
    */
+  // async render() {
+  //   try {
+  //     const response = await fetch(this.jsonPath);
+  //     const json = await response.json();
+  //     this.allArticles = json.data;
+  //
+  //     this.gettag();
+  //
+  //     // Render tag filters if applicable
+  //     if (this.filterContainer) this.updateFilterList();
+  //
+  //     // Render articles and pagination
+  //     if (this.articleCard && this.articleContainer) {
+  //       await this.updateArticles();
+  //       window.addEventListener('popstate', (event) => this.onPopState(event));
+  //     }
+  //
+  //     // Render per-page dropdown
+  //     if (this.perPageContainer) this.createPerPageDropdown();
+  //   } catch (error) {
+  //     // eslint-disable-next-line no-console
+  //     console.error('Error fetching articles:', error);
+  //   }
+  // }
   async render() {
     try {
       const response = await fetch(this.jsonPath);
       const json = await response.json();
       this.allArticles = json.data;
 
-      this.getCategory();
+      this.gettag(); // Get tag from URL
 
-      // Render category filters if applicable
-      if (this.categoryContainer) this.updateFilterList();
+      // Render tag filters if applicable
+      if (this.filterContainer) this.updateFilterList();
 
       // Render articles and pagination
       if (this.articleCard && this.articleContainer) {
-        await this.updateArticles();
+        await this.updateArticles(); // Filter articles if a tag is present
         window.addEventListener('popstate', (event) => this.onPopState(event));
       }
 
@@ -321,12 +433,12 @@ export default class ArticleList {
     }
   }
 
-  async renderArticlesByCategory(category) {
+  async renderArticlesBytag(tag) {
     try {
       const response = await fetch(this.jsonPath);
       const json = await response.json();
       this.allArticles = json.data;
-      this.category = category;
+      this.tag = tag;
       // If articleCard & articleContainer are defined, render them
       if (this.articleCard && this.articleContainer) {
         await this.updateArticles();

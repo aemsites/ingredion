@@ -1,7 +1,7 @@
 /* eslint-disable function-call-argument-newline */
 /* eslint-disable max-len */
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h3, h4, p, a, input, ul, li } from '../../scripts/dom-helpers.js';
+import { div, h3, h4, p, a } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { breadcrumbs } from '../../scripts/breadcrumbs.js';
 import ArticleList from '../../scripts/article-list.js';
@@ -18,33 +18,6 @@ export default async function decorate(doc) {
   const $filters = div();
   const $newsArticles = div({ class: 'articles' });
 
-  const $filtersStatic = div({ class: 'filter' },
-    input({ type: 'text', placeholder: 'Search' }),
-    div({ class: 'select-dropdown years' },
-      div({ class: 'selected' }, 'Year'),
-      ul({ class: 'options' },
-        li('years...'),
-      ),
-    ),
-    div({ class: 'select-dropdown markets' },
-      div({ class: 'selected' }, 'Markets'),
-      ul({ class: 'options' },
-        li('markets...'),
-      ),
-    ),
-    div({ class: 'select-dropdown resource-type' },
-      div({ class: 'selected' }, 'Resource Type'),
-      ul({ class: 'options' },
-        li('types...'),
-      ),
-    ),
-    div({ class: 'select-dropdown sort-by' },
-      div({ class: 'selected' }, 'Sort By'),
-      ul({ class: 'options' },
-        li('sort...'),
-      ),
-    ),
-  );
 
   const $newsCard = (article) => div({ class: 'card' },
     a({ class: 'thumb', href: article.path },
@@ -63,7 +36,7 @@ export default async function decorate(doc) {
     div({ class: 'filter-results-wrapper' },
       div({ class: 'filter' },
         h3('Filter Options'),
-        $filtersStatic,
+        $filters,
       ),
       div({ class: 'results' },
         $count,
@@ -79,14 +52,13 @@ export default async function decorate(doc) {
   $page.append($newsPage);
 
   await new ArticleList({
-    jsonPath: '/na/en-us/index-news-temp.json',
+    jsonPath: '/na/en-us/indexes/news-index-dummy.json',
     articleContainer: $newsArticles,
     articleCard: $newsCard,
     articlesPerPage,
     paginationContainer: $pagination,
     paginationMaxBtns,
-    categoryContainer: $filters,
-    categoryPath: '/news/category/',
+    filterContainer: $filters,
     countContainer: $count,
     perPageContainer: $perPage,
   }).render();
