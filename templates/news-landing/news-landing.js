@@ -24,7 +24,7 @@ export default async function decorate(doc) {
       createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
     ),
     div({ class: 'info' },
-      h4(article.title),
+      h4(article.publishDate + article.title),
       p(article.description),
       p(article.publisheddate),
       a({ class: theme === 'list-style' ? 'button' : 'link', href: article.path }, 'Learn More'),

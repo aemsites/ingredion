@@ -1,14 +1,18 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
-import { div, button, ul, li, a, small } from './dom-helpers.js';
+import { div, button, ul, li, a, small, h5 } from './dom-helpers.js';
+
+function getUrlParams() {
+  return new URLSearchParams(window.location.search);
+}
 
 /**
  * Get the current page number from the URL query parameters.
  * @returns {number} The current page number or 0 if not set.
  */
 function getPageN() {
-  const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = getUrlParams();
   const page = urlParams.get('page');
-  return page ? parseInt(page, 10) : 0; // set to 0 if page is not set
+  return page ? parseInt(page, 10) - 1 : 0; // set to 0 if page is not set
 }
 
 /**
@@ -64,21 +68,24 @@ export default class ArticleList {
     this.articleContainer.appendChild(article);
   }
 
-  async updateArticles() {
+  updateArticles() {
     const page = this.currentPage;
     let articles = this.allArticles;
-    // filter articles by tag if present
-    if (this.tag) {
-      articles = articles.filter((article) => {
-        const articleTags = article.tags.toLowerCase().replace(/\s+/g, '-');
-        return articleTags.includes(this.tag);
-      });
+
+    // Filter articles by selected tags
+    if (this.tags.length > 0) {
+      articles = articles.filter((article) => this.tags.every((tag) => article.tags
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .includes(tag)),
+      );
     }
 
-    // sort articles by publish date in descending order
-    articles = articles.sort((A, B) => parseInt(B.publisheddate, 10) - parseInt(A.publisheddate, 10));
+    // Sort articles by publish date in descending order
+    // articles = articles.sort((A, B) => parseInt(B.publisheddate, 10) - parseInt(A.publisheddate, 10));
+    articles = articles.sort((A, B) => new Date(B.publishDate) - new Date(A.publishDate));
 
-    // update total articles count and render the current page's articles
+    // Update total articles count and render the current page's articles
     this.totalArticles = articles.length;
     this.renderArticles(articles.slice(page * this.articlesPerPage, (page + 1) * this.articlesPerPage));
     this.updatePagination();
@@ -200,9 +207,14 @@ export default class ArticleList {
           this.currentPage = 0;
           this.updateArticles();
           this.updatePagination();
+
+          // Update per-page in URL
+          const url = new URL(window.location);
+          url.searchParams.set('per-page', option); // Add perPage query param
+          window.history.pushState(null, '', url);
         }
 
-        // udpate active class
+        // update active class
         Array.from($dropdown.children).forEach((child) => {
           child.classList.remove('active');
         });
@@ -231,20 +243,17 @@ export default class ArticleList {
 
   updateFilterList() {
     const tags = {};
+    const filteredArticles = this.allArticles.filter((article) => this.tags.every((tag) => article.tags.toLowerCase().replace(/\s+/g, '-').includes(tag)));
 
-    this.allArticles.forEach((article) => {
+    // Rebuild tag counts based on the current filtered articles
+    filteredArticles.forEach((article) => {
       article.tags.split(', ').forEach((tag) => {
         const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
-
-        if (!tags[cleanedTag]) {
-          tags[cleanedTag] = 0;
-        }
-        tags[cleanedTag] += 1;
+        tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
       });
     });
 
     const groupedTags = {};
-
     Object.keys(tags).forEach((rawTag) => {
       const [heading, tag] = rawTag.split(' : ')[1].split(' / ');
 
@@ -253,96 +262,71 @@ export default class ArticleList {
     });
 
     const $filter = document.createDocumentFragment();
+    const $appliedFilters = ul({ class: 'applied-filters' });
+
+    this.tags.forEach((tag) => {
+      const $li = li({ class: 'active' }, `${tag} X`);
+      $li.addEventListener('click', () => {
+        this.tags = this.tags.filter((t) => t !== tag); // Remove tag
+        this.currentPage = 0; // Reset to the first page
+        this.updateArticles(); // Filter and render articles
+        this.updateUrl(); // Update the browser URL
+        this.updateFilterList(); // Update filters UI
+      });
+      $appliedFilters.appendChild($li);
+    });
+
+    // Add a "Clear All" button if there are active filters
+    if (this.tags.length > 0) {
+      const $clearAll = li({ class: 'clear-all' }, 'Clear All');
+      $clearAll.addEventListener('click', () => {
+        this.tags = []; // Clear all tags
+        this.currentPage = 0; // Reset to the first page
+        this.updateArticles(); // Filter and render articles
+        this.updateUrl(); // Update the browser URL
+        this.updateFilterList(); // Update filters UI
+      });
+      $appliedFilters.appendChild($clearAll);
+    }
+
+    this.filterContainer.innerHTML = '';
+    this.filterContainer.appendChild($appliedFilters);
 
     Object.keys(groupedTags).sort().forEach((heading) => {
-      const $heading = document.createElement('h5');
+      const $heading = h5();
       $heading.textContent = heading;
 
-      const $ul = document.createElement('ul');
+      const $filters = ul({ class: 'filters' });
 
       groupedTags[heading].forEach(({ tag, name, count }) => {
+        const isActive = this.tags.includes(tag);
         const $li = li(
-          { class: this.tag === tag ? 'active' : '' },
-          a({ href: `?tag=${tag}` }, `${name} `, small(`(${count})`))
+          { class: isActive ? 'active' : '' },
+          a({ href: `?tags=${tag}` }, `${name} `, small(`(${count})`)),
         );
 
         $li.addEventListener('click', (event) => {
           event.preventDefault(); // Prevent default navigation
-          this.tag = tag; // Update the current tag
-          this.currentPage = 0; // Reset to the first page
-          this.updateArticles(); // Filter and render articles
-          this.updateUrl(); // Update the browser URL
-          this.updateFilterList(); // Update filter UI
+          if (isActive) {
+            this.tags = this.tags.filter((t) => t !== tag); // Remove tag if active
+          } else {
+            this.tags.push(tag); // Add tag to the list
+          }
+
+          this.currentPage = 0;
+          this.updateArticles();
+          this.updateUrl();
+          this.updateFilterList();
         });
 
-        $ul.appendChild($li);
+        $filters.appendChild($li);
       });
 
-      $filter.appendChild($heading);
-      $filter.appendChild($ul);
+      $filter.append($heading, $filters);
     });
 
-    this.filterContainer.innerHTML = '';
     this.filterContainer.appendChild($filter);
   }
-
-
-  // updateFilterList() {
-  //   const tags = {};
-  //
-  //   this.allArticles.forEach((article) => {
-  //     article.tags.split(', ').forEach((tag) => {
-  //       // Clean each tag by removing extra quotes and trimming spaces
-  //       const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
-  //
-  //       if (!tags[cleanedTag]) {
-  //         tags[cleanedTag] = 0;
-  //       }
-  //       tags[cleanedTag] += 1;
-  //     });
-  //   });
-  //
-  //   const groupedTags = {};
-  //
-  //   // Group tags by headings
-  //   Object.keys(tags).forEach((rawTag) => {
-  //     const [heading, tag] = rawTag.split(' : ')[1].split(' / ');
-  //
-  //     if (!groupedTags[heading]) groupedTags[heading] = [];
-  //     groupedTags[heading].push({ tag: tag.toLowerCase().replace(/\s+/g, '-'), name: tag, count: tags[rawTag] });
-  //   });
-  //
-  //   // Generate the HTML structure
-  //   const $filter = document.createDocumentFragment();
-  //
-  //   Object.keys(groupedTags).sort().forEach((heading) => {
-  //     const $heading = document.createElement('h5');
-  //     $heading.textContent = heading;
-  //
-  //     const $ul = document.createElement('ul');
-  //
-  //     groupedTags[heading].forEach(({ tag, name, count }) => {
-  //       const $li = li({ class: this.tag === tag ? 'active' : '' },
-  //         a({ href: `?tag=${tag}` }, `${name} `, small(`(${count})`)),
-  //       );
-  //       $li.addEventListener('click', (event) => {
-  //         if (this.articleCard && this.articleContainer) event.preventDefault();
-  //         this.tag = tag;
-  //         this.currentPage = 0;
-  //         this.updateArticles();
-  //         this.updateUrl();
-  //         this.updateFilterList();
-  //       });
-  //       $ul.appendChild($li);
-  //     });
-  //
-  //     $filter.appendChild($heading);
-  //     $filter.appendChild($ul);
-  //   });
-  //
-  //   this.filterContainer.innerHTML = '';
-  //   this.filterContainer.appendChild($filter);
-  // }
 
   scrollTop() {
     const { top } = this.articleContainer.getBoundingClientRect();
@@ -350,33 +334,27 @@ export default class ArticleList {
     window.scrollTo({ top: scrollToY, behavior: 'smooth' });
   }
 
-  gettag() {
-    const urlParams = new URLSearchParams(window.location.search);
-    this.tag = urlParams.get('tag') || null;
+  getTags() {
+    const urlParams = getUrlParams();
+    this.tags = urlParams.get('tags')?.split(',').map((tag) => tag.trim()) || [];
   }
 
   updateUrl() {
     const url = new URL(window.location);
-    // Only update ?page if it is not 0
-    if (this.currentPage !== 0) {
-      url.searchParams.set('page', this.currentPage);
-    } else {
-      url.searchParams.delete('page');
-    }
 
-    // Update the ?tag parameter if tag is set
-    if (this.tag) {
-      url.searchParams.set('tag', this.tag);
-    } else {
-      url.searchParams.delete('tag');
-    }
+    // Update the ?page parameter if it is not 0
+    if (this.currentPage !== 0) url.searchParams.set('page', this.currentPage + 1);
+    else url.searchParams.delete('page');
 
-    // Update the browser's history
+    // Update the ?tags parameter with multiple tags
+    if (this.tags.length > 0) url.searchParams.set('tags', this.tags.join(','));
+    else url.searchParams.delete('tags');
+
     window.history.pushState(null, '', url);
   }
 
   onPopState() {
-    this.gettag();
+    this.getTags();
     this.updateFilterList();
     this.updateArticles();
   }
@@ -384,65 +362,38 @@ export default class ArticleList {
   /**
    * Render the article list and initialize event listeners.
    */
-  // async render() {
-  //   try {
-  //     const response = await fetch(this.jsonPath);
-  //     const json = await response.json();
-  //     this.allArticles = json.data;
-  //
-  //     this.gettag();
-  //
-  //     // Render tag filters if applicable
-  //     if (this.filterContainer) this.updateFilterList();
-  //
-  //     // Render articles and pagination
-  //     if (this.articleCard && this.articleContainer) {
-  //       await this.updateArticles();
-  //       window.addEventListener('popstate', (event) => this.onPopState(event));
-  //     }
-  //
-  //     // Render per-page dropdown
-  //     if (this.perPageContainer) this.createPerPageDropdown();
-  //   } catch (error) {
-  //     // eslint-disable-next-line no-console
-  //     console.error('Error fetching articles:', error);
-  //   }
-  // }
+  /**
+   * Render the article list and initialize event listeners.
+   */
   async render() {
     try {
       const response = await fetch(this.jsonPath);
       const json = await response.json();
       this.allArticles = json.data;
 
-      this.gettag(); // Get tag from URL
+      this.getTags(); // Get tags from the URL
+
+      // Read perPage from URL if available, otherwise fallback to default
+      const urlParams = getUrlParams();
+      const perPageParam = urlParams.get('per-page');
+      if (perPageParam) {
+        const perPageValue = parseInt(perPageParam, 10);
+        if (this.articlesPerPageOptions.includes(perPageValue)) {
+          this.articlesPerPage = perPageValue;
+        }
+      }
 
       // Render tag filters if applicable
       if (this.filterContainer) this.updateFilterList();
 
       // Render articles and pagination
       if (this.articleCard && this.articleContainer) {
-        await this.updateArticles(); // Filter articles if a tag is present
+        await this.updateArticles(); // Filter articles if tags are present
         window.addEventListener('popstate', (event) => this.onPopState(event));
       }
 
       // Render per-page dropdown
       if (this.perPageContainer) this.createPerPageDropdown();
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error fetching articles:', error);
-    }
-  }
-
-  async renderArticlesBytag(tag) {
-    try {
-      const response = await fetch(this.jsonPath);
-      const json = await response.json();
-      this.allArticles = json.data;
-      this.tag = tag;
-      // If articleCard & articleContainer are defined, render them
-      if (this.articleCard && this.articleContainer) {
-        await this.updateArticles();
-      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Error fetching articles:', error);
