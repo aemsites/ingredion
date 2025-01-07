@@ -11,7 +11,7 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
-
+import { createColorBlock, createIngredientBlock, createContactUs } from './helper.js';
 
 export default {
   /**
@@ -122,120 +122,10 @@ export function getMetadataProp(document, queryString) {
   return metaDataField;
 }
 
-function createIngredientBlock(document, main) {
-  const relatedIngredients = document.querySelector('.relatedIngredients');
-  if (!relatedIngredients) return;
-  const resultProdCards = document.querySelectorAll('.result-prod-card');
-  if (!resultProdCards) {
-    const cells = [['related ingredient']];
-    const heading = relatedIngredients.querySelector('.heading > h2').textContent;
-    const subHeading = relatedIngredients.querySelector('.rte-block').textContent;
-    cells.push([heading,]);
-    cells.push([subHeading,]);
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(table);
-  } else {
-    resultProdCards.forEach((resultProdCard) => {
-      const cells = [['related ingredient']];
-      const heading = resultProdCard.querySelector('.product-name').textContent;
-      const h3 = resultProdCard.querySelector('.rte-block > h3');
-      const subHeading = h3 ? h3.textContent : '';
-      const pTag = resultProdCard.querySelector('.rte-block > p');
-      const description = pTag ? pTag.textContent : '';
-      const ctas = resultProdCard.querySelectorAll('.cta-icon');
-      let ctaAnchor = ''
-      ctas.forEach((cta) => {
-        ctaAnchor += `<a href = '${cta.getAttribute('href')}'>${cta.innerText}</a>`;
-      });
-      const leftSide = `<h4>${heading}</h4><h3>${subHeading}</h3><p>${description}</p>${ctaAnchor}`;
-      const resultCardButtons = document.querySelector('.result-card__buttons');
-      const buttons = resultCardButtons.querySelectorAll('a');
-      let rightSide = '';
-      buttons.forEach((button) => {
-        rightSide += `<a href = '${button.getAttribute('href')}'>${button.innerText}</a><br>`;
-      });
-      cells.push([leftSide,]);
-      cells.push([rightSide,]);
-      const table = WebImporter.DOMUtils.createTable(cells, document);
-      main.append(table);
-    });
-  }
-  relatedIngredients.remove();
-  return;
-}
 
-function createContactUs(main, document) {
-  const contactUs = document.querySelector('.contact-banner__wrapper');
-  if (contactUs) {
-    const heading = contactUs.querySelector('.heading > h3').textContent;
-    let contactDetailsHeading = contactUs.querySelector('.contact-banner__primary .heading > h4') ?
-      contactUs.querySelector('.contact-banner__primary .heading > h4').textContent : null;
-    let contactDetails = contactUs.querySelector('.rte-block').textContent;
-    if (!contactDetailsHeading) {
-      contactDetailsHeading = contactUs.querySelector('.contact-banner__primary').textContent;
-      contactDetails = contactUs.querySelector('.contact-banner__secondary').textContent;
-    }
-
-    const cells = [['contact us']];
-    cells.push([heading,]);
-    cells.push([contactDetailsHeading,]);
-    cells.push([contactDetails,]);
-    const contactUsBlock = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(contactUsBlock);
-    contactUs.remove();
-  }
-}
 
 function getPageName(document) {
   const breadcrumbElement = document.querySelector('.breadcrumbs > ul > li:last-of-type > a');
   if (!breadcrumbElement) return '';
   else return breadcrumbElement.textContent;
-}
-
-function getSocialShare(document) {
-  const socialShare = document.querySelector('.social-share');
-  const socialMetaProp = [];
-  const facebook = socialShare.querySelector('.icon-Facebook');
-  if (facebook) {
-    socialMetaProp.push('facebook');
-  }
-  const twitter = socialShare.querySelector('.icon-Twitter');
-  if (twitter) {
-    socialMetaProp.push('X');
-  }
-  if (socialMetaProp.length === 0) return;
-  else return socialMetaProp.join(', ');
-}
-
-function createColorBlock(document) {
-  const colorBlocks = document.querySelectorAll('.colorBlockQuote');
-  colorBlocks.forEach((colorBlock) => {
-    const colorBlockQuote = colorBlock.querySelector('.colorblock-quote');
-    if (!colorBlockQuote) return;
-    const color = toHex(colorBlockQuote.style.backgroundColor);
-    const cells = [[`colorblock(${color}) `]];
-    const heading = colorBlockQuote.querySelector('.heading > h1').textContent;
-    cells.push([heading]);
-    const subHeading = colorBlockQuote.querySelector('.heading > h3');
-    if (subHeading) cells.push([subHeading.textContent,]);
-    const label = colorBlockQuote.querySelector('.label-text');
-    if (label) cells.push([label.textContent,]);
-    const table = WebImporter.DOMUtils.createTable(cells, document);
-    colorBlock.append(table);
-    colorBlockQuote.remove();
-  });
-}
-
-function toHex(rgb) {
-
-  // Grab the numbers
-  const match = rgb.match(/\d+/g);
-
-  // `map` over each number and return its hex
-  // equivalent making sure to `join` the array up
-  // and attaching a `#` to the beginning of the string 
-  return `#${match.map(color => {
-    const hex = Number(color).toString(16);
-    return hex.length === 1 ? `0${hex}` : hex;
-  }).join('')}`;
 }

@@ -11,8 +11,7 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
-
-import { createCalloutBlock, createCardsBlock, createVideoBlock, getSocialShare } from './helper.js';
+import { createColorBlock, createIngredientBlock, createContactUs, createCalloutBlock, createCardsBlock, createVideoBlock, getSocialShare } from './helper.js';
 
 export default {
   /**
@@ -30,6 +29,9 @@ export default {
   }) => {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
+    createColorBlock(document, main);
+    createIngredientBlock(document, main);
+    createContactUs(main, document);
     getSocialShare(document, main);
     createCalloutBlock(document, main);
     createCardsBlock(document, main);
@@ -106,8 +108,7 @@ const createMetadata = (main, document, url, html) => {
     meta['published-date'] = dateCategory.split('|')[0].trim();
     meta['categories'] = dateCategory.split('|')[1] ? dateCategory.split('|')[1].trim() : '';
   }
-  const type = getMetadataProp(document, '.category-label');
-  if (type && type !== undefined) meta['type'] = type;
+  meta['type'] = getMetadataProp(document, '.category-label');
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
@@ -125,23 +126,10 @@ export function getMetadataProp(document, queryString) {
   return metaDataField;
 }
 
+
+
 function getPageName(document) {
   const breadcrumbElement = document.querySelector('.breadcrumbs > ul > li:last-of-type > a');
   if (!breadcrumbElement) return '';
   else return breadcrumbElement.textContent;
-}
-
-
-function toHex(rgb) {
-
-  // Grab the numbers
-  const match = rgb.match(/\d+/g);
-
-  // `map` over each number and return its hex
-  // equivalent making sure to `join` the array up
-  // and attaching a `#` to the beginning of the string 
-  return `#${match.map(color => {
-    const hex = Number(color).toString(16);
-    return hex.length === 1 ? `0${hex}` : hex;
-  }).join('')}`;
 }
