@@ -108,7 +108,8 @@ const createMetadata = (main, document, url, html) => {
     meta['published-date'] = dateCategory.split('|')[0].trim();
     meta['categories'] = dateCategory.split('|')[1] ? dateCategory.split('|')[1].trim() : '';
   }
-  meta['type'] = getMetadataProp(document, '.category-label');
+   const type = getMetadataProp(document, '.category-label');
+    if (type && type !== undefined) meta['type'] = type;
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
