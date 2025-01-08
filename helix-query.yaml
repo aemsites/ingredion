@@ -1,0 +1,28 @@
+# query index configs are now managed in helix5
+# testing needs to be done locally, so keeping this ocnfig in git
+# this should mirror this config - https://admin.hlx.page/config/aemsites/sites/ingredion/content/query.yaml
+version: 1
+indices:
+  news-na-en-us:
+    include:
+      - /na/en-us/news-events/news/**
+    exclude:
+      - /na/en-us/news-events/news/
+    target: /na/en-us/indexes/news-index.json
+    properties:
+      title:
+        select: head > meta[name="teaser-title"]
+        value: attribute(el, "content")
+      description:
+        select: head > meta[name="teaser-description"]
+        value: attribute(el, "content")
+      image:
+          select: head > meta[property="og:image"]
+          value: attribute(el, 'content')
+      publishDate:
+        select: head > meta[name="published-date"]
+        value: parseTimestamp(attribute(el, "content"), "ddd, DD MMM YYYY hh:mm:ss GMT")
+      categories:
+        select: head > meta[name="categories"]
+        values: attribute(el, "content")
+
