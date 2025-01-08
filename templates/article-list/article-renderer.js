@@ -2,6 +2,8 @@
 import { div, h3, h4, h5, ul, li, a, small, span, form, input, button } from '../../scripts/dom-helpers.js';
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 
+// TEMP CHANGE
+
 function getUrlParams(key) {
   const params = new URLSearchParams(window.location.search);
   return key ? params.get(key) : params; // If key is provided, return the value; otherwise, return all parameters
