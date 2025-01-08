@@ -11,8 +11,6 @@
  */
 /* stylelint-disable declaration-block-single-line-max-declarations, no-descending-specificity */
 
-@import url('/styles/dropdown.css');
-
 :root {
   /* colors */
   --text-color: #373738;
@@ -137,6 +135,7 @@ h6 {
   margin-bottom: 0.25em;
   font-family: var(--heading-font-family);
   font-weight: 600;
+  color: var(--text-color);
   line-height: 1.25;
   scroll-margin: 40px;
 }

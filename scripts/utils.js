@@ -88,3 +88,14 @@ export async function loadTranslations(url, locale) {
 export function translate(key) {
   return translations[key] || key;
 }
+
+/**
+ * Converts a Unix timestamp to a human-readable date format.
+ * @param {string | number} timestamp - The Unix timestamp in seconds.
+ * @returns {string} Formatted date string in "Month Day, Year" format.
+ */
+export function formatDate(timestamp) {
+  const date = new Date(parseInt(timestamp, 10) * 1000); // Convert seconds to milliseconds
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString('en-US', options);
+}

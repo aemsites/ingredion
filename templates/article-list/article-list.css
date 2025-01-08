@@ -1,0 +1,199 @@
+@import url('/styles/pagination.css');
+@import url('/styles/select-dropdown.css');
+
+.article-list {
+    .filter-search-sort {
+      display: flex;
+      justify-content: space-between;
+      margin: 6rem 0 2.5rem;
+
+      .filter-search {
+        position: relative;
+        flex: 1;
+        margin-right: 40px;
+
+        input {
+          height: 2.375rem;
+          width: 100%;
+          outline: none;
+          border: 1px solid var(--border-color);
+          padding: .78rem .625rem;
+          font-size: .875rem;
+          color: #373738;
+        }
+
+        .icon-search {
+          position: absolute;
+          right: 0;
+          width: 40px;
+          height: 38px;
+          font-family: OpenSans-Bold, Helvetica, sans-serif;
+          font-size: 1.5rem;
+          cursor: pointer;
+          background: transparent;
+          border: 0;
+
+          &::before {
+            content: "\e93c";
+            color: var(--green);
+            font-family: ingredion-icon;
+            speak: never;
+            font-style: normal;
+            font-weight: 400;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+          }
+        }
+      }
+
+      .sort {
+        line-height: 2rem;
+      }
+    }
+
+
+    .filter-results-wrapper {
+      display: flex;
+      justify-content: space-between;
+
+      .filter {
+        width: 275px;
+        margin-right: 40px;
+
+        h5 {
+          font-size: 1rem;
+          line-height: 3.5rem;
+          letter-spacing: .014rem;
+          color: #373738;
+          margin: 0;
+          cursor: pointer;
+          border-top: 1px solid var(--border-color);
+
+          .icon {
+            color: var(--green);
+            float: right;
+          }
+
+          &.open + ul.filters {
+            display: block;
+          }
+        }
+
+
+        .filter-options {
+          display: none;
+          list-style: none;
+          margin: 0;
+
+          li {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+
+            a { color: var(--text-color) }
+
+            &::before {
+              content: '';
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 20px;
+              height: 20px;
+              margin-right: 10px;
+              border: 1px solid #b2b4b3;
+              border-radius: 2px;
+              color: #fff;
+            }
+
+            &.selected::before {
+              content: '✓';
+              background: var(--green);
+            }
+          }
+        }
+
+        ul.applied-filters {
+          list-style: none;
+          margin: 0 0 60px;
+
+          li {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+
+            a { color: var(--text-color) }
+            .icon-close { color: var(--green) }
+
+            &.clear-all {
+              font-size: 1rem;
+              line-height: 1.5rem;
+              font-family: MiloPro-Bold, Helvetica, sans-serif;
+              color: #f0635b;
+              letter-spacing: .03rem;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+
+      .results {
+        flex: 1;
+
+        .count {
+          font-family: OpenSans-Bold, Helvetica, sans-serif;
+          color: var(--text-color);
+          font-size: 1rem;
+          line-height: 1.5rem;
+          letter-spacing: .016rem;
+        }
+
+        .card {
+          display: flex;
+          border: 1px solid var(--border-color);
+          margin-top: 2.5rem;
+          padding: 2.6rem 2.5rem 2.5rem 3.2rem;
+
+          .thumb {
+            flex: none;
+            width: 235px;
+            height: 185px;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+
+          .info {
+            margin: 0 0 0 40px;
+            min-height: 220px;
+
+            h4 {
+              margin: 0;
+            }
+
+            .button {
+              margin: 1rem 0 0;
+            }
+          }
+        }
+      }
+    }
+
+
+
+  .controls {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    margin: 40px 0;
+
+    .per-page {
+      font-size: .8rem;
+    }
+  }
+}
