@@ -10,13 +10,13 @@ function getUrlParams(key) {
 function updateUrlParam(key, value) {
   const url = new URL(window.location);
   url.searchParams.set(key, value); // Update the query parameter
-  window.history.pushState(null, '', url); // Update the browser history
+  // window.history.pushState(null, '', url);
 }
 
 function removeUrlParam(key) {
   const url = new URL(window.location);
   url.searchParams.delete(key);
-  window.history.pushState(null, '', url);
+  // window.history.pushState(null, '', url);
 }
 
 /**
@@ -515,7 +515,7 @@ export default class ArticleRenderer {
       await this.updatePage();
 
       // event listener for popstate
-      window.addEventListener('popstate', (event) => this.onPopState(event));
+      // window.addEventListener('popstate', (event) => this.onPopState(event));
     } catch (error) {
       console.error('Error during render:', error);
     }
