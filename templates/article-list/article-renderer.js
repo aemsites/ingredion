@@ -1,5 +1,6 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
 import { div, h3, h4, h5, ul, li, a, small, span, form, input, button } from '../../scripts/dom-helpers.js';
+import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 
 function getUrlParams(key) {
   const params = new URLSearchParams(window.location.search);
@@ -18,12 +19,26 @@ function removeUrlParam(key) {
   window.history.pushState(null, '', url);
 }
 
+/**
+ * Create an ArticleRenderer.
+ * @param {string} options.jsonPath - The path to the JSON file containing the articles.
+ * @param {Element} options.articleDiv - The container element for the articles.
+ * @param {Function} options.articleCard - The function to create an article card element.
+ * @param {string|number} [options.articlesPerPageOptions=10] - The options for the number of articles per page.
+ * @param {Element} options.paginationDiv - The container element for the pagination.
+ * @param {number} [options.paginationMaxBtns=7] - The maximum number of pagination buttons.
+ * @param {Element} options.filterDiv - The container element for the filters.
+ * @param {Element} options.searchDiv - The container element for the search form.
+ * @param {Element} options.sortDiv - The container element for the sort dropdown.
+ * @param {Element} options.countDiv - The container element for the article count.
+ * @param {Element} options.perPageDiv - The container element for the per-page dropdown.
+ */
 export default class ArticleRenderer {
   constructor({
     jsonPath,
     articleDiv,
     articleCard,
-    articlesPerPage = 10,
+    articlesPerPageOptions = 10,
     paginationDiv,
     paginationMaxBtns = 7,
     filterDiv,
@@ -35,7 +50,7 @@ export default class ArticleRenderer {
     this.jsonPath = jsonPath;
     this.articleDiv = articleDiv;
     this.articleCard = articleCard;
-    this.articlesPerPageOptions = articlesPerPage.split(',').map(Number);
+    this.articlesPerPageOptions = articlesPerPageOptions.split(',').map(Number);
     this.paginationDiv = paginationDiv;
     this.paginationMaxBtns = paginationMaxBtns;
     this.filterDiv = filterDiv;
@@ -92,8 +107,10 @@ export default class ArticleRenderer {
     this.state.totalArticles = articles.length;
     this.renderArticles(articles.slice(currentPage * articlesPerPage, (currentPage + 1) * articlesPerPage));
     this.renderFilter();
-    this.renderPagination();
+    this.renderSearchForm();
+    this.renderSortDropdown();
     this.renderCount();
+    this.renderPagination();
     this.renderPerPageDropdown();
     this.updateUrl(); // sync state
   }
@@ -124,7 +141,7 @@ export default class ArticleRenderer {
     if (!this.countDiv) return;
     const start = this.state.currentPage * this.state.articlesPerPage + 1;
     const end = Math.min((this.state.currentPage + 1) * this.state.articlesPerPage, this.state.totalArticles);
-    this.countDiv.textContent = `Items ${start}–${end} of ${this.state.totalArticles}`;
+    this.countDiv.textContent = `${translate('items')} ${start}–${end} ${translate('of')} ${this.state.totalArticles}`;
   }
 
   onPopState() {
@@ -250,23 +267,21 @@ export default class ArticleRenderer {
 
   renderSortDropdown() {
     if (!this.sortDiv) return;
-
+    this.sortDiv.innerHTML = '';
     this.sortDiv.classList.add('select-dropdown', 'sort');
 
-    const sortOptions = [
-      { label: 'Newest', value: 'newest' },
-      { label: 'Oldest', value: 'oldest' },
-      { label: 'A-Z', value: 'a-z' },
-      { label: 'Z-A', value: 'z-a' },
-    ];
+    const availableSortOptions = ['newest', 'oldest', 'a-z', 'z-a'];
+    const sortOptions = availableSortOptions.map((key) => ({ label: translate(key), value: key }));
 
-    const $currentSelection = div({ class: 'selected' }, `Sort by: ${sortOptions.find((option) => option.value === this.state.sort)?.label || 'Newest'}`);
+    const $currentSelection = div(
+      { class: 'selected' },
+      `Sort by: ${sortOptions.find((option) => option.value === this.state.sort)?.label || translate('newest')}`,
+    );
+
     const $dropdown = ul({ class: 'options' });
 
-
-
     sortOptions.forEach((option) => {
-      const $li = li(option.label);
+      const $li = li({ class: option.value === this.state.sort ? 'active' : '' }, option.label);
       $li.addEventListener('click', () => {
         if (this.state.sort !== option.value) {
           this.state.sort = option.value;
@@ -284,7 +299,7 @@ export default class ArticleRenderer {
       $dropdown.classList.toggle('open');
     });
 
-    // close dropdown if clicked outside
+    // Close dropdown if clicked outside
     document.addEventListener('click', () => {
       $dropdown.classList.remove('open');
     });
@@ -296,13 +311,12 @@ export default class ArticleRenderer {
     if (!this.perPageDiv) return;
 
     this.perPageDiv.innerHTML = '';
-
     this.perPageDiv.classList.add('select-dropdown', 'per-page');
     const $currentSelection = div({ class: 'selected' }, `${this.state.articlesPerPage} per page`);
     const $dropdown = ul({ class: 'options' });
 
     this.articlesPerPageOptions.forEach((option) => {
-      const $li = li({ class: option === this.articlesPerPage ? 'active' : '' }, `${option.toString()} per page`);
+      const $li = li({ class: option === this.state.articlesPerPage ? 'active' : '' }, `${option.toString()} per page`);
       $li.addEventListener('click', () => {
         if (this.state.articlesPerPage !== option) {
           this.state.articlesPerPage = option;
@@ -339,9 +353,27 @@ export default class ArticleRenderer {
 
   renderSearchForm() {
     if (!this.searchDiv) return;
+    this.searchDiv.innerHTML = '';
     this.searchDiv.classList.add('filter-search');
+    const searchPlaceholder = translate('search');
     const $form = form();
-    const $input = input({ type: 'listing-search', name: 'q', placeholder: 'Search', value: getUrlParams('q') || '' });
+    const $input = input({
+      type: 'listing-search',
+      name: 'q',
+      placeholder: searchPlaceholder,
+      value: getUrlParams('q') || '',
+    });
+
+    $input.addEventListener('focus', () => {
+      $input.placeholder = '';
+    });
+
+    $input.addEventListener('blur', () => {
+      if (!$input.value.trim()) {
+        $input.placeholder = searchPlaceholder;
+      }
+    });
+
     const $submit = button({ class: 'icon-search', type: 'submit', 'aria-label': 'Search Button' });
     $form.append($input, $submit);
 
@@ -373,6 +405,12 @@ export default class ArticleRenderer {
     return $pageBtn;
   }
 
+  /**
+   * Render the article list and initialize event listeners.
+   * Fetches translations and articles, updates the page, and sets up a popstate event listener.
+   * @async
+   * @returns {Promise<void>}
+   */
   renderPagination() {
     if (!this.paginationDiv) return;
     this.paginationDiv.innerHTML = '';
@@ -382,7 +420,7 @@ export default class ArticleRenderer {
 
     const p = document.createDocumentFragment();
 
-    const $prev = button({ class: 'prev' }, 'Prev');
+    const $prev = button({ class: 'prev' }, translate('prev'));
     $prev.addEventListener('click', () => {
       if (this.state.currentPage > 0) {
         this.state.currentPage -= 1;
@@ -432,7 +470,7 @@ export default class ArticleRenderer {
       }
     }
 
-    const $next = button({ class: 'next' }, 'Next');
+    const $next = button({ class: 'next' }, translate('next'));
     $next.addEventListener('click', () => {
       if (this.state.currentPage < totalPages - 1) {
         this.state.currentPage += 1;
@@ -458,19 +496,28 @@ export default class ArticleRenderer {
    */
   async render() {
     try {
-      const response = await fetch(this.jsonPath);
-      const json = await response.json();
-      this.state.allArticles = json.data;
+      const translationsUrl = '/translations.json';
+      // eslint-disable-next-line no-unused-vars
+      const [region, locale] = getRegionLocale();
 
-      this.renderSearchForm();
-      this.renderSortDropdown();
+      // fetch both articles and translations
+      const [articlesResponse] = await Promise.all([
+        fetch(this.jsonPath),
+        loadTranslations(translationsUrl, locale),
+      ]);
 
+      // handle articles response
+      if (!articlesResponse.ok) throw new Error('Failed to fetch articles');
+      const { data } = await articlesResponse.json();
+      this.state.allArticles = data;
+
+      // render page after data and translations are loaded
       await this.updatePage();
-      window.addEventListener('popstate', (event) => this.onPopState(event));
 
+      // event listener for popstate
+      window.addEventListener('popstate', (event) => this.onPopState(event));
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error fetching articles:', error);
+      console.error('Error during render:', error);
     }
   }
 }

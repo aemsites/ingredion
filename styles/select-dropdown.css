@@ -1,4 +1,4 @@
-
+/* stylelint-disable font-family-no-missing-generic-family-keyword */
 .select-dropdown {
   position: relative;
   display: inline-block;
@@ -12,7 +12,7 @@
     border: 1px solid var(--border-color);
     cursor: pointer;
     user-select: none;
-    &:has(+ .dropdown.open) { border-color: var(--green) }
+    &:has(+ .options.open) { border-color: var(--green) }
 
     /* arrow */
     &::after {
@@ -25,7 +25,7 @@
       border-right: 6px solid transparent;
       border-top: 8px solid var(--green);
     }
-    &:has(+ .dropdown.open)::after { transform: translateY(-50%) rotate(180deg) }
+    &:has(+ .options.open)::after { transform: translateY(-50%) rotate(180deg) }
   }
 
   .options {

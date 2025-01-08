@@ -8,9 +8,9 @@ import { breadcrumbs } from '../../scripts/breadcrumbs.js';
 import ArticleRenderer from './article-renderer.js';
 
 export default async function decorate(doc) {
-  const $page = doc.querySelector('main .section');
-  const theme = getMetadata('theme');
-  const articlesPerPage = getMetadata('articles-per-page');
+  const $mainSection = doc.querySelector('main .section');
+  const jsonPath = getMetadata('article-data');
+  const articlesPerPageOptions = getMetadata('articles-per-page-options');
   const paginationMaxBtns = Number(getMetadata('pagination-max-buttons'));
   const $breadcrumbs = breadcrumbs();
   const $search = div();
@@ -19,8 +19,8 @@ export default async function decorate(doc) {
   const $pagination = div({ class: 'pagination' });
   const $perPage = div();
   const $filters = div();
-  const $newsArticles = div({ class: 'articles' });
-  const $newsCard = (article) => div({ class: 'card' },
+  const $articles = div({ class: 'articles' });
+  const $articleCard = (article) => div({ class: 'card' },
     a({ class: 'thumb', href: article.path },
       createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
     ),
@@ -32,7 +32,7 @@ export default async function decorate(doc) {
     ),
   );
 
-  const $newsPage = div({ class: 'article-list' },
+  const $articlePage = div({ class: 'article-list' },
     $breadcrumbs,
     div({ class: 'filter-search-sort' },
       $search,
@@ -44,7 +44,7 @@ export default async function decorate(doc) {
       ),
       div({ class: 'results' },
         $count,
-        $newsArticles,
+        $articles,
         div({ class: 'controls' },
           $pagination,
           $perPage,
@@ -53,14 +53,14 @@ export default async function decorate(doc) {
     ),
   );
 
-  $page.append($newsPage);
+  $mainSection.append($articlePage);
 
   await new ArticleRenderer({
-    jsonPath: '/na/en-us/indexes/news-index-dummy.json',
-    articlesPerPage,
+    jsonPath,
+    articlesPerPageOptions,
     paginationMaxBtns,
-    articleDiv: $newsArticles,
-    articleCard: $newsCard,
+    articleDiv: $articles,
+    articleCard: $articleCard,
     filterDiv: $filters,
     searchDiv: $search,
     sortDiv: $sort,

@@ -1,7 +1,10 @@
+/* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
 @import url('/styles/pagination.css');
 @import url('/styles/select-dropdown.css');
 
-.article-list {
+main .article-list {
+  padding: 0 16px;
+
     .filter-search-sort {
       display: flex;
       justify-content: space-between;
@@ -20,6 +23,7 @@
           padding: .78rem .625rem;
           font-size: .875rem;
           color: #373738;
+          &:focus { border-color: var(--green) }
         }
 
         .icon-search {
@@ -50,6 +54,8 @@
 
       .sort {
         line-height: 2rem;
+        width: 180px;
+        ul { width: inherit }
       }
     }
 
@@ -58,9 +64,17 @@
       display: flex;
       justify-content: space-between;
 
+      @media ( width <= 1080px) {
+        flex-direction: column;
+      }
+
       .filter {
         width: 275px;
         margin-right: 40px;
+
+        @media ( width <= 1080px) {
+          width: 100%;
+        }
 
         h5 {
           font-size: 1rem;
@@ -76,9 +90,7 @@
             float: right;
           }
 
-          &.open + ul.filters {
-            display: block;
-          }
+          &.open + ul.filters { display: block }
         }
 
 
@@ -156,6 +168,10 @@
           margin-top: 2.5rem;
           padding: 2.6rem 2.5rem 2.5rem 3.2rem;
 
+          @media ( width <= 600px) {
+            flex-direction: column;
+          }
+
           .thumb {
             flex: none;
             width: 235px;
@@ -172,28 +188,24 @@
             margin: 0 0 0 40px;
             min-height: 220px;
 
-            h4 {
-              margin: 0;
+            @media ( width <= 600px) {
+              margin: 20px 0 0;
             }
 
-            .button {
-              margin: 1rem 0 0;
-            }
+            h4 { margin: 0 }
+
+            .button { margin: 1rem 0 0 }
           }
+        }
+
+        .controls {
+          display: flex;
+          flex-flow: row wrap;
+          justify-content: space-between;
+          margin: 40px 0;
+
+          .per-page { font-size: .8rem }
         }
       }
     }
-
-
-
-  .controls {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    margin: 40px 0;
-
-    .per-page {
-      font-size: .8rem;
-    }
-  }
 }
