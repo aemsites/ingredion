@@ -11,7 +11,8 @@ const colorMapping = new Map([
   ['#6266b9', 'lilac'],
   ['#b41f75', 'purple'],
   ['#6a0c5f', 'dark-purple'],
-  ['#ffffff', 'transparent']
+  ['#ffffff', 'transparent'],
+  ['#68e0a1', 'aurora-green']
 ]);
 
 export function createCalloutBlock(document, main) {
@@ -84,9 +85,10 @@ export function createCardsBlock(document, main) {
       if (cardImg) cardImg = cardImg.outerHTML;
       else cardImg = '';
       const cardHeading = card.querySelector('.content-card__text .heading > h3') ? card.querySelector('.content-card__text .heading > h3').textContent : '';
-      const cardText = card.querySelector('.content-card__text .rte-block') ? card.querySelector('.content-card__text .rte-block').textContent : '';
+      const cardText = card.querySelector('.content-card__text .rte-block') ? card.querySelector('.content-card__text .rte-block').innerHTML : '';
+      cardText.replace('&nbsp;', '');
       const cardLink = card.querySelector('.content-card__text > a') ? card.querySelector('.content-card__text > a').outerHTML : '';
-      cardsList.push(`${cardImg} <h3>${cardHeading}<h3> ${cardText} ${cardLink}`);
+      cardsList.push(`${cardImg} <h3>${cardHeading}</h3> ${cardText} ${cardLink}`);
       if (index === cards.length - 1) {
         for (let i = 0; i < cardsList.length; i += 3) {
           if (cardsList[i + 2] === undefined) cells.push([cardsList[i], cardsList[i + 1]]);
@@ -105,12 +107,16 @@ export function createCardsBlock(document, main) {
     cards.forEach((card, index) => {
       const cardImg = card.querySelector('.card__image > picture').outerHTML;
       const cardHeading = card.querySelector('.card__text .heading > h4').textContent;
-      const cardText = card.querySelector('.card__text .rte-block').textContent;
+      const cardText = card.querySelector('.card__text .rte-block').innerHTML;
+      cardText.replace('&nbsp;', '');
       const cardLinkText = card.querySelector('.card__text .secondary-cta');
-      let cardLink = document.createElement('a');
-      cardLink.href = cardLinkText.parentElement.href;
-      cardLink.textContent = cardLinkText.textContent;
-      cells.push([`${cardImg} ${cardHeading} ${cardText} ${cardLink.outerHTML}`]);
+      let cardLink = document.createElement('a');      
+      if (cardLinkText !== null) {
+        cardLink.href = cardLinkText.parentElement.href;
+        cardLink.textContent = cardLinkText.textContent;
+      } else cardLink.href = card.querySelector('.card__text > a').href;      
+      
+      cells.push([`${cardImg} <h4>${cardHeading}</h4> ${cardText} ${cardLink.outerHTML}`]);
     });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
     cardsBlock.replaceWith(cardsTable);
@@ -125,7 +131,7 @@ export function createCardsBlock(document, main) {
       if (cardImg) cardImg = cardImg.outerHTML;
       else cardImg = '';
       const cardHeading = card.querySelector('.content-card__text .heading > h3') ? card.querySelector('.content-card__text .heading > h3').textContent : '';
-      const cardText = card.querySelector('.content-card__text .rte-block') ? card.querySelector('.content-card__text .rte-block').textContent : '';
+      const cardText = card.querySelector('.content-card__text .rte-block') ? card.querySelector('.content-card__text .rte-block').innerHTML : '';
       const cardLink = card.querySelector('.content-card__text > a') ? card.querySelector('.content-card__text > a').outerHTML : '';
       cardsList.push(`${cardImg} <h3>${cardHeading}<h3> ${cardText} ${cardLink}`);
       if (index === cards.length - 1) {
@@ -263,7 +269,7 @@ export function createColorBlock(document) {
     const colorBlockQuote = colorBlock.querySelector('.colorblock-quote');
     if (!colorBlockQuote) return;
     const color = toHex(colorBlockQuote.style.backgroundColor);
-    const cells = [[`colorblock(${color}) `]];
+    const cells = colorMapping.has(color) ? [[`colorblock(${colorMapping.get(color)}) `]] : [[`colorblock(${color}) `]];
     const heading = colorBlockQuote.querySelector('.heading > h1').textContent;
     cells.push([heading]);
     const subHeading = colorBlockQuote.querySelector('.heading > h3');

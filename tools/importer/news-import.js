@@ -11,7 +11,8 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
-import { createColorBlock, createIngredientBlock, createContactUs } from './helper.js';
+import { createColorBlock, createIngredientBlock, createContactUs, getSocialShare, createCardsBlock } from './helper.js';
+import { newsMap } from './mapping.js';
 
 export default {
   /**
@@ -28,11 +29,23 @@ export default {
     document, url, html, params,
   }) => {
     // define the main element: the one that will be transformed to Markdown
+    const path = ((u) => {
+      let p = new URL(u).pathname;
+      if (p.endsWith('/')) {
+        p = `${p}index`;
+      }
+      return decodeURIComponent(p)
+        .toLowerCase()
+        .replace(/\.html$/, '')
+        .replace(/[^a-z0-9/]/gm, '-');
+    })(url);
+
     const main = document.body;
     createColorBlock(document, main);
+    createCardsBlock(document, main);
     createIngredientBlock(document, main);
     createContactUs(main, document);
-    createMetadata(main, document, url, html);
+    createMetadata(main, document, path, html);
 
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
@@ -48,19 +61,7 @@ export default {
     ]);
     WebImporter.rules.transformBackgroundImages(main, document);
     WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
-    WebImporter.rules.convertIcons(main, document);
-
-
-    const path = ((u) => {
-      let p = new URL(u).pathname;
-      if (p.endsWith('/')) {
-        p = `${p}index`;
-      }
-      return decodeURIComponent(p)
-        .toLowerCase()
-        .replace(/\.html$/, '')
-        .replace(/[^a-z0-9/]/gm, '-');
-    })(url);
+    WebImporter.rules.convertIcons(main, document);  
 
     return [{
       element: main,
@@ -71,13 +72,12 @@ export default {
 
 
 
-const createMetadata = (main, document, url, html) => {
-  //const meta = updateCommonMetadata(document, url, html);
+const createMetadata = (main, document, url, html) => {  
   const meta = {};
   // Create Metadata Block
   const title = document.querySelector('title');
   if (title) {
-    meta.Title = title.textContent.replace(/[\n\t]/gm, '');
+    meta.Title = title.textContent;
   }
 
   // description
@@ -102,9 +102,15 @@ const createMetadata = (main, document, url, html) => {
   const dateCategory = getMetadataProp(document, '.date-category-tags');
   if (dateCategory) {
     meta['published-date'] = dateCategory.split('|')[0].trim();
-    meta['categories'] = dateCategory.split('|')[1] ? dateCategory.split('|')[1].trim() : '';
+    const category = dateCategory.split('|')[1] ? dateCategory.split('|')[1].trim() : '';
+    if (category && category !== '') meta['category'] = category;
   }
-  meta['type'] = getMetadataProp(document, '.category-label');
+  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
+  if (caseInsensitiveUrl) {
+    meta['tags'] = newsMap.get(caseInsensitiveUrl);
+  }  
+  const type = getMetadataProp(document, '.category-label');
+  if (type) meta['type'] = type;
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
@@ -116,7 +122,7 @@ export function getMetadataProp(document, queryString) {
   let metaDataField;
   const metadata = document.querySelector(queryString);
   if (metadata) {
-    metaDataField = metadata.textContent ? metadata.textContent.replace(/[\n\t]/gm, '') : metadata.content;
+    metaDataField = metadata.textContent ? metadata.textContent : metadata.content;
     metadata.remove();
   }
   return metaDataField;
