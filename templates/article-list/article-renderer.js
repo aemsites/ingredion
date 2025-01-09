@@ -2,7 +2,7 @@
 import { div, h3, h4, h5, ul, li, a, small, span, form, input, button } from '../../scripts/dom-helpers.js';
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 
-// TEMP CHANGE
+// TEMP CHANGE NEW COMMENT
 
 function getUrlParams(key) {
   const params = new URLSearchParams(window.location.search);
