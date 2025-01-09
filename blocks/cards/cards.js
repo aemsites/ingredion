@@ -88,6 +88,35 @@ export default function decorate(block) {
           div.append(imageAnchor);
         } else div.className = 'cards-card-body';
       });
+      if (block.classList.contains('four-column')) {
+        const existingWrapper = document.querySelector('.section-title-description-wrapper');
+        if (!existingWrapper) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'section-title-description-wrapper';
+          block.insertAdjacentElement('beforebegin', wrapper);
+        }
+
+        const imageContainer = li.querySelector('.cards-card-image');
+        const bodyContainer = li.querySelector('.cards-card-body');
+        const textLink = bodyContainer.querySelector('a');
+
+        if (textLink && imageContainer && bodyContainer) {
+          const linkHref = textLink.href;
+          const h3 = document.createElement('h3');
+          h3.textContent = textLink.textContent;
+          h3.title = textLink.title || '';
+          textLink.parentNode.replaceWith(h3);
+
+          const wrapperLink = document.createElement('a');
+          wrapperLink.href = linkHref;
+          wrapperLink.title = textLink.title || '';
+
+          li.prepend(wrapperLink);
+          wrapperLink.appendChild(imageContainer);
+          wrapperLink.appendChild(bodyContainer);
+        }
+      }
+
       const btnContainers = li.querySelectorAll('.button-container');
       if (btnContainers) {
         btnContainers.forEach((btnContainer, index) => {
