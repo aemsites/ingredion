@@ -103,7 +103,7 @@ const createMetadata = (main, document, url, html) => {
   if (dateCategory) {
     meta['published-date'] = dateCategory.split('|')[0].trim();
     const category = dateCategory.split('|')[1] ? dateCategory.split('|')[1].trim() : '';
-    if (category && category !== '') meta['category'] = category;
+    if (category && category !== '') meta['categories'] = category;
   }
   const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
