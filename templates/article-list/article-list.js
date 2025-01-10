@@ -1,6 +1,4 @@
-/* eslint-disable function-call-argument-newline */
-/* eslint-disable max-len */
-/* eslint-disable function-paren-newline, object-curly-newline */
+/* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
 import { div, h3, h4, p, a } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, getMetadata } from '../../scripts/aem.js';
 import { formatDate } from '../../scripts/utils.js';
