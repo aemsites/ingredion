@@ -29,4 +29,3 @@ indices:
       tags:
         select: head > meta[name="tags"]
         values: attribute(el, "content")
-
