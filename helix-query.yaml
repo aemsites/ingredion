@@ -1,7 +1,10 @@
 # query index configs are now managed in helix5
-# testing needs to be done locally, so keeping this ocnfig in git
-# https://www.aem.live/docs/admin.html#schema/IndexConfig
-# post yaml to - https://admin.hlx.page/config/aemsites/sites/ingredion/content/query.yaml
+# testing needs to be done locally, so keeping this config in git
+# documentaiton: https://www.aem.live/docs/admin.html#schema/IndexConfig
+# 1. login - https://admin.hlx.page/auth/adobe
+# 2. post body below to - https://admin.hlx.page/config/aemsites/sites/ingredion/content/query.yaml
+# content-type = text/yaml
+
 version: 1
 indices:
   news-na-en-us:
@@ -27,5 +30,5 @@ indices:
         select: head > meta[name="categories"]
         values: attribute(el, "content")
       tags:
-        select: head > meta[name="tags"]
+        select: head > meta[property="article:tag"]
         values: attribute(el, "content")
