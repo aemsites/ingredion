@@ -24,50 +24,86 @@ export function getRegionLocale() {
  * called once every specified number of milliseconds.
  * @param {Function} fn - The function to throttle.
  * @param {number} wait - Number of milliseconds to wait before calling again.
+ * @param hoverWait
  * @returns {Function} A throttled version of the input function.
  */
-export function throttle(fn, wait) {
+export function throttle(fn, wait, hoverWait) {
   let lastCall = 0;
-  return function throttled(...args) {
+  let hoverTimer;
+  let isHovered = false;
+  return function throttled(event, ...args) {
     const now = Date.now();
-    if (now - lastCall >= wait) {
-      lastCall = now;
-      fn.apply(this, args);
-    }
+    // clear any previous timer when hover starts
+    if (hoverTimer) clearTimeout(hoverTimer);
+    isHovered = true;
+    hoverTimer = setTimeout(() => {
+      if (isHovered && now - lastCall >= wait) {
+        lastCall = now;
+        fn.apply(this, args);
+      }
+    }, hoverWait);
+    // attach event listener to cancel if mouse leaves
+    event.target.addEventListener(
+      'mouseleave',
+      () => {
+        isHovered = false;
+        clearTimeout(hoverTimer);
+      },
+      { once: true },
+    );
   };
 }
 
-/**
- * Loads translations from a given URL and locale, and stores them in a lookup object.
- * @param {string} url - The URL to fetch translations from.
- * @param {string} locale - The locale to use for translations.
- * @returns {Promise<Object>} A promise that resolves to the translations object.
- */
+// Store translations globally in the module scope.
 let translations = {};
-export async function loadTranslations(url, locale) {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Failed to fetch translations');
-    const data = await response.json();
 
-    // Create a lookup object for translations
-    translations = data.data.reduce((acc, item) => {
-      acc[item.key] = item[locale] || item.en;
+/**
+ * Loads translations from a JSON file and caches the results.
+ * Improved upon fetchPlaceholderData from scripts/aem.js.
+ * If the translations for the specified sheet are already cached, returns the cached translations.
+ * Otherwise, fetches the translations from the server, processes them, and caches the results.
+ * @async
+ * @param {string} [sheet='default'] - The name of the sheet to fetch translations for.
+ * @returns {Promise<Object>} A promise that resolves to an object containing the translations.
+ */
+export async function loadTranslations(sheet = 'default') {
+  const cache = loadTranslations.cache || (loadTranslations.cache = new Map());
+  if (cache.has(sheet)) { return cache.get(sheet); }
+  const url = `/translations.json?sheet=${sheet}`;
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`Failed to fetch translations for sheet: ${sheet}`);
+
+    const json = await resp.json();
+    const placeholders = json.data.reduce((acc, item) => {
+      if (item.k) { acc[item.k] = item.v || ''; }
       return acc;
     }, {});
-    return translations;
+    cache.set(sheet, placeholders);
+    translations = placeholders;
+    return placeholders;
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error loading translations:', error);
+    console.error('Error fetching translations:', error);
+    cache.set(sheet, {});
     return {};
   }
 }
 
 /**
- * Retrieves the translated text for a given key.
- * @param {string} key - The key for the translation.
- * @returns {string} The translated text, or the key if no translation is found.
+ * Translates a given key using the fetched translations.
+ * If the key is not found in the translations, returns the key itself.
+ * @param {string} key - The key to translate.
+ * @returns {string} The translated string or the key if not found.
  */
-export function translate(key) {
-  return translations[key] || key;
+export function translate(key) { return translations[key] || key; }
+
+/**
+ * Converts a Unix timestamp to a human-readable date format.
+ * @param {string | number} timestamp - The Unix timestamp in seconds.
+ * @returns {string} Formatted date string in "Month Day, Year" format.
+ */
+export function formatDate(timestamp) {
+  const date = new Date(parseInt(timestamp, 10) * 1000); // Convert seconds to milliseconds
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString('en-US', options);
 }
