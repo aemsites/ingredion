@@ -26,7 +26,7 @@ export default class ArticleRenderer {
     jsonPath,
     articleDiv,
     articleCard,
-    articlesPerPageOptions = 10,
+    articlesPerPageOptions = '10, 25, 50',
     paginationDiv,
     paginationMaxBtns = 7,
     filterDiv,
