@@ -2,23 +2,9 @@
 import { div, h3, h4, h5, ul, li, a, small, span, form, input, button } from '../../scripts/dom-helpers.js';
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 
-// TEMP CHANGE NEW COMMENT
-
 function getUrlParams(key) {
   const params = new URLSearchParams(window.location.search);
-  return key ? params.get(key) : params; // If key is provided, return the value; otherwise, return all parameters
-}
-
-function updateUrlParam(key, value) {
-  const url = new URL(window.location);
-  url.searchParams.set(key, value); // Update the query parameter
-  // window.history.pushState(null, '', url);
-}
-
-function removeUrlParam(key) {
-  const url = new URL(window.location);
-  url.searchParams.delete(key);
-  // window.history.pushState(null, '', url);
+  return key ? params.get(key) : params;
 }
 
 /**
@@ -63,6 +49,26 @@ export default class ArticleRenderer {
     this.state = {
       allArticles: [],
       totalArticles: 0,
+      currentPage: (parseInt(getUrlParams('page'), 10) || 1) - 1,
+      tags: (getUrlParams('tags') || '').split(',').filter(Boolean),
+      sort: getUrlParams('sort') || 'newest',
+      searchQuery: getUrlParams('q') || '',
+      articlesPerPage: getUrlParams('per-page') || this.articlesPerPageOptions[0],
+    };
+
+    // Synchronize initial URL state
+    window.history.replaceState({ ...this.state }, '', window.location.href);
+
+    // Listen to popstate events for back/forward navigation
+    window.addEventListener('popstate', (event) => {
+      const state = event.state || this.parseUrl();
+      this.state = { ...this.state, ...state };
+      this.updatePage(); // Re-render with updated state
+    });
+  }
+
+  parseUrl() {
+    return {
       currentPage: (parseInt(getUrlParams('page'), 10) || 1) - 1,
       tags: (getUrlParams('tags') || '').split(',').filter(Boolean),
       sort: getUrlParams('sort') || 'newest',
@@ -118,25 +124,36 @@ export default class ArticleRenderer {
   }
 
   updateUrl() {
-    // current page
+    const url = new URL(window.location);
+
+    // Update the URL parameters
+    function updateUrlParam(key, value) {
+      url.searchParams.set(key, value);
+    }
+    function removeUrlParam(key) {
+      url.searchParams.delete(key);
+    }
+
+    // Manage URL parameters
     if (this.state.currentPage !== 0) updateUrlParam('page', this.state.currentPage + 1);
     else removeUrlParam('page');
 
-    // per page
     if (this.state.articlesPerPage !== this.articlesPerPageOptions[0]) updateUrlParam('per-page', this.state.articlesPerPage);
     else removeUrlParam('per-page');
 
-    // tags
     if (this.state.tags.length > 0) updateUrlParam('tags', this.state.tags.join(','));
     else removeUrlParam('tags');
 
-    // search query
     if (this.state.searchQuery) updateUrlParam('q', this.state.searchQuery);
     else removeUrlParam('q');
 
-    // sort order
     if (this.state.sort !== 'newest') updateUrlParam('sort', this.state.sort);
     else removeUrlParam('sort');
+
+    // Compare with current history state to avoid redundant pushes
+    if (JSON.stringify(window.history.state) !== JSON.stringify(this.state)) {
+      window.history.pushState({ ...this.state }, '', url.toString());
+    }
   }
 
   renderCount() {
@@ -144,10 +161,6 @@ export default class ArticleRenderer {
     const start = this.state.currentPage * this.state.articlesPerPage + 1;
     const end = Math.min((this.state.currentPage + 1) * this.state.articlesPerPage, this.state.totalArticles);
     this.countDiv.textContent = `${translate('items')} ${start}–${end} ${translate('of')} ${this.state.totalArticles}`;
-  }
-
-  onPopState() {
-    this.updatePage();
   }
 
   /**
@@ -246,20 +259,22 @@ export default class ArticleRenderer {
         $filters.style.display = isCurrentlyOpen ? 'block' : 'none';
       });
 
-      groupedTags[heading].forEach(({ tag, original, count }) => {
-        const isSelected = this.state.tags.includes(tag);
-        const $li = li({ class: isSelected ? 'selected' : '' }, a({ href: `?tags=${tag}` }, `${original} `, small(`(${count})`)));
+      groupedTags[heading]
+        .sort((A, B) => A.original.localeCompare(B.original)) // Alphabetical sort by original tag name
+        .forEach(({ tag, original, count }) => {
+          const isSelected = this.state.tags.includes(tag);
+          const $li = li({ class: isSelected ? 'selected' : '' }, a({ href: `?tags=${tag}` }, `${original} `, small(`(${count})`)));
 
-        $li.addEventListener('click', (event) => {
-          event.preventDefault();
-          if (isSelected) this.state.tags = this.state.tags.filter((t) => t !== tag);
-          else this.state.tags.push(tag); // add tag if not selected
-          this.state.currentPage = 0;
-          this.updatePage();
+          $li.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (isSelected) this.state.tags = this.state.tags.filter((t) => t !== tag);
+            else this.state.tags.push(tag); // add tag if not selected
+            this.state.currentPage = 0;
+            this.updatePage();
+          });
+
+          $filters.appendChild($li);
         });
-
-        $filters.appendChild($li);
-      });
 
       $filter.append($groupHeading, $filters);
     });
@@ -363,7 +378,7 @@ export default class ArticleRenderer {
       type: 'listing-search',
       name: 'q',
       placeholder: searchPlaceholder,
-      value: getUrlParams('q') || '',
+      value: this.state.searchQuery || '',
     });
 
     $input.addEventListener('focus', () => {
@@ -498,14 +513,13 @@ export default class ArticleRenderer {
    */
   async render() {
     try {
-      const translationsUrl = '/translations.json';
       // eslint-disable-next-line no-unused-vars
       const [region, locale] = getRegionLocale();
 
       // fetch both articles and translations
       const [articlesResponse] = await Promise.all([
         fetch(this.jsonPath),
-        loadTranslations(translationsUrl, locale),
+        loadTranslations(locale),
       ]);
 
       // handle articles response
@@ -515,9 +529,6 @@ export default class ArticleRenderer {
 
       // render page after data and translations are loaded
       await this.updatePage();
-
-      // event listener for popstate
-      // window.addEventListener('popstate', (event) => this.onPopState(event));
     } catch (error) {
       console.error('Error during render:', error);
     }
