@@ -108,11 +108,14 @@ const createMetadata = (main, document, url, html) => {
   const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
     meta['tags'] = newsMap.get(caseInsensitiveUrl);
-  }  
+  } else {
+    meta['tags'] = '';
+  }
   const type = getMetadataProp(document, '.category-label');
   if (type) meta['type'] = type;
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
+  else meta['social-share'] = '';
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
   main.append(block);
   return meta;

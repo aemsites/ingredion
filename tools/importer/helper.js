@@ -147,7 +147,7 @@ export function createCardsBlock(document, main) {
 
   cardsBlocks = document.querySelectorAll('.fourColumnTeaserGrid .section__content');
   cardsBlocks.forEach((cardsBlock) => {
-    const cells = [['Cards(4-column-teaser)']];
+    const cells = [['Cards(four-column)']];
     const cards = cardsBlock.querySelectorAll('.link-card');
     let cardsList = [];
     cards.forEach((card, index) => {
