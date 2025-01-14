@@ -2,7 +2,7 @@
 .anchor-wrapper {
   display: none;
   background: var(--theme-clr-background);
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, .1);
+  box-shadow: 0 0 20px 0 rgba(0 0 0 / 10%);
   width: 100%;
 }
 
@@ -19,7 +19,7 @@
     font-family: var(--heading-font-family);
     font-size: 1rem;
     line-height: 1.5rem;
-    letter-spacing: .03125rem;
+    letter-spacing: .0313rem;
     color: #373738;
     text-transform: uppercase;
     padding: 0 1.25rem;
@@ -31,7 +31,7 @@
   }
 }
 
-@media (min-width: 1080px) {
+@media (width >= 1080px) {
   .anchor-wrapper {
     display: block;
   }
