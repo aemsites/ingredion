@@ -88,14 +88,7 @@ export function createCardsBlock(document, main) {
       const cardText = card.querySelector('.content-card__text .rte-block') ? card.querySelector('.content-card__text .rte-block').innerHTML : '';
       cardText.replace('&nbsp;', '');
       const cardLink = card.querySelector('.content-card__text > a') ? card.querySelector('.content-card__text > a').outerHTML : '';
-      cardsList.push(`${cardImg} <h3>${cardHeading}</h3> ${cardText} ${cardLink}`);
-      if (index === cards.length - 1) {
-        for (let i = 0; i < cardsList.length; i += 3) {
-          if (cardsList[i + 2] === undefined) cells.push([cardsList[i], cardsList[i + 1]]);
-          else if (cardsList[i + 1] === undefined) cells.push([cardsList[i]]);
-          else cells.push([cardsList[i], cardsList[i + 1], cardsList[i + 2]]);
-        }
-      }
+      cells.push([`${cardImg} <h3>${cardHeading}</h3> ${cardText} ${cardLink}`]);
     });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
     cardsBlock.replaceWith(cardsTable);
@@ -133,13 +126,7 @@ export function createCardsBlock(document, main) {
       const cardHeading = card.querySelector('.content-card__text .heading > h3') ? card.querySelector('.content-card__text .heading > h3').textContent : '';
       const cardText = card.querySelector('.content-card__text .rte-block') ? card.querySelector('.content-card__text .rte-block').innerHTML : '';
       const cardLink = card.querySelector('.content-card__text > a') ? card.querySelector('.content-card__text > a').outerHTML : '';
-      cardsList.push(`${cardImg} <h3>${cardHeading}<h3> ${cardText} ${cardLink}`);
-      if (index === cards.length - 1) {
-        for (let i = 0; i < cardsList.length; i += 2) {
-          if (cardsList[i + 1] === undefined) cells.push([cardsList[i]]);
-          else cells.push([cardsList[i], cardsList[i + 1]]);
-        }
-      }
+      cells.push([`${cardImg} <h3>${cardHeading}<h3> ${cardText} ${cardLink}`]);      
     });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
     cardsBlock.replaceWith(cardsTable);
@@ -155,15 +142,7 @@ export function createCardsBlock(document, main) {
       card.removeChild(cardImg.parentElement);
       if (cardImg) cardImg = cardImg.outerHTML;
       else cardImg = '';
-      cardsList.push(`${cardImg} <a href='${card.href}'>${card.textContent}</a>`);
-      if (index === cards.length - 1) {
-        for (let i = 0; i < cardsList.length; i += 4) {
-          if (cardsList[i + 1] === undefined) cells.push([cardsList[i]]);
-          else if (cardsList[i + 2] === undefined) cells.push([cardsList[i], cardsList[i + 1]]);
-          else if (cardsList[i + 3] === undefined) cells.push([cardsList[i], cardsList[i + 1], cardsList[i + 2]]);
-          else cells.push([cardsList[i], cardsList[i + 1], cardsList[i + 2], cardsList[i + 3]]);
-        }
-      }
+      cells.push([`${cardImg} <a href='${card.href}'>${card.textContent}</a>`]);      
     });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
     cardsBlock.replaceWith(cardsTable);
