@@ -1,0 +1,39 @@
+
+.anchor-wrapper {
+  display: none;
+  background: var(--theme-clr-background);
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, .1);
+  width: 100%;
+}
+
+.anchor {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 76.5rem;
+  margin: auto;
+  height: 5rem;
+
+  a {
+    font-family: var(--heading-font-family);
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: .03125rem;
+    color: #373738;
+    text-transform: uppercase;
+    padding: 0 1.25rem;
+  }
+
+  a:hover {
+    color: var(--green);   
+    text-decoration: none;
+  }
+}
+
+@media (min-width: 1080px) {
+  .anchor-wrapper {
+    display: block;
+  }
+}
+
