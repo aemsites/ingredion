@@ -126,6 +126,7 @@ export default function decorate(block) {
             span.className = 'icon-green-arrow';
             a.append(span);
             const imageAnchor = li.querySelector('.cards-card-image a');
+            if (!imageAnchor) return;
             imageAnchor.href = a.href;
             imageAnchor.setAttribute('aria-label', a.href);
             btnContainer.classList.add('secondary-cta');
