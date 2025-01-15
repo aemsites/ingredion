@@ -1,9 +1,9 @@
-
-.anchor-wrapper {
+.anchor-container .anchor-wrapper {
   display: none;
   background: var(--theme-clr-background);
   box-shadow: 0 0 20px 0 rgba(0 0 0 / 10%);
-  width: 100%;
+  max-width: unset;
+  margin: 0;
 }
 
 .anchor {
@@ -25,24 +25,26 @@
     padding: 0 1.25rem;
   }
 
+  a.active,
   a:hover {
-    color: var(--green);   
+    color: var(--green);
     text-decoration: none;
+  }
+
+  .button-container p {
+    margin: 0;
   }
 }
 
-@media (width >= 1080px) {
-  .anchor-wrapper {
+@media (width >=1080px) {
+  .anchor-container .anchor-wrapper {
     display: block;
     position: sticky;
-    z-index: 5;
   }
 
- /* .is-visible {
-    position: fixed;
+  .is-fixed {
     top: 0;
     left: 0;
     z-index: 5;
-  }  */
+  }
 }
-
