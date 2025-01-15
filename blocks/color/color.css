@@ -1,5 +1,5 @@
 .color.teal {
-  background: #006A71
+  background: var(--theme-clr-background);
 }
 
 .colorblock-quote-wrapper p {
@@ -31,7 +31,7 @@
 }
 
 .colorblock-quote-wrapper .heading h1, .colorblock-quote-wrapper .heading h3 {
-  color: #fff;
+  color: var(--theme-clr-text);
 }
 
 .colorblock-quote-wrapper .heading h3 {
@@ -50,12 +50,12 @@
   font-family: MiloPro-Bold, Helvetica, sans-serif;
   font-size: 1.25rem;
   line-height: 1.5rem;
-  color: #373738;
+  color: var(--text-color);
 }
 
 .colorblock-quote-wrapper .label-text {
   margin: .5rem 0 0;
-  color: #fff;
+  color: var(--theme-clr-text);
 }
 
 .label-text-center {
@@ -115,7 +115,7 @@
     width: calc(100% - 80px);
     margin: 0 auto;
     border-radius: 4px;
-    background-color: #fff;
+    background-color: var(--theme-clr-background);
     box-shadow: 4px 20px 40px 4px color(srgb 0 0 0 / 10%);
     padding: 2.5rem 6.5625rem 12.5rem;
   }
