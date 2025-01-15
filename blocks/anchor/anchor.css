@@ -34,6 +34,15 @@
 @media (width >= 1080px) {
   .anchor-wrapper {
     display: block;
+    position: sticky;
+    z-index: 5;
   }
+
+ /* .is-visible {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5;
+  }  */
 }
 
