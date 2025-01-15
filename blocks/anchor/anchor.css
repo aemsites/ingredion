@@ -25,7 +25,6 @@
     padding: 0 1.25rem;
   }
 
-  a.active,
   a:hover {
     color: var(--green);
     text-decoration: none;
@@ -46,5 +45,10 @@
     top: 0;
     left: 0;
     z-index: 5;
+    a.active
+    {
+      color: var(--green);
+      text-decoration: none;
+    }
   }
 }
