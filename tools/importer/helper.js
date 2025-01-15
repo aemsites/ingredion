@@ -103,12 +103,12 @@ export function createCardsBlock(document, main) {
       const cardText = card.querySelector('.card__text .rte-block').innerHTML;
       cardText.replace('&nbsp;', '');
       const cardLinkText = card.querySelector('.card__text .secondary-cta');
-      let cardLink = document.createElement('a');      
+      let cardLink = document.createElement('a');
       if (cardLinkText !== null) {
         cardLink.href = cardLinkText.parentElement.href;
         cardLink.textContent = cardLinkText.textContent;
-      } else cardLink.href = card.querySelector('.card__text > a').href;      
-      
+      } else cardLink.href = card.querySelector('.card__text > a').href;
+
       cells.push([`${cardImg} <h4>${cardHeading}</h4> ${cardText} ${cardLink.outerHTML}`]);
     });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
@@ -126,7 +126,7 @@ export function createCardsBlock(document, main) {
       const cardHeading = card.querySelector('.content-card__text .heading > h3') ? card.querySelector('.content-card__text .heading > h3').textContent : '';
       const cardText = card.querySelector('.content-card__text .rte-block') ? card.querySelector('.content-card__text .rte-block').innerHTML : '';
       const cardLink = card.querySelector('.content-card__text > a') ? card.querySelector('.content-card__text > a').outerHTML : '';
-      cells.push([`${cardImg} <h3>${cardHeading}<h3> ${cardText} ${cardLink}`]);      
+      cells.push([`${cardImg} <h3>${cardHeading}<h3> ${cardText} ${cardLink}`]);
     });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
     cardsBlock.replaceWith(cardsTable);
@@ -142,7 +142,7 @@ export function createCardsBlock(document, main) {
       card.removeChild(cardImg.parentElement);
       if (cardImg) cardImg = cardImg.outerHTML;
       else cardImg = '';
-      cells.push([`${cardImg} <a href='${card.href}'>${card.textContent}</a>`]);      
+      cells.push([`${cardImg} <a href='${card.href}'>${card.textContent}</a>`]);
     });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
     cardsBlock.replaceWith(cardsTable);
@@ -273,4 +273,24 @@ export function toHex(rgb) {
     const hex = Number(color).toString(16);
     return hex.length === 1 ? `0${hex}` : hex;
   }).join('')}`;
+}
+
+export function createAnchorBlock(document, main) {
+  console.log('createAnchorBlock');
+  const contentTabs = document.querySelector('.content-tabs'); console.log(contentTabs);
+  if (!contentTabs) return;
+  const cells = [['Anchor']];
+  const tabs = document.querySelectorAll('.contentTab .content-tabs__section');
+  tabs.forEach((tab) => {   
+    const anchor = document.createElement('a');
+    anchor.textContent = tab.getAttribute('link-label');console.log(anchor);
+    const tabContent = tab.querySelector('.richText .rte-block  > h2');
+    if (tabContent) {
+      const text = tabContent.textContent.replace('&nbsp;', '').replace(' ', '-').toLowerCase();
+      anchor.href = `#${text}`;
+    }
+    cells.push([`${anchor.outerHTML}`]);
+  });
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+  contentTabs.prepend(table);
 }

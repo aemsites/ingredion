@@ -12,7 +12,7 @@
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
 
-import { createCalloutBlock, createCardsBlock, createVideoBlock, getSocialShare } from './helper.js';
+import { createCalloutBlock, createCardsBlock, createVideoBlock, getSocialShare, createAnchorBlock } from './helper.js';
 
 export default {
   /**
@@ -30,11 +30,12 @@ export default {
   }) => {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
-    getSocialShare(document, main);
+    getSocialShare(document, main);    
     createCalloutBlock(document, main);
     createCardsBlock(document, main);
     createVideoBlock(document, main);
     createMetadata(main, document, url, html);
+    createAnchorBlock(document, main);
 
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
