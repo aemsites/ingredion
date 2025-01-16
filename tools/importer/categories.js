@@ -11,7 +11,7 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
-import { createColorBlock, createIngredientBlock, createContactUs, createCalloutBlock, createCardsBlock, createVideoBlock, getSocialShare } from './helper.js';
+import { createColorBlock, createIngredientBlock, createContactUs, createCalloutBlock, createCardsBlock, createVideoBlock, getSocialShare, createHeroBlock } from './helper.js';
 
 export default {
   /**
@@ -29,6 +29,7 @@ export default {
   }) => {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
+    createHeroBlock(document, main);
     createColorBlock(document, main);
     createIngredientBlock(document, main);
     createContactUs(main, document);

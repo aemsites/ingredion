@@ -12,8 +12,24 @@ const colorMapping = new Map([
   ['#b41f75', 'purple'],
   ['#6a0c5f', 'dark-purple'],
   ['#ffffff', 'transparent'],
-  ['#68e0a1', 'aurora-green']
+  ['#68e0a1', 'teal']
 ]);
+
+export function createHeroBlock(document, main) {
+  const hero = document.querySelector('.hero__wrapper');
+  if (hero) {
+    const cells = hero.classList.contains('hero--text-left') ? [['Hero(align-left)']] : [['Hero']];
+    const image = hero.querySelector('.hero__image > picture').outerHTML;
+    const heading = hero.querySelector('.hero__text .heading > h1') ? hero.querySelector('.hero__text .heading > h1').outerHTML : '';
+    const subHeading = hero.querySelector('.hero__text .body-text') ? hero.querySelector('.hero__text .body-text').outerHTML : '';
+    const cta = hero.querySelector('.hero__text .primary-cta') ? hero.querySelector('.hero__text .primary-cta').outerHTML : '';
+    cells.push([image]);
+    cells.push([`${heading} ${subHeading} ${cta}` ]);
+    const heroTable = WebImporter.DOMUtils.createTable(cells, document);
+    hero.replaceWith(heroTable);    
+  } 
+  return;
+}
 
 export function createCalloutBlock(document, main) {
   let callOutBlocks = document.querySelectorAll('.colorblock-img-text__wrapper');
@@ -155,7 +171,8 @@ export function createVideoBlock(document, main) {
     const cells = [['Video']];
     let videoURL = videoBlock.getAttribute('data-video-url');
     const picture = videoBlock.querySelector('.video-banner__wrapper > picture').outerHTML;
-    const videoID = videoURL.split('/').at(-1);
+    let videoID = videoURL.split('/').at(-1);
+    videoID = videoID.split('?').at(0);
     videoURL = `https://vimeo.com/${videoID}`;
     cells.push([`${picture} ${videoURL}`]);
     const videoTable = WebImporter.DOMUtils.createTable(cells, document);
@@ -286,7 +303,9 @@ export function createAnchorBlock(document, main) {
     anchor.textContent = tab.getAttribute('link-label');console.log(anchor);
     const tabContent = tab.querySelector('.richText .rte-block  > h2');
     if (tabContent) {
-      const text = tabContent.textContent.replace('&nbsp;', '').replace(' ', '-').toLowerCase();
+      let text = tabContent.textContent.replace(/\&nbsp;/g, '');
+      text = text.replace('(', '').replaceAll(')', '');
+      text = text.replace(/\s+/g, '-').toLowerCase();
       anchor.href = `#${text}`;
     }
     cells.push([`${anchor.outerHTML}`]);
