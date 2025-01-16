@@ -161,6 +161,51 @@ async function loadEager(doc) {
 }
 
 /**
+ * function to attach observation listener to hero block if anchor block is present
+ * add observer to anchor links to highlight active section
+ */
+function addHeroObserver(doc) {
+  const anchorBlock = doc.querySelector('.anchor-wrapper');
+  const heroBlock = doc.querySelector('.hero-wrapper');
+  if (anchorBlock && heroBlock) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          anchorBlock.classList.remove('is-fixed');
+        } else {
+          anchorBlock.classList.add('is-fixed');
+        }
+      });
+    });
+    observer.observe(heroBlock);
+  }
+  if (anchorBlock) {
+    const anchorLinks = anchorBlock.querySelectorAll('a');
+    const arrayLinks = [];
+    anchorLinks.forEach((link) => {
+      arrayLinks.push(link.getAttribute('href'));
+    });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const index = arrayLinks.indexOf(`#${entry.target.id}`);
+        if (entry.isIntersecting) {
+          anchorLinks.forEach((link) => {
+            link.classList.remove('active');
+          });
+          anchorLinks[index].classList.add('active');
+        }
+      });
+    });
+    anchorLinks.forEach((link) => {
+      const target = doc.querySelector(link.getAttribute('href'));
+      if (target) {
+        observer.observe(target);
+      }
+    });
+  }
+}
+
+/**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
  */
@@ -177,6 +222,7 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+  addHeroObserver(doc);
 }
 
 /**
