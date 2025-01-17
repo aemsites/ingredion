@@ -1,9 +1,10 @@
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
-function showSlide(block, slideIndex = 0) {
+function showSlide(block, slideIndex = 1) {
   const slides = block.querySelectorAll('.carousel-slide');
   let realSlideIndex = slideIndex < 1 ? slides.length - 1 : slideIndex;
   if (slideIndex > slides.length) realSlideIndex = 1;
+  block.dataset.activeSlide = realSlideIndex;
   const activeSlide = slides[realSlideIndex - 1];
   const style = window.getComputedStyle(activeSlide);
   const leftMargin = parseFloat(style.marginLeft);
@@ -13,26 +14,10 @@ function showSlide(block, slideIndex = 0) {
     left: activeSlide.offsetLeft - scrollOffset,
     behavior: 'smooth',
   });
-}
-
-function updateActiveSlide(block, slideIndex) {
-  block.dataset.activeSlide = slideIndex;
-
-  const slides = block.querySelectorAll('.carousel-slide');
-
-  slides.forEach((aSlide, idx) => {
-    aSlide.querySelectorAll('a').forEach((link) => {
-      if (idx !== slideIndex) {
-        link.setAttribute('tabindex', '-1');
-      } else {
-        link.removeAttribute('tabindex');
-      }
-    });
-  });
 
   const indicators = block.querySelectorAll('.carousel-slide-indicator');
   indicators.forEach((indicator, idx) => {
-    if (idx !== slideIndex) {
+    if (idx !== realSlideIndex - 1) {
       indicator.querySelector('button').removeAttribute('disabled');
     } else {
       indicator.querySelector('button').setAttribute('disabled', 'true');
@@ -64,7 +49,7 @@ function bindEvents(block) {
       behavior: 'smooth',
     });
 
-    updateActiveSlide(block, closestSlideIndex);
+    showSlide(block, closestSlideIndex);
   };
 
   // Mouse down to start dragging
@@ -110,8 +95,16 @@ function bindEvents(block) {
       const slideIndicator = e.currentTarget.parentElement;
       const targetSlideIndex = parseInt(slideIndicator.dataset.targetSlide, 10);
       showSlide(block, targetSlideIndex);
-      updateActiveSlide(block, targetSlideIndex - 1);
     });
+  });
+
+  block.querySelector('.slide-prev').addEventListener('click', () => {
+    const targetSlideIndex = parseInt(block.dataset.activeSlide, 10) - 1;
+    showSlide(block, targetSlideIndex);
+  });
+  block.querySelector('.slide-next').addEventListener('click', () => {
+    const targetSlideIndex = parseInt(block.dataset.activeSlide, 10) + 1;
+    showSlide(block, targetSlideIndex);
   });
 }
 
@@ -217,9 +210,6 @@ export default async function decorate(block) {
         indicator.classList.add('carousel-slide-indicator');
         indicator.dataset.targetSlide = idx;
         indicator.innerHTML = `<button type="button" aria-label="${placeholders.showSlide || 'Show Slide'} ${idx + 1} ${placeholders.of || 'of'} ${rows.length}"></button>`;
-        if (idx === 1) {
-          indicator.querySelector('button').setAttribute('disabled', 'true');
-        }
         slideIndicators.append(indicator);
       }
       row.remove();
@@ -234,5 +224,7 @@ export default async function decorate(block) {
   }
 
   adjustIndicators();
+  // updateActiveSlide(block, 0);
+  showSlide(block);
   window.addEventListener('resize', adjustIndicators);
 }
