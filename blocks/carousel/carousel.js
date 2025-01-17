@@ -2,8 +2,8 @@ import { fetchPlaceholders } from '../../scripts/aem.js';
 
 function showSlide(block, slideIndex = 1) {
   const slides = block.querySelectorAll('.carousel-slide');
-  let realSlideIndex = slideIndex < 1 ? slides.length - 1 : slideIndex;
-  if (slideIndex > slides.length) realSlideIndex = 1;
+  let realSlideIndex = slideIndex < 1 ? 1 : slideIndex;
+  if (slideIndex > slides.length) realSlideIndex = slides.length;
   block.dataset.activeSlide = realSlideIndex;
   const activeSlide = slides[realSlideIndex - 1];
   const style = window.getComputedStyle(activeSlide);
@@ -224,7 +224,6 @@ export default async function decorate(block) {
   }
 
   adjustIndicators();
-  // updateActiveSlide(block, 0);
   showSlide(block);
   window.addEventListener('resize', adjustIndicators);
 }
