@@ -46,10 +46,11 @@ function bindEvents(block) {
     const snapOffset = slideWidth + leftMargin;
     slidesContainer.scrollTo({
       left: closestSlideIndex * snapOffset,
-      behavior: 'smooth',
+      behavior: 'smooth', // TODO: discover why it's not overriding default behaviour
     });
 
-    showSlide(block, closestSlideIndex);
+    slidesContainer.scrollLeft = closestSlideIndex * snapOffset;
+    showSlide(block, closestSlideIndex+1);
   };
 
   // Mouse down to start dragging
