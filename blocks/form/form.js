@@ -168,9 +168,9 @@ export async function createForm(formURL, onSubmit) {
   const form = document.createElement('form');
   const rules = [];
   // eslint-disable-next-line prefer-destructuring
-  form.dataset.action = String(formURL).split('.json')[0];
+  // form.dataset.action = String(formURL).split('.json')[0];
   // form.dataset.action = 'https://webhook.site/1b65ccd2-baa2-4f34-ad4b-ec73c91b9243';
-  // form.dataset.action = '';
+  form.dataset.action = 'https://go.ingredion.com/l/504221/2023-06-07/29vdv59';
   json.data.forEach((fd) => {
     fd.Type = fd.Type || 'text';
     const fieldWrapper = document.createElement('div');
