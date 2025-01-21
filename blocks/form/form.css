@@ -1,0 +1,54 @@
+.form form {
+    width: 100%;
+  }
+  
+  .form input,
+  .form select,
+  .form textarea {
+    height: 3rem;
+    width: 100%;
+    margin: 0 0 2rem;
+    appearance: none;
+    border: 1px solid #d8d9d9;
+    border-radius: 2px;
+    font-family: var(--body-font-family);
+    color: #b2b4b3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: .78rem .625rem;
+    font-size: .875rem;
+  }
+
+  form label {
+    font-family: OpenSans-Bold, Helvetica, sans-serif;
+    font-size: .875rem;
+    margin: .5rem 0;
+    line-height: 1.5rem;
+    color: #373738;
+  }
+  
+  .form .form-select-wrapper {
+    position: relative;
+  }
+  
+  .form .form-select-wrapper::after {
+    content: '';
+    position: absolute;
+    background-color: var(--highlight-color);
+    mask: url('/icons/chevron.svg') center / 100% 100%;
+    bottom: .5rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .form button {
+    display: block;
+    height: 60px;
+    width: 100%;
+    padding: 0 1.5rem;
+    font-size: 1.75rem;
+    text-transform: uppercase;
+  }
