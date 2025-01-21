@@ -1,5 +1,3 @@
-import { sampleRUM } from '../../scripts/aem.js';
-
 function createSelect(fd) {
   const select = document.createElement('select');
   select.name = fd.Field;
@@ -51,8 +49,8 @@ function constructPayload(form) {
 
 async function submitForm(form) {
   const payload = constructPayload(form);
-  // const resp = await fetch(form.dataset.action, {
-  const resp = await fetch('https://webhook.site/1b65ccd2-baa2-4f34-ad4b-ec73c91b9243', {
+  const resp = await fetch(form.dataset.action, {
+  // const resp = await fetch('https://webhook.site/1b65ccd2-baa2-4f34-ad4b-ec73c91b9243', {
     method: 'POST',
     cache: 'no-cache',
     headers: {
@@ -60,9 +58,6 @@ async function submitForm(form) {
     },
     body: JSON.stringify({ data: payload }),
   });
-  if (sampleRUM.convert) {
-    sampleRUM.convert('form-submission', new URL(form.dataset.action, window.location.origin), form, []);
-  }
   await resp.text();
   return payload;
 }
@@ -155,15 +150,6 @@ function applyRules(form, rules) {
   });
 }
 
-function fill(form) {
-  const { action } = form.dataset;
-  if (action === '/tools/bot/register-form') {
-    const loc = new URL(window.location.href);
-    form.querySelector('#owner').value = loc.searchParams.get('owner') || '';
-    form.querySelector('#installationId').value = loc.searchParams.get('id') || '';
-  }
-}
-
 /**
  * Builds a <form> element based on the definition in a spreadsheet from
  * the source repository. The method will request the form content, then
@@ -183,6 +169,8 @@ export async function createForm(formURL, onSubmit) {
   const rules = [];
   // eslint-disable-next-line prefer-destructuring
   form.dataset.action = String(formURL).split('.json')[0];
+  // form.dataset.action = 'https://webhook.site/1b65ccd2-baa2-4f34-ad4b-ec73c91b9243';
+  // form.dataset.action = '';
   json.data.forEach((fd) => {
     fd.Type = fd.Type || 'text';
     const fieldWrapper = document.createElement('div');
@@ -228,7 +216,6 @@ export async function createForm(formURL, onSubmit) {
 
   form.addEventListener('change', () => applyRules(form, rules));
   applyRules(form, rules);
-  fill(form);
   return (form);
 }
 
