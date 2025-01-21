@@ -51,8 +51,8 @@ function constructPayload(form) {
 
 async function submitForm(form) {
   const payload = constructPayload(form);
-  const resp = await fetch(form.dataset.action, {
-  // const resp = await fetch('https://webhook.site/1b65ccd2-baa2-4f34-ad4b-ec73c91b9243', {
+  // const resp = await fetch(form.dataset.action, {
+  const resp = await fetch('https://webhook.site/1b65ccd2-baa2-4f34-ad4b-ec73c91b9243', {
     method: 'POST',
     cache: 'no-cache',
     headers: {
