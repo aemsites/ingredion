@@ -50,7 +50,7 @@ function bindEvents(block) {
     });
 
     slidesContainer.scrollLeft = closestSlideIndex * snapOffset;
-    showSlide(block, closestSlideIndex+1);
+    showSlide(block, closestSlideIndex + 1);
   };
 
   // Mouse down to start dragging
