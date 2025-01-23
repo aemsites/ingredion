@@ -58,7 +58,7 @@ function createSelect(fd) {
           }
           if (select.name === 'category') {
             option.setAttribute('data-market', opt.Market);
-            select.disabled = true;
+            option.hidden = true;
           }
           select.append(option);
         });
@@ -89,7 +89,6 @@ function createSelect(fd) {
     select.addEventListener('change', (e) => {
       const categoryWrapper = document.querySelector('.form-select-wrapper.category');
       const categorySelect = categoryWrapper.querySelector('select');
-      categorySelect.disabled = false;
       if (e.target.value) {
         categoryWrapper.style.display = 'block';
         const { options } = categorySelect;
