@@ -3,11 +3,10 @@
   }
   
   .form input,
-  .form select,
-  .form textarea {
+  .form select {
     height: 3rem;
     width: 100%;
-    margin: 0 0 2rem;
+    margin: 0;
     appearance: none;
     border: 1px solid #d8d9d9;
     border-radius: 2px;
@@ -19,6 +18,26 @@
     position: relative;
     padding: .78rem .625rem;
     font-size: .875rem;
+  }
+
+
+  .form textarea {
+    height: 10rem;
+    width: 100%;
+    border: 1px solid #d8d9d9;
+  }
+
+  .form .subscribe {
+    display: flex;
+    gap: 10px;
+    position: relative;
+    align-items: center;
+  }
+
+  .form input[type="checkbox"] {
+    appearance: auto;
+    height: 13px;
+    width: 13px;
   }
 
   form label {

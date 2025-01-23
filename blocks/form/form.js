@@ -1,3 +1,37 @@
+function addErrorHandling(element) {
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'field-error';
+  errorDiv.textContent = 'Please check your form entries';
+  errorDiv.style.display = 'none';
+  errorDiv.style.color = 'red';
+  errorDiv.style.fontSize = '14px';
+  errorDiv.style.marginTop = '4px';
+
+  element.addEventListener('input', () => {
+    errorDiv.style.display = element.value !== '' ? 'none' : 'block';
+    element.style.border = element.value !== '' ? '1px solid #d8d9d9' : '1px solid red';
+  });
+
+  element.addEventListener('blur', () => {
+    if (element.name === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(element.value)) {
+        errorDiv.textContent = 'Please ensure to input a business email address.';
+        errorDiv.style.display = 'block';
+        element.style.border = '1px solid red';
+      }
+    }
+  });
+
+  element.addEventListener('invalid', (e) => {
+    e.preventDefault();
+    errorDiv.style.display = 'block';
+    element.style.border = element.value !== '' ? 'black' : '1px solid red';
+  });
+
+  element.insertAdjacentElement('afterend', errorDiv);
+}
+
 function createSelect(fd) {
   const select = document.createElement('select');
   select.name = fd.Field;
@@ -6,11 +40,11 @@ function createSelect(fd) {
     ph.textContent = fd.Placeholder;
     ph.setAttribute('selected', '');
     ph.setAttribute('disabled', '');
+    ph.setAttribute('value', '');
     select.append(ph);
   }
   if (fd.Options && fd.Options?.startsWith('https://')) {
     const optionsUrl = new URL(fd.Options);
-    // using async to avoid rendering
     fetch(`${optionsUrl.pathname}${optionsUrl.search}`)
       .then(async (response) => {
         const json = await response.json();
@@ -18,6 +52,14 @@ function createSelect(fd) {
           const option = document.createElement('option');
           option.textContent = opt.Option.trim();
           option.value = (opt.Value || opt.Option).trim();
+          if (select.name === 'stateOrProvince') {
+            option.setAttribute('data-country', opt.Country);
+            option.hidden = option?.dataset?.country !== 'US';
+          }
+          if (select.name === 'category') {
+            option.setAttribute('data-market', opt.Market);
+            select.disabled = true;
+          }
           select.append(option);
         });
       });
@@ -29,8 +71,36 @@ function createSelect(fd) {
       select.append(option);
     });
   }
-  if (fd.Required && fd.Required !== 'false') {
-    select.setAttribute('required', 'required');
+  if (select.name === 'country') {
+    select.addEventListener('change', (e) => {
+      const stateWrapper = document.querySelector('.stateOrProvince');
+      if (e.target.value === 'US' || e.target.value === 'CA' || e.target.value === 'MX') {
+        stateWrapper.style.display = 'block';
+        const { options } = stateWrapper.querySelector('select');
+        Array.from(options).forEach((option) => {
+          option.hidden = option?.dataset?.country !== e.target.value;
+        });
+      } else {
+        stateWrapper.style.display = 'none';
+      }
+    });
+  }
+  if (select.name === 'market') {
+    select.addEventListener('change', (e) => {
+      const categoryWrapper = document.querySelector('.form-select-wrapper.category');
+      const categorySelect = categoryWrapper.querySelector('select');
+      categorySelect.disabled = false;
+      if (e.target.value) {
+        categoryWrapper.style.display = 'block';
+        const { options } = categorySelect;
+        Array.from(options).forEach((option) => {
+          option.hidden = option?.dataset?.market !== e.target.value;
+        });
+      } else {
+        categoryWrapper.style.display = 'none';
+        categorySelect.value = '';
+      }
+    });
   }
   return select;
 }
@@ -50,7 +120,6 @@ function constructPayload(form) {
 async function submitForm(form) {
   const payload = constructPayload(form);
   const resp = await fetch(form.dataset.action, {
-  // const resp = await fetch('https://webhook.site/1b65ccd2-baa2-4f34-ad4b-ec73c91b9243', {
     method: 'POST',
     cache: 'no-cache',
     headers: {
@@ -99,9 +168,6 @@ function createInput(fd) {
   input.type = fd.Type;
   input.name = fd.Field;
   input.setAttribute('placeholder', fd.Placeholder);
-  if (fd.Required && fd.Required !== 'false') {
-    input.setAttribute('required', 'required');
-  }
   if (fd.Pattern) {
     input.setAttribute('pattern', fd.Pattern);
     if (fd.Title) {
@@ -118,9 +184,6 @@ function createTextArea(fd) {
   const input = document.createElement('textarea');
   input.name = fd.Field;
   input.setAttribute('placeholder', fd.Placeholder);
-  if (fd.Required && fd.Required !== 'false') {
-    input.setAttribute('required', 'required');
-  }
   return input;
 }
 
@@ -168,9 +231,9 @@ export async function createForm(formURL, onSubmit) {
   const form = document.createElement('form');
   const rules = [];
   // eslint-disable-next-line prefer-destructuring
-  // form.dataset.action = String(formURL).split('.json')[0];
+  form.dataset.action = String(formURL).split('.json')[0];
   // form.dataset.action = 'https://webhook.site/1b65ccd2-baa2-4f34-ad4b-ec73c91b9243';
-  form.dataset.action = 'https://go.ingredion.com/l/504221/2023-06-07/29vdv59';
+  // form.dataset.action = 'https://go.ingredion.com/l/504221/2023-06-07/29vdv59';
   json.data.forEach((fd) => {
     fd.Type = fd.Type || 'text';
     const fieldWrapper = document.createElement('div');
@@ -179,10 +242,16 @@ export async function createForm(formURL, onSubmit) {
     fieldWrapper.className = fieldId;
     fieldWrapper.classList.add('field-wrapper');
     fieldWrapper.classList.add(fd.Field);
+    let element;
     switch (fd.Type) {
       case 'select':
         fieldWrapper.append(createLabel(fd));
-        fieldWrapper.append(createSelect(fd));
+        element = createSelect(fd);
+        fieldWrapper.append(element);
+        if (fd.Required && fd.Required !== 'false') {
+          element.setAttribute('required', 'required');
+          addErrorHandling(element);
+        }
         break;
       case 'heading':
         fieldWrapper.append(createHeading(fd));
@@ -193,14 +262,24 @@ export async function createForm(formURL, onSubmit) {
         break;
       case 'text-area':
         fieldWrapper.append(createLabel(fd));
-        fieldWrapper.append(createTextArea(fd));
+        element = createTextArea(fd);
+        fieldWrapper.append(element);
+        if (fd.Required && fd.Required !== 'false') {
+          element.setAttribute('required', 'required');
+          addErrorHandling(element);
+        }
         break;
       case 'submit':
         fieldWrapper.append(createButton(fd, onSubmit));
         break;
       default:
         fieldWrapper.append(createLabel(fd));
-        fieldWrapper.append(createInput(fd));
+        element = createInput(fd);
+        fieldWrapper.append(element);
+        if (fd.Required && fd.Required !== 'false') {
+          element.setAttribute('required', 'required');
+          addErrorHandling(element);
+        }
     }
 
     if (fd.Rules) {
@@ -225,62 +304,4 @@ export default async function decorate(block) {
     const { pathname } = new URL(form.href);
     form.replaceWith(await createForm(pathname));
   }
-}
-
-//
-
-function hideField(field) {
-  field.classList.add('hidden');
-  const inputs = field.querySelectorAll('input, select, textarea');
-  inputs.forEach((input) => {
-    input.disabled = true;
-  });
-}
-
-function showField(field) {
-  field.classList.remove('hidden');
-  const inputs = field.querySelectorAll('input, select, textarea');
-  inputs.forEach((input) => {
-    input.disabled = false;
-  });
-}
-
-function applyRules1(form, rules) {
-  rules.forEach(({ fieldId, rule }) => {
-    const targetField = form.querySelector(`#${fieldId}`).closest('.field-wrapper');
-    const sourceField = form.querySelector(`#${rule.field}`);
-
-    if (sourceField) {
-      const sourceValue = sourceField.value;
-      const { value, operator = '=' } = rule;
-
-      let show = false;
-      switch (operator) {
-        case '=':
-          show = sourceValue === value;
-          break;
-        case '!=':
-          show = sourceValue !== value;
-          break;
-        case '>':
-          show = parseFloat(sourceValue) > parseFloat(value);
-          break;
-        case '<':
-          show = parseFloat(sourceValue) < parseFloat(value);
-          break;
-        case 'contains':
-          show = sourceValue.includes(value);
-          break;
-        default:
-          // eslint-disable-next-line no-console
-          console.warn(`Unknown operator ${operator}`);
-      }
-
-      if (show) {
-        showField(targetField);
-      } else {
-        hideField(targetField);
-      }
-    }
-  });
 }
