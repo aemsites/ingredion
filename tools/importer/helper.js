@@ -337,12 +337,25 @@ export function createCarouselBlock(document, main) {
 
 export function addAuthorBio(document, main){
   const authorBio = document.querySelector('.author-bio');
-  if (!authorBio) return;
-  const cells = [['Author']];
-  const authorName = authorBio.querySelector('.author-bio__text .heading').innerHTML;
-  const authorImage = authorBio.querySelector('.author-bio__image > picture').outerHTML;
-  const authorBioText = authorBio.querySelector('.author-bio__text .body-text').innerHTML;
-  cells.push([`${authorImage}`, `${authorName} ${authorBioText}`]);
-  const authorBioTable = WebImporter.DOMUtils.createTable(cells, document);
-  authorBio.replaceWith(authorBioTable);  
+  const imageWithDesc = document.querySelector('.imageWithDescription .image-desc .image-desc__wrapper');
+  if (!authorBio && !imageWithDesc) {
+    console.log('No author bio found');
+    return;    
+  }
+  if (authorBio) {
+    const cells = [['Author']];
+    const authorName = authorBio.querySelector('.author-bio__text .heading').innerHTML;
+    const authorImage = authorBio.querySelector('.author-bio__image > picture').outerHTML;
+    const authorBioText = authorBio.querySelector('.author-bio__text .body-text').innerHTML;
+    cells.push([`${authorImage}`, `${authorName} ${authorBioText}`]);
+    const authorBioTable = WebImporter.DOMUtils.createTable(cells, document);
+    authorBio.replaceWith(authorBioTable);
+  } else {
+    const authorName = imageWithDesc.querySelector('.image-desc__text .heading').innerText;
+    const authorImage = imageWithDesc.querySelector('.image-desc__image > picture').outerHTML;
+    const authorBioText = imageWithDesc.querySelector('.image-desc__text .rte-block').innerText;
+    cells.push([`${authorImage}`, `${authorName} ${authorBioText}`]);
+    const authorBioTable = WebImporter.DOMUtils.createTable(cells, document);
+    authorBio.replaceWith(authorBioTable);
+  }
 }
