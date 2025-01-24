@@ -292,15 +292,14 @@ export function toHex(rgb) {
   }).join('')}`;
 }
 
-export function createAnchorBlock(document, main) {
-  console.log('createAnchorBlock');
-  const contentTabs = document.querySelector('.content-tabs'); console.log(contentTabs);
+export function createAnchorBlock(document, main) {  
+  const contentTabs = document.querySelector('.content-tabs');
   if (!contentTabs) return;
   const cells = [['Anchor']];
   const tabs = document.querySelectorAll('.contentTab .content-tabs__section');
   tabs.forEach((tab) => {   
     const anchor = document.createElement('a');
-    anchor.textContent = tab.getAttribute('link-label');console.log(anchor);
+    anchor.textContent = tab.getAttribute('link-label');
     const tabContent = tab.querySelector('.richText .rte-block  > h2');
     if (tabContent) {
       let text = tabContent.textContent.replace(/\&nbsp;/g, '');
@@ -312,4 +311,38 @@ export function createAnchorBlock(document, main) {
   });
   const table = WebImporter.DOMUtils.createTable(cells, document);
   contentTabs.prepend(table);
+  
+}
+
+export function createCarouselBlock(document, main) {
+  const carousels = document.querySelectorAll('.carousel');
+  if (!carousels) return;
+  carousels.forEach((carousel) => {    
+    const cells = [['Carousel']];
+    const carouselOverview = carousel.querySelector('.card-carousel__overview');
+    const carouselHeading = carouselOverview.querySelector('.heading') ? carouselOverview.querySelector('.heading').textContent : '';
+    const carouselSubHeading = carouselOverview.querySelector('.rte-block') ? carouselOverview.querySelector('.rte-block').innerHTML : '';
+    cells.push([`<h3>${carouselHeading}</h3> ${carouselSubHeading}`]);
+    const slides = carousel.querySelectorAll('.card-carousel__slider .card-carousel__card');
+    slides.forEach((slide) => {
+      const slideImg = slide.querySelector('.card-carousel__card--wrapper .card-carousel__card--image > picture').outerHTML;
+      const slideHeading = slide.querySelector('.card-carousel__card--wrapper .card-carousel__card--text .heading > h3').outerHTML;
+      const slideText = slide.querySelector('.card-carousel__card--wrapper .card-carousel__card--text .rte-block').innerHTML;      
+      cells.push([`${slideImg}`, `${slideHeading} ${slideText}`]);
+    });
+    const carouselTable = WebImporter.DOMUtils.createTable(cells, document);
+    carousel.replaceWith(carouselTable);
+  });
+}
+
+export function addAuthorBio(document, main){
+  const authorBio = document.querySelector('.author-bio');
+  if (!authorBio) return;
+  const cells = [['Author']];
+  const authorName = authorBio.querySelector('.author-bio__text .heading').innerHTML;
+  const authorImage = authorBio.querySelector('.author-bio__image > picture').outerHTML;
+  const authorBioText = authorBio.querySelector('.author-bio__text .body-text').innerHTML;
+  cells.push([`${authorImage}`, `${authorName} ${authorBioText}`]);
+  const authorBioTable = WebImporter.DOMUtils.createTable(cells, document);
+  authorBio.replaceWith(authorBioTable);  
 }
