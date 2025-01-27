@@ -40,6 +40,10 @@
     width: 13px;
   }
 
+  .form fieldset {
+    border: 0;
+  }
+
   form label {
     font-family: OpenSans-Bold, Helvetica, sans-serif;
     font-size: .875rem;
@@ -70,4 +74,24 @@
     padding: 0 1.5rem;
     font-size: 1.75rem;
     text-transform: uppercase;
+  }
+
+  @media screen and (min-width: 1080px) {
+    .col-span-1 { flex: 8.33%; }
+    .col-span-2 { flex: 16.66%; }
+    .col-span-3 { flex: 25%; }
+    .col-span-4 { flex: 33.33%; }
+    .col-span-5 { flex: 41.66%; }
+    .col-span-6 { flex: 50%; }
+    .col-span-7 { flex: 58.33%; }
+    .col-span-8 { flex: 66.66%; }
+    .col-span-9 { flex: 75%; }
+    .col-span-10 { flex: 83.33%; }
+    .col-span-11 { flex: 91.66%; }
+    .col-span-12 { flex: 100%; }
+  
+    .customerInfoPanel > fieldset, .fullNamePanel > fieldset, .customerQueryPanel > fieldset {
+      display: flex;
+      gap: 2rem;
+    }
   }

@@ -35,6 +35,7 @@ function addErrorHandling(element) {
 function createSelect(fd) {
   const select = document.createElement('select');
   select.name = fd.Field;
+  // select.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   if (fd.Placeholder) {
     const ph = document.createElement('option');
     ph.textContent = fd.Placeholder;
@@ -134,6 +135,7 @@ function createButton(fd, onSubmit) {
   const button = document.createElement('button');
   button.textContent = fd.Label;
   button.classList.add('button');
+  // button.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   if (fd.Type === 'submit') {
     button.addEventListener('click', (event) => {
       const form = button.closest('form');
@@ -159,6 +161,7 @@ function createButton(fd, onSubmit) {
 function createHeading(fd) {
   const heading = document.createElement('h3');
   heading.textContent = fd.Label;
+  // heading.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   return heading;
 }
 
@@ -166,6 +169,7 @@ function createInput(fd) {
   const input = document.createElement('input');
   input.type = fd.Type;
   input.name = fd.Field;
+  // input.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   input.setAttribute('placeholder', fd.Placeholder);
   if (fd.Pattern) {
     input.setAttribute('pattern', fd.Pattern);
@@ -182,6 +186,7 @@ function createInput(fd) {
 function createTextArea(fd) {
   const input = document.createElement('textarea');
   input.name = fd.Field;
+  // input.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   input.setAttribute('placeholder', fd.Placeholder);
   return input;
 }
@@ -189,11 +194,35 @@ function createTextArea(fd) {
 function createLabel(fd) {
   const label = document.createElement('label');
   label.setAttribute('for', fd.Field);
+  // label.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   label.textContent = fd.Label;
   if (fd.Required && fd.Required !== 'false') {
     label.classList.add('required');
   }
   return label;
+}
+
+function createFieldWrapper(fd, tagName = 'div') {
+  const fieldWrapper = document.createElement(tagName);
+  const nameStyle = fd.Field ? ` form-${fd.Field}` : '';
+  const fieldId = `form-${fd.Type}-wrapper${nameStyle}`;
+  fieldWrapper.className = fieldId;
+  fieldWrapper.dataset.fieldset = fd.Fieldset ? fd.Fieldset : '';
+  fieldWrapper.classList.add('field-wrapper');
+  // fieldWrapper.append(createLabel(fd));
+  return fieldWrapper;
+}
+
+/* function createLegend(fd) {
+  return createLabel(fd, 'legend');
+} */
+
+function createFieldSet(fd) {
+  const wrapper = createFieldWrapper(fd, 'fieldset');
+  wrapper.name = fd.Field;
+  // wrapper.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
+  // wrapper.replaceChildren(createLegend(fd));
+  return wrapper;
 }
 
 function applyRules(form, rules) {
@@ -241,43 +270,120 @@ export async function createForm(formURL, onSubmit) {
     fieldWrapper.className = fieldId;
     fieldWrapper.classList.add('field-wrapper');
     fieldWrapper.classList.add(fd.Field);
+    if (fd.Colspan) {
+      fieldWrapper.classList.add(`col-span-${fd.Colspan}`);
+    }
+    // fieldWrapper.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : '');
+    if (fd.Fieldset !== '' && fd.Colspan === '') {
+    // add style as flex: 1
+      fieldWrapper.style.flex = '1';
+    }
     let element;
     switch (fd.Type) {
       case 'select':
-        fieldWrapper.append(createLabel(fd));
-        element = createSelect(fd);
-        fieldWrapper.append(element);
-        if (fd.Required && fd.Required !== 'false') {
-          element.setAttribute('required', 'required');
-          addErrorHandling(element);
+        if (fd.Fieldset) {
+          fieldWrapper.append(createLabel(fd));
+          element = createSelect(fd);
+          // fetch the fieldset div
+          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
+          // fieldset = createFieldWrapper(fd);
+          fieldWrapper.append(element);
+          if (fd.Required && fd.Required !== 'false') {
+            element.setAttribute('required', 'required');
+            addErrorHandling(element);
+          }
+          fieldset.append(fieldWrapper);
+        } else {
+          fieldWrapper.append(createLabel(fd));
+          element = createSelect(fd);
+          fieldWrapper.append(element);
+          if (fd.Required && fd.Required !== 'false') {
+            element.setAttribute('required', 'required');
+            addErrorHandling(element);
+          }
         }
         break;
       case 'heading':
-        fieldWrapper.append(createHeading(fd));
+        if (fd.Fieldset) {
+          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
+          fieldWrapper.append(createHeading(fd));
+          fieldset.append(fieldWrapper);
+        } else {
+          fieldWrapper.append(createHeading(fd));
+        }
         break;
       case 'checkbox':
-        fieldWrapper.append(createInput(fd));
-        fieldWrapper.append(createLabel(fd));
+        if (fd.Fieldset) {
+          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
+          fieldWrapper.append(createInput(fd));
+          fieldWrapper.append(createLabel(fd));
+          fieldset.append(fieldWrapper);
+        } else {
+          fieldWrapper.append(createInput(fd));
+          fieldWrapper.append(createLabel(fd));
+        }
         break;
       case 'text-area':
-        fieldWrapper.append(createLabel(fd));
-        element = createTextArea(fd);
-        fieldWrapper.append(element);
-        if (fd.Required && fd.Required !== 'false') {
-          element.setAttribute('required', 'required');
-          addErrorHandling(element);
+        if (fd.Fieldset) {
+          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
+          fieldWrapper.append(createLabel(fd));
+          element = createTextArea(fd);
+          fieldWrapper.append(element);
+          if (fd.Required && fd.Required !== 'false') {
+            element.setAttribute('required', 'required');
+            addErrorHandling(element);
+          }
+          fieldset.append(fieldWrapper);
+        } else {
+          fieldWrapper.append(createLabel(fd));
+          element = createTextArea(fd);
+          fieldWrapper.append(element);
+          if (fd.Required && fd.Required !== 'false') {
+            element.setAttribute('required', 'required');
+            addErrorHandling(element);
+          }
+        }
+        break;
+      case 'fieldset':
+        if (fd.Fieldset) {
+          // fetch the fieldset div
+          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
+          // fieldset = createFieldWrapper(fd);
+          fieldWrapper.append(createFieldSet(fd));
+          fieldset.append(fieldWrapper);
+        } else {
+          // fieldWrapper.append(createLabel(fd));
+          fieldWrapper.append(createFieldSet(fd));
         }
         break;
       case 'submit':
-        fieldWrapper.append(createButton(fd, onSubmit));
+        if (fd.Fieldset) {
+          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
+          fieldWrapper.append(createButton(fd, onSubmit));
+          fieldset.append(fieldWrapper);
+        } else {
+          fieldWrapper.append(createButton(fd, onSubmit));
+        }
         break;
       default:
-        fieldWrapper.append(createLabel(fd));
-        element = createInput(fd);
-        fieldWrapper.append(element);
-        if (fd.Required && fd.Required !== 'false') {
-          element.setAttribute('required', 'required');
-          addErrorHandling(element);
+        if (fd.Fieldset) {
+          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
+          fieldWrapper.append(createLabel(fd));
+          element = createInput(fd);
+          fieldWrapper.append(element);
+          if (fd.Required && fd.Required !== 'false') {
+            element.setAttribute('required', 'required');
+            addErrorHandling(element);
+          }
+          fieldset.append(fieldWrapper);
+        } else {
+          fieldWrapper.append(createLabel(fd));
+          element = createInput(fd);
+          fieldWrapper.append(element);
+          if (fd.Required && fd.Required !== 'false') {
+            element.setAttribute('required', 'required');
+            addErrorHandling(element);
+          }
         }
     }
 
@@ -289,7 +395,9 @@ export async function createForm(formURL, onSubmit) {
         console.warn(`Invalid Rule ${fd.Rules}: ${e}`);
       }
     }
-    form.append(fieldWrapper);
+    if (fd.Fieldset === '') {
+      form.append(fieldWrapper);
+    }
   });
 
   form.addEventListener('change', () => applyRules(form, rules));
