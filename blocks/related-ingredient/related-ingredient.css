@@ -299,4 +299,8 @@ a.button.icon .icon-eye {
   .related-ingredient-buttons a.button {
     margin-bottom: 1.5rem;
   }
+
+  .related-ingredient-buttons a.button.secondary {
+    margin-bottom: 0;
+  }
 }
