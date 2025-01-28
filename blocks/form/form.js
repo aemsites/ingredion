@@ -2,31 +2,39 @@ function addErrorHandling(element) {
   const errorDiv = document.createElement('div');
   errorDiv.className = 'field-error';
   errorDiv.textContent = 'Please check your form entries';
-  errorDiv.style.display = 'none';
-  errorDiv.style.color = 'red';
-  errorDiv.style.fontSize = '14px';
-  errorDiv.style.marginTop = '4px';
+
+  const toggleError = (show, message = errorDiv.textContent) => {
+    errorDiv.style.display = show ? 'block' : 'none';
+    errorDiv.textContent = message;
+    element.classList.toggle('field-valid', !show);
+    element.classList.toggle('field-invalid', show);
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toggleError(true, 'Please ensure to input a business email address.');
+      return false;
+    }
+    return true;
+  };
 
   element.addEventListener('input', () => {
-    errorDiv.style.display = element.value !== '' ? 'none' : 'block';
-    element.style.border = element.value !== '' ? '1px solid #d8d9d9' : '1px solid red';
-  });
-
-  element.addEventListener('blur', () => {
-    if (element.name === 'email') {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(element.value)) {
-        errorDiv.textContent = 'Please ensure to input a business email address.';
-        errorDiv.style.display = 'block';
-        element.style.border = '1px solid red';
+    const isEmpty = !element.value;
+    if (element.name === 'email' && !isEmpty) {
+      if (validateEmail(element.value)) {
+        toggleError(false);
+      } else {
+        toggleError(true);
       }
+    } else {
+      toggleError(isEmpty);
     }
   });
 
   element.addEventListener('invalid', (e) => {
     e.preventDefault();
-    errorDiv.style.display = 'block';
-    element.style.border = element.value !== '' ? 'black' : '1px solid red';
+    toggleError(true);
   });
 
   element.insertAdjacentElement('afterend', errorDiv);
@@ -35,7 +43,6 @@ function addErrorHandling(element) {
 function createSelect(fd) {
   const select = document.createElement('select');
   select.name = fd.Field;
-  // select.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   if (fd.Placeholder) {
     const ph = document.createElement('option');
     ph.textContent = fd.Placeholder;
@@ -135,7 +142,6 @@ function createButton(fd, onSubmit) {
   const button = document.createElement('button');
   button.textContent = fd.Label;
   button.classList.add('button');
-  // button.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   if (fd.Type === 'submit') {
     button.addEventListener('click', (event) => {
       const form = button.closest('form');
@@ -161,7 +167,6 @@ function createButton(fd, onSubmit) {
 function createHeading(fd) {
   const heading = document.createElement('h3');
   heading.textContent = fd.Label;
-  // heading.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   return heading;
 }
 
@@ -169,7 +174,6 @@ function createInput(fd) {
   const input = document.createElement('input');
   input.type = fd.Type;
   input.name = fd.Field;
-  // input.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   input.setAttribute('placeholder', fd.Placeholder);
   if (fd.Pattern) {
     input.setAttribute('pattern', fd.Pattern);
@@ -186,7 +190,6 @@ function createInput(fd) {
 function createTextArea(fd) {
   const input = document.createElement('textarea');
   input.name = fd.Field;
-  // input.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   input.setAttribute('placeholder', fd.Placeholder);
   return input;
 }
@@ -194,7 +197,6 @@ function createTextArea(fd) {
 function createLabel(fd) {
   const label = document.createElement('label');
   label.setAttribute('for', fd.Field);
-  // label.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
   label.textContent = fd.Label;
   if (fd.Required && fd.Required !== 'false') {
     label.classList.add('required');
@@ -209,50 +211,34 @@ function createFieldWrapper(fd, tagName = 'div') {
   fieldWrapper.className = fieldId;
   fieldWrapper.dataset.fieldset = fd.Fieldset ? fd.Fieldset : '';
   fieldWrapper.classList.add('field-wrapper');
-  // fieldWrapper.append(createLabel(fd));
   return fieldWrapper;
 }
-
-/* function createLegend(fd) {
-  return createLabel(fd, 'legend');
-} */
 
 function createFieldSet(fd) {
   const wrapper = createFieldWrapper(fd, 'fieldset');
   wrapper.name = fd.Field;
-  // wrapper.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : 'col-span-12');
-  // wrapper.replaceChildren(createLegend(fd));
   return wrapper;
 }
 
-function applyRules(form, rules) {
-  const payload = constructPayload(form);
-  rules.forEach((field) => {
-    const { type, condition: { key, operator, value } } = field.rule;
-    if (type === 'visible') {
-      if (operator === 'eq') {
-        if (payload[key] === value) {
-          form.querySelector(`.${field.fieldId}`).classList.remove('hidden');
-        } else {
-          form.querySelector(`.${field.fieldId}`).classList.add('hidden');
-        }
-      }
-    }
-  });
+function handleFormElement(form, fieldWrapper, fd, element) {
+  const shouldAddLabel = !['fieldset', 'submit', 'heading'].includes(fd.Type);
+  const container = fd.Fieldset ? form.querySelector(`.${fd.Fieldset} fieldset`) : fieldWrapper;
+
+  if (shouldAddLabel) {
+    fieldWrapper.append(createLabel(fd));
+  }
+
+  fieldWrapper.append(element);
+  if (fd.Required && fd.Required !== 'false') {
+    element.setAttribute('required', 'required');
+    addErrorHandling(element);
+  }
+
+  if (fd.Fieldset) {
+    container.append(fieldWrapper);
+  }
 }
 
-/**
- * Builds a <form> element based on the definition in a spreadsheet from
- * the source repository. The method will request the form content, then
- * use the provided JSON data to construct the element.
- * @param {string} formURL Full URL from which the form's configuration will
- *  be retrieved.
- * @param {function} [onSubmit] If provided, will be called when the form
- *  is successfully submitted. The default behavior will be to submit the
- *  form's data as JSON back to the form's URL.
- * @returns {Promise<HTMLElement>} Resolves with the newly created form
- *  element.
- */
 export async function createForm(formURL, onSubmit) {
   const resp = await fetch(formURL);
   const json = await resp.json();
@@ -273,46 +259,18 @@ export async function createForm(formURL, onSubmit) {
     if (fd.Colspan) {
       fieldWrapper.classList.add(`col-span-${fd.Colspan}`);
     }
-    // fieldWrapper.classList.add(fd.Colspan ? `col-span-${fd.Colspan}` : '');
     if (fd.Fieldset !== '' && fd.Colspan === '') {
-    // add style as flex: 1
       fieldWrapper.style.flex = '1';
     }
-    let element;
     switch (fd.Type) {
       case 'select':
-        if (fd.Fieldset) {
-          fieldWrapper.append(createLabel(fd));
-          element = createSelect(fd);
-          // fetch the fieldset div
-          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
-          // fieldset = createFieldWrapper(fd);
-          fieldWrapper.append(element);
-          if (fd.Required && fd.Required !== 'false') {
-            element.setAttribute('required', 'required');
-            addErrorHandling(element);
-          }
-          fieldset.append(fieldWrapper);
-        } else {
-          fieldWrapper.append(createLabel(fd));
-          element = createSelect(fd);
-          fieldWrapper.append(element);
-          if (fd.Required && fd.Required !== 'false') {
-            element.setAttribute('required', 'required');
-            addErrorHandling(element);
-          }
-        }
+        handleFormElement(form, fieldWrapper, fd, createSelect(fd));
         break;
       case 'heading':
-        if (fd.Fieldset) {
-          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
-          fieldWrapper.append(createHeading(fd));
-          fieldset.append(fieldWrapper);
-        } else {
-          fieldWrapper.append(createHeading(fd));
-        }
+        handleFormElement(form, fieldWrapper, fd, createHeading(fd));
         break;
       case 'checkbox':
+        // handleFormElement(form, fieldWrapper, fd, createInput(fd));
         if (fd.Fieldset) {
           const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
           fieldWrapper.append(createInput(fd));
@@ -324,67 +282,16 @@ export async function createForm(formURL, onSubmit) {
         }
         break;
       case 'text-area':
-        if (fd.Fieldset) {
-          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
-          fieldWrapper.append(createLabel(fd));
-          element = createTextArea(fd);
-          fieldWrapper.append(element);
-          if (fd.Required && fd.Required !== 'false') {
-            element.setAttribute('required', 'required');
-            addErrorHandling(element);
-          }
-          fieldset.append(fieldWrapper);
-        } else {
-          fieldWrapper.append(createLabel(fd));
-          element = createTextArea(fd);
-          fieldWrapper.append(element);
-          if (fd.Required && fd.Required !== 'false') {
-            element.setAttribute('required', 'required');
-            addErrorHandling(element);
-          }
-        }
+        handleFormElement(form, fieldWrapper, fd, createTextArea(fd));
         break;
       case 'fieldset':
-        if (fd.Fieldset) {
-          // fetch the fieldset div
-          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
-          // fieldset = createFieldWrapper(fd);
-          fieldWrapper.append(createFieldSet(fd));
-          fieldset.append(fieldWrapper);
-        } else {
-          // fieldWrapper.append(createLabel(fd));
-          fieldWrapper.append(createFieldSet(fd));
-        }
+        handleFormElement(form, fieldWrapper, fd, createFieldSet(fd));
         break;
       case 'submit':
-        if (fd.Fieldset) {
-          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
-          fieldWrapper.append(createButton(fd, onSubmit));
-          fieldset.append(fieldWrapper);
-        } else {
-          fieldWrapper.append(createButton(fd, onSubmit));
-        }
+        handleFormElement(form, fieldWrapper, fd, createButton(fd, onSubmit));
         break;
       default:
-        if (fd.Fieldset) {
-          const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
-          fieldWrapper.append(createLabel(fd));
-          element = createInput(fd);
-          fieldWrapper.append(element);
-          if (fd.Required && fd.Required !== 'false') {
-            element.setAttribute('required', 'required');
-            addErrorHandling(element);
-          }
-          fieldset.append(fieldWrapper);
-        } else {
-          fieldWrapper.append(createLabel(fd));
-          element = createInput(fd);
-          fieldWrapper.append(element);
-          if (fd.Required && fd.Required !== 'false') {
-            element.setAttribute('required', 'required');
-            addErrorHandling(element);
-          }
-        }
+        handleFormElement(form, fieldWrapper, fd, createInput(fd));
     }
 
     if (fd.Rules) {
@@ -400,8 +307,6 @@ export async function createForm(formURL, onSubmit) {
     }
   });
 
-  form.addEventListener('change', () => applyRules(form, rules));
-  applyRules(form, rules);
   return (form);
 }
 
