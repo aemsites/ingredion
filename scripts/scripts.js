@@ -222,9 +222,7 @@ function addHeroObserver(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
-  
   autolinkModals(doc);
-  
   const main = doc.querySelector('main');
   await loadSections(main);
 
