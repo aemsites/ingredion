@@ -89,6 +89,99 @@
   }
 }
 
+.video {
+  .video-modal {
+    position: absolute;
+
+    .video-modal-wrapper {
+      width: 100vw;
+      height: 100%;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  
+  .video-modal-content {
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 66.875rem;
+  }
+  
+  .video-modal-content iframe,
+  .video-modal-content video {
+    max-width: 1013px;
+    height: 100%;
+  }
+  
+  .video-modal-close {
+    align-self: flex-end;
+    order: -1;
+    cursor: pointer;
+    border: 0;
+    background: 0 0;
+    z-index: 2;
+    top: 10rem;
+    position: fixed;
+  }
+  
+  .video-modal-close.icon-close-blk::before {  
+    font-size: 1.75rem;
+  }
+  
+  .icon-close-blk::before {
+    content: "\e91c";
+    color: #fff;
+  }
+
+  .placeholder {
+    position: relative;
+    .video-placeholder-play {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      > button {
+        cursor: pointer;
+        border: 0;
+        background: #fff;
+        box-shadow: 0 10px 15px 0 rgba(0, 0, 0, .1);
+        height: 80px;
+        width: 80px;
+        border-radius: 50%;
+        padding: 0;
+      }
+      > button:hover::before {
+        border-left-color: var(--dark-green);
+      }
+      > button::before {
+        content: '';
+        display: block;
+        box-sizing: border-box;
+        position: absolute;
+        color: var(--green);
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-left: 14px solid var(--green);
+        top: 50%;
+        left: calc(50% + 3px);
+        transform: translate(-50%, -60%);
+      }
+    }
+  }
+}
+
 .text-only {
   margin: 0 15px;
 
