@@ -136,6 +136,7 @@ export default function decorate(block) {
           loadVideoEmbed(block, link.href, true, false);
         });
       }
+      link.remove();
     }
   } else {
     block.classList.add('text-only');
