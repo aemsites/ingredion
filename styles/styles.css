@@ -240,8 +240,8 @@ a.button,
 .scroll-top-btn {
     display: none;
     position: fixed;
-    bottom: var(--scroll-top-btn-bottom, 6.125rem);
-    right: var(--scroll-top-btn-right, 2.5rem);
+    bottom: 6.125rem;
+    right: 2.5rem;
     z-index: 2;
 }
 
@@ -261,7 +261,7 @@ a.button,
     border: 0;
     outline: 0;
     background: var(--green);
-    padding: var(--scroll-btn-padding, 1.25rem);
+    padding: 1.25rem;
     border-radius: 50%;
     position: relative;
     z-index: 2;
