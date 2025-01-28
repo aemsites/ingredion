@@ -72,9 +72,11 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
     embedWrapper.querySelector('iframe').addEventListener('load', () => {
       block.dataset.embedLoaded = true;
     });
+    document.body.classList.add('modal-open');
     embedWrapper.querySelector('.video-modal-close').addEventListener('click', () => {
       embedWrapper.remove();
       block.dataset.embedLoaded = false;
+      document.body.classList.remove('modal-open');
     });
   } else if (isVimeo) {
     const embedWrapper = embedVimeo(url, autoplay, background);
@@ -82,9 +84,11 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
     embedWrapper.querySelector('iframe').addEventListener('load', () => {
       block.dataset.embedLoaded = true;
     });
+    document.body.classList.add('modal-open');
     embedWrapper.querySelector('.video-modal-close').addEventListener('click', () => {
       embedWrapper.remove();
       block.dataset.embedLoaded = false;
+      document.body.classList.remove('modal-open');
     });
   }
 };
