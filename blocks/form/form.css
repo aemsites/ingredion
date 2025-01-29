@@ -115,7 +115,7 @@
     .col-span-11 { flex: 91.66%; }
     .col-span-12 { flex: 100%; }
   
-    .customerInfoPanel > fieldset, .fullNamePanel > fieldset, .customerQueryPanel > fieldset {
+    .align-vertical {
       display: flex;
       gap: 0.9rem;
     }

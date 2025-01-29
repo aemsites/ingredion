@@ -19,6 +19,15 @@ function addErrorHandling(element) {
     return true;
   };
 
+  const validatePhoneNumber = (phoneNumber) => {
+    const phoneNumberRegex = /^[1-9]\d{9}$/;
+    if (!phoneNumberRegex.test(phoneNumber)) {
+      toggleError(true, 'Please check your phone number format, removing the leading 0.');
+      return false;
+    }
+    return true;
+  };
+
   element.addEventListener('input', () => {
     const isEmpty = !element.value;
     if (element.name === 'email' && !isEmpty) {
@@ -27,8 +36,14 @@ function addErrorHandling(element) {
       } else {
         toggleError(true);
       }
+    } else if (element.name === 'phoneNumber' && !isEmpty) {
+      if (validatePhoneNumber(element.value)) {
+        toggleError(false);
+      } else {
+        toggleError(true);
+      }
     } else {
-      toggleError(isEmpty);
+      toggleError(isEmpty, 'Please check your form entries');
     }
   });
 
@@ -217,6 +232,9 @@ function createFieldWrapper(fd, tagName = 'div') {
 function createFieldSet(fd) {
   const wrapper = createFieldWrapper(fd, 'fieldset');
   wrapper.name = fd.Field;
+  if (fd.Extra) {
+    wrapper.classList.add('align-vertical');
+  }
   return wrapper;
 }
 

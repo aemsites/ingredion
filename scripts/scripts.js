@@ -183,10 +183,15 @@ async function loadLazy(doc) {
  * Loads everything that happens a lot later,
  * without impacting the user experience.
  */
-function loadDelayed() {
+async function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
+  /* await import('./intlTelInput.min.js');
+  const input = document.querySelector('.phone > select');
+  window.intlTelInput(input, {
+    loadUtils: () => import('https://cdn.jsdelivr.net/npm/intl-tel-input@25.2.1/build/js/utils.js'),
+  }); */
 }
 
 async function loadPage() {
