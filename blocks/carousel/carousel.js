@@ -1,230 +1,153 @@
+/* eslint-disable function-paren-newline, object-curly-newline */
+import { div, ul, li, button, nav } from '../../scripts/dom-helpers.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
-function showSlide(block, slideIndex = 1) {
+function showSlide(block, slideIndex = 0) {
+  block.dataset.activeSlide = slideIndex;
   const slides = block.querySelectorAll('.carousel-slide');
-  let realSlideIndex = slideIndex < 1 ? 1 : slideIndex;
-  if (slideIndex > slides.length) realSlideIndex = slides.length;
-  block.dataset.activeSlide = realSlideIndex;
-  const activeSlide = slides[realSlideIndex - 1];
-  const style = window.getComputedStyle(activeSlide);
-  const leftMargin = parseFloat(style.marginLeft);
-  const scrollOffset = activeSlide.offsetWidth + leftMargin;
+  const realSlideIndex = Math.max(0, Math.min(slideIndex, slides.length - 1));
+  const activeSlide = block.querySelector(`.carousel-slide[data-slide-index="${realSlideIndex}"]`);
+  const indicators = block.querySelectorAll('.carousel-slide-indicator button');
 
-  block.querySelector('.carousel-slides').scrollTo({
-    left: activeSlide.offsetLeft - scrollOffset,
-    behavior: 'smooth',
+  indicators.forEach((indicator, i) => {
+    if (i !== realSlideIndex) indicator.removeAttribute('disabled');
+    else indicator.setAttribute('disabled', 'true');
   });
 
-  const indicators = block.querySelectorAll('.carousel-slide-indicator');
-  indicators.forEach((indicator, idx) => {
-    if (idx !== realSlideIndex - 1) {
-      indicator.querySelector('button').removeAttribute('disabled');
-    } else {
-      indicator.querySelector('button').setAttribute('disabled', 'true');
+  // disable btns when on first or last slide
+  block.querySelector('.slide-prev').toggleAttribute('disabled', realSlideIndex === 0);
+  block.querySelector('.slide-next').toggleAttribute('disabled', realSlideIndex === slides.length - 1);
+
+  const slideWidth = activeSlide.offsetWidth;
+  const scrollPosition = slideWidth * realSlideIndex;
+
+  block.querySelector('.carousel-slides').scrollTo({
+    left: scrollPosition,
+    behavior: 'smooth',
+  });
+}
+
+function snapToSlide(block) {
+  const slidesContainer = block.querySelector('.carousel-slides');
+  const slides = [...block.querySelectorAll('.carousel-slide')];
+  const slideWidth = slides[0].offsetWidth;
+  const closestSlideIndex = Math.round(slidesContainer.scrollLeft / slideWidth);
+
+  showSlide(block, closestSlideIndex);
+}
+
+function enableDragging(block) {
+  const slidesContainer = block.querySelector('.carousel-slides');
+  let isDragging = false;
+  let startX = 0;
+  let lastScrollLeft = 0;
+
+  function onMove(x) {
+    if (!isDragging) return;
+    const deltaX = startX - x;
+    slidesContainer.scrollLeft = lastScrollLeft + deltaX; // Move smoothly with the mouse
+  }
+
+  function onEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    slidesContainer.classList.remove('dragging');
+    snapToSlide(block);
+  }
+
+  slidesContainer.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    slidesContainer.classList.add('dragging');
+    startX = e.pageX;
+    lastScrollLeft = slidesContainer.scrollLeft;
+  });
+
+  slidesContainer.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      e.preventDefault();
+      onMove(e.pageX);
     }
+  });
+
+  slidesContainer.addEventListener('mouseup', onEnd);
+  slidesContainer.addEventListener('mouseleave', onEnd);
+
+  // Touch support for mobile
+  slidesContainer.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    slidesContainer.classList.add('dragging');
+    startX = e.touches[0].pageX;
+    lastScrollLeft = slidesContainer.scrollLeft;
+  });
+
+  slidesContainer.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    onMove(e.touches[0].pageX);
+  });
+
+  slidesContainer.addEventListener('touchend', onEnd);
+
+  // Prevent images from being dragged
+  block.querySelectorAll('.carousel-slide img').forEach((img) => {
+    img.addEventListener('dragstart', (e) => e.preventDefault());
   });
 }
 
 function bindEvents(block) {
-  const slidesContainer = block.querySelector('.carousel-slides');
-  const slides = Array.from(slidesContainer.children);
-
-  let isDragging = false;
-  let startX = 0;
-  let scrollLeft = 0;
-
-  // Helper function to calculate the slide width
-  const getSlideWidth = () => slides[0]?.getBoundingClientRect().width || 0;
-
-  // Snap to the nearest slide
-  const snapToSlide = () => {
-    const slideWidth = getSlideWidth();
-    const scrollPosition = slidesContainer.scrollLeft;
-    const closestSlideIndex = Math.round(scrollPosition / slideWidth);
-    const style = window.getComputedStyle(slides[0]);
-    const leftMargin = parseFloat(style.marginLeft);
-    const snapOffset = slideWidth + leftMargin;
-    slidesContainer.scrollTo({
-      left: closestSlideIndex * snapOffset,
-      behavior: 'smooth', // TODO: discover why it's not overriding default behaviour
-    });
-
-    slidesContainer.scrollLeft = closestSlideIndex * snapOffset;
-    showSlide(block, closestSlideIndex + 1);
-  };
-
-  // Mouse down to start dragging
-  slidesContainer.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    slidesContainer.classList.add('dragging');
-    startX = e.clientX;
-    scrollLeft = slidesContainer.scrollLeft;
-  });
-
-  // Mouse move for smooth scrolling
-  slidesContainer.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.clientX;
-    const distance = x - startX;
-    slidesContainer.scrollLeft = scrollLeft - distance;
-  });
-
-  // Mouse up to stop dragging and snap to slide
-  slidesContainer.addEventListener('mouseup', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    slidesContainer.classList.remove('dragging');
-    snapToSlide();
-  });
-
-  // Ensure snap when the mouse leaves the container
-  slidesContainer.addEventListener('mouseleave', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    slidesContainer.classList.remove('dragging');
-    snapToSlide();
-  });
-
-  // Prevent dragstart for images
-  slidesContainer.addEventListener('dragstart', (e) => e.preventDefault());
-
-  const slideIndicators = block.querySelector('.carousel-slide-indicators');
-  if (!slideIndicators) return;
-  slideIndicators.querySelectorAll('button').forEach((button) => {
-    button.addEventListener('click', (e) => {
-      const slideIndicator = e.currentTarget.parentElement;
-      const targetSlideIndex = parseInt(slideIndicator.dataset.targetSlide, 10);
-      showSlide(block, targetSlideIndex);
+  block.querySelectorAll('.carousel-slide-indicator button').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const slideIndex = parseInt(e.currentTarget.closest('li').dataset.slideIndex, 10);
+      showSlide(block, slideIndex);
     });
   });
 
   block.querySelector('.slide-prev').addEventListener('click', () => {
-    const targetSlideIndex = parseInt(block.dataset.activeSlide, 10) - 1;
-    showSlide(block, targetSlideIndex);
+    showSlide(block, parseInt(block.dataset.activeSlide, 10) - 1);
   });
+
   block.querySelector('.slide-next').addEventListener('click', () => {
-    const targetSlideIndex = parseInt(block.dataset.activeSlide, 10) + 1;
-    showSlide(block, targetSlideIndex);
+    showSlide(block, parseInt(block.dataset.activeSlide, 10) + 1);
   });
 }
 
-function adjustIndicators(retries = 10) {
-  const indicators = document.querySelector('.carousel-slides-container > nav > .carousel-slide-indicators');
-  const slides = document.querySelector('.carousel-slides');
-
-  if (window.innerWidth < 1080) {
-    const slideHeight = slides.offsetHeight;
-    if (slideHeight > 0) {
-      // Height is valid, apply styles
-      indicators.style.top = `${slideHeight + 40}px`; // Adjust position dynamically
-      indicators.style.justifyContent = 'center';
-    } else if (retries > 0) {
-      setTimeout(() => adjustIndicators(retries - 1), 1); // Retry after 1ms
-    }
-  } else {
-    indicators.style.position = '';
-    indicators.style.top = '';
-    indicators.style.justifyContent = '';
-  }
-}
-
-function createSlide(row, slideIndex, carouselId) {
-  const slide = document.createElement('li');
-  slide.dataset.slideIndex = slideIndex;
-  slide.setAttribute('id', `carousel-${carouselId}-slide-${slideIndex}`);
-  slide.classList.add('carousel-slide');
-
-  row.querySelectorAll(':scope > div').forEach((column) => {
-    if (column.querySelector('picture')) {
-      column.className = 'slide-image';
-      const imageAnchor = document.createElement('a');
-      const picture = column.querySelector('picture');
-      imageAnchor.append(picture);
-      column.append(imageAnchor);
-    } else column.className = 'slide-body';
-    slide.append(column);
-  });
-
-  const labeledBy = slide.querySelector('h1, h2, h3, h4, h5, h6');
-  if (labeledBy) {
-    slide.setAttribute('aria-labelledby', labeledBy.getAttribute('id'));
-  }
-
-  return slide;
+function createSlide(row, i) {
+  return li({ class: 'carousel-slide', 'data-slide-index': i },
+    ...Array.from(row.children),
+  );
 }
 
 let carouselId = 0;
+
 export default async function decorate(block) {
   carouselId += 1;
+  block.id = `carousel-${carouselId}`;
   const rows = block.querySelectorAll(':scope > div');
+  const placeholders = await fetchPlaceholders();
   const isSingleSlide = rows.length < 2;
 
-  const placeholders = await fetchPlaceholders();
+  const carouselContainer = div({ class: 'carousel-container' },
+    div({ class: 'carousel-overview' }, rows[0]),
+    div({ class: 'carousel-slides-container' },
+      !isSingleSlide && nav(
+        ul({ class: 'carousel-slide-indicators' },
+          ...Array.from(rows).slice(1).map((_, i) => li({ class: 'carousel-slide-indicator', 'data-slide-index': i },
+            button({ type: 'button', 'aria-label': `Show Slide ${i + 1}` }),
+          )),
+        ),
+        button({ type: 'button', class: 'slide-prev', 'aria-label': placeholders.previousSlide || 'Previous Slide' }),
+        button({ type: 'button', class: 'slide-next', 'aria-label': placeholders.nextSlide || 'Next Slide' }),
+      ),
+      ul({ class: 'carousel-slides' },
+        ...Array.from(rows).slice(1).map((row, i) => createSlide(row, i)),
+      ),
+    ),
+  );
 
-  const carouselContainer = document.createElement('div');
-  carouselContainer.classList.add('carousel-container');
-
-  const slidesContainer = document.createElement('div');
-  slidesContainer.classList.add('carousel-slides-container');
-
-  const overview = document.createElement('div');
-  overview.classList.add('carousel-overview');
-
-  carouselContainer.append(overview);
-  carouselContainer.append(slidesContainer);
-
-  const slidesWrapper = document.createElement('ul');
-  slidesWrapper.classList.add('carousel-slides');
-
-  let slideIndicators;
-  if (!isSingleSlide) {
-    const slideIndicatorsNav = document.createElement('nav');
-    slideIndicators = document.createElement('ul');
-    slideIndicators.classList.add('carousel-slide-indicators');
-    slideIndicatorsNav.append(slideIndicators);
-    slidesContainer.prepend(slideIndicatorsNav);
-
-    const slideNavButtons = document.createElement('div');
-    slideNavButtons.classList.add('carousel-navigation-buttons');
-    slideNavButtons.innerHTML = `
-      <button type="button" class= "slide-prev" aria-label="${placeholders.previousSlide || 'Previous Slide'}"></button>
-      <button type="button" class="slide-next" aria-label="${placeholders.nextSlide || 'Next Slide'}"></button>
-    `;
-
-    slidesContainer.prepend(slideNavButtons);
-  }
-
-  carouselContainer.append(overview);
-  carouselContainer.append(slidesContainer);
-  block.append(slidesWrapper);
-
-  rows.forEach((row, idx) => {
-    if (idx === 0) {
-      overview.append(row);
-    } else {
-      const slide = createSlide(row, idx, carouselId);
-      slidesWrapper.append(slide);
-
-      if (slideIndicators) {
-        const indicator = document.createElement('li');
-        indicator.classList.add('carousel-slide-indicator');
-        indicator.dataset.targetSlide = idx;
-        indicator.innerHTML = `<button type="button" aria-label="${placeholders.showSlide || 'Show Slide'} ${idx + 1} ${placeholders.of || 'of'} ${rows.length}"></button>`;
-        slideIndicators.append(indicator);
-      }
-      row.remove();
-    }
-  });
-
-  slidesContainer.append(slidesWrapper);
-  block.prepend(carouselContainer);
-
+  block.replaceChildren(carouselContainer);
   if (!isSingleSlide) {
     bindEvents(block);
+    enableDragging(block);
+    showSlide(block, 0);
   }
-
-  adjustIndicators();
-  showSlide(block);
-  window.addEventListener('resize', adjustIndicators);
 }

@@ -31,6 +31,7 @@
   --light-grey: #efefef;
   --background-color-grey: #efefef80;
   --border-color-light: #d8d9d9;
+  --white: #fff;
 
   /* theme colors */
   --theme-clr-background: #fff;
@@ -238,6 +239,75 @@ a.button,
       color: var(--light-grey);
     }
   }
+}
+
+.scroll-top-btn {
+    display: none;
+    position: fixed;
+    bottom: 6.125rem;
+    right: 2.5rem;
+    z-index: 2;
+}
+
+.scroll-top-btn:hover .scroll-top-btn-label {
+    display: block;
+}
+
+.scroll-top-btn-wrapper {
+    cursor: pointer;
+    display: flex;
+    position: relative;
+    user-select: none;
+}
+
+.scroll-top-btn-button {
+    cursor: pointer;
+    border: 0;
+    outline: 0;
+    background: var(--green);
+    padding: 1.25rem;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+}
+
+.scroll-top-btn-button.icon-arrow-blk::before {
+    color: var(--theme-clr-background);
+    font-size: var(--icon-font-size, 1.125rem);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+}
+
+.scroll-top-btn-label {
+    display: none;
+    text-align: center;
+    font-family: var(--heading-font-family);
+    font-size: var(--label-font-size, 0.75rem);
+    line-height: 1.5rem;
+    letter-spacing: 0.0313rem;
+    text-transform: uppercase;
+    color: var(--theme-clr-background);
+    background: var(--green);
+    border-radius: 0.125rem;
+    min-width: 7.5rem;
+    padding: 0.5rem 1.25rem;
+    z-index: 1;
+    position: relative;
+    left: 1.125rem;
+}
+
+@media (width >= 67.5625rem) {
+    .scroll-top-btn.is-visible {
+        display: block;
+        padding: 0;
+    }
+}
+
+.icon-arrow-blk::before {
+    content: "\e904";
+    color: var(--dark-grey);
 }
 
 main {
