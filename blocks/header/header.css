@@ -307,7 +307,7 @@ header {
                     position: absolute;
                     left: -9999px;
                     right: 40px;
-                    z-index: 1;
+                    z-index: 99;
                     margin-top: -1px;
                     background: #fff;
                     color: var(--text-color);
