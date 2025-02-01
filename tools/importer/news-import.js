@@ -101,13 +101,13 @@ const createMetadata = (main, document, url, html) => {
   if (teaserDescription) meta['teaser-description'] = teaserDescription;
   const dateCategory = getMetadataProp(document, '.date-category-tags');
   if (dateCategory) {
-    meta['published-date'] = dateCategory.split('|')[0].trim();
-    const category = dateCategory.split('|')[1] ? dateCategory.split('|')[1].trim() : '';
-    if (category && category !== '') meta['categories'] = category;
+    meta['published-date'] = dateCategory.split('|')[0].trim();    
   }
   const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
-    meta['tags'] = newsMap.get(caseInsensitiveUrl);
+    const sanitizedTags = sanitizeMetaTags(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
+    if (sanitizedTags[0].length > 0) meta['tags'] = sanitizedTags[0].join(', ');
+    if (sanitizedTags[1].length > 0) meta['categories'] = sanitizedTags[1].join(', ');
   } else {
     meta['tags'] = '';
   }
@@ -137,4 +137,22 @@ function getPageName(document) {
   const breadcrumbElement = document.querySelector('.breadcrumbs > ul > li:last-of-type > a');
   if (!breadcrumbElement) return '';
   else return breadcrumbElement.textContent;
+}
+
+function sanitizeMetaTags(tags) {
+  const tagsArray = tags.split(',');
+  const sanitizedTags = [];
+  let faltTags = [];
+  tagsArray.forEach(tag => {   
+    if (tag.includes('Ingredion :')) {
+      let temp = tag.replace('Ingredion :', '');
+      temp = temp.split('/');
+      temp.forEach(item => faltTags.push(item.trim()));      
+    } else if (tag.includes('Ingredion-com :')) {   
+      sanitizedTags.push(tag.replace('Ingredion-com :', ''));
+    } else
+      faltTags.push(tag);
+  });  
+  let tempArray = faltTags.filter((item, index) => faltTags.indexOf(item) === index);
+  return [sanitizedTags, tempArray];
 }

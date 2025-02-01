@@ -32,7 +32,7 @@ export function createHeroBlock(document, main) {
 }
 
 export function createCalloutBlock(document, main) {
-  let callOutBlocks = document.querySelectorAll('.colorblock-img-text__wrapper');
+  let callOutBlocks = document.querySelectorAll('.colorBlockImageAndText .colorblock-img-text__wrapper');
   let calloutImg = '';
   let backgroundColor = '';
   let heading = '';
@@ -87,6 +87,39 @@ export function createCalloutBlock(document, main) {
     cells.push([`<h3>${heading}</h3> ${rteText} ${ctalink}`]);
     const callOutBlock = WebImporter.DOMUtils.createTable(cells, document);
     callOut.replaceWith(callOutBlock);
+  });
+  callOutBlocks = document.querySelectorAll('.colorBlockVideoAndText .colorblock-img-text__wrapper');
+  callOutBlocks.forEach((callOut) => {    
+    let videoUrl = '';
+    [...callOut.children].forEach((child, index) => {
+      if (child.classList.contains('colorblock-img-text__image')) {
+        const image = child.querySelector('picture > img');
+        calloutImg = document.createElement('img');
+        calloutImg.src = image.src;
+        videoUrl = child.querySelector('.video-banner').getAttribute('data-video-url');
+        let videoID = videoUrl.split('/').at(-1);
+        if (videoUrl.includes('youtube')) videoUrl = `https://youtu.be/${videoID}`;
+        else if (videoUrl.includes('vimeo')) videoUrl = `https://vimeo.com/${videoID}`;
+      } else if (child.classList.contains('colorblock-img-text__text')) {
+        backgroundColor = colorMapping.get(toHex(child.style.backgroundColor).toLowerCase());
+        heading = child.querySelector('.colorblock-img-text__text--wrapper .heading > h3').textContent;
+        rteText = child.querySelector('.colorblock-img-text__text--wrapper .rte-block');
+        if (rteText) {
+          rteText = rteText.innerHTML;
+        }
+        ctalink = child.querySelector('.colorblock-img-text__text--wrapper .secondary-cta-link') ?
+          child.querySelector('.colorblock-img-text__text--wrapper .secondary-cta-link').outerHTML : '';
+        if (ctalink === '') {
+          ctalink = child.querySelector('.colorblock-img-text__text--wrapper .primary-cta') ?
+            child.querySelector('.colorblock-img-text__text--wrapper .primary-cta').outerHTML : '';
+        }
+      }
+      child.remove();
+    });
+    const cells = backgroundColor === '' ? [['Callout(video)']] : [[`Callout (video, ${backgroundColor})`]];
+    cells.push([calloutImg, `<h3>${heading}</h3> ${rteText} ${ctalink} ${videoUrl}`]);    
+    const callOutBlock = WebImporter.DOMUtils.createTable(cells, document);
+    callOut.appendChild(callOutBlock);
   });
 }
 
@@ -173,7 +206,8 @@ export function createVideoBlock(document, main) {
     const picture = videoBlock.querySelector('.video-banner__wrapper > picture').outerHTML;
     let videoID = videoURL.split('/').at(-1);
     videoID = videoID.split('?').at(0);
-    videoURL = `https://vimeo.com/${videoID}`;
+    if (videoURL.includes('youtube')) videoURL = `https://youtu.be/${videoID}`;
+    else if (videoURL.includes('vimeo')) videoURL = `https://vimeo.com/${videoID}`;    
     cells.push([`${picture} ${videoURL}`]);
     const videoTable = WebImporter.DOMUtils.createTable(cells, document);
     videoBlock.replaceWith(videoTable);
@@ -358,4 +392,17 @@ export function addAuthorBio(document, main){
     const authorBioTable = WebImporter.DOMUtils.createTable(cells, document);
     authorBio.replaceWith(authorBioTable);
   }
+}
+
+export function createForm(document, main) {  
+  const cells = [['Form']];
+  let formURL = '';
+  let formContainer = document.querySelector('.contactUsForm')
+  if (formContainer) {
+    formURL = `https://main--ingredion--aemsites.aem.page/drafts/ujjgupta/contact-us-form.json`;
+    cells.push([formURL]);
+    const formTable = WebImporter.DOMUtils.createTable(cells, document);
+    formContainer.replaceWith(formTable);
+  }
+  return; 
 }

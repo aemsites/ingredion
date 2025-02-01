@@ -12,7 +12,9 @@
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
 
-import { createCalloutBlock, createCardsBlock, createVideoBlock, getSocialShare, createAnchorBlock, createCarouselBlock, createHeroBlock } from './helper.js';
+import { createCalloutBlock, createCardsBlock, createVideoBlock, getSocialShare, createAnchorBlock, createCarouselBlock, createHeroBlock, createIngredientBlock,
+  createForm,
+} from './helper.js';
 
 export default {
   /**
@@ -37,6 +39,8 @@ export default {
     createVideoBlock(document, main);  
     createCarouselBlock(document, main);  
     createAnchorBlock(document, main);
+    createIngredientBlock(document, main);
+    createForm(document, main);
     createMetadata(main, document, url, html);
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
