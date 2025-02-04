@@ -8,6 +8,14 @@ export default function decorate(block) {
   const textWrapper = h1.closest('div');
   textWrapper.classList.add('gallery-content');
 
+  textWrapper.insertAdjacentHTML(
+    'beforeend',
+    '<div class="button-container"><button class="button" title="Contact Us">Contact Us</button></div>',
+  );
+  textWrapper.addEventListener('click', () => {
+    // open modal for contact us form
+  });
+
   if (link) {
     const parentDiv = link.parentElement;
     const grandParent = parentDiv.parentElement;
@@ -29,5 +37,5 @@ export default function decorate(block) {
       [{ width: '750' }],
     );
     pic.replaceWith(optimizedPicture);
-  } 
+  }
 }
