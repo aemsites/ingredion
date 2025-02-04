@@ -1,15 +1,13 @@
 .section .gallery-wrapper {
-    padding: 0;
-    margin: auto;
+    margin: 56px auto;
     max-width: 1224px;
     width: 100%;
   }
   
-  .gallery {
+  .gallery {   
     > div {
       display: flex;
       flex-direction: column;
-      /* justify-content: center; */
       background: var(--theme-clr-background);
       height: auto;
   
@@ -29,14 +27,14 @@
 
         h1 {
           color: var(--green);
-          font-size: var(--heading-font-size-xxl);
+          font-size: var(--heading-font-size-xl);
           font-family: var(--heading-font-family);
           letter-spacing: -.0313rem;
-          line-height: 1rem;
+          margin: 0;
         }
 
         h2 {
-          font-size: var(--heading-font-size-xl);
+          font-size: var(--heading-font-size-l);
           letter-spacing: -.0313rem;
           line-height: 1rem;
         }
@@ -44,14 +42,13 @@
         h3 {
           color: var(--theme-clr-text);
           font-family: var(--heading-font-family);
-          font-size: var(--heading-font-size-l);
+          font-size: var(--heading-font-size-m);
           letter-spacing: -.0313rem;
         }
     
         p, ul, li {
           font-family: var(--body-font-family);
-          font-size: 1rem;
-          line-height: 1.5rem;
+          font-size:  var(--body-font-size-s);
           letter-spacing: .0156rem;
         }
   
@@ -85,40 +82,25 @@
   
       > div {
         flex-direction: row;
-        height: 560px;
+        gap: 50px;
   
         .gallery-image {
           width: 50%;
-          height: 100%;
         }
   
         .gallery-content {
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: flex-start;
           width: 50%;
-          height: 100%;
   
           h3 {
             font-size: 32px;
             max-width: 381px;
-            margin-top: 16px;
           }
   
           p, ul, li {
             max-width: 381px;
           }
-        }
-      }
-    }
-  
-    .transparent {
-      margin: 0;
-      
-      > div {
-        .gallery-content {
-          order: 1;
         }
       }
     }
