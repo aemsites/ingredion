@@ -17,7 +17,7 @@ export default async function decorate(block) {
   unwrapNestedDivs(block);
 
   const quoteWrapper = div(
-    { class: 'colorblock-quote-wrapper' },
+    { class: 'quoteblock-wrapper' },
     div({ class: 'heading heading-center' }, h1({ tabIndex: 0 })),
     div({ class: 'heading heading-center' }, h3({ tabIndex: 0 })),
     h3({ class: 'label-text label-text-center', tabIndex: 0 }),
@@ -25,10 +25,10 @@ export default async function decorate(block) {
 
   block.insertBefore(quoteWrapper, block.firstElementChild);
 
-  const mainHeading = document.querySelector('.colorblock-quote-wrapper .heading.heading-center h1');
-  const firstSubheading = document.querySelector('.colorblock-quote-wrapper .heading.heading-center h3');
-  const secondSubheading = document.querySelector('.colorblock-quote-wrapper .label-text.label-text-center');
-  const paragraphs = document.querySelectorAll('.colorblock-quote-wrapper ~ p');
+  const mainHeading = document.querySelector('.quoteblock-wrapper .heading.heading-center h1');
+  const firstSubheading = document.querySelector('.quoteblock-wrapper .heading.heading-center h3');
+  const secondSubheading = document.querySelector('.quoteblock-wrapper .label-text.label-text-center');
+  const paragraphs = document.querySelectorAll('.quoteblock-wrapper ~ p');
 
   if (paragraphs.length >= 3) {
     mainHeading.appendChild(paragraphs[0]);
