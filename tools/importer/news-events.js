@@ -54,6 +54,7 @@ export default {
     const main = document.body;
     createEventTemplate(document, main);
     createMetadata(main, document, path, html);
+    resetVariables();
 
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
@@ -165,7 +166,7 @@ export function createEventTemplate(document, main) {
   : document.querySelector('.event-detail__wrapper .event-detail__body > a') ;
   if (registerEvent) {
     registrationEventSite = registerEvent.href;
-    registerEvent.remove();
+    registerEvent.parentNode.remove();
   }
   if (registrationLink === '') {
     const secondaryCta  = document.querySelector('.event-detail__wrapper .register-event .register-event__text > a');
@@ -175,4 +176,16 @@ export function createEventTemplate(document, main) {
     }
   }
   
+}
+
+function resetVariables() {
+  title = '';
+  description = '';
+  image = '';
+  eventType = '';
+  duration = '';
+  location = '';
+  boothNumber = '';
+  registrationLink = '';
+  registrationEventSite = '';
 }
