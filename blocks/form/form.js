@@ -3,11 +3,24 @@ function addErrorHandling(element) {
   errorDiv.className = 'field-error';
   errorDiv.textContent = 'Please check your form entries';
 
+  const validateIcon = document.createElement('span');
+  if (element.type !== 'select-one') {
+    element.parentElement.append(validateIcon);
+  }
+
   const toggleError = (show, message = errorDiv.textContent) => {
     errorDiv.style.display = show ? 'block' : 'none';
     errorDiv.textContent = message;
     element.classList.toggle('field-valid', !show);
     element.classList.toggle('field-invalid', show);
+
+    if (show) {
+      validateIcon.classList.add('icon-reject');
+      validateIcon.classList.remove('icon-approve');
+    } else {
+      validateIcon.classList.remove('icon-reject');
+      validateIcon.classList.add('icon-approve');
+    }
   };
 
   const validateEmail = (email) => {
@@ -52,7 +65,7 @@ function addErrorHandling(element) {
     toggleError(true);
   });
 
-  element.insertAdjacentElement('afterend', errorDiv);
+  validateIcon.insertAdjacentElement('afterend', errorDiv);
 }
 
 function createSelect(fd) {
@@ -209,6 +222,12 @@ function createTextArea(fd) {
   return input;
 }
 
+function createText(fd) {
+  const input = document.createElement('p');
+  input.textContent = fd.Label;
+  return input;
+}
+
 function createLabel(fd) {
   const label = document.createElement('label');
   label.setAttribute('for', fd.Field);
@@ -239,7 +258,7 @@ function createFieldSet(fd) {
 }
 
 function handleFormElement(form, fieldWrapper, fd, element) {
-  const shouldAddLabel = !['fieldset', 'submit', 'heading'].includes(fd.Type);
+  const shouldAddLabel = !['fieldset', 'submit', 'heading', 'text'].includes(fd.Type);
   const container = fd.Fieldset ? form.querySelector(`.${fd.Fieldset} fieldset`) : fieldWrapper;
 
   if (shouldAddLabel) {
@@ -257,17 +276,14 @@ function handleFormElement(form, fieldWrapper, fd, element) {
   }
 }
 
-export async function createForm(formURL, onSubmit) {
+export async function createForm(formURL, submitUrl, onSubmit) {
   const resp = await fetch(formURL);
   const json = await resp.json();
   const form = document.createElement('form');
   const rules = [];
-  // eslint-disable-next-line prefer-destructuring
-  form.dataset.action = String(formURL).split('.json')[0];
-  // form.dataset.action = 'https://webhook.site/1b65ccd2-baa2-4f34-ad4b-ec73c91b9243';
-  // form.dataset.action = 'https://go.ingredion.com/l/504221/2023-06-07/29vdv59';
+  form.dataset.action = submitUrl;
   json.data.forEach((fd) => {
-    fd.Type = fd.Type || 'text';
+    fd.Type = fd.Type || 'text-input';
     const fieldWrapper = document.createElement('div');
     const style = fd.Style ? ` form-${fd.Style}` : '';
     const fieldId = `form-${fd.Type}-wrapper${style}`;
@@ -288,7 +304,6 @@ export async function createForm(formURL, onSubmit) {
         handleFormElement(form, fieldWrapper, fd, createHeading(fd));
         break;
       case 'checkbox':
-        // handleFormElement(form, fieldWrapper, fd, createInput(fd));
         if (fd.Fieldset) {
           const fieldset = form.querySelector(`.${fd.Fieldset} fieldset`);
           fieldWrapper.append(createInput(fd));
@@ -307,6 +322,9 @@ export async function createForm(formURL, onSubmit) {
         break;
       case 'submit':
         handleFormElement(form, fieldWrapper, fd, createButton(fd, onSubmit));
+        break;
+      case 'text':
+        handleFormElement(form, fieldWrapper, fd, createText(fd));
         break;
       default:
         handleFormElement(form, fieldWrapper, fd, createInput(fd));
@@ -332,6 +350,9 @@ export default async function decorate(block) {
   const form = block.querySelector('a[href$=".json"]');
   if (form) {
     const { pathname } = new URL(form.href);
-    form.replaceWith(await createForm(pathname));
+    const submitAction = block.querySelectorAll('p > a')[1];
+    const submitUrl = submitAction ? new URL(submitAction.href) : String(pathname).split('.json')[0];
+    submitAction.parentElement.style.display = 'none';
+    form.replaceWith(await createForm(pathname, submitUrl));
   }
 }

@@ -30,6 +30,12 @@
   --border-color: #d8d8d8;
   --light-grey: #efefef;
 
+  /* form styles */
+  --form-field-border-color: #d8d9d9;
+  --form-select-placeholder-color: #b2b4b3;
+  --form-error-color: #f0635b;
+  --form-text-area-color: #b5b5b5;
+
   /* theme colors */
   --theme-clr-background: #fff;
   --theme-clr-text: var(--text-color);
