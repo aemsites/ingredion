@@ -4,116 +4,201 @@
     width: 100%;
   }
   
-  .gallery {   
-    > div {
+.gallery {   
+  > div {
+    display: flex;
+    flex-direction: column;
+    background: var(--theme-clr-background);
+    height: auto;
+
+    .gallery-images-container {
       display: flex;
-      flex-direction: column;
-      background: var(--theme-clr-background);
-      height: auto;
+
+      .gallery-preview {
+        flex: 1;
+        cursor: zoom-in;
+
+        picture, picture img {
+          width: 100%;
+          height: auto;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0 0 0 / 20%);
+        }
+      }
+
+      .gallery-thumbnails {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        picture, picture img {
+          width: 80px;
+          height: 80px;
+          object-fit: cover;
+          cursor: pointer;
+          border: 2px solid transparent;
+          border-radius: 4px;
+          transition: border 0.3s ease;
+        }
+        
+        picture img:hover,
+        picture img:focus {
+          border-color: var(--blue);
+        }
+      }
+
+      picture, picture img {
+        width: 80%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    .gallery-content {
+      color: var(--theme-clr-text);
+      margin: 0 15px 80px;
+
+      h1 {
+        color: var(--green);
+        font-size: var(--heading-font-size-xl);
+        font-family: var(--heading-font-family);
+        letter-spacing: -.0313rem;
+        margin: 0;
+      }
+
+      h2 {
+        font-size: var(--heading-font-size-l);
+        letter-spacing: -.0313rem;
+        line-height: 1rem;
+      }
   
+      h3 {
+        color: var(--theme-clr-text);
+        font-family: var(--heading-font-family);
+        font-size: var(--heading-font-size-m);
+        letter-spacing: -.0313rem;
+      }
+  
+      p, ul, li {
+        font-family: var(--body-font-family);
+        font-size:  var(--body-font-size-s);
+        letter-spacing: .0156rem;
+      }
+
+      ul {
+        padding-left: 20px;
+        list-style-type: disc;
+      }
+
+      .text-link {
+        font-size: var(--body-font-size-s);
+        text-decoration: underline;
+      }
+
+      .button-container {
+        margin-top: 1.5rem;
+  
+        > button {
+          min-width: 11.25rem;
+          padding: .875rem;
+          border: none;
+        }
+      }
+    }
+  }
+}
+
+.gallery-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0 0 0 / 50%);
+  width: 70%;
+  height: 90%;
+  padding: 50px 20px 20px;
+
+  .image-modal-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+    margin: auto;
+
+    img {
+      max-width: 90%;
+      max-height: 90%;
+      transform-origin: 50% 0;
+    } 
+  }
+
+  .zoom-buttons-container {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+
+    > button {
+      display: block;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 20px;
+      color: #fff;
+      background-color: rgba(0 0 0 / 50%);
+      border: none;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  }
+}
+  
+@media (width >= 1080px) {
+  .gallery {
+    max-width: 1224px;
+    width: 100%;
+
+    > div {
+      flex-direction: row;
+      gap: 50px;
+
+      .gallery-image {
+        width: 50%;
+      }
+
+      .gallery-content {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+
+        h3 {
+          font-size: 32px;
+          max-width: 381px;
+        }
+
+        p, ul, li {
+          max-width: 381px;
+        }
+      }
+    }
+  }
+}
+
+@media (width < 786px) {
+  .gallery {
+    > div {
+      height: auto;
+      
       .gallery-image {
         flex: none;
-    
-        picture, picture img {
-          width: 80%;
-          height: 100%;
-          object-fit: contain;
-        }
-      }
-  
-      .gallery-content {
-        color: var(--theme-clr-text);
-        margin: 0 15px 80px;
-
-        h1 {
-          color: var(--green);
-          font-size: var(--heading-font-size-xl);
-          font-family: var(--heading-font-family);
-          letter-spacing: -.0313rem;
-          margin: 0;
-        }
-
-        h2 {
-          font-size: var(--heading-font-size-l);
-          letter-spacing: -.0313rem;
-          line-height: 1rem;
-        }
-    
-        h3 {
-          color: var(--theme-clr-text);
-          font-family: var(--heading-font-family);
-          font-size: var(--heading-font-size-m);
-          letter-spacing: -.0313rem;
-        }
-    
-        p, ul, li {
-          font-family: var(--body-font-family);
-          font-size:  var(--body-font-size-s);
-          letter-spacing: .0156rem;
-        }
-  
-        ul {
-          padding-left: 20px;
-          list-style-type: disc;
-        }
-
-        .text-link {
-          font-size: var(--body-font-size-s);
-          text-decoration: underline;
-        }
-
-        .button-container {
-          margin-top: 1.5rem;
-    
-          > button {
-            min-width: 11.25rem;
-            padding: .875rem;
-            border: none;
-          }
-        }
       }
     }
   }
-  
-  @media (width >= 1080px) {
-    .gallery {
-      max-width: 1224px;
-      width: 100%;
-  
-      > div {
-        flex-direction: row;
-        gap: 50px;
-  
-        .gallery-image {
-          width: 50%;
-        }
-  
-        .gallery-content {
-          display: flex;
-          flex-direction: column;
-          width: 50%;
-  
-          h3 {
-            font-size: 32px;
-            max-width: 381px;
-          }
-  
-          p, ul, li {
-            max-width: 381px;
-          }
-        }
-      }
-    }
-  }
-  
-  @media (width < 786px) {
-    .gallery {
-      > div {
-        height: auto;
-        
-        .gallery-image {
-          flex: none;
-        }
-      }
-    }
-  }
+}

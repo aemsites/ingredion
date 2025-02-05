@@ -25,17 +25,37 @@ export default function decorate(block) {
     link.classList.add('text-link');
   }
 
-  if (pic) {
-    const picWrapper = pic.closest('div');
-    picWrapper.classList.add('gallery-image');
+  const galleryWrapper = pic.closest('div');
+  galleryWrapper.classList.add('gallery-images-container');
 
-    const img = pic.querySelector('img');
-    const optimizedPicture = createOptimizedPicture(
-      img.src,
-      img.alt,
-      false,
-      [{ width: '750' }],
-    );
-    pic.replaceWith(optimizedPicture);
-  }
+  const img = pic.querySelector('img');
+  const optimizedPicture = createOptimizedPicture(
+    img.src,
+    img.alt,
+    false,
+    [{ width: '750' }],
+  );
+  optimizedPicture.classList.add('gallery-preview');
+  pic.replaceWith(optimizedPicture);
+
+  const imageModal = document.createElement('div');
+  imageModal.innerHTML = `<div class="gallery-modal">
+    <div class="image-modal-container">
+      ${optimizedPicture.innerHTML}
+    </div>
+    <div class="zoom-buttons-container">
+      <button class="zoom-in">+</button>
+      <button class="zoom-out">-</button>
+      <button class="close">X</button>
+    </div>
+  </div>`;
+
+  optimizedPicture.addEventListener('click', () => {
+    block.append(imageModal);
+  });
+  const actionButtons = imageModal.querySelector('.zoom-buttons-container');
+  actionButtons.querySelector('.close').addEventListener('click', () => {
+    imageModal.remove();
+    block.dataset.embedLoaded = false;
+  });
 }
