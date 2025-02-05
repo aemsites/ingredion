@@ -93,9 +93,22 @@
     object-fit: cover;
 }
 
-.event-detail-content a {
+.event-detail-content p a {
     color: var(--green);
     text-decoration: underline;
+    background: transparent;
+    font-size: 1.375rem;
+    line-height: 2rem;
+    font-family: OpenSans-Regular, Helvetica, sans-serif;
+    letter-spacing: .015625rem;
+    padding: 0;
+    text-transform: none;
+}
+
+.event-detail-content p a:hover {
+    text-decoration: underline;
+    color: var(--dark-green);
+    background: transparent;
 }
 
 .register-event {
