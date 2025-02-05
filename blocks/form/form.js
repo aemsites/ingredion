@@ -70,6 +70,7 @@ function addErrorHandling(element) {
 
 function createSelect(fd) {
   const select = document.createElement('select');
+  select.id = fd.Field;
   select.name = fd.Field;
   if (fd.Placeholder) {
     const ph = document.createElement('option');
@@ -200,6 +201,7 @@ function createHeading(fd) {
 
 function createInput(fd) {
   const input = document.createElement('input');
+  input.id = fd.Field;
   input.type = fd.Type;
   input.name = fd.Field;
   input.setAttribute('placeholder', fd.Placeholder);
@@ -217,6 +219,7 @@ function createInput(fd) {
 
 function createTextArea(fd) {
   const input = document.createElement('textarea');
+  input.id = fd.Field;
   input.name = fd.Field;
   input.setAttribute('placeholder', fd.Placeholder);
   return input;
