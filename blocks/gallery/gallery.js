@@ -38,8 +38,8 @@ export default function decorate(block) {
   optimizedPicture.classList.add('gallery-preview');
   pic.replaceWith(optimizedPicture);
 
-  const imageModal = document.createElement('div');
-  imageModal.innerHTML = `<div class="gallery-modal">
+  const galleryModal = document.createElement('div');
+  galleryModal.innerHTML = `<div class="gallery-modal">
     <div class="image-modal-container">
       ${optimizedPicture.innerHTML}
     </div>
@@ -49,13 +49,34 @@ export default function decorate(block) {
       <button class="close">X</button>
     </div>
   </div>`;
+  
+  const modalImg = galleryModal.querySelector('.image-modal-container img');
+
+  let zoomLevel = 1;
+  const zoomStep = 0.1;
+  const maxZoom = 3;
+  const minZoom = 1;
 
   optimizedPicture.addEventListener('click', () => {
-    block.append(imageModal);
+    zoomLevel = 1;
+    modalImg.style.transform = `scale(${zoomLevel})`;
+    block.append(galleryModal);
   });
-  const actionButtons = imageModal.querySelector('.zoom-buttons-container');
+  const actionButtons = galleryModal.querySelector('.zoom-buttons-container');
   actionButtons.querySelector('.close').addEventListener('click', () => {
-    imageModal.remove();
+    galleryModal.remove();
     block.dataset.embedLoaded = false;
+  });
+  actionButtons.querySelector('.zoom-in').addEventListener('click', () => {
+    if (zoomLevel < maxZoom) {
+      zoomLevel += zoomStep;
+      modalImg.style.transform = `scale(${zoomLevel})`;
+    }
+  });
+  actionButtons.querySelector('.zoom-out').addEventListener('click', () => {
+    if (zoomLevel > minZoom) {
+      zoomLevel -= zoomStep;
+      modalImg.style.transform = `scale(${zoomLevel})`;
+    }
   });
 }
