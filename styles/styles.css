@@ -33,6 +33,12 @@
   --border-color-light: #d8d9d9;
   --white: #fff;
 
+  /* form styles */
+  --form-field-border-color: #d8d9d9;
+  --form-select-placeholder-color: #b2b4b3;
+  --form-error-color: #f0635b;
+  --form-text-area-color: #b5b5b5;
+
   /* theme colors */
   --theme-clr-background: #fff;
   --theme-clr-text: var(--text-color);
@@ -372,4 +378,11 @@ main {
   &.icon-x { background: #000 }
   &.icon-youku { background: #b3749a }
   &.icon-wechat { background: #6cb33e }
+}
+
+.iti {
+  --iti-path-flags-1x: url('../icons/flags.webp');
+  --iti-path-flags-2x: url('../icons/flags@2x.webp');
+  --iti-path-globe-1x: url('../icons/globe.webp');
+  --iti-path-globe-2x: url('../icons/globe@2x.webp');
 }

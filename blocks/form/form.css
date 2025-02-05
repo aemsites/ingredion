@@ -1,0 +1,203 @@
+.form form {
+    width: 100%;
+  }
+  
+  .form input,
+  .form select {
+    height: 3rem;
+    width: 100%;
+    margin: 0;
+    appearance: none;
+    border: 1px solid var(--form-field-border-color);
+    border-radius: 2px;
+    font-family: var(--body-font-family);
+    color: var(--form-select-placeholder-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: .78rem .625rem;
+    font-size: .875rem;
+  }
+
+
+  .form textarea {
+    height: 10rem;
+    width: 100%;
+    border: 1px solid var(--form-field-border-color);
+  }
+
+  .form .subscribe {
+    display: flex;
+    gap: 10px;
+    position: relative;
+    align-items: center;
+  }
+
+  .form input[type="checkbox"] {
+    appearance: auto;
+    height: 13px;
+    width: 13px;
+  }
+
+  .form fieldset {
+    border: 0;
+  }
+
+  form label {
+    font-family: OpenSans-Bold, Helvetica, sans-serif;
+    font-size: .875rem;
+    margin: .5rem 0;
+    line-height: 1.5rem;
+    color: var(--text-color);
+  }
+  
+  .form .form-select-wrapper {
+    position: relative;
+  }
+  
+  .form .form-select-wrapper::after {
+    content: '';
+    position: absolute;
+    background-color: var(--highlight-color);
+    mask: url('/icons/chevron.svg') center / 100% 100%;
+    bottom: .5rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .form button {
+    display: block;
+    height: 60px;
+    width: 100%;
+    padding: 0 1.5rem;
+    font-size: 1rem;
+  }
+
+  .field-error {
+    display: none;
+    color: #f0635b;
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  .form-text-input-wrapper span {
+    position: relative;
+    width: 100%;
+    display: block;
+  }
+
+  .form input:focus,
+  .form select:focus,
+  .form textarea:focus {
+    outline: none;
+    border: 1px solid var(--green);
+  }
+
+  .form .form-fieldset-wrapper {
+    margin-bottom: 0;
+  }
+
+  .form .form-select-wrapper,
+  .form-text-wrapper,
+  .form-text-input-wrapper,
+  .form-heading-wrapper,
+  .form-text-area-wrapper,
+  .form-submit-wrapper {
+    margin-bottom: 2.5rem;
+  }
+
+  .form .field-wrapper .field-invalid {
+    border: 1px solid #f0635b;
+  }
+
+  .form .field-wrapper .field-valid {
+    color: black;
+  }
+
+  .icon-approve::after {
+    content: "\e943";
+    color: var(--green);
+    font-family: ingredion-icon, sans-serif;
+    font-size: 2rem;
+    position: absolute;
+    right: 0;
+    top: -2.5rem;
+  }
+
+  .icon-reject::after {
+    content: "\e944";
+    color: #f0635b;
+    font-family: ingredion-icon, sans-serif;
+    font-size: 2rem;
+    position: absolute;
+    right: 0;
+    top: -2.5rem;
+  }
+
+  .form .field-wrapper .field-valid:focus-within {
+    border: 1px solid var(--green);
+  }
+
+  .form-text-area-wrapper span {
+    position: relative;
+  }
+
+  .form-text-area-wrapper span::after {
+    top: unset;
+  }
+
+  .form-text-wrapper p {
+    font-size: 1rem;
+    font-family: OpenSans, Helvetica, sans-serif;
+    letter-spacing: .0156rem;
+  }
+
+  textarea[name="messageExperts"] {
+    font-size: 14px;
+    padding-top: 12px;
+    padding-left: 8px;
+    color: var(--form-text-area-color);
+  }
+
+  textarea[name="messageExperts"]::placeholder {
+    font-size: 14px;
+    color: var(--form-text-area-color);
+  }
+
+  select[name="salutation"] {
+    white-space: pre-wrap;
+  }
+
+  .form-text-input-wrapper input::placeholder {
+    color: var(--form-text-area-color);
+  }
+
+  @media (width >= 1080px) {
+    .col-span-1 { flex: 8.33%; }
+    .col-span-2 { flex: 16.66%; }
+    .col-span-3 { flex: 25%; }
+    .col-span-4 { flex: 33.33%; }
+    .col-span-5 { flex: 41.66%; }
+    .col-span-6 { flex: 50%; }
+    .col-span-7 { flex: 58.33%; }
+    .col-span-8 { flex: 66.66%; }
+    .col-span-9 { flex: 75%; }
+    .col-span-10 { flex: 83.33%; }
+    .col-span-11 { flex: 91.66%; }
+    .col-span-12 { flex: 100%; }
+  
+    .align-vertical {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .form-submit-wrapper button {
+      width: 20%;
+    }
+
+    fieldset[name="fullNamePanel"] {
+      gap: 1rem;
+    }
+  }
