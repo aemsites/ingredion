@@ -49,7 +49,7 @@ export default function decorate(block) {
       <button class="close">X</button>
     </div>
   </div>`;
-  
+
   const modalImg = galleryModal.querySelector('.image-modal-container img');
 
   let zoomLevel = 1;
