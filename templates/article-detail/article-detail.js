@@ -1,5 +1,5 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h2, a, img } from '../../scripts/dom-helpers.js';
+import { div, h2, a, img, sup, p } from '../../scripts/dom-helpers.js';
 import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 import { breadcrumbs } from '../../scripts/breadcrumbs.js';
 
@@ -12,6 +12,7 @@ export default function decorate(doc) {
   const type = getMetadata('type');
   const publishedDate = getMetadata('published-date');
   const categories = getMetadata('categories');
+  const author = getMetadata('author');
   const socialShare = getMetadata('social-share');
   const $breadcrumbs = breadcrumbs();
   const picBreakpoints = [
@@ -60,12 +61,8 @@ export default function decorate(doc) {
     $breadcrumbs,
     div({ class: 'type' }, type),
     h2(teaserTitle),
-    div({ class: 'category-tags' },
-      publishedDate,
-      ' | ',
-      categories,
-    ),
-    div({ class: 'description' }, teaserDescription),
+    p({ class: 'description' }, teaserDescription),
+    p(sup(author)),
     div({ class: 'social-share' },
       // linkedIn always shown
       a({
@@ -80,12 +77,29 @@ export default function decorate(doc) {
   );
 
   // center align ### paragraphs
-  $content.querySelectorAll('p').forEach((p) => {
-    if (p.textContent.trim() === '###') {
-      p.classList.add('centered');
+  $content.querySelectorAll('p').forEach((paragraph) => {
+    if (paragraph.textContent.trim() === '###') {
+      paragraph.classList.add('centered');
     }
   });
 
   $main.prepend($hero);
   $content.prepend($header);
+
+  const teaserTitleHeader = $header.querySelector('h2');
+  let categoryTags;
+
+  if (categories) {
+    categoryTags = div({ class: 'category-tags' },
+      publishedDate,
+      ' | ',
+      categories,
+    );
+  } else {
+    categoryTags = div({ class: 'category-tags' },
+      publishedDate,
+    );
+  }
+
+  teaserTitleHeader.insertAdjacentElement('afterend', categoryTags);
 }
