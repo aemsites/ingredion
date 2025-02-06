@@ -1,7 +1,7 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 export default function decorate(block) {
-  const pic = block.querySelector('picture');
+  const allPics = block.querySelectorAll('picture');
   const h1 = block.querySelector('h1');
   const link = block.querySelector('a');
 
@@ -25,18 +25,30 @@ export default function decorate(block) {
     link.classList.add('text-link');
   }
 
-  const galleryWrapper = pic.closest('div');
-  galleryWrapper.classList.add('gallery-images-container');
+  const firstPic = allPics[0];
 
-  const img = pic.querySelector('img');
+  const previewPic = firstPic.cloneNode(true);
+  const img = previewPic.querySelector('img');
   const optimizedPicture = createOptimizedPicture(
     img.src,
     img.alt,
     false,
     [{ width: '750' }],
   );
+  previewPic.replaceWith(optimizedPicture);
   optimizedPicture.classList.add('gallery-preview');
-  pic.replaceWith(optimizedPicture);
+
+  const galleryWrapper = firstPic.closest('div');
+  galleryWrapper.classList.add('gallery-images-container');
+  galleryWrapper.prepend(optimizedPicture);
+
+  const thumbnails = document.createElement('div');
+  thumbnails.classList.add('gallery-thumbnails');
+  galleryWrapper.append(thumbnails);
+
+  allPics.forEach((image) => {
+    thumbnails.append(image);
+  });
 
   const galleryModal = document.createElement('div');
   galleryModal.innerHTML = `<div class="gallery-modal">
