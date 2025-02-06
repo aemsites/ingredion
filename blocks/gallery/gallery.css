@@ -65,6 +65,7 @@
 
     .gallery-images-container {
       display: flex;
+      flex-direction: row;
 
       .gallery-preview {
         flex: 1;
@@ -82,14 +83,11 @@
         flex-direction: column;
         gap: 10px;
 
-        picture, picture img {
+        img {
           width: 80px;
           height: 80px;
           object-fit: cover;
           cursor: pointer;
-          border: 2px solid transparent;
-          border-radius: 4px;
-          transition: border 0.3s ease;
         }
         
         picture img:hover,
