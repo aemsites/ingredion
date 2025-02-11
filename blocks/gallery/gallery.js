@@ -1,5 +1,32 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
+function setPreview(selectedPic) {
+  const previewPic = selectedPic.cloneNode(true);
+  const img = previewPic.querySelector('img');
+  const optimized = createOptimizedPicture(
+    img.src,
+    img.alt,
+    false,
+    [{ width: '750' }],
+  );
+  previewPic.replaceWith(optimized);
+  optimized.classList.add('gallery-preview');
+  return optimized;
+}
+
+function updateModal(modal, pic) {
+  modal.innerHTML = `<div class="gallery-modal">
+    <div class="image-modal-container">
+      ${pic.innerHTML}
+    </div>
+    <div class="zoom-buttons-container">
+      <button class="zoom-in">+</button>
+      <button class="zoom-out">-</button>
+      <button class="close">X</button>
+    </div>
+  </div>`;
+}
+
 export default function decorate(block) {
   const allPics = block.querySelectorAll('picture');
   const h1 = block.querySelector('h1');
@@ -27,17 +54,7 @@ export default function decorate(block) {
 
   const firstPic = allPics[0];
 
-  const previewPic = firstPic.cloneNode(true);
-  const img = previewPic.querySelector('img');
-  const optimizedPicture = createOptimizedPicture(
-    img.src,
-    img.alt,
-    false,
-    [{ width: '750' }],
-  );
-  previewPic.replaceWith(optimizedPicture);
-  optimizedPicture.classList.add('gallery-preview');
-
+  const optimizedPicture = setPreview(firstPic);
   const galleryWrapper = firstPic.closest('div');
   galleryWrapper.classList.add('gallery-images-container');
   galleryWrapper.prepend(optimizedPicture);
@@ -50,17 +67,8 @@ export default function decorate(block) {
     thumbnails.append(image);
   });
 
-  const galleryModal = document.createElement('div');
-  galleryModal.innerHTML = `<div class="gallery-modal">
-    <div class="image-modal-container">
-      ${optimizedPicture.innerHTML}
-    </div>
-    <div class="zoom-buttons-container">
-      <button class="zoom-in">+</button>
-      <button class="zoom-out">-</button>
-      <button class="close">X</button>
-    </div>
-  </div>`;
+  let galleryModal = document.createElement('div');
+  updateModal(galleryModal, optimizedPicture);
 
   const modalImg = galleryModal.querySelector('.image-modal-container img');
 
@@ -69,7 +77,39 @@ export default function decorate(block) {
   const maxZoom = 3;
   const minZoom = 1;
 
-  optimizedPicture.addEventListener('click', () => {
+  let preview = galleryWrapper.querySelector('.gallery-preview');
+  allPics.forEach((image) => {
+    image.addEventListener('click', () => {
+      const newPreview = setPreview(image);
+      galleryWrapper.querySelector('.gallery-preview').replaceWith(newPreview);
+      newPreview.addEventListener('click', () => {
+        zoomLevel = 1;
+        const modalImg = galleryModal.querySelector('.image-modal-container img');
+        modalImg.style.transform = `scale(${zoomLevel})`;
+        updateModal(galleryModal, newPreview);
+        block.append(galleryModal);
+        const actionButtons = galleryModal.querySelector('.zoom-buttons-container');
+        actionButtons.querySelector('.close').addEventListener('click', () => {
+          galleryModal.remove();
+          block.dataset.embedLoaded = false;
+        });
+        actionButtons.querySelector('.zoom-in').addEventListener('click', () => {
+          console.log("aaaaa");
+          if (zoomLevel < maxZoom) {
+            zoomLevel += zoomStep;
+            modalImg.style.transform = `scale(${zoomLevel})`;
+          }
+        });
+        actionButtons.querySelector('.zoom-out').addEventListener('click', () => {
+          if (zoomLevel > minZoom) {
+            zoomLevel -= zoomStep;
+            modalImg.style.transform = `scale(${zoomLevel})`;
+          }
+        });
+      });
+    });
+  });
+  preview.addEventListener('click', () => {
     zoomLevel = 1;
     modalImg.style.transform = `scale(${zoomLevel})`;
     block.append(galleryModal);
