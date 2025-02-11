@@ -236,16 +236,46 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
   addHeroObserver(doc);
+
+  loadCSS(`${window.hlx.codeBasePath}/styles/intlTelInput.min.css`);
+  await import('./intlTelInput.min.js');
+  const input = document.querySelector('.phone > input');
+  const iti = window.intlTelInput(input, {
+    loadUtils: () => import('./intl-tel-input-utils.js'),
+    countrySearch: false,
+    countryOrder: ['us', 'ca'],
+    fixDropdownWidth: false,
+    initialCountry: 'us',
+  });
+  // const iti = window.intlTelInput(input);
+  // const isValid = iti.isValidNumber();
+  // console.log(isValid);
+
+  // add an event listener to the input to validate the phone number
+  input.addEventListener('input', () => {
+    const isValid = iti.isValidNumber();
+    if (!isValid) {
+      const errorCode = iti.getValidationError();
+      console.log(errorCode);
+    }
+    console.log(isValid);
+  });
 }
 
 /**
  * Loads everything that happens a lot later,
  * without impacting the user experience.
  */
-function loadDelayed() {
+async function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
+  /* loadCSS(`${window.hlx.codeBasePath}/styles/intlTelInput.min.css`);
+  await import('./intlTelInput.min.js');
+  const input = document.querySelector('.phone > select');
+  window.intlTelInput(input, {
+    loadUtils: () => import('./intl-tel-input-utils.js'),
+  }); */
 }
 
 async function loadPage() {
