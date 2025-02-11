@@ -164,3 +164,17 @@
     }
   }
 }
+
+.title {
+  .default-content-wrapper {
+    text-align: center;
+  }
+}
+
+.full-page {
+  width: 100%;
+
+  .default-content-wrapper {
+    text-align: center;
+  }
+}
