@@ -190,3 +190,41 @@
     }
   }
 }
+
+@media (width < 1080px) {
+  .heading-section {
+    .heading-text {
+      margin: 0 15px 80px;
+    }
+
+    .heading-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+
+      .heading-images {
+        width: 100%;
+        padding: 0 1rem;
+        justify-content: space-between;
+
+        .thumbnails {
+          img {
+            width: 104px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (width < 786px) {
+  .heading-section {
+    height: auto;
+
+    .heading-images {
+      .thumbnails {
+        width: auto;
+      }
+    }
+  }
+}
