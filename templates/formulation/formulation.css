@@ -4,11 +4,10 @@
   vertical-align: top;
   box-sizing: border-box;
   padding: 20px;
+  justify-content: center;
 
-  .default-content-wrapper {
-    h2 {
-      text-align: left;
-    }
+  > .default-content-wrapper {
+    text-align: left;
   }
 }
 
@@ -165,10 +164,9 @@
   }
 }
 
-.title {
-  .default-content-wrapper {
-    text-align: center;
-  }
+
+.default-content-wrapper {
+  text-align: center;
 }
 
 .full-page {
