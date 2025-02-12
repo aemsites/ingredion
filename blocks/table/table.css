@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity */
 .table table {
     max-width: 76.5rem;
     margin: 5rem auto;
@@ -31,30 +32,6 @@
     font-family: OpenSans-Regular, Helvetica, sans-serif;
     text-align: left;
     background: transparent;
-}
-
-.table.formula table td, 
-.table.formula table th {
-    color: var(--text-color);
-    border: 0;
-    border-bottom: 1px solid var(--border-color);
-    padding: 1rem;
-    font-size: 1rem;
-    line-height: 2rem;
-    letter-spacing: 0.0156rem;
-    background: none;
-}
-
-.table.list table td, 
-.table.list table th {
-    color: var(--text-color);
-    border: 0;
-    border-bottom: 1px solid var(--border-color);
-    padding: 1rem;
-    font-size: 1rem;
-    line-height: 2rem;
-    letter-spacing: 0.0156rem;
-    background: none;
 }
 
 .table table tr:nth-child(2n+2) td {
@@ -107,6 +84,17 @@
         margin: 1rem auto;
         display: table;
 
+        td, th {
+        color: var(--text-color);
+        border: 0;
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem;
+        font-size: 1rem;
+        line-height: 2rem;
+        letter-spacing: 0.0156rem;
+        background: none;
+    }
+
         th,
         tr:last-child {
             border-top: 3px solid var(--border-color);
@@ -145,6 +133,17 @@
         margin: 1rem auto;
         display: table;
         width: 100%;
+
+        td, th {
+            color: var(--text-color);
+            border: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem;
+            font-size: 1rem;
+            line-height: 2rem;
+            letter-spacing: 0.0156rem;
+            background: none;
+        }
         
         tr:nth-child(2n+2) td {
             background: none;
