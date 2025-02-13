@@ -1,5 +1,5 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h2, h3, h1, p, a, span, img } from '../../scripts/dom-helpers.js';
+import { div, h2, h1, p } from '../../scripts/dom-helpers.js';
 import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 
 function setPreview(selectedPic) {
@@ -32,14 +32,14 @@ export default function decorate(doc) {
 
   const headingWrapper = div(
     { class: 'heading-wrapper' },
-  )
-  headingSection.append(headingWrapper)
+  );
+  headingSection.append(headingWrapper);
 
   const headingTextSection = div(
     { class: 'heading-text' },
     h1({ tabIndex: 0 }, title),
     h2({ tabIndex: 0 }, formulation),
-    p({ tabIndex: 0 }, description)
+    p({ tabIndex: 0 }, description),
   );
 
   headingTextSection.insertAdjacentHTML(
@@ -69,21 +69,19 @@ export default function decorate(doc) {
 
   thumbnails.append(mainImage, nutritionFactsImage);
 
-  let galleryModal = document.createElement('div');
+  const galleryModal = document.createElement('div');
   updateModal(galleryModal, mainImage);
 
-  const modalImg = galleryModal.querySelector('.image-modal-container img');
+  const modalImage = galleryModal.querySelector('.image-modal-container img');
 
   let zoomLevel = 1;
   const zoomStep = 0.1;
   const maxZoom = 3;
   const minZoom = 1;
 
-  let preview = headingGallerySection.querySelector('.preview');
-  Array.from(thumbnails.children).forEach((image) => {
-    console.log(image);
-    image.addEventListener('click', () => {
-      const newPreview = setPreview(image);
+  Array.from(thumbnails.children).forEach((img) => {
+    img.addEventListener('click', () => {
+      const newPreview = setPreview(img);
       headingGallerySection.querySelector('.preview').replaceWith(newPreview);
       newPreview.addEventListener('click', () => {
         zoomLevel = 1;
@@ -113,7 +111,7 @@ export default function decorate(doc) {
   });
   previewImage.addEventListener('click', () => {
     zoomLevel = 1;
-    modalImg.style.transform = `scale(${zoomLevel})`;
+    modalImage.style.transform = `scale(${zoomLevel})`;
     main.append(galleryModal);
   });
   const actionButtons = galleryModal.querySelector('.zoom-buttons-container');
@@ -124,13 +122,13 @@ export default function decorate(doc) {
   actionButtons.querySelector('.zoom-in').addEventListener('click', () => {
     if (zoomLevel < maxZoom) {
       zoomLevel += zoomStep;
-      modalImg.style.transform = `scale(${zoomLevel})`;
+      modalImage.style.transform = `scale(${zoomLevel})`;
     }
   });
   actionButtons.querySelector('.zoom-out').addEventListener('click', () => {
     if (zoomLevel > minZoom) {
       zoomLevel -= zoomStep;
-      modalImg.style.transform = `scale(${zoomLevel})`;
+      modalImage.style.transform = `scale(${zoomLevel})`;
     }
   });
 
