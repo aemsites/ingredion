@@ -30,6 +30,7 @@ export default function decorate(doc) {
   const nutritionFacts = getMetadata('nutrition');
   const headingSection = main.querySelector('.heading-section');
 
+  // --- HEADING SECTION
   const headingWrapper = div(
     { class: 'heading-wrapper' },
   );
@@ -133,4 +134,13 @@ export default function decorate(doc) {
   });
 
   headingWrapper.append(headingGallerySection);
+
+  // --- FORMULATION INSTRUCTIONS
+  const instructionsSection = main.querySelector('.instructions-section');
+  const instructionsWrapper = document.createElement('div');
+  instructionsWrapper.classList.add('instructions-wrapper');
+  const leftColumnSection = main.querySelectorAll('.column-left');
+  const rightColumnSection = main.querySelectorAll('.column-right');
+  instructionsWrapper.append(...leftColumnSection, ...rightColumnSection);
+  instructionsSection.append(instructionsWrapper);
 }
