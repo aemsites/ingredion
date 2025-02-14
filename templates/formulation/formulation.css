@@ -202,17 +202,25 @@
 
 @media (width < 1080px) {
 
-  .instructions-wrapper {
-    flex-direction: column;
-    
-    .section.column-left, 
-    .section.column-right {
-      max-width: 100%;
+  .instructions-section {
 
-      > .default-content-wrapper {
-        h3 {
-          font-size: var(--heading-font-size-m);
-          margin-top: 20px;
+    .default-content-wrapper {
+      margin-top: 50px;
+    }
+
+    .instructions-wrapper {
+      flex-direction: column;
+      gap: 0;
+      
+      .section.column-left, 
+      .section.column-right {
+        max-width: 80%;
+        margin: auto;
+  
+        > .default-content-wrapper {
+          h3 {
+            font-size: 1.5rem;
+          }
         }
       }
     }
