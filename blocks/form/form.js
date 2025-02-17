@@ -4,6 +4,7 @@ function createErrorElements(element) {
   errorDiv.textContent = 'Please check your form entries';
 
   const validateIcon = document.createElement('span');
+  validateIcon.classList.add('form-icon');
   if (element.type !== 'select-one') {
     element.parentElement.append(validateIcon);
   }
@@ -14,15 +15,21 @@ function createErrorElements(element) {
 
 export function toggleError(element, show, message = 'Please check your form entries') {
   const errorDiv = element.parentElement.querySelector('.field-error');
-  const validateIcon = element.parentElement.querySelector('span');
+  const validateIcon = element.parentElement.querySelector('.form-icon');
 
   if (errorDiv) {
     errorDiv.style.display = show ? 'block' : 'none';
     errorDiv.textContent = message;
   }
 
-  element.classList.toggle('field-valid', !show);
-  element.classList.toggle('field-invalid', show);
+  if (element.tagName === 'INPUT') {
+    element.classList.toggle('field-valid', !show);
+    element.classList.toggle('field-invalid', show);
+  } else {
+    const number = element.querySelector('.number');
+    number.classList.toggle('field-valid', !show);
+    number.classList.toggle('field-invalid', show);
+  }
 
   if (validateIcon) {
     if (show) {
@@ -48,13 +55,13 @@ export function addErrorHandling(element) {
 
   element.addEventListener('input', (e) => {
     const isEmpty = !element.value;
-    if (element.name === 'email' && !isEmpty) {
+    if (e.target.classList.contains('email') && !isEmpty) {
       if (validateEmail(element.value)) {
         toggleError(element, false);
       } else {
         toggleError(element, true, e.target.getAttribute('validation-error-message'));
       }
-    } else {
+    } else if (!e.target.classList.contains('number')) {
       toggleError(element, isEmpty, 'Please check your form entries');
     }
   });
@@ -201,12 +208,15 @@ function createInput(fd) {
   const input = document.createElement('input');
   input.id = fd.Field;
   input.type = fd.Type;
-  if (fd.Type === 'number') {
+  if (fd.Type === 'number' || fd.Type === 'email') {
     input.type = 'text-input';
   }
   input.name = fd.Field;
   if (fd.Type === 'number') {
     input.classList.add('number');
+  }
+  if (fd.Type === 'email') {
+    input.classList.add('email');
   }
   input.setAttribute('placeholder', fd.Placeholder);
   if (fd.Pattern) {
