@@ -7,9 +7,10 @@ function createErrorElements(element) {
   validateIcon.classList.add('form-icon');
   if (element.type !== 'select-one') {
     element.parentElement.append(validateIcon);
+    validateIcon.insertAdjacentElement('afterend', errorDiv);
+  } else {
+    element.parentElement.append(errorDiv);
   }
-  validateIcon.insertAdjacentElement('afterend', errorDiv);
-
   return { errorDiv, validateIcon };
 }
 
@@ -22,13 +23,13 @@ export function toggleError(element, show, message = 'Please check your form ent
     errorDiv.textContent = message;
   }
 
-  if (element.tagName === 'INPUT') {
-    element.classList.toggle('field-valid', !show);
-    element.classList.toggle('field-invalid', show);
-  } else {
+  if (element.tagName === 'DIV') {
     const number = element.querySelector('.number');
     number.classList.toggle('field-valid', !show);
     number.classList.toggle('field-invalid', show);
+  } else {
+    element.classList.toggle('field-valid', !show);
+    element.classList.toggle('field-invalid', show);
   }
 
   if (validateIcon) {
