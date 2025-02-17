@@ -14,6 +14,8 @@ import {
   getMetadata,
 } from './aem.js';
 
+import { toggleError } from '../blocks/form/form.js';
+
 function autolinkModals(element) {
   element.addEventListener('click', async (e) => {
     const origin = e.target.closest('a');
@@ -217,6 +219,49 @@ function addHeroObserver(doc) {
   }
 }
 
+function initializePhoneValidation(document) {
+  const input = document.querySelector('.phoneNumber > input');
+  const addressDropdown = document.querySelector('.country > select');
+  const countryData = window.intlTelInput.getCountryData();
+
+  // populate the country dropdown
+  for (let i = 0; i < countryData.length; i += 1) {
+    const country = countryData[i];
+    const optionNode = document.createElement('option');
+    optionNode.value = country.iso2;
+    const textNode = document.createTextNode(country.name);
+    optionNode.appendChild(textNode);
+    addressDropdown.appendChild(optionNode);
+  }
+
+  const iti = window.intlTelInput(input, {
+    loadUtils: () => import('./intl-tel-input-utils.js'),
+    countrySearch: false,
+    countryOrder: ['us', 'ca'],
+    fixDropdownWidth: false,
+    initialCountry: 'us',
+  });
+
+  addressDropdown.value = iti.getSelectedCountryData().iso2;
+
+  // listen to the telephone input for changes
+  input.addEventListener('countrychange', () => {
+    addressDropdown.value = iti.getSelectedCountryData().iso2;
+    addressDropdown.dispatchEvent(new Event('change'));
+  });
+
+  input.addEventListener('input', (e) => {
+    const isValid = iti.isValidNumber();
+    let errorMessage;
+    if (!isValid && input.value === '') {
+      errorMessage = 'Please check your form entries';
+    } else if (!isValid) {
+      errorMessage = e.target.getAttribute('validation-error-message');
+    }
+    toggleError(input.parentElement, !isValid, errorMessage);
+  });
+}
+
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
@@ -239,27 +284,7 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/intlTelInput.min.css`);
   await import('./intlTelInput.min.js');
-  const input = document.querySelector('.phone > input');
-  const iti = window.intlTelInput(input, {
-    loadUtils: () => import('./intl-tel-input-utils.js'),
-    countrySearch: false,
-    countryOrder: ['us', 'ca'],
-    fixDropdownWidth: false,
-    initialCountry: 'us',
-  });
-  // const iti = window.intlTelInput(input);
-  // const isValid = iti.isValidNumber();
-  // console.log(isValid);
-
-  // add an event listener to the input to validate the phone number
-  input.addEventListener('input', () => {
-    const isValid = iti.isValidNumber();
-    if (!isValid) {
-      const errorCode = iti.getValidationError();
-      console.log(errorCode);
-    }
-    console.log(isValid);
-  });
+  initializePhoneValidation(doc);
 }
 
 /**
@@ -270,12 +295,6 @@ async function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
-  /* loadCSS(`${window.hlx.codeBasePath}/styles/intlTelInput.min.css`);
-  await import('./intlTelInput.min.js');
-  const input = document.querySelector('.phone > select');
-  window.intlTelInput(input, {
-    loadUtils: () => import('./intl-tel-input-utils.js'),
-  }); */
 }
 
 async function loadPage() {
