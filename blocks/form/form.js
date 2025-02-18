@@ -1,19 +1,38 @@
-function addErrorHandling(element) {
+function createErrorElements(element) {
   const errorDiv = document.createElement('div');
   errorDiv.className = 'field-error';
   errorDiv.textContent = 'Please check your form entries';
 
   const validateIcon = document.createElement('span');
+  validateIcon.classList.add('form-icon');
   if (element.type !== 'select-one') {
     element.parentElement.append(validateIcon);
+    validateIcon.insertAdjacentElement('afterend', errorDiv);
+  } else {
+    element.parentElement.append(errorDiv);
   }
+  return { errorDiv, validateIcon };
+}
 
-  const toggleError = (show, message = errorDiv.textContent) => {
+export function toggleError(element, show, message = 'Please check your form entries') {
+  const errorDiv = element.parentElement.querySelector('.field-error');
+  const validateIcon = element.parentElement.querySelector('.form-icon');
+
+  if (errorDiv) {
     errorDiv.style.display = show ? 'block' : 'none';
     errorDiv.textContent = message;
+  }
+
+  if (element.tagName === 'DIV') {
+    const number = element.querySelector('.number');
+    number.classList.toggle('field-valid', !show);
+    number.classList.toggle('field-invalid', show);
+  } else {
     element.classList.toggle('field-valid', !show);
     element.classList.toggle('field-invalid', show);
+  }
 
+  if (validateIcon) {
     if (show) {
       validateIcon.classList.add('icon-reject');
       validateIcon.classList.remove('icon-approve');
@@ -21,51 +40,37 @@ function addErrorHandling(element) {
       validateIcon.classList.remove('icon-reject');
       validateIcon.classList.add('icon-approve');
     }
-  };
+  }
+}
+
+export function addErrorHandling(element) {
+  createErrorElements(element);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      toggleError(true, 'Please ensure to input a business email address.');
       return false;
     }
     return true;
   };
 
-  const validatePhoneNumber = (phoneNumber) => {
-    const phoneNumberRegex = /^[1-9]\d{9}$/;
-    if (!phoneNumberRegex.test(phoneNumber)) {
-      toggleError(true, 'Please check your phone number format, removing the leading 0.');
-      return false;
-    }
-    return true;
-  };
-
-  element.addEventListener('input', () => {
+  element.addEventListener('input', (e) => {
     const isEmpty = !element.value;
-    if (element.name === 'email' && !isEmpty) {
+    if (e.target.classList.contains('email') && !isEmpty) {
       if (validateEmail(element.value)) {
-        toggleError(false);
+        toggleError(element, false);
       } else {
-        toggleError(true);
+        toggleError(element, true, e.target.getAttribute('validation-error-message'));
       }
-    } else if (element.name === 'phoneNumber' && !isEmpty) {
-      if (validatePhoneNumber(element.value)) {
-        toggleError(false);
-      } else {
-        toggleError(true);
-      }
-    } else {
-      toggleError(isEmpty, 'Please check your form entries');
+    } else if (!e.target.classList.contains('number')) {
+      toggleError(element, isEmpty, 'Please check your form entries');
     }
   });
 
   element.addEventListener('invalid', (e) => {
     e.preventDefault();
-    toggleError(true);
+    toggleError(element, true);
   });
-
-  validateIcon.insertAdjacentElement('afterend', errorDiv);
 }
 
 function createSelect(fd) {
@@ -111,11 +116,12 @@ function createSelect(fd) {
   if (select.name === 'country') {
     select.addEventListener('change', (e) => {
       const stateWrapper = document.querySelector('.stateOrProvince');
-      if (e.target.value === 'US' || e.target.value === 'CA' || e.target.value === 'MX') {
+      const countryCode = e.target.value.toUpperCase();
+      if (countryCode === 'US' || countryCode === 'CA' || countryCode === 'MX') {
         stateWrapper.style.display = 'block';
         const { options } = stateWrapper.querySelector('select');
         Array.from(options).forEach((option) => {
-          option.hidden = option?.dataset?.country !== e.target.value;
+          option.hidden = option?.dataset?.country !== countryCode;
         });
       } else {
         stateWrapper.style.display = 'none';
@@ -203,7 +209,16 @@ function createInput(fd) {
   const input = document.createElement('input');
   input.id = fd.Field;
   input.type = fd.Type;
+  if (fd.Type === 'number' || fd.Type === 'email') {
+    input.type = 'text-input';
+  }
   input.name = fd.Field;
+  if (fd.Type === 'number') {
+    input.classList.add('number');
+  }
+  if (fd.Type === 'email') {
+    input.classList.add('email');
+  }
   input.setAttribute('placeholder', fd.Placeholder);
   if (fd.Pattern) {
     input.setAttribute('pattern', fd.Pattern);
@@ -213,6 +228,9 @@ function createInput(fd) {
   }
   if (fd.Checked) {
     input.setAttribute('checked', fd.Checked);
+  }
+  if (fd.ValidationErrorMessage) {
+    input.setAttribute('validation-error-message', fd.ValidationErrorMessage);
   }
   return input;
 }
@@ -276,6 +294,10 @@ function handleFormElement(form, fieldWrapper, fd, element) {
 
   if (fd.Fieldset) {
     container.append(fieldWrapper);
+  }
+
+  if (fd.Extra === 'hidden') {
+    fieldWrapper.style.display = 'none';
   }
 }
 

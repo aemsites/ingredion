@@ -82,7 +82,9 @@
     margin-top: 4px;
   }
 
-  .form-text-input-wrapper span {
+  .form-text-input-wrapper span,
+  .form-email-wrapper span,
+  .form-number-wrapper span {
     position: relative;
     width: 100%;
     display: block;
@@ -104,7 +106,8 @@
   .form-text-input-wrapper,
   .form-heading-wrapper,
   .form-text-area-wrapper,
-  .form-submit-wrapper {
+  .form-submit-wrapper,
+  .form-number-wrapper {
     margin-bottom: 2.5rem;
   }
 
@@ -172,6 +175,21 @@
 
   .form-text-input-wrapper input::placeholder {
     color: var(--form-text-area-color);
+  }
+
+  .form-number-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin: 2px;
+    }
+  }
+
+  /* stylelint-disable selector-class-pattern */
+  .iti__country-container > button {
+    padding: 0;
+    height: 100%;
   }
 
   @media (width >= 1080px) {
