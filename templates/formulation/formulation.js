@@ -84,23 +84,29 @@ export default function decorate(doc) {
     img.addEventListener('click', () => {
       const newPreview = setPreview(img);
       headingGallerySection.querySelector('.preview').replaceWith(newPreview);
+
       newPreview.addEventListener('click', () => {
         zoomLevel = 1;
+        updateModal(galleryModal, newPreview);
+
         const modalImg = galleryModal.querySelector('.image-modal-container img');
         modalImg.style.transform = `scale(${zoomLevel})`;
-        updateModal(galleryModal, newPreview);
+
         main.append(galleryModal);
+
         const actionButtons = galleryModal.querySelector('.zoom-buttons-container');
         actionButtons.querySelector('.close').addEventListener('click', () => {
           galleryModal.remove();
           main.dataset.embedLoaded = false;
         });
+
         actionButtons.querySelector('.zoom-in').addEventListener('click', () => {
           if (zoomLevel < maxZoom) {
             zoomLevel += zoomStep;
             modalImg.style.transform = `scale(${zoomLevel})`;
           }
         });
+
         actionButtons.querySelector('.zoom-out').addEventListener('click', () => {
           if (zoomLevel > minZoom) {
             zoomLevel -= zoomStep;
@@ -110,6 +116,7 @@ export default function decorate(doc) {
       });
     });
   });
+
   previewImage.addEventListener('click', () => {
     zoomLevel = 1;
     modalImage.style.transform = `scale(${zoomLevel})`;
