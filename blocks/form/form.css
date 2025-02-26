@@ -62,7 +62,6 @@
     content: '';
     position: absolute;
     background-color: var(--highlight-color);
-    mask: url('/icons/chevron.svg') center / 100% 100%;
     bottom: .5rem;
     right: 1rem;
     width: 2.5rem;
