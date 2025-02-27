@@ -1,5 +1,5 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h2, h1, p } from '../../scripts/dom-helpers.js';
+import { div, h2, h1, p, a } from '../../scripts/dom-helpers.js';
 import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 
 function setPreview(selectedPic) {
@@ -26,6 +26,8 @@ export default function decorate(doc) {
   const title = getMetadata('og:title');
   const formulation = getMetadata('formulation');
   const description = getMetadata('description');
+  const ingredientName = getMetadata('ingredient');
+  const ingredientHref = getMetadata('ingredient-link');
   const image = getMetadata('og:image');
   const nutritionFacts = getMetadata('nutrition');
   const headingSection = main.querySelector('.heading-section');
@@ -41,6 +43,7 @@ export default function decorate(doc) {
     h1({ tabIndex: 0 }, title),
     h2({ tabIndex: 0 }, formulation),
     p({ tabIndex: 0 }, description),
+    a({ tabIndex: 0, href: ingredientHref }, ingredientName),
   );
 
   headingTextSection.insertAdjacentHTML(

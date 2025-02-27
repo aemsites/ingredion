@@ -152,7 +152,7 @@
         letter-spacing: -.0313rem;
       }
     
-      p, ul, li {
+      p, ul, li, a {
         font-family: var(--body-font-family);
         font-size:  var(--body-font-size-s);
         letter-spacing: .0156rem;
@@ -163,8 +163,7 @@
         list-style-type: disc;
       }
     
-      .text-link {
-        font-size: var(--body-font-size-s);
+      a {
         text-decoration: underline;
       }
     
@@ -228,7 +227,7 @@
           line-height: 1.5rem;
         }
 
-        p, ul, li {
+        p, ul, li, a {
           font-size:  1rem;
         }
       }
