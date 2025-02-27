@@ -80,14 +80,16 @@ function createOption(label, value, initialValue) {
   option.className = 'form-dropdown__option';
   option.setAttribute('data-label', label);
   option.setAttribute('data-value', value);
-  option.setAttribute('tabindex', '0');
+  option.setAttribute('tabindex', '-1');
   option.setAttribute('role', 'option');
+  option.setAttribute('aria-selected', 'false');
   option.textContent = label;
   const check = document.createElement('span');
   check.className = 'form-dropdown__selected-check icon-check-2-blk';
   option.appendChild(check);
   if (value === initialValue || label === initialValue) {
     option.classList.add('selected');
+    option.setAttribute('aria-selected', 'true');
   }
   return option;
 }
@@ -105,19 +107,29 @@ function createSelect(fd) {
   hiddenInput.id = fd.Field;
   hiddenInput.name = fd.Field;
   hiddenInput.setAttribute('placeholder', fd.Placeholder || 'Select One');
+  hiddenInput.setAttribute('aria-label', fd.Label || fd.Placeholder || 'Select One');
 
   // Create trigger
   const trigger = document.createElement('div');
   trigger.className = 'form-dropdown__trigger';
   trigger.setAttribute('tabindex', '0');
   trigger.setAttribute('role', 'combobox');
+  trigger.setAttribute('aria-expanded', 'false');
+  trigger.setAttribute('aria-haspopup', 'listbox');
+  trigger.setAttribute('aria-label', fd.Label || fd.Placeholder || 'Select One');
+
+  const listboxId = `${fd.Field}-listbox`;
+  trigger.setAttribute('aria-controls', listboxId);
+  trigger.setAttribute('aria-activedescendant', '');
 
   const selectedLabel = document.createElement('div');
   selectedLabel.className = 'form-dropdown__selected-label';
   selectedLabel.textContent = fd.Placeholder || 'Select One';
+  selectedLabel.setAttribute('aria-hidden', 'true');
 
   const icon = document.createElement('div');
   icon.className = 'form-dropdown__icon icon-Expand';
+  icon.setAttribute('aria-hidden', 'true');
 
   trigger.appendChild(selectedLabel);
   trigger.appendChild(icon);
@@ -125,6 +137,9 @@ function createSelect(fd) {
   // Create options container
   const optionsContainer = document.createElement('div');
   optionsContainer.className = 'form-dropdown__options';
+  optionsContainer.setAttribute('role', 'listbox');
+  optionsContainer.id = listboxId;
+  optionsContainer.setAttribute('aria-label', fd.Label || fd.Placeholder || 'Select One');
 
   // Add validation icons
   const validIcon = document.createElement('span');
@@ -142,9 +157,12 @@ function createSelect(fd) {
 
     optionsContainer.querySelectorAll('.form-dropdown__option').forEach((opt) => {
       opt.classList.remove('selected');
+      opt.setAttribute('aria-selected', 'false');
     });
 
     option.classList.add('selected');
+    option.setAttribute('aria-selected', 'true');
+    trigger.setAttribute('aria-activedescendant', option.id);
     selectedLabel.style.color = 'black';
 
     const event = new Event('change', { bubbles: true });
@@ -254,10 +272,9 @@ function createSelect(fd) {
   }
 
   dropdown.appendChild(hiddenInput);
+  wrapper.appendChild(dropdown);
   dropdown.appendChild(trigger);
   dropdown.appendChild(optionsContainer);
-
-  wrapper.appendChild(dropdown);
   wrapper.appendChild(validIcon);
   wrapper.appendChild(errorIcon);
 
