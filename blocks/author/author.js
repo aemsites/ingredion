@@ -1,22 +1,10 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, p, h4, picture, img } from '../../scripts/dom-helpers.js';
+import { unwrapNestedDivs } from '../../scripts/scripts.js';
 
 const authorSpreadsheetPath = '/author/author-info.json';
 
 export default async function decorate(block) {
-  // Function to recursively unwrap nested divs
-  function unwrapNestedDivs(element) {
-    const children = Array.from(element.children);
-    children.forEach((child) => {
-      if (child.tagName === 'DIV') {
-        unwrapNestedDivs(child);
-        while (child.firstChild) {
-          element.insertBefore(child.firstChild, child);
-        }
-        element.removeChild(child);
-      }
-    });
-  }
   unwrapNestedDivs(block);
 
   const resp = await fetch(authorSpreadsheetPath);
