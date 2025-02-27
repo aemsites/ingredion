@@ -133,6 +133,42 @@ function createSelect(fd) {
   const errorIcon = document.createElement('span');
   errorIcon.className = 'form-input__icon form-input__icon--error icon-Error';
 
+  // Function to select an option
+  const selectOption = (option) => {
+    if (!option) return;
+    const { value, label } = option.dataset;
+    hiddenInput.value = value;
+    selectedLabel.textContent = label;
+
+    optionsContainer.querySelectorAll('.form-dropdown__option').forEach((opt) => {
+      opt.classList.remove('selected');
+    });
+
+    option.classList.add('selected');
+    selectedLabel.style.color = 'black';
+
+    const event = new Event('change', { bubbles: true });
+    hiddenInput.dispatchEvent(event);
+  };
+
+  // Add keyboard navigation
+  trigger.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      dropdown.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    } else {
+      const char = e.key.toLowerCase();
+      const options = Array.from(optionsContainer.querySelectorAll('.form-dropdown__option'));
+      const matchingOption = options.find((option) => {
+        const label = option.dataset.label.toLowerCase();
+        return label.startsWith(char) && option.style.display !== 'none';
+      });
+      if (matchingOption) {
+        selectOption(matchingOption);
+      }
+    }
+  });
+
   // Populate options
   if (fd.Options && fd.Options?.startsWith('https://')) {
     const optionsUrl = new URL(fd.Options);
@@ -155,7 +191,6 @@ function createSelect(fd) {
             option.style.display = 'none';
           }
           optionsContainer.appendChild(option);
-          // If this is the initial value, update the hidden input and label
           if (option.classList.contains('selected')) {
             hiddenInput.value = option.dataset.value;
             selectedLabel.textContent = option.dataset.label;
@@ -167,7 +202,6 @@ function createSelect(fd) {
     fd.Options.split(',').forEach((o) => {
       const option = createOption(o.trim(), o.trim(), initialValue);
       optionsContainer.appendChild(option);
-      // If this is the initial value, update the hidden input and label
       if (option.classList.contains('selected')) {
         hiddenInput.value = option.dataset.value;
         selectedLabel.textContent = option.dataset.label;
@@ -188,21 +222,9 @@ function createSelect(fd) {
   optionsContainer.addEventListener('click', (e) => {
     const option = e.target.closest('.form-dropdown__option');
     if (option) {
-      const { value, label } = option.dataset;
-      hiddenInput.value = value;
-      selectedLabel.textContent = label;
-
-      optionsContainer.querySelectorAll('.form-dropdown__option').forEach((opt) => {
-        opt.classList.remove('selected');
-      });
-
-      option.classList.add('selected');
-      option.parentElement.parentElement.querySelector('.form-dropdown__selected-label').style.color = 'black';
-
+      selectOption(option);
       dropdown.classList.remove('is-open');
-
-      const event = new Event('change', { bubbles: true });
-      hiddenInput.dispatchEvent(event);
+      trigger.setAttribute('aria-expanded', 'false');
     }
   });
 
@@ -215,7 +237,7 @@ function createSelect(fd) {
       } else {
         stateWrapper.style.display = 'block';
         stateWrapper.querySelectorAll('.form-dropdown__option').forEach((option) => {
-          option.style.display = option?.dataset?.country === countryValue ? 'block' : 'none';
+          option.style.display = option?.dataset?.country === countryValue ? 'flex' : 'none';
         });
       }
     });
@@ -226,7 +248,7 @@ function createSelect(fd) {
       const categoryWrapper = document.querySelector('.form-select-wrapper.Category');
       const marketValue = e.target.value;
       categoryWrapper.querySelectorAll('.form-dropdown__option').forEach((option) => {
-        option.style.display = option?.dataset?.market === marketValue ? 'block' : 'none';
+        option.style.display = option?.dataset?.market === marketValue ? 'flex' : 'none';
       });
     });
   }
