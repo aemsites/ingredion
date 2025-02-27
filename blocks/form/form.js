@@ -64,6 +64,8 @@ export function addErrorHandling(element) {
       }
     } else if (!e.target.classList.contains('number')) {
       toggleError(element, isEmpty, 'Please check your form entries');
+    } else {
+      toggleError(element, false);
     }
   });
 
@@ -73,128 +75,219 @@ export function addErrorHandling(element) {
   });
 }
 
-function createSelect(fd) {
-  const select = document.createElement('select');
-  select.id = fd.Field;
-  select.name = fd.Field;
-  if (fd.Placeholder) {
-    const ph = document.createElement('option');
-    ph.textContent = fd.Placeholder;
-    ph.setAttribute('selected', '');
-    ph.setAttribute('disabled', '');
-    ph.setAttribute('value', '');
-    select.append(ph);
+function createOption(label, value, initialValue) {
+  const option = document.createElement('span');
+  option.className = 'form-dropdown__option';
+  option.setAttribute('data-label', label);
+  option.setAttribute('data-value', value);
+  option.setAttribute('tabindex', '-1');
+  option.setAttribute('role', 'option');
+  option.setAttribute('aria-selected', 'false');
+  option.textContent = label;
+  const check = document.createElement('span');
+  check.className = 'form-dropdown__selected-check icon-check-2-blk';
+  option.appendChild(check);
+  if (value === initialValue || label === initialValue) {
+    option.classList.add('selected');
+    option.setAttribute('aria-selected', 'true');
   }
+  return option;
+}
+
+function createSelect(fd) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'form-input__input-wrapper';
+
+  const dropdown = document.createElement('div');
+  dropdown.className = 'form-dropdown';
+
+  // Create hidden input
+  const hiddenInput = document.createElement('input');
+  hiddenInput.type = 'hidden';
+  hiddenInput.id = fd.Field;
+  hiddenInput.name = fd.Field;
+  hiddenInput.setAttribute('placeholder', fd.Placeholder || 'Select One');
+  hiddenInput.setAttribute('aria-label', fd.Label || fd.Placeholder || 'Select One');
+
+  // Create trigger
+  const trigger = document.createElement('div');
+  trigger.className = 'form-dropdown__trigger';
+  trigger.setAttribute('tabindex', '0');
+  trigger.setAttribute('role', 'combobox');
+  trigger.setAttribute('aria-expanded', 'false');
+  trigger.setAttribute('aria-haspopup', 'listbox');
+  trigger.setAttribute('aria-label', fd.Label || fd.Placeholder || 'Select One');
+
+  const listboxId = `${fd.Field}-listbox`;
+  trigger.setAttribute('aria-controls', listboxId);
+  trigger.setAttribute('aria-activedescendant', '');
+
+  const selectedLabel = document.createElement('div');
+  selectedLabel.className = 'form-dropdown__selected-label';
+  selectedLabel.textContent = fd.Placeholder || 'Select One';
+  selectedLabel.setAttribute('aria-hidden', 'true');
+
+  const icon = document.createElement('div');
+  icon.className = 'form-dropdown__icon icon-Expand';
+  icon.setAttribute('aria-hidden', 'true');
+
+  trigger.appendChild(selectedLabel);
+  trigger.appendChild(icon);
+
+  // Create options container
+  const optionsContainer = document.createElement('div');
+  optionsContainer.className = 'form-dropdown__options';
+  optionsContainer.setAttribute('role', 'listbox');
+  optionsContainer.id = listboxId;
+  optionsContainer.setAttribute('aria-label', fd.Label || fd.Placeholder || 'Select One');
+
+  // Add validation icons
+  const validIcon = document.createElement('span');
+  validIcon.className = 'form-input__icon form-input__icon--valid icon-Approve';
+
+  const errorIcon = document.createElement('span');
+  errorIcon.className = 'form-input__icon form-input__icon--error icon-Error';
+
+  // Function to select an option
+  const selectOption = (option) => {
+    if (!option) return;
+    const { value, label } = option.dataset;
+    hiddenInput.value = value;
+    selectedLabel.textContent = label;
+
+    optionsContainer.querySelectorAll('.form-dropdown__option').forEach((opt) => {
+      opt.classList.remove('selected');
+      opt.setAttribute('aria-selected', 'false');
+    });
+
+    option.classList.add('selected');
+    option.setAttribute('aria-selected', 'true');
+    trigger.setAttribute('aria-activedescendant', option.id);
+    selectedLabel.style.color = 'black';
+
+    const event = new Event('change', { bubbles: true });
+    hiddenInput.dispatchEvent(event);
+  };
+
+  // Add keyboard navigation
+  trigger.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      dropdown.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    } else {
+      const char = e.key.toLowerCase();
+      const options = Array.from(optionsContainer.querySelectorAll('.form-dropdown__option'));
+      const matchingOption = options.find((option) => {
+        const label = option.dataset.label.toLowerCase();
+        return label.startsWith(char) && option.style.display !== 'none';
+      });
+      if (matchingOption) {
+        selectOption(matchingOption);
+      }
+    }
+  });
+
+  // Populate options
   if (fd.Options && fd.Options?.startsWith('https://')) {
     const optionsUrl = new URL(fd.Options);
     fetch(`${optionsUrl.pathname}${optionsUrl.search}`)
       .then(async (response) => {
         const json = await response.json();
+        const initialValue = 'United States';
         json.data.forEach((opt) => {
-          const option = document.createElement('option');
-          option.textContent = opt.Option.trim();
-          option.value = (opt.Value || opt.Option).trim();
-          if (select.name === 'stateOrProvince') {
+          const option = createOption(
+            opt.Option.trim(),
+            opt.Value || opt.Option.trim(),
+            initialValue,
+          );
+          if (fd.Field === 'State') {
             option.setAttribute('data-country', opt.Country);
-            option.hidden = option?.dataset?.country !== 'US';
+            option.style.display = opt.Country !== 'US' ? 'none' : '';
           }
-          if (select.name === 'category') {
+          if (fd.Field === 'Category') {
             option.setAttribute('data-market', opt.Market);
-            option.hidden = true;
+            option.style.display = 'none';
           }
-          select.append(option);
+          optionsContainer.appendChild(option);
+          if (option.classList.contains('selected')) {
+            hiddenInput.value = option.dataset.value;
+            selectedLabel.textContent = option.dataset.label;
+          }
         });
       });
   } else {
+    const initialValue = fd.Value || fd.Placeholder || '';
     fd.Options.split(',').forEach((o) => {
-      const option = document.createElement('option');
-      option.textContent = o.trim();
-      option.value = o.trim();
-      select.append(option);
-    });
-  }
-  if (select.name === 'country') {
-    select.addEventListener('change', (e) => {
-      const stateWrapper = document.querySelector('.stateOrProvince');
-      const countryCode = e.target.value.toUpperCase();
-      if (countryCode === 'US' || countryCode === 'CA' || countryCode === 'MX') {
-        stateWrapper.style.display = 'block';
-        const { options } = stateWrapper.querySelector('select');
-        Array.from(options).forEach((option) => {
-          option.hidden = option?.dataset?.country !== countryCode;
-        });
-      } else {
-        stateWrapper.style.display = 'none';
+      const option = createOption(o.trim(), o.trim(), initialValue);
+      optionsContainer.appendChild(option);
+      if (option.classList.contains('selected')) {
+        hiddenInput.value = option.dataset.value;
+        selectedLabel.textContent = option.dataset.label;
       }
     });
   }
-  if (select.name === 'market') {
-    select.addEventListener('change', (e) => {
-      const categoryWrapper = document.querySelector('.form-select-wrapper.category');
-      const categorySelect = categoryWrapper.querySelector('select');
-      if (e.target.value) {
-        categoryWrapper.style.display = 'block';
-        const { options } = categorySelect;
-        Array.from(options).forEach((option) => {
-          option.hidden = option?.dataset?.market !== e.target.value;
-        });
-      } else {
-        categoryWrapper.style.display = 'none';
-        categorySelect.value = '';
-      }
-    });
-  }
-  return select;
-}
 
-function constructPayload(form) {
-  const payload = {};
-  [...form.elements].forEach((fe) => {
-    if (fe.type === 'checkbox') {
-      if (fe.checked) payload[fe.name] = fe.value;
-    } else if (fe.name) {
-      payload[fe.name] = fe.value;
+  trigger.addEventListener('click', () => {
+    dropdown.classList.toggle('is-open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!wrapper.contains(e.target)) {
+      dropdown.classList.remove('is-open');
     }
   });
-  return payload;
-}
 
-async function submitForm(form) {
-  const payload = constructPayload(form);
-  const resp = await fetch(form.dataset.action, {
-    method: 'POST',
-    cache: 'no-cache',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ data: payload }),
+  optionsContainer.addEventListener('click', (e) => {
+    const option = e.target.closest('.form-dropdown__option');
+    if (option) {
+      selectOption(option);
+      dropdown.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
   });
-  await resp.text();
-  return payload;
+
+  if (fd.Field === 'Country') {
+    hiddenInput.addEventListener('change', (e) => {
+      const stateWrapper = document.querySelector('.State');
+      const countryValue = e.target.value?.toUpperCase();
+      if (countryValue && !['US', 'CA', 'MX'].includes(countryValue)) {
+        stateWrapper.style.display = 'none';
+      } else {
+        stateWrapper.style.display = 'block';
+        stateWrapper.querySelectorAll('.form-dropdown__option').forEach((option) => {
+          option.style.display = option?.dataset?.country === countryValue ? 'flex' : 'none';
+        });
+      }
+    });
+  }
+
+  if (fd.Field === 'Market') {
+    hiddenInput.addEventListener('change', (e) => {
+      const categoryWrapper = document.querySelector('.form-select-wrapper.Category');
+      const marketValue = e.target.value;
+      categoryWrapper.querySelectorAll('.form-dropdown__option').forEach((option) => {
+        option.style.display = option?.dataset?.market === marketValue ? 'flex' : 'none';
+      });
+    });
+  }
+
+  dropdown.appendChild(hiddenInput);
+  wrapper.appendChild(dropdown);
+  dropdown.appendChild(trigger);
+  dropdown.appendChild(optionsContainer);
+  wrapper.appendChild(validIcon);
+  wrapper.appendChild(errorIcon);
+
+  return wrapper;
 }
 
-function createButton(fd, onSubmit) {
+function createSubmitButton(fd) {
   const button = document.createElement('button');
   button.textContent = fd.Label;
   button.classList.add('button');
-  if (fd.Type === 'submit') {
-    button.addEventListener('click', (event) => {
-      const form = button.closest('form');
-      let doSubmit = onSubmit;
-      if (!doSubmit) {
-        doSubmit = async () => {
-          await submitForm(form);
-          const redirectTo = fd.Extra;
-          window.location.href = redirectTo;
-        };
-      }
-      if (fd.Placeholder) form.dataset.action = fd.Placeholder;
-      if (form.checkValidity()) {
-        event.preventDefault();
-        button.setAttribute('disabled', '');
-        doSubmit(fd);
-      }
-    });
+  button.type = 'submit';
+  if (fd.Extra) {
+    button.dataset.redirectUrl = fd.Extra;
   }
   return button;
 }
@@ -211,6 +304,9 @@ function createInput(fd) {
   input.type = fd.Type;
   if (fd.Type === 'number' || fd.Type === 'email') {
     input.type = 'text-input';
+  }
+  if (fd.Type === 'checkbox') {
+    input.value = 'TRUE';
   }
   input.name = fd.Field;
   if (fd.Type === 'number') {
@@ -299,14 +395,20 @@ function handleFormElement(form, fieldWrapper, fd, element) {
   if (fd.Extra === 'hidden') {
     fieldWrapper.style.display = 'none';
   }
+
+  if (fd.Value) {
+    fieldWrapper.querySelector('input').value = fd.Value;
+  }
 }
 
-export async function createForm(formURL, submitUrl, onSubmit) {
+export async function createForm(formURL, submitUrl) {
   const resp = await fetch(formURL);
   const json = await resp.json();
   const form = document.createElement('form');
-  const rules = [];
-  form.dataset.action = submitUrl;
+  form.method = 'GET';
+  form.action = submitUrl;
+  form.setAttribute('novalidate', '');
+
   json.data.forEach((fd) => {
     fd.Type = fd.Type || 'text-input';
     const fieldWrapper = document.createElement('div');
@@ -321,12 +423,14 @@ export async function createForm(formURL, submitUrl, onSubmit) {
     if (fd.Fieldset !== '' && fd.Colspan === '') {
       fieldWrapper.style.flex = '1';
     }
+
+    let element;
     switch (fd.Type) {
       case 'select':
-        handleFormElement(form, fieldWrapper, fd, createSelect(fd));
+        element = createSelect(fd);
         break;
       case 'heading':
-        handleFormElement(form, fieldWrapper, fd, createHeading(fd));
+        element = createHeading(fd);
         break;
       case 'checkbox':
         if (fd.Fieldset) {
@@ -334,41 +438,37 @@ export async function createForm(formURL, submitUrl, onSubmit) {
           fieldWrapper.append(createInput(fd));
           fieldWrapper.append(createLabel(fd));
           fieldset.append(fieldWrapper);
-        } else {
-          fieldWrapper.append(createInput(fd));
-          fieldWrapper.append(createLabel(fd));
+          return;
         }
+        fieldWrapper.append(createInput(fd));
+        fieldWrapper.append(createLabel(fd));
         break;
       case 'text-area':
-        handleFormElement(form, fieldWrapper, fd, createTextArea(fd));
+        element = createTextArea(fd);
         break;
       case 'fieldset':
-        handleFormElement(form, fieldWrapper, fd, createFieldSet(fd));
+        element = createFieldSet(fd);
         break;
       case 'submit':
-        handleFormElement(form, fieldWrapper, fd, createButton(fd, onSubmit));
+        element = createSubmitButton(fd);
         break;
       case 'text':
-        handleFormElement(form, fieldWrapper, fd, createText(fd));
+        element = createText(fd);
         break;
       default:
-        handleFormElement(form, fieldWrapper, fd, createInput(fd));
+        element = createInput(fd);
     }
 
-    if (fd.Rules) {
-      try {
-        rules.push({ fieldId, rule: JSON.parse(fd.Rules) });
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.warn(`Invalid Rule ${fd.Rules}: ${e}`);
-      }
+    if (element) {
+      handleFormElement(form, fieldWrapper, fd, element);
     }
+
     if (fd.Fieldset === '') {
       form.append(fieldWrapper);
     }
   });
 
-  return (form);
+  return form;
 }
 
 export default async function decorate(block) {
@@ -376,8 +476,22 @@ export default async function decorate(block) {
   if (form) {
     const { pathname } = new URL(form.href);
     const submitAction = block.querySelectorAll('p > a')[1];
-    const submitUrl = submitAction ? new URL(submitAction.href) : String(pathname).split('.json')[0];
+    const submitUrl = submitAction ? submitAction.href : String(pathname).split('.json')[0];
     submitAction.parentElement.style.display = 'none';
-    form.replaceWith(await createForm(pathname, submitUrl));
+    const formElement = await createForm(pathname, submitUrl);
+
+    // Add form submit handler for client-side validation
+    formElement.addEventListener('submit', (e) => {
+      // set phone number to full phone number
+      const phoneNumber = formElement.querySelector('input[name="Phone"]').getAttribute('full-phone-number');
+      if (phoneNumber) {
+        formElement.querySelector('input[name="Phone"]').value = phoneNumber;
+      }
+      if (!formElement.checkValidity()) {
+        e.preventDefault();
+      }
+    });
+
+    form.replaceWith(formElement);
   }
 }

@@ -220,19 +220,9 @@ function addHeroObserver(doc) {
 }
 
 function initializePhoneValidation(document) {
-  const input = document.querySelector('.phoneNumber > input');
-  const addressDropdown = document.querySelector('.country > select');
-  const countryData = window.intlTelInput.getCountryData();
-
-  // populate the country dropdown
-  for (let i = 0; i < countryData.length; i += 1) {
-    const country = countryData[i];
-    const optionNode = document.createElement('option');
-    optionNode.value = country.iso2;
-    const textNode = document.createTextNode(country.name);
-    optionNode.appendChild(textNode);
-    addressDropdown.appendChild(optionNode);
-  }
+  const input = document.querySelector('.Phone > input');
+  const countryDropdown = document.querySelector('.Country .form-dropdown > input');
+  const countryTrigger = document.querySelector('.Country .form-dropdown__selected-label');
 
   const iti = window.intlTelInput(input, {
     loadUtils: () => import('./intl-tel-input-utils.js'),
@@ -240,14 +230,28 @@ function initializePhoneValidation(document) {
     countryOrder: ['us', 'ca'],
     fixDropdownWidth: false,
     initialCountry: 'us',
+    formatAsYouType: false,
+    formatOnDisplay: false,
   });
 
-  addressDropdown.value = iti.getSelectedCountryData().iso2;
+  const initialCountryData = iti.getSelectedCountryData();
+  countryDropdown.value = initialCountryData.iso2;
+  countryTrigger.textContent = initialCountryData.name;
+  countryTrigger.style.color = 'black';
 
-  // listen to the telephone input for changes
   input.addEventListener('countrychange', () => {
-    addressDropdown.value = iti.getSelectedCountryData().iso2;
-    addressDropdown.dispatchEvent(new Event('change'));
+    const countryData = iti.getSelectedCountryData();
+    countryDropdown.value = countryData.iso2;
+    countryTrigger.textContent = countryData.name;
+    countryTrigger.style.color = 'black';
+    countryDropdown.dispatchEvent(new Event('change'));
+  });
+
+  countryDropdown.addEventListener('change', (e) => {
+    const countryCode = e.target.value;
+    if (countryCode) {
+      iti.setCountry(countryCode.toLowerCase());
+    }
   });
 
   input.addEventListener('input', (e) => {
@@ -257,6 +261,8 @@ function initializePhoneValidation(document) {
       errorMessage = 'Please check your form entries';
     } else if (!isValid) {
       errorMessage = e.target.getAttribute('validation-error-message');
+    } else {
+      input.setAttribute('full-phone-number', iti.getNumber());
     }
     toggleError(input.parentElement, !isValid, errorMessage);
   });
