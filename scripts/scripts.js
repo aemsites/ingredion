@@ -29,6 +29,22 @@ function autolinkModals(element) {
 }
 
 /**
+ * Recursively removes nested <div> elements from a given element.
+ */
+export function unwrapNestedDivs(element) {
+  const children = Array.from(element.children);
+  children.forEach((child) => {
+    if (child.tagName === 'DIV') {
+      unwrapNestedDivs(child);
+      while (child.firstChild) {
+        element.insertBefore(child.firstChild, child);
+      }
+      element.removeChild(child);
+    }
+  });
+}
+
+/**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
  */
