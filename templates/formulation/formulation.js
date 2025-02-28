@@ -60,7 +60,7 @@ export default function decorate(doc) {
   );
 
   const mainImage = createOptimizedPicture(image, '', true, [{ width: '750' }]);
-  const nutritionFactsImage = createOptimizedPicture(nutritionFacts, '', false, [{ width: '750' }]);
+  const nutritionFactsImage = createOptimizedPicture(nutritionFacts, '', true, [{ width: '750' }]);
 
   const previewImage = mainImage.cloneNode(true);
   previewImage.classList.add('preview');
