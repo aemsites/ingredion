@@ -59,7 +59,7 @@ export default function decorate(doc) {
     { class: 'heading-images' },
   );
 
-  const mainImage = createOptimizedPicture(image, '', false, [{ width: '750' }]);
+  const mainImage = createOptimizedPicture(image, '', true, [{ width: '750' }]);
   const nutritionFactsImage = createOptimizedPicture(nutritionFacts, '', false, [{ width: '750' }]);
 
   const previewImage = mainImage.cloneNode(true);
