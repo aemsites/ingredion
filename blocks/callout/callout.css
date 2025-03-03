@@ -27,13 +27,26 @@
     .callout-content {
       color: var(--theme-clr-text);
       padding: 80px;
-  
-      h3 {
+
+      h1, h2, h3 {
         color: var(--theme-clr-text);
         font-family: var(--heading-font-family);
+        letter-spacing: -.0313rem;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        line-height: 3.5rem;
+      }
+
+      h2 {
+        font-size: 2rem;
+        line-height: 3rem;
+      }
+  
+      h3 {
         font-size: 1.5rem;
         line-height: 2.5rem;
-        letter-spacing: -.0313rem;
       }
   
       p, ul, li {
@@ -62,7 +75,7 @@
   }
 }
 
-.transparent {
+.default {
   margin: 0 15px;
 
   > div {
@@ -70,13 +83,6 @@
       order: -1;
       padding: 0;
       padding-bottom: 40px;
-      
-      h1 {
-        font-family: var(--heading-font-family);
-        font-size: 2.5rem;
-        line-height: 2.5rem;
-        letter-spacing: -.0313rem;
-      }
     }
 
     .button-container {
@@ -252,7 +258,7 @@
         padding: 100px;
 
         h3 {
-          font-size: 32px;
+          font-size: 2rem;
           max-width: 381px;
           margin-top: 16px;
         }
@@ -283,8 +289,9 @@
         text-align: left;
         margin: 0;
         margin-left: auto;
+        padding: 0;
 
-        h3 {
+        h1, h2, h3 {
           margin: 0;
           max-width: 592px;
         }
@@ -320,7 +327,7 @@
     }
   }
 
-  .transparent {
+  .default {
     margin: 0;
     
     > div {
