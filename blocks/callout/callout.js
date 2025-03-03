@@ -109,7 +109,7 @@ export default function decorate(block) {
 
   textWrapper.classList.add('callout-content');
 
-  if (!block.classList.contains('transparent')) {
+  if (link && !block.classList.contains('transparent')) {
     link.classList.add('transparent');
   }
 
