@@ -107,17 +107,13 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
 export default function decorate(block) {
   const pic = block.querySelector('picture');
   const h3 = block.querySelector('h3');
+  const h2 = block.querySelector('h2');
   const h1 = block.querySelector('h1');
   const link = block.querySelector('a');
 
-  let textWrapper;
+  const header = h1 ?? h2 ?? h3;
 
-  if (h1) {
-    textWrapper = h1.closest('div');
-  } else if (h3) {
-    textWrapper = h3.closest('div');
-  }
-
+  const textWrapper = header.closest('div');
   textWrapper.classList.add('callout-content');
 
   const classListArray = Array.from(block.classList);
