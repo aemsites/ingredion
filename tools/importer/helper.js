@@ -15,6 +15,8 @@ const colorMapping = new Map([
   ['#68e0a1', 'teal']
 ]);
 
+const previewURL = 'https://main--ingredion--aemsites.aem.page';
+var r = new RegExp('^(?:[a-z+]+:)?//', 'i');
 export function createHeroBlock(document, main) {
   const hero = document.querySelector('.hero__wrapper');
   if (hero) {
@@ -22,7 +24,11 @@ export function createHeroBlock(document, main) {
     const image = hero.querySelector('.hero__image > picture').outerHTML;
     const heading = hero.querySelector('.hero__text .heading > h1') ? hero.querySelector('.hero__text .heading > h1').outerHTML : '';
     const subHeading = hero.querySelector('.hero__text .body-text') ? hero.querySelector('.hero__text .body-text').outerHTML : '';
-    const cta = hero.querySelector('.hero__text .primary-cta') ? hero.querySelector('.hero__text .primary-cta').outerHTML : '';
+    let cta = hero.querySelector('.hero__text .primary-cta') ? hero.querySelector('.hero__text .primary-cta') : '';
+    if (cta !== '') {
+       cta.href = previewURL+cta.href;
+       cta = cta.outerHTML;
+    }
     cells.push([image]);
     cells.push([`${heading} ${subHeading} ${cta}` ]);
     const heroTable = WebImporter.DOMUtils.createTable(cells, document);
@@ -37,8 +43,9 @@ export function createCalloutBlock(document, main) {
   let backgroundColor = '';
   let heading = '';
   let rteText = '';
-  let ctalink = '';
+  let ctalink = '';  
   callOutBlocks.forEach((callOut) => {
+    convertHrefs(callOut);
     let imageLeft;
     [...callOut.children].forEach((child, index) => {
       if (child.classList.contains('colorblock-img-text__image')) {
@@ -51,7 +58,7 @@ export function createCalloutBlock(document, main) {
         backgroundColor = colorMapping.get(toHex(child.style.backgroundColor).toLowerCase());
         heading = child.querySelector('.colorblock-img-text__text--wrapper .heading > h3').textContent;
         rteText = child.querySelector('.colorblock-img-text__text--wrapper .rte-block');
-        if (rteText) {
+        if (rteText) {                    
           rteText = rteText.innerHTML;
         }
         ctalink = child.querySelector('.colorblock-img-text__text--wrapper .secondary-cta-link') ?
@@ -60,9 +67,11 @@ export function createCalloutBlock(document, main) {
           ctalink = child.querySelector('.colorblock-img-text__text--wrapper .primary-cta') ?
             child.querySelector('.colorblock-img-text__text--wrapper .primary-cta').outerHTML : '';
         }
+        
       }
       child.remove();
     });
+
     const cells = backgroundColor === '' ? [['Callout']] : [[`Callout (${backgroundColor})`]];
     if (imageLeft) cells.push([calloutImg, `<h3>${heading}</h3> ${rteText} ${ctalink}`]);
     else cells.push([`<h3>${heading}</h3> ${rteText} ${ctalink}`, calloutImg]);
@@ -71,25 +80,29 @@ export function createCalloutBlock(document, main) {
   });
   callOutBlocks = document.querySelectorAll('.colorblock-text-cta__wrapper');
   callOutBlocks.forEach((callOut) => {
+    convertHrefs(callOut);
     [...callOut.children].forEach((child) => {
       if (child.classList.contains('colorblock-text-cta__text')) {
         heading = child.querySelector('.heading > h3').textContent;
         rteText = child.querySelector('.rte-block');
-        if (rteText) {
+        if (rteText) {          
           rteText = rteText.innerHTML;
         }
       } else if (child.classList.contains('secondary-cta-link')) {
-        ctalink = child.outerHTML;
+        ctalink = child.outerHTML;        
       }
       child.remove();
     });
     const cells = [['Callout']];
-    cells.push([`<h3>${heading}</h3> ${rteText} ${ctalink}`]);
+    cells.push([`<h3>${heading}</h3> ${rteText}`, `${ctalink
+
+    }`]);
     const callOutBlock = WebImporter.DOMUtils.createTable(cells, document);
     callOut.replaceWith(callOutBlock);
   });
   callOutBlocks = document.querySelectorAll('.colorBlockVideoAndText .colorblock-img-text__wrapper');
-  callOutBlocks.forEach((callOut) => {    
+  callOutBlocks.forEach((callOut) => {
+    convertHrefs(callOut);
     let videoUrl = '';
     [...callOut.children].forEach((child, index) => {
       if (child.classList.contains('colorblock-img-text__image')) {
@@ -104,7 +117,7 @@ export function createCalloutBlock(document, main) {
         backgroundColor = colorMapping.get(toHex(child.style.backgroundColor).toLowerCase());
         heading = child.querySelector('.colorblock-img-text__text--wrapper .heading > h3').textContent;
         rteText = child.querySelector('.colorblock-img-text__text--wrapper .rte-block');
-        if (rteText) {
+        if (rteText) {          
           rteText = rteText.innerHTML;
         }
         ctalink = child.querySelector('.colorblock-img-text__text--wrapper .secondary-cta-link') ?
@@ -113,6 +126,7 @@ export function createCalloutBlock(document, main) {
           ctalink = child.querySelector('.colorblock-img-text__text--wrapper .primary-cta') ?
             child.querySelector('.colorblock-img-text__text--wrapper .primary-cta').outerHTML : '';
         }
+       
       }
       child.remove();
     });
@@ -126,6 +140,7 @@ export function createCalloutBlock(document, main) {
 export function createCardsBlock(document, main) {
   let cardsBlocks = document.querySelectorAll('.section__content--columns-3');
   cardsBlocks.forEach((cardsBlock) => {
+    convertHrefs(cardsBlock);
     const cells = [['Cards']];
     const cards = cardsBlock.querySelectorAll('.content-card');
     let cardsList = [];
@@ -135,8 +150,8 @@ export function createCardsBlock(document, main) {
       else cardImg = '';
       const cardHeading = card.querySelector('.content-card__text .heading > h3') ? card.querySelector('.content-card__text .heading > h3').textContent : '';
       const cardText = card.querySelector('.content-card__text .rte-block') ? card.querySelector('.content-card__text .rte-block').innerHTML : '';
-      cardText.replace('&nbsp;', '');
-      const cardLink = card.querySelector('.content-card__text > a') ? card.querySelector('.content-card__text > a').outerHTML : '';
+      cardText.replace('&nbsp;', '');      
+      const cardLink = card.querySelector('.content-card__text > a') ? card.querySelector('.content-card__text > a').outerHTML : '';      
       cells.push([`${cardImg} <h3>${cardHeading}</h3> ${cardText} ${cardLink}`]);
     });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
@@ -144,19 +159,20 @@ export function createCardsBlock(document, main) {
   });
   cardsBlocks = document.querySelectorAll('.card-slider__wrapper');
   cardsBlocks.forEach((cardsBlock) => {
+    convertHrefs(cardsBlock);
     const cells = [['Cards(slim)']];
     const cards = cardsBlock.querySelectorAll('.card');
     cards.forEach((card, index) => {
       const cardImg = card.querySelector('.card__image > picture').outerHTML;
       const cardHeading = card.querySelector('.card__text .heading > h4').textContent;
       const cardText = card.querySelector('.card__text .rte-block').innerHTML;
-      cardText.replace('&nbsp;', '');
+      cardText.replace('&nbsp;', '');     
       const cardLinkText = card.querySelector('.card__text .secondary-cta');
       let cardLink = document.createElement('a');
       if (cardLinkText !== null) {
-        cardLink.href = cardLinkText.parentElement.href;
+        cardLink.href = (cardLinkText.parentElement.href);
         cardLink.textContent = cardLinkText.textContent;
-      } else cardLink.href = card.querySelector('.card__text > a').href;
+      } else cardLink.href = previewURL+card.querySelector('.card__text > a').href;
 
       cells.push([`${cardImg} <h4>${cardHeading}</h4> ${cardText} ${cardLink.outerHTML}`]);
     });
@@ -165,6 +181,7 @@ export function createCardsBlock(document, main) {
   });
   cardsBlocks = document.querySelectorAll('.section__content--columns-2');
   cardsBlocks.forEach((cardsBlock) => {
+    convertHrefs(cardsBlock);
     const cells = [['Cards']];
     const cards = cardsBlock.querySelectorAll('.content-card');
     let cardsList = [];
@@ -174,7 +191,7 @@ export function createCardsBlock(document, main) {
       else cardImg = '';
       const cardHeading = card.querySelector('.content-card__text .heading > h3') ? card.querySelector('.content-card__text .heading > h3').textContent : '';
       const cardText = card.querySelector('.content-card__text .rte-block') ? card.querySelector('.content-card__text .rte-block').innerHTML : '';
-      const cardLink = card.querySelector('.content-card__text > a') ? card.querySelector('.content-card__text > a').outerHTML : '';
+      const cardLink = card.querySelector('.content-card__text > a') ? card.querySelector('.content-card__text > a').outerHTML : '';      
       cells.push([`${cardImg} <h3>${cardHeading}<h3> ${cardText} ${cardLink}`]);
     });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
@@ -218,7 +235,7 @@ export function createIngredientBlock(document, main) {
   const relatedIngredients = document.querySelector('.relatedIngredients');
   if (!relatedIngredients) return;
   const resultProdCards = document.querySelectorAll('.result-prod-card');
-  if (!resultProdCards) {
+  if (!resultProdCards) {    
     const cells = [['related ingredient']];
     const heading = relatedIngredients.querySelector('.heading > h2').textContent;
     const subHeading = relatedIngredients.querySelector('.rte-block').textContent;
@@ -227,7 +244,7 @@ export function createIngredientBlock(document, main) {
     const table = WebImporter.DOMUtils.createTable(cells, document);
     main.append(table);
   } else {
-    resultProdCards.forEach((resultProdCard) => {
+    resultProdCards.forEach((resultProdCard) => {      
       const cells = [['related ingredient']];
       const heading = resultProdCard.querySelector('.product-name').textContent;
       const h3 = resultProdCard.querySelector('.rte-block > h3');
@@ -235,16 +252,19 @@ export function createIngredientBlock(document, main) {
       const pTag = resultProdCard.querySelector('.rte-block > p');
       const description = pTag ? pTag.textContent : '';
       const ctas = resultProdCard.querySelectorAll('.cta-icon');
-      let ctaAnchor = ''
+      let ctaAnchor = '';
       ctas.forEach((cta) => {
-        ctaAnchor += `<a href = '${cta.getAttribute('href')}'>${cta.innerText}</a>`;
-      });
+        const url = cta.getAttribute('href');
+        if (url.includes('http')) ctaAnchor += `<a href = '${(cta.getAttribute('href'))}'>${cta.innerText}</a>`;
+        else ctaAnchor += `<a href = '${previewURL}${(cta.getAttribute('href'))}'>${cta.innerText}</a>`;
+        
+      });       
       const leftSide = `<h4>${heading}</h4><h3>${subHeading}</h3><p>${description}</p>${ctaAnchor}`;
       const resultCardButtons = document.querySelector('.result-card__buttons');
       const buttons = resultCardButtons.querySelectorAll('a');
       let rightSide = '';
       buttons.forEach((button) => {
-        rightSide += `<a href = '${button.getAttribute('href')}'>${button.innerText}</a><br>`;
+        rightSide += `<a href = '${(button.getAttribute('href'))}'>${button.innerText}</a><br/>`;
       });
       cells.push([leftSide,]);
       cells.push([rightSide,]);
@@ -299,7 +319,7 @@ export function createColorBlock(document) {
     const colorBlockQuote = colorBlock.querySelector('.colorblock-quote');
     if (!colorBlockQuote) return;
     const color = toHex(colorBlockQuote.style.backgroundColor);
-    const cells = colorMapping.has(color) ? [[`colorblock(${colorMapping.get(color)}) `]] : [[`colorblock(${color}) `]];
+    const cells = colorMapping.has(color) ? [[`Quote(${colorMapping.get(color)}) `]] : [[`Quote(${color}) `]];
     const heading = colorBlockQuote.querySelector('.heading > h1').textContent;
     cells.push([heading]);
     const subHeading = colorBlockQuote.querySelector('.heading > h3');
@@ -405,4 +425,48 @@ export function createForm(document, main) {
     formContainer.replaceWith(formTable);
   }
   return; 
+}
+
+export function createTableBlock(document, main) {
+  const tableParent = document.querySelector('.ingredionTable .ingredion-table .ingredion-table');
+  if (!tableParent) return;
+  const cells = [['Table']];
+  const th = tableParent.querySelectorAll('thead > tr > th');
+  const tr = tableParent.querySelectorAll('tbody > tr');
+  const headingArray = [];
+  th.forEach((heading) => {
+    headingArray.push(heading.textContent);
+  });
+  cells.push(headingArray);
+  tr.forEach((row) => {
+    const rowArray = [];
+    const td = row.querySelectorAll('td');
+    td.forEach((cell) => {
+      rowArray.push(cell.textContent);
+    });
+    cells.push(rowArray);
+  });
+  const table = WebImporter.DOMUtils.createTable(cells, document);
+  tableParent.replaceWith(table);
+  return;
+}
+
+function testURL (url) {
+  const r = new RegExp('^(?:[a-z+]+:)?//', 'i');
+  let newURL = '';  
+  if(r.test(url)) {
+    if (url.includes('localhost:3001')) newURL = url.replace('http://localhost:3001', previewURL);
+    else if (url.includes('ingredion.com')) newURL = url.replace('https://www.ingredion.com', previewURL);
+  } else {
+    newURL = previewURL+url;
+  }
+  newURL = newURL.split('.html').at(0);
+  return newURL;
+}
+
+export function convertHrefs(element) {
+  const hrefs = element.querySelectorAll('a');
+  hrefs.forEach((href) => {    
+    href.href = testURL(href.href);    
+  });
 }

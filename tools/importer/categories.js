@@ -11,7 +11,16 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
-import { createColorBlock, createIngredientBlock, createContactUs, createCalloutBlock, createCardsBlock, createVideoBlock, getSocialShare, createHeroBlock } from './helper.js';
+import { createColorBlock, 
+  createIngredientBlock, 
+  createContactUs, 
+  createCalloutBlock, 
+  createCardsBlock, 
+  createVideoBlock, 
+  getSocialShare, 
+  createHeroBlock,
+  createTableBlock,
+  convertHrefs, } from './helper.js';
 
 export default {
   /**
@@ -29,6 +38,7 @@ export default {
   }) => {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
+    //convertHrefs(document);
     createHeroBlock(document, main);
     createColorBlock(document, main);
     createIngredientBlock(document, main);
@@ -37,6 +47,7 @@ export default {
     createCalloutBlock(document, main);
     createCardsBlock(document, main);
     createVideoBlock(document, main);
+    createTableBlock(document, main);
     createMetadata(main, document, url, html);
 
     // attempt to remove non-content elements
@@ -73,7 +84,6 @@ export default {
     }];
   },
 };
-
 
 
 const createMetadata = (main, document, url, html) => {
