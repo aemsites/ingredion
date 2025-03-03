@@ -62,7 +62,7 @@
   }
 }
 
-.transparent {
+.default {
   margin: 0 15px;
 
   > div {
@@ -171,8 +171,8 @@
         box-sizing: border-box;
         position: absolute;
         color: var(--green);
-        border-top: 10px solid transparent;
-        border-bottom: 10px solid transparent;
+        border-top: 10px solid default;
+        border-bottom: 10px solid default;
         border-left: 14px solid var(--green);
         top: 50%;
         left: calc(50% + 3px);
@@ -321,7 +321,7 @@
     }
   }
 
-  .transparent {
+  .default {
     margin: 0;
     
     > div {
