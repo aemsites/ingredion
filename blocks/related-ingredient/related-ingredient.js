@@ -38,7 +38,11 @@ export default async function decorate(block) {
 
   const children = Array.from(block.children);
 
-  if (children[0].tagName === 'P' && children[1].tagName !== 'H3') {
+  if (
+    children[0].tagName === 'P'
+    && !children[0].classList.contains('button-container')
+    && children[1].tagName !== 'H3'
+  ) {
     textContainer.appendChild(children[0]);
   } else {
     let currentChild = block.firstElementChild;
