@@ -102,4 +102,18 @@ export default function decorate(doc) {
   }
 
   teaserTitleHeader.insertAdjacentElement('afterend', categoryTags);
+
+  let nextElement = $content.nextElementSibling;
+  while (nextElement) {
+    const temp = nextElement.nextElementSibling;
+    if (nextElement.classList.contains('default-content-wrapper')) {
+      while (nextElement.firstChild) {
+        $content.appendChild(nextElement.firstChild);
+      }
+      nextElement.remove();
+    } else {
+      $content.appendChild(nextElement);
+    }
+    nextElement = temp;
+  }
 }
