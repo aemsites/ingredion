@@ -16,18 +16,6 @@ import {
 
 import { toggleError } from '../blocks/form/form.js';
 
-function autolinkModals(element) {
-  element.addEventListener('click', async (e) => {
-    const origin = e.target.closest('a');
-
-    if (origin && origin.href && origin.href.includes('/modals/')) {
-      e.preventDefault();
-      const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
-      openModal(origin.href);
-    }
-  });
-}
-
 /**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
@@ -220,6 +208,8 @@ function addHeroObserver(doc) {
 }
 
 function initializePhoneValidation(document) {
+  const form = document.querySelector('.modal dialog form') || document.querySelector('form');
+  if (!form) return;
   const input = document.querySelector('.Phone > input');
   const countryDropdown = document.querySelector('.Country .form-dropdown > input');
   const countryTrigger = document.querySelector('.Country .form-dropdown__selected-label');
@@ -265,6 +255,19 @@ function initializePhoneValidation(document) {
       input.setAttribute('full-phone-number', iti.getNumber());
     }
     toggleError(input.parentElement, !isValid, errorMessage);
+  });
+}
+
+function autolinkModals(element) {
+  element.addEventListener('click', async (e) => {
+    const origin = e.target.closest('a');
+
+    if (origin && origin.href && origin.href.includes('/modals/')) {
+      e.preventDefault();
+      const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
+      await openModal(origin.href);
+      initializePhoneValidation(document);
+    }
   });
 }
 

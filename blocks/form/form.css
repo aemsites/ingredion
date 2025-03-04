@@ -113,6 +113,7 @@
   .form-heading-wrapper,
   .form-text-area-wrapper,
   .form-submit-wrapper,
+  .form-email-wrapper,
   .form-number-wrapper {
     margin-bottom: 2.5rem;
   }
@@ -201,8 +202,16 @@
       gap: 2.5rem;
     }
 
+    .modal .align-vertical {
+      display: block;
+    }
+
     .form-submit-wrapper button {
       width: 20%;
+    }
+
+    .modal .form-submit-wrapper button {
+      width: 100%;
     }
 
     fieldset[name="fullNamePanel"] {
