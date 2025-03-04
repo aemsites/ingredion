@@ -48,14 +48,17 @@ export default function decorate(doc) {
     a({ tabIndex: 0, href: ingredientHref }, ingredientName),
   );
 
-  headingTextSection.insertAdjacentHTML(
-    'beforeend',
-    `<a href=${buttonHref}>
-      <div class="button-container">
-        <button class="button" title=${buttonName}>${buttonName}</button>
-      </div>
-    </a>`,
-  );
+  if (buttonName && buttonHref) {
+    headingTextSection.insertAdjacentHTML(
+      'beforeend',
+      `<a href=${buttonHref}>
+        <div class="button-container">
+          <button class="button" title=${buttonName}>${buttonName}</button>
+        </div>
+      </a>`,
+    );
+  }
+
   headingWrapper.append(headingTextSection);
 
   const headingGallerySection = div(
