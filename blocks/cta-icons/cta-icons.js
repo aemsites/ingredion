@@ -1,3 +1,5 @@
+import { unwrapNestedDivs } from '../../scripts/scripts.js';
+
 export default function decorate(block) {
   const firstDiv = block.querySelectorAll('div')[0];
   const linkCount = firstDiv.querySelectorAll('a').length;
@@ -12,19 +14,6 @@ export default function decorate(block) {
 
   block.classList.add(columnClass);
 
-  // Function to recursively unwrap nested divs
-  function unwrapNestedDivs(element) {
-    const children = Array.from(element.children);
-    children.forEach((child) => {
-      if (child.tagName === 'DIV') {
-        unwrapNestedDivs(child);
-        while (child.firstChild) {
-          element.insertBefore(child.firstChild, child);
-        }
-        element.removeChild(child);
-      }
-    });
-  }
   unwrapNestedDivs(block);
 
   const pictureParagraphs = block.querySelectorAll('p:has(picture)');
