@@ -407,7 +407,6 @@ export async function createForm(formURL, submitUrl) {
   const form = document.createElement('form');
   form.method = 'GET';
   form.action = submitUrl;
-  form.setAttribute('novalidate', '');
 
   json.data.forEach((fd) => {
     fd.Type = fd.Type || 'text-input';
