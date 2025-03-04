@@ -32,6 +32,7 @@
   --background-color-grey: #efefef80;
   --border-color-light: #d8d9d9;
   --white: #fff;
+  --black: #000;
 
   /* form styles */
   --form-field-border-color: #d8d9d9;
@@ -381,8 +382,8 @@ main {
 }
 
 .iti {
-  --iti-path-flags-1x: url('../icons/flags.webp');
-  --iti-path-flags-2x: url('../icons/flags@2x.webp');
-  --iti-path-globe-1x: url('../icons/globe.webp');
-  --iti-path-globe-2x: url('../icons/globe@2x.webp');
+  --iti-path-flags-1x: url('../img/flags.webp');
+  --iti-path-flags-2x: url('../img/flags2x.webp');
+  --iti-path-globe-1x: url('../img/globe.webp');
+  --iti-path-globe-2x: url('../img/globe2x.webp');
 }

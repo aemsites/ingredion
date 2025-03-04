@@ -5,20 +5,9 @@ import {
   button,
 } from '../../scripts/dom-helpers.js';
 
+import { unwrapNestedDivs } from '../../scripts/scripts.js';
+
 export default async function decorate(block) {
-  // Function to recursively unwrap nested divs
-  function unwrapNestedDivs(element) {
-    const children = Array.from(element.children);
-    children.forEach((child) => {
-      if (child.tagName === 'DIV') {
-        unwrapNestedDivs(child);
-        while (child.firstChild) {
-          element.insertBefore(child.firstChild, child);
-        }
-        element.removeChild(child);
-      }
-    });
-  }
   unwrapNestedDivs(block);
 
   const contentContainer = div(
