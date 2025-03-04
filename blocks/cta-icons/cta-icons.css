@@ -1,135 +1,107 @@
 .cta-icons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.cta-icons.section-content-columns-6>a {
-    margin: 0 .75rem 1.5rem;
+.section .default-content-wrapper {
+  margin: 3.125rem auto 2.5rem;
+  max-width: 50.1875rem;
 }
 
-.section-content-columns-6 > :nth-child(6n + 1) {
-    margin-left: 0;
+.default-content-wrapper h2 {
+  text-align: center;
+  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  font-size: 2rem;
+  margin: 0 0 1rem;
+  color: var(--text-color);
+  line-height: 3rem;
+  letter-spacing: -0.0313rem;
 }
 
-.section-content-columns-6 > :nth-child(6n) {
-    margin-right: 0;
-}
-
-/*.section-content-columns-6 a {
-    flex-basis: calc(16.6666666667% - 33.3333333333px);
-    width: calc(16.6666666667% - 33.3333333333px);
-    margin-left: 20px;
-    margin-right: 20px;
-}*/
-
-.section-content-columns-6 > :nth-child(6n + 2) {
-    margin-right: 1.25rem;
-    margin-left: 1.25rem;
-}
-
-.section-content-columns-6 > :nth-child(6n + 3) {
-    margin-right: 1.25rem;
-    margin-left: 1.25rem;
-}
-
-.section-content-columns-6 > :nth-child(6n + 4) {
-    margin-right: 1.25rem;
-    margin-left: 1.25rem;
-}
-
-.section-content-columns-6 > :nth-child(6n + 5) {
-    margin-right: 1.25rem;
-    margin-left: 1.25rem;
+.cta-icons.section-content-columns-4 > a, .cta-icons.section-content-columns-6 > a {
+  margin: 0 0.75rem 1.5rem;
 }
 
 .icon-card-wrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .icon-card-icon {
-    height: 6rem;
-    width: 6rem;
+  height: 6rem;
+  width: 6rem;
 }
 
 .icon-card {
-    display: inline-block;
-    background: rgba(239, 239, 239, 0.4);
-    width: 100%;
-    max-width: 11.25rem;
-    height: 13.75rem;
+  display: inline-block;
+  background: rgb(239 239 239 / 40%);
+  width: 100%;
+  max-width: 11.25rem;
+  height: 13.75rem;
 }
 
 .icon-card-wrapper .label-text {
-    padding: 0 0.9375rem;
-    color: #373738;
-    max-width: 10rem;
-    font-family: MiloPro-Bold, Helvetica, sans-serif;
-    font-size: 1.25rem;
-    line-height: 1.5rem;
+  padding: 0 0.9375rem;
+  color: var(--text-color);
+  max-width: 10rem;
+  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  margin: 20px 0;
 }
 
 .icon-card-wrapper .label-text-center {
-    text-align: center;
+  text-align: center;
 }
-
 
 .section .cta-icons-wrapper {
-    margin-left: .9375rem;
-    margin-right: .9375rem;
-    max-width: 76.5rem;
+  margin-left: 0.9375rem;
+  margin-right: 0.9375rem;
+  max-width: 76.5rem;
 }
 
-@media (min-width: 67.5625rem) {
-    .icon-card {
-        max-width: 10.625rem;
-        transition: all 0.3s linear;
-    }
-}
+@media (width >= 67.5625rem) {
+  .icon-card {
+    max-width: 10.625rem;
+    transition: all 0.3s linear;
+  }
 
-@media (min-width: 67.5625rem) {
-    .cta-icons {
-        display: flex;
-        flex-wrap: wrap;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
+  .cta-icons {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-@media (min-width: 67.5625rem) {
-    .icon-card:hover {
-        background: rgba(239, 239, 239, .4);
-        box-shadow: 0 8px 20px 0 rgba(0, 0, 0, .1);
-        transform: translate(0, -10px);
-    }
-}
+  .icon-card:hover {
+    background: rgba(239 239 239 / 40%);
+    box-shadow: 0 8px 20px 0 rgba(0 0 0 / 10%);
+    transform: translate(0, -10px);
+  }
 
-@media (min-width: 67.5625rem) {
-    .section-content-columns-6 {
-        max-width: 76.3125rem;
-    }
-}
+  .icon-card:hover .label-text {
+    color: var(--green);
+  }
 
-@media (min-width: 67.5625rem) {
-    .icon-card:hover .label-text {
-        color: #6cb33e;
-    }
-}
+  .cta-icons > a {
+    margin-bottom: 2.5rem;
+  }
 
-@media (min-width: 67.5625rem) {
-    .cta-icons>a {
-        margin-bottom: 2.5rem;
-    }
-}
+  .section .cta-icons-wrapper {
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-@media (min-width: 67.5625rem) {
-   .section .cta-icons-wrapper {
-        margin-left: auto;
-        margin-right: auto;
-    }
+  .cta-icons.section-content-columns-4 {
+    max-width: 50.125rem;
+  }
+
+  .default-content-wrapper h2 {
+    font-size: 2.5rem;
+  }
 }

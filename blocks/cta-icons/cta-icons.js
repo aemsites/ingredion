@@ -1,17 +1,13 @@
 export default function decorate(block) {
-  const firstDiv = block.querySelectorAll("div")[0];
-  const linkCount = firstDiv.querySelectorAll("a").length;
+  const firstDiv = block.querySelectorAll('div')[0];
+  const linkCount = firstDiv.querySelectorAll('a').length;
 
   // Determine the class based on link count
-  let columnClass = "";
-  if (linkCount === 2) {
-    columnClass = "section-content-columns-2";
-  } else if (linkCount === 3) {
-    columnClass = "section-content-columns-3";
-  } else if (linkCount === 4) {
-    columnClass = "section-content-columns-4";
-  } else if (linkCount === 6) {
-    columnClass = "section-content-columns-6";
+  let columnClass = '';
+  if (linkCount === 4) {
+    columnClass = 'section-content-columns-4';
+  } else {
+    columnClass = 'section-content-columns-6';
   }
 
   block.classList.add(columnClass);
@@ -31,37 +27,37 @@ export default function decorate(block) {
   }
   unwrapNestedDivs(block);
 
-  const pictureParagraphs = block.querySelectorAll("p:has(picture)");
+  const pictureParagraphs = block.querySelectorAll('p:has(picture)');
 
-  pictureParagraphs.forEach((picP) => {
-    let nextButtonP = picP.nextElementSibling;
-    if (!nextButtonP || !nextButtonP.classList.contains("button-container")) {
+  pictureParagraphs.forEach((pictureParagraph) => {
+    const buttonContainer = pictureParagraph.nextElementSibling;
+    if (!buttonContainer || !buttonContainer.classList.contains('button-container')) {
       return;
     }
 
-    let linkElement = nextButtonP.querySelector("a");
-    let pictureElement = picP.querySelector("picture").querySelector("img");
+    const linkElement = buttonContainer.querySelector('a');
+    const pictureElement = pictureParagraph.querySelector('picture').querySelector('img');
 
     if (linkElement && pictureElement) {
-      let linkHref = linkElement.getAttribute("href");
-      let linkTitle = linkElement.getAttribute("title");
-      let buttonText = linkElement.textContent.trim();
+      const linkHref = linkElement.getAttribute('href');
+      const linkTitle = linkElement.getAttribute('title');
+      const buttonText = linkElement.textContent.trim();
 
-      let newWrapper = document.createElement("a");
-      newWrapper.classList.add("icon-card");
-      newWrapper.href = linkHref;
-      newWrapper.title = linkTitle;
+      const iconWrapper = document.createElement('a');
+      iconWrapper.classList.add('icon-card');
+      iconWrapper.href = linkHref;
+      iconWrapper.title = linkTitle;
 
-      newWrapper.innerHTML = `
-        <div class="icon-card-wrapper">
-          <img class="icon-card-icon" src=${pictureElement.getAttribute("src")}
+      iconWrapper.innerHTML = `
+        <div class='icon-card-wrapper'>
+          <img class='icon-card-icon' src=${pictureElement.getAttribute('src')}
           </img>
-          <h3 class="label-text label-text-center" title="${linkTitle}">${buttonText}</h3>
+          <h3 class='label-text label-text-center' title='${linkTitle}'>${buttonText}</h3>
         </div>
       `;
 
-      nextButtonP.replaceWith(newWrapper);
-      picP.remove();
+      buttonContainer.replaceWith(iconWrapper);
+      pictureParagraph.remove();
     }
   });
 }
