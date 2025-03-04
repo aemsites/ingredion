@@ -1,5 +1,16 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
+const themeColors = [
+  'blue',
+  'teal',
+  'green',
+  'orange',
+  'red',
+  'lilac',
+  'purple',
+  'dark-purple',
+];
+
 function embedVimeo(url, autoplay, background) {
   const [, video] = url.pathname.split('/');
   let suffix = '';
@@ -96,21 +107,22 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
 export default function decorate(block) {
   const pic = block.querySelector('picture');
   const h3 = block.querySelector('h3');
+  const h2 = block.querySelector('h2');
   const h1 = block.querySelector('h1');
   const link = block.querySelector('a');
 
-  let textWrapper;
+  const header = h1 ?? h2 ?? h3;
 
-  if (h1) {
-    textWrapper = h1.closest('div');
-  } else if (h3) {
-    textWrapper = h3.closest('div');
-  }
-
+  const textWrapper = header.closest('div');
   textWrapper.classList.add('callout-content');
 
-  if (link && !block.classList.contains('transparent')) {
-    link.classList.add('transparent');
+  const classListArray = Array.from(block.classList);
+
+  const hasThemeColor = themeColors.some((color) => classListArray.includes(color));
+  if (!hasThemeColor) {
+    block.classList.add('default');
+  } else if (link) {
+    link.classList.add('transparent'); // apply transparent button style
   }
 
   if (pic) {
