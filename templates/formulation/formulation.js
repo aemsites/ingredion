@@ -31,6 +31,8 @@ export default function decorate(doc) {
   const image = getMetadata('og:image');
   const nutritionFacts = getMetadata('nutrition');
   const headingSection = main.querySelector('.heading-section');
+  const buttonName = getMetadata('button');
+  const buttonHref = getMetadata('button-link');
 
   // --- HEADING SECTION
   const headingWrapper = div(
@@ -48,11 +50,12 @@ export default function decorate(doc) {
 
   headingTextSection.insertAdjacentHTML(
     'beforeend',
-    '<div class="button-container"><button class="button" title="Contact Us">Contact Us</button></div>',
+    `<a href=${buttonHref}>
+      <div class="button-container">
+        <button class="button" title=${buttonName}>${buttonName}</button>
+      </div>
+    </a>`,
   );
-  headingTextSection.addEventListener('click', () => {
-    // open modal for contact us form
-  });
   headingWrapper.append(headingTextSection);
 
   const headingGallerySection = div(
