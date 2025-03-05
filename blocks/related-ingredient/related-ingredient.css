@@ -234,6 +234,10 @@ a.button.icon .icon-eye {
     margin-right: 2.5rem;
   }
 
+  .section.related-ingredient-container>div {
+    flex-basis: 100%;
+  }
+
   .related-ingredient-content {
     flex-basis: 70%;
     padding: 2.5938rem 2.5rem 2.4688rem 3.1563rem;
