@@ -1,16 +1,7 @@
-/* eslint-disable no-use-before-define, no-undef */
-/* eslint-disable function-paren-newline, object-curly-newline */
-import { script, div, aside, a, strong, p, h3, h4, h5, span, ul, li, button } from '../../scripts/dom-helpers.js';
-// import { getAllInventoryHomes } from '../../scripts/inventory.js';
+/* eslint-disable no-use-before-define, no-undef, function-paren-newline, object-curly-newline */
+import { script, div, aside, a, strong, p, h3, h4, h5, span, ul, li, button, img } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
-// import buildFilters from './map-filters.js';
-// import { formatPrice } from '../../scripts/currency-formatter.js';
-// import { calculateMonthlyPayment, loadRates } from '../../scripts/mortgage.js';
-
-
-// ofiginal locations
-// https://www.ingredion.com/content/ingredion-com/na/en-us/company/locations/jcr:content/par/locator.locations.json
-
+import { readBlockConfig } from '../../scripts/aem.js';
 
 
 let locations = [];
@@ -18,17 +9,7 @@ let map;
 let bounds;
 let markers = [];
 
-// // fetch inventory data from /na/en-us/company/locations/locations.json
-// const inventoryData = await fetch('/na/en-us/company/locations/locations.json')
-//   .then((response) => response.json())
-//   .then((locations) => {
-//     // store all markers
-//     locations.forEach((location) => {
-//       markers.push(location);
-//     });
-//   });
 
-//   console.log(locations);
 
 // Sets the map on all markers in the array.
 function setAllMarkers(m) {
@@ -49,23 +30,38 @@ function deleteMapMarkers() {
 }
 
 /**
- * Creates a marker pin element for a home.
- * @param {Object} home - The home object.
+ * Gets the marker class based on location type
+ * @param {string} type - The location type
+ * @returns {string} - The CSS class for the marker
+ */
+function getMarkerClass(type) {
+  switch (type?.toLowerCase()) {
+    case 'headquarters':
+      return 'headquarters';
+    case 'manufacturing':
+      return 'manufacturing';
+    case 'innovation center':
+      return 'innovation-center';
+    case 'sales':
+      return 'sales';
+    default:
+      return 'sales';  // Using sales as default
+  }
+}
+
+/**
+ * Creates a marker pin element for a location.
+ * @param {Object} location - The location object.
  * @param {number} i - The index of the pin.
  * @returns {HTMLElement} - The marker pin element.
  */
-function markerPin(home, i) {
-  return div({ class: `pin pin-${i}`, 'data-pin': i },
-    span(formatPrice(home.price, 'rounded')),
-    div({ class: 'details' },
-      h4(home['model name']),
-      h5(home.address),
-      createOptimizedPicture(home.image),
-      p({ class: 'price' }, formatPrice(home.price)),
-      a({ class: 'btn yellow', href: home.path }, 'Details'),
-    ),
-  );
+function markerPin(location, i) {
+  const pin = div({ class: `pin pin-${i} ${getMarkerClass(location.type)}`, 'data-pin': i });
+  const icon = div({ class: 'marker-icon' });
+  pin.appendChild(icon);
+  return pin;
 }
+
 /**
  * Checks marker position and if it's off the map moves it into view
  * @param {number} i - The index of the active home.
@@ -123,29 +119,29 @@ function fitMarkerWithinBounds(i) {
 }
 
 /**
- * Adds map markers for each home in the inventory.
- * @param {Array} inventory - The array of homes to add as markers on the map.
+ * Adds map markers for each location in the data.
+ * @param {Array} locations - The array of locations to add as markers on the map.
  * @returns {Promise<void>} - A promise that resolves when the markers are added.
  */
-async function addMapMarkers(inventory) {
+async function addMapMarkers(locations) {
   const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
   bounds = new google.maps.LatLngBounds();
 
   deleteMapMarkers();
 
-  // if inventory data is empty reset map
-  if (inventory.length === 0) {
+  // if locations data is empty reset map
+  if (!locations || locations.length === 0) {
     buildMap();
     return;
   }
 
-  inventory.forEach((home, i) => {
-    const lat = Number(home.latitude);
-    const lng = Number(home.longitude);
+  locations.forEach((location, i) => {
+    const lat = Number(location.lat);
+    const lng = Number(location.long);
     const marker = new AdvancedMarkerElement({
       map,
       position: { lat, lng },
-      content: markerPin(home, i),
+      content: markerPin(location, i),
     });
 
     markers.push(marker);
@@ -155,16 +151,16 @@ async function addMapMarkers(inventory) {
     marker.addListener('click', () => { });
 
     marker.content.addEventListener('click', () => {
-      highlightActiveHome(i);
+      highlightActiveLocation(i);
     });
 
     map.addListener('click', () => {
-      resetActiveHomes();
+      resetActiveLocations();
     });
   });
 
-  // add padding to bounds so markers aren't hiden when active
-  map.fitBounds(bounds, { top: 220, right: 100, bottom: 40, left: 100 });
+  // add padding to bounds so markers aren't hidden when active
+  map.fitBounds(bounds, { top: 0, right: 0, bottom: 0, left: 0 });
 }
 
 /**
@@ -177,7 +173,8 @@ async function buildMap() {
   map = new Map(document.getElementById('google-map'), {
     center: { lat: 43.696, lng: -116.641 },
     zoom: 12,
-    mapId: 'IM_IMPORTANT',
+    maxZoom: 15,
+    // mapId: 'IM_IMPORTANT',
     disableDefaultUI: true, // remove all buttons
     zoomControl: true, // allow zoom buttons
     streetViewControl: true, // allow street view control
@@ -207,45 +204,27 @@ function filterListeners() {
 }
 
 /**
- * Highlights the active home card and its corresponding pin on the map.
- * @param {number} i - The index of the active home.
+ * Highlights the active location card and its corresponding pin on the map.
+ * @param {number} i - The index of the active location.
  */
-function highlightActiveHome(i) {
-  resetActiveHomes();
-  // card actions
-  const $card = document.querySelector(`[data-card="${i}"]`);
-  $card.classList.add('active');
-
-  // scroll card into view if it's not visible
-  const $scrollContainer = document.querySelector('.listings-wrapper');
-  const scrollContainerRect = $scrollContainer.getBoundingClientRect();
-  const activeCardRect = $card.getBoundingClientRect();
-  const isVisible = (
-    activeCardRect.top >= scrollContainerRect.top
-    && activeCardRect.bottom <= scrollContainerRect.bottom
-  );
-  if (!isVisible) {
-    const targetTopRelativeToContainer = activeCardRect.top - scrollContainerRect.top;
-    $scrollContainer.scrollTop += targetTopRelativeToContainer;
-  }
-
+function highlightActiveLocation(i) {
+  resetActiveLocations();
   // pin actions
   const $pin = document.querySelector(`[data-pin="${i}"]`);
   $pin.classList.add('active');
   $pin.parentNode.parentNode.style.zIndex = '999'; // must use javascript to set/unset
-  fitMarkerWithinBounds(i);
+  // fitMarkerWithinBounds(i);
 }
 
 /**
- * Disables active homes by removing the 'active' class from pins and item listings.
+ * Disables active locations by removing the 'active' class from pins.
  */
-function resetActiveHomes() {
+function resetActiveLocations() {
   const allPins = document.querySelectorAll('.pin');
   allPins.forEach((pin) => {
     pin.classList.remove('active');
     pin.parentNode.parentNode.style.zIndex = '';
   });
-  document.querySelectorAll('.item-listing').forEach((item) => item.classList.remove('active'));
 }
 
 /**
@@ -283,9 +262,15 @@ function buildInventoryCards(homes) {
 
 // key = AIzaSyBzkFWc7cMP0Ww_5cYqCcgxIEx-2YpNas4
 export default async function decorate(block) {
+  const { 'google-maps-api-key': mapKey, 'map-data': mapData } = readBlockConfig(block);
+
+  const locationData = await fetch(mapData)
+    .then((response) => response.json());
+
+
   const googleMapScript = script(`
     (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=\`https://maps.googleapis.com/maps/api/js?\`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
-      key: "AIzaSyBzkFWc7cMP0Ww_5cYqCcgxIEx-2YpNas4", 
+      key: "${mapKey}", 
       v: "weekly",
     });
   `);
@@ -293,30 +278,19 @@ export default async function decorate(block) {
 
   filterListeners();
 
-
-  // const filters = await buildFilters();
-  // const $page = block.querySelector('main .section');
-  // const $footer = block.querySelector('footer');
-
-
   const $mapFilter = div({ class: 'map-filter-container' },
     div({ class: 'map' },
       div({ id: 'google-map' }),
     ),
     div({ class: 'locator-search' },
-      //filters,
-      div({ class: 'listings-wrapper' },
-        // ...buildInventoryCards(inventory),
-        //$footer,
-      ),
+      div({ class: 'listings-wrapper' }),
     ),
   );
   block.innerHTML = '';
   block.append($mapFilter);
 
-
   buildMap();
-  addMapMarkers(inventory);
+  addMapMarkers(locationData.data);
 }
 
 
