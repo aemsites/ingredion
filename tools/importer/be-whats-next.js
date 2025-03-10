@@ -85,7 +85,10 @@ const createMetadata = (main, document, url, html) => {
   if (title) {
     meta.Title = title.textContent.replace(/[\n\t]/gm, '');
   }
-
+  const template = document.querySelector('.blog-header');
+  if (template) {
+    meta.template = 'article-detail';
+  }
   // description
   const desc = document.querySelector("[property='og:description']");
   if (desc) {
