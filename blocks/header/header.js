@@ -1,7 +1,7 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { loadFragment } from '../fragment/fragment.js';
 import { div, nav, span, img, form, input, button, a } from '../../scripts/dom-helpers.js';
-import { getRegionLocale, throttle } from '../../scripts/utils.js';
+import { getCookie, getRegionLocale, throttle } from '../../scripts/utils.js';
 
 const isMobile = window.matchMedia('(width < 1080px)');
 
@@ -96,10 +96,20 @@ export default async function decorate(block) {
 
   const $header = document.querySelector('header');
 
-  const $btnCart = button({ class: 'icon-cart', href: `/${region}/${locale}/sample-cart.html`, 'aria-label': 'Cart' },
+  const $btnCart = a({ class: 'icon-cart', href: `/${region}/${locale}/sample-cart.html`, 'aria-label': 'Cart' },
     '\u{e919}',
-    span({ class: 'count hide' }, '0'),
+    span({ class: 'count' }, (() => {
+      const cartCookies = getCookie('cartCookies');
+      if (!cartCookies || cartCookies.split('cookie ').length === 0) {
+        return '0';
+      }
+      return (cartCookies.split('cookie ').length - 1).toString();
+    })()),
   );
+
+  if ($btnCart.querySelector('.count').textContent === '0') {
+    $btnCart.querySelector('.count').classList.add('hide');
+  }
 
   const $btnBurger = button({ class: 'icon-burger', 'aria-label': 'Menu' });
   $btnBurger.addEventListener('click', () => {

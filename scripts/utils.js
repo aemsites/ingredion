@@ -107,3 +107,13 @@ export function formatDate(timestamp) {
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return date.toLocaleDateString('en-US', options);
 }
+
+export function getCookie(name) {
+  const cookies = document.cookie.split('; ');
+  const foundCookie = cookies.find((cookie) => cookie.startsWith(`${name}=`));
+
+  if (foundCookie) {
+    return decodeURIComponent(foundCookie.substring(foundCookie.indexOf('=') + 1));
+  }
+  return null;
+}
