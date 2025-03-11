@@ -96,7 +96,7 @@ export default async function decorate(block) {
 
   const $header = document.querySelector('header');
 
-  const $btnCart = a({ class: 'icon-cart', href: `/${region}/${locale}/sample-cart.html`, 'aria-label': 'Cart' },
+  const $btnCart = a({ class: 'icon-cart', href: `/${region}/${locale}/sample-cart`, 'aria-label': 'Cart' },
     '\u{e919}',
     span({ class: 'count' }, (() => {
       const cartCookies = getCookie('cartCookies');
