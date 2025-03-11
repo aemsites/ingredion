@@ -2,7 +2,7 @@
 import { script, div, aside, a, strong, p, h3, h4, h5, span, ul, li, button, img } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { readBlockConfig } from '../../scripts/aem.js';
-
+import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 
 let locations = [];
 let map;
@@ -160,7 +160,7 @@ async function addMapMarkers(locations) {
   });
 
   // add padding to bounds so markers aren't hidden when active
-  map.fitBounds(bounds, { top: 0, right: 0, bottom: 0, left: 0 });
+  map.fitBounds(bounds, { top: 0, right: 0, bottom: 0, left: 100 });
 }
 
 /**
@@ -173,8 +173,7 @@ async function buildMap() {
   map = new Map(document.getElementById('google-map'), {
     center: { lat: 43.696, lng: -116.641 },
     zoom: 12,
-    maxZoom: 15,
-    // mapId: 'IM_IMPORTANT',
+    mapId: 'IM_IMPORTANT',
     disableDefaultUI: true, // remove all buttons
     zoomControl: true, // allow zoom buttons
     streetViewControl: true, // allow street view control
@@ -262,12 +261,8 @@ function buildInventoryCards(homes) {
 
 // key = AIzaSyBzkFWc7cMP0Ww_5cYqCcgxIEx-2YpNas4
 export default async function decorate(block) {
+  const [region, locale] = getRegionLocale();
   const { 'google-maps-api-key': mapKey, 'map-data': mapData } = readBlockConfig(block);
-
-  const locationData = await fetch(mapData)
-    .then((response) => response.json());
-
-
   const googleMapScript = script(`
     (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=\`https://maps.googleapis.com/maps/api/js?\`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
       key: "${mapKey}", 
@@ -275,6 +270,17 @@ export default async function decorate(block) {
     });
   `);
   document.head.appendChild(googleMapScript);
+
+
+  // fetch both map data and translations
+  const [mapResponse] = await Promise.all([
+    fetch(mapData),
+    loadTranslations(locale),
+  ]);
+
+  // handle response
+  if (!mapResponse.ok) throw new Error('Failed to fetch map data');
+  const locationData = await mapResponse.json();
 
   filterListeners();
 
