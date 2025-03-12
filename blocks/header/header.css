@@ -27,7 +27,7 @@ header {
 
     ul, li { margin: 0 }
 
-    button.icon-cart {
+    a.icon-cart {
         position: absolute;
         top: 6px;
         right: 40px;
@@ -360,7 +360,7 @@ header {
                 img { width: 70px }
             }
 
-            button.icon-cart {
+            a.icon-cart {
                 font-size: 2rem;
                 top: 16px;
                 right: 60px;

@@ -1,3 +1,5 @@
+import { getCookie } from '../../scripts/utils.js';
+
 function createErrorElements(element) {
   const errorDiv = document.createElement('div');
   errorDiv.className = 'field-error';
@@ -488,6 +490,24 @@ export default async function decorate(block) {
       }
       if (!formElement.checkValidity()) {
         e.preventDefault();
+      }
+
+      // check if current page is sample-cart
+      const currentPage = window.location.pathname;
+      if (currentPage.includes('sample-cart')) {
+        const messageTextArea = formElement.querySelector('textarea[name="Message"]');
+        const messageDesc = 'This prospect would like to request a sample of the following products: ';
+        messageTextArea.value = `${messageTextArea.value}\n${messageDesc}`;
+        const cartCookies = getCookie('cartCookies');
+        if (cartCookies) {
+          const items = cartCookies.split('cookie ').filter(Boolean);
+          items.forEach((item) => {
+            const [name] = item.split(',url=');
+            messageTextArea.value += `${name},`;
+          });
+          // remove cartCookies cookie
+          document.cookie = 'cartCookies=; path=/';
+        }
       }
     });
 
