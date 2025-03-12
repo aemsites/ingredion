@@ -44,11 +44,7 @@ export async function createModal(contentNodes) {
       dialog.showModal();
       // reset scroll position
       setTimeout(() => { dialogContent.scrollTop = 0; }, 0);
-      // Only prevent page scrolling if there's a form outside the modal
-      const formsOutsideModal = Array.from(document.querySelectorAll('form')).filter((form) => !dialog.contains(form));
-      if (formsOutsideModal.length > 0) {
-        document.body.classList.add('modal-open');
-      }
+      document.body.classList.add('modal-open');
     },
   };
 }
