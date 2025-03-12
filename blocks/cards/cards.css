@@ -340,6 +340,13 @@ main > .section > .default-content-wrapper {
   height: 24rem;
 }
 
+@media (width <= 1079px) { 
+  .cards.video .video-placeholder {
+    aspect-ratio: 16 / 9;
+    height: max-content;
+  }
+}
+
 .cards.video .video-placeholder > * {
   display: flex;
   align-items: center;
