@@ -181,7 +181,7 @@ export default class ArticleRenderer {
 
     // Build tag counts from the filtered articles
     this.state.filteredArticles.forEach((article) => {
-      article.tags.split(', ').forEach((tag) => {
+      article.tags.split(',').forEach((tag) => {
         const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
         tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
       });
@@ -190,7 +190,8 @@ export default class ArticleRenderer {
     // Group tags by heading
     const groupedTags = {};
     Object.keys(tags).forEach((rawTag) => {
-      const [heading, tag] = rawTag.split(' : ')[1].split(' / ');
+      if (!rawTag.trim()) return; // ignore blank tags
+      const [heading, tag] = rawTag.split(' / ');
       if (!groupedTags[heading]) groupedTags[heading] = [];
       groupedTags[heading].push({
         tag: tag.toLowerCase().replace(/\s+/g, '-'), // cleaned tag

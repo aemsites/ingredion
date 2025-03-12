@@ -30,17 +30,6 @@ export async function createModal(contentNodes) {
   decorateBlock(block);
   await loadBlock(block);
 
-  // close on click outside the dialog
-  dialog.addEventListener('click', (e) => {
-    const {
-      left, right, top, bottom,
-    } = dialog.getBoundingClientRect();
-    const { clientX, clientY } = e;
-    if (clientX < left || clientX > right || clientY < top || clientY > bottom) {
-      dialog.close();
-    }
-  });
-
   dialog.addEventListener('close', () => {
     document.body.classList.remove('modal-open');
     block.remove();

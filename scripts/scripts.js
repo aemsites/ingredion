@@ -14,14 +14,20 @@ import {
   getMetadata,
 } from './aem.js';
 
-function autolinkModals(element) {
-  element.addEventListener('click', async (e) => {
-    const origin = e.target.closest('a');
+import { toggleError } from '../blocks/form/form.js';
 
-    if (origin && origin.href && origin.href.includes('/modals/')) {
-      e.preventDefault();
-      const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
-      openModal(origin.href);
+/**
+ * Recursively removes nested <div> elements from a given element.
+ */
+export function unwrapNestedDivs(element) {
+  const children = Array.from(element.children);
+  children.forEach((child) => {
+    if (child.tagName === 'DIV') {
+      unwrapNestedDivs(child);
+      while (child.firstChild) {
+        element.insertBefore(child.firstChild, child);
+      }
+      element.removeChild(child);
     }
   });
 }
@@ -217,6 +223,70 @@ function addHeroObserver(doc) {
   }
 }
 
+function initializePhoneValidation(document) {
+  const form = document.querySelector('.modal dialog form') || document.querySelector('form');
+  if (!form) return;
+  const input = document.querySelector('.Phone > input');
+  const countryDropdown = document.querySelector('.Country .form-dropdown > input');
+  const countryTrigger = document.querySelector('.Country .form-dropdown__selected-label');
+
+  const iti = window.intlTelInput(input, {
+    loadUtils: () => import('./intl-tel-input-utils.js'),
+    countrySearch: false,
+    countryOrder: ['us', 'ca'],
+    fixDropdownWidth: false,
+    initialCountry: 'us',
+    formatAsYouType: false,
+    formatOnDisplay: false,
+  });
+
+  const initialCountryData = iti.getSelectedCountryData();
+  countryDropdown.value = initialCountryData.iso2;
+  countryTrigger.textContent = initialCountryData.name;
+  countryTrigger.style.color = 'black';
+
+  input.addEventListener('countrychange', () => {
+    const countryData = iti.getSelectedCountryData();
+    countryDropdown.value = countryData.iso2;
+    countryTrigger.textContent = countryData.name;
+    countryTrigger.style.color = 'black';
+    countryDropdown.dispatchEvent(new Event('change'));
+  });
+
+  countryDropdown.addEventListener('change', (e) => {
+    const countryCode = e.target.value;
+    if (countryCode) {
+      iti.setCountry(countryCode.toLowerCase());
+    }
+  });
+
+  input.addEventListener('input', (e) => {
+    const isValid = iti.isValidNumber();
+    let errorMessage;
+    if (!isValid && input.value === '') {
+      errorMessage = 'Please check your form entries';
+    } else if (!isValid) {
+      errorMessage = e.target.getAttribute('validation-error-message');
+    } else {
+      input.setAttribute('full-phone-number', iti.getNumber());
+    }
+    toggleError(input.parentElement, !isValid, errorMessage);
+  });
+}
+
+function autolinkModals(element) {
+  element.addEventListener('click', async (e) => {
+    const origin = e.target.closest('a');
+
+    if (origin && origin.href && origin.href.includes('/modals/')) {
+      e.preventDefault();
+      const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
+      await openModal(origin.href);
+      initializePhoneValidation(document);
+    }
+  });
+}
+
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
@@ -236,6 +306,10 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
   addHeroObserver(doc);
+
+  loadCSS(`${window.hlx.codeBasePath}/styles/intlTelInput.min.css`);
+  await import('./intlTelInput.min.js');
+  initializePhoneValidation(doc);
 }
 
 /**

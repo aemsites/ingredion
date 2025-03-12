@@ -5,20 +5,48 @@ import {
   button,
 } from '../../scripts/dom-helpers.js';
 
-export default async function decorate(block) {
-  // Function to recursively unwrap nested divs
-  function unwrapNestedDivs(element) {
-    const children = Array.from(element.children);
-    children.forEach((child) => {
-      if (child.tagName === 'DIV') {
-        unwrapNestedDivs(child);
-        while (child.firstChild) {
-          element.insertBefore(child.firstChild, child);
-        }
-        element.removeChild(child);
-      }
-    });
+import { unwrapNestedDivs } from '../../scripts/scripts.js';
+import { getCookie } from '../../scripts/utils.js';
+
+function addIngredientToCart(ingredientName, ingredientUrl) {
+  const cartCookies = getCookie('cartCookies');
+  if (cartCookies) {
+    document.cookie = `cartCookies=${cartCookies} cookie ${ingredientName},url=${ingredientUrl}; path=/`;
+  } else {
+    document.cookie = `cartCookies=cookie ${ingredientName},url=${ingredientUrl}; path=/`;
   }
+
+  const cartCount = document.querySelector('.icon-cart > .count');
+  if (cartCount) {
+    cartCount.textContent = parseInt(cartCount.textContent, 10) + 1;
+    cartCount.style.display = 'block';
+  }
+  if (cartCount.textContent === '0') {
+    cartCount.style.display = 'none';
+  }
+}
+
+function removeIngredientFromCart() {
+  const cartCookies = getCookie('cartCookies');
+  const cookies = cartCookies.split('cookie ');
+  const lastCookie = cookies[cookies.length - 1];
+  const lastCookieUrl = lastCookie.split('=')[1];
+  if (lastCookieUrl === window.location.href) {
+    const updatedCookies = cookies.slice(0, -1);
+    document.cookie = `cartCookies=${updatedCookies.join(' cookie ').trim()}; path=/`;
+  }
+
+  const cartCount = document.querySelector('.icon-cart > .count');
+  if (cartCount) {
+    cartCount.textContent = parseInt(cartCount.textContent, 10) - 1;
+    cartCount.style.display = 'block';
+  }
+  if (cartCount.textContent === '0') {
+    cartCount.style.display = 'none';
+  }
+}
+
+export default async function decorate(block) {
   unwrapNestedDivs(block);
 
   const contentContainer = div(
@@ -37,6 +65,18 @@ export default async function decorate(block) {
     ),
   );
 
+  const undoButton = cartListNotificationContainer.querySelector('.cart-list-notification-undo');
+  const closeButton = cartListNotificationContainer.querySelector('.cart-list-notification-close');
+
+  undoButton.addEventListener('click', () => {
+    removeIngredientFromCart();
+    cartListNotificationContainer.style.display = 'none';
+  });
+
+  closeButton.addEventListener('click', () => {
+    cartListNotificationContainer.style.display = 'none';
+  });
+
   block.appendChild(contentContainer);
   block.appendChild(buttonContainer);
   block.appendChild(cartListNotificationContainer);
@@ -49,7 +89,11 @@ export default async function decorate(block) {
 
   const children = Array.from(block.children);
 
-  if (children[0].tagName === 'P' && children[1].tagName !== 'H3') {
+  if (
+    children[0].tagName === 'P'
+    && !children[0].classList.contains('button-container')
+    && children[1].tagName !== 'H3'
+  ) {
     textContainer.appendChild(children[0]);
   } else {
     let currentChild = block.firstElementChild;
@@ -90,7 +134,19 @@ export default async function decorate(block) {
       link.prepend(spanElement);
       contentContainer.appendChild(link);
     } else {
-      if (i === 3) {
+      if (i === 2) {
+        link.classList.add('add-sample-button');
+        const ingredientName = productName.textContent;
+        const ingredientUrl = window.location.href;
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          addIngredientToCart(ingredientName, ingredientUrl);
+          cartListNotificationContainer.style.display = 'block';
+          setTimeout(() => {
+            cartListNotificationContainer.style.display = 'none';
+          }, 5000);
+        });
+      } else if (i === 3) {
         link.classList.add('secondary');
       }
       buttonContainer.appendChild(link);

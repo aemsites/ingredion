@@ -1,1 +1,4 @@
 helix-importer-ui
+styles/intlTelInput.min.css
+scripts/intlTelInput.min.js
+scripts/intl-tel-input-utils.js
