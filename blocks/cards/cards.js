@@ -15,7 +15,7 @@ function embedVimeo(url, autoplay, background) {
   const temp = document.createElement('div');
   temp.innerHTML = `<div class="video-modal" style="display: block;">
     <div class="video-modal-wrapper">
-      <div class='video-modal-content' style="left: 0; width: 100%; position: relative; padding-bottom: 45%;">
+      <div class='video-modal-content'>
         <iframe src="https://player.vimeo.com/video/${video}${suffix}" 
           style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" 
           frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen  
