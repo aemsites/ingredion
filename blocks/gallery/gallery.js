@@ -22,7 +22,7 @@ function updateModal(modal, pic) {
 export default function decorate(block) {
   const allPics = block.querySelectorAll('picture');
   const h1 = block.querySelector('h1');
-  const link = block.querySelector('a');
+  const link = block.querySelectorAll('a');
 
   const textWrapper = h1.closest('div');
   textWrapper.classList.add('gallery-content');
@@ -36,12 +36,14 @@ export default function decorate(block) {
   });
 
   if (link) {
-    const parentDiv = link.parentElement;
-    const grandParent = parentDiv.parentElement;
-    grandParent.insertBefore(link, parentDiv);
-    parentDiv.remove();
-    link.classList.remove('button');
-    link.classList.add('text-link');
+    Array.from(link).forEach((l) => {
+      const parentDiv = l.parentElement;
+      const grandParent = parentDiv.parentElement;
+      grandParent.insertBefore(l, parentDiv);
+      parentDiv.remove();
+      l.classList.remove('button');
+      l.classList.add('text-link');
+    })
   }
 
   const firstPic = allPics[0];
