@@ -1,22 +1,19 @@
 import { unwrapNestedDivs } from '../../scripts/scripts.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 export default function decorate(block) {
   const firstDiv = block.querySelectorAll('div')[0];
   const linkCount = firstDiv.querySelectorAll('a').length;
 
-  // Determine the class based on link count
-  let columnClass = '';
-  if (linkCount === 4) {
-    columnClass = 'section-content-columns-4';
-  } else {
-    columnClass = 'section-content-columns-6';
-  }
-
+  const columnClass = linkCount === 4 ? 'section-content-columns-4' : 'section-content-columns-6';
   block.classList.add(columnClass);
 
   unwrapNestedDivs(block);
 
   const pictureParagraphs = block.querySelectorAll('p:has(picture)');
+
+  const eagerLoadLimit = 6;
+  let imageCount = 0;
 
   pictureParagraphs.forEach((pictureParagraph) => {
     const buttonContainer = pictureParagraph.nextElementSibling;
@@ -25,28 +22,40 @@ export default function decorate(block) {
     }
 
     const linkElement = buttonContainer.querySelector('a');
-    const pictureElement = pictureParagraph.querySelector('picture').querySelector('img');
+    const pictureElement = pictureParagraph.querySelector('picture img');
 
-    if (linkElement && pictureElement) {
-      const linkHref = linkElement.getAttribute('href');
-      const linkTitle = linkElement.getAttribute('title');
-      const buttonText = linkElement.textContent.trim();
+    if (pictureElement) {
+      const src = pictureElement.getAttribute('src');
+      const alt = pictureElement.getAttribute('alt') || '';
 
-      const iconWrapper = document.createElement('a');
-      iconWrapper.classList.add('icon-card');
-      iconWrapper.href = linkHref;
-      iconWrapper.title = linkTitle;
+      const eager = imageCount < eagerLoadLimit;
+      imageCount += 1;
 
-      iconWrapper.innerHTML = `
-        <div class='icon-card-wrapper'>
-          <img class='icon-card-icon' src=${pictureElement.getAttribute('src')}
-          </img>
-          <h3 class='label-text label-text-center' title='${linkTitle}'>${buttonText}</h3>
-        </div>
-      `;
+      const optimizedPicture = createOptimizedPicture(src, alt, eager);
 
-      buttonContainer.replaceWith(iconWrapper);
-      pictureParagraph.remove();
+      if (linkElement) {
+        const linkHref = linkElement.getAttribute('href');
+        const linkTitle = linkElement.getAttribute('title');
+        const buttonText = linkElement.textContent.trim();
+
+        const iconWrapper = document.createElement('a');
+        iconWrapper.classList.add('icon-card');
+        iconWrapper.href = linkHref;
+        iconWrapper.title = linkTitle;
+
+        iconWrapper.innerHTML = `
+          <div class='icon-card-wrapper'>
+            <h3 class='label-text label-text-center' title='${linkTitle}'>${buttonText}</h3>
+          </div>
+        `;
+
+        optimizedPicture.querySelector('img').classList.add('icon-card-icon');
+        iconWrapper.querySelector('.icon-card-wrapper').prepend(pictureElement);
+        pictureElement.replaceWith(optimizedPicture);
+
+        buttonContainer.replaceWith(iconWrapper);
+        pictureParagraph.remove();
+      }
     }
   });
 }
