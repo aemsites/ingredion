@@ -16,6 +16,27 @@ import {
 
 import { toggleError } from '../blocks/form/form.js';
 
+const experimentationConfig = {
+  audiences: {
+    mobile: () => window.innerWidth < 600,
+    desktop: () => window.innerWidth >= 600,
+    // define your custom audiences here as needed
+    'new-visitor': () => !localStorage.getItem('franklin-visitor-returning'),
+    'returning-visitor': () => !!localStorage.getItem('franklin-visitor-returning'),
+  },
+};
+
+let runExperimentation;
+let showExperimentationOverlay;
+const isExperimentationEnabled = document.head.querySelector('[name^="experiment"],[name^="campaign-"],[name^="audience-"],[property^="campaign:"],[property^="audience:"]')
+    || [...document.querySelectorAll('.section-metadata div')].some((d) => d.textContent.match(/Experiment|Campaign|Audience/i));
+if (isExperimentationEnabled) {
+  ({
+    loadEager: runExperimentation,
+    loadLazy: showExperimentationOverlay,
+  } = await import('../plugins/experimentation/src/index.js'));
+}
+
 /**
  * Recursively removes nested <div> elements from a given element.
  */
@@ -176,6 +197,10 @@ async function loadEager(doc) {
   } catch (e) {
     // do nothing
   }
+  // Add below snippet early in the eager phase
+  if (runExperimentation) {
+    await runExperimentation(document, experimentationConfig);
+  }
 }
 
 /**
@@ -310,6 +335,12 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/intlTelInput.min.css`);
   await import('./intlTelInput.min.js');
   initializePhoneValidation(doc);
+  // Add below snippet at the end of the lazy phase
+  if (showExperimentationOverlay) {
+    await showExperimentationOverlay(document, experimentationConfig);
+  }
+  // Mark customer as having viewed the page once
+  localStorage.setItem('franklin-visitor-returning', true);
 }
 
 /**
