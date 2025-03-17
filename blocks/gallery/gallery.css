@@ -67,14 +67,16 @@
     flex-direction: row;
     gap: 50px;
     background: var(--theme-clr-background);
-    height: auto;
+    justify-content: space-between;
+    max-width: 1224px;
+    width: 100%;
+    height: 482px;
+    align-items: flex-start;
 
     .gallery-images-container {
       display: flex;
       flex-direction: row;
       width: 50%;
-      align-items: flex-start;
-      height: 482px;
 
       .gallery-preview {
         display: flex;
@@ -84,7 +86,8 @@
         cursor: zoom-in;
 
         img {
-          width: 90%;
+          height: 90%;
+          max-height: 482px;
           object-fit: contain;
         }
       }
@@ -113,6 +116,7 @@
         font-size: var(--heading-font-size-xl);
         font-family: var(--heading-font-family);
         letter-spacing: -.0313rem;
+        margin-top: 0;
       }
     
       h2 {
