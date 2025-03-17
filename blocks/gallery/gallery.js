@@ -7,7 +7,7 @@ function setPreview(selectedPic) {
 function parseClassFromString(inputString) {
   const classRegex = /\[class:\s*([^\]]+)\]/;
   const classMatch = inputString.match(classRegex);
-  
+
   let className = null;
   let cleanedString = inputString;
 
@@ -16,7 +16,7 @@ function parseClassFromString(inputString) {
     cleanedString = inputString.replace(classRegex, '').trim();
   }
 
-  return { className: className, cleanedString: cleanedString };
+  return { className, cleanedString };
 }
 
 function updateModal(modal, pic) {
@@ -53,7 +53,7 @@ export default function decorate(block) {
         l.title = parsingResult.cleanedString;
         l.textContent = parsingResult.cleanedString;
       }
-    })
+    });
   }
 
   const firstPic = allPics[0];
@@ -82,7 +82,7 @@ export default function decorate(block) {
   const maxZoom = 3;
   const minZoom = 1;
 
-  Array.from(thumbnails.children).forEach((img => {
+  Array.from(thumbnails.children).forEach(((img) => {
     img.addEventListener('click', () => {
       const newPreview = setPreview(img);
       galleryImages.querySelector('.gallery-preview').replaceWith(newPreview);
@@ -115,9 +115,9 @@ export default function decorate(block) {
             modalImg.style.transform = `scale(${zoomLevel})`;
           }
         });
-      })
-    })
-  }))
+      });
+    });
+  }));
 
   blockImage.addEventListener('click', () => {
     zoomLevel = 1;
