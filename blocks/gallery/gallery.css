@@ -146,10 +146,12 @@
       .button-container {
         margin-top: 1.5rem;
   
-        > button {
+        a.button {
           min-width: 11.25rem;
           padding: .875rem;
           border: none;
+          font-weight: bold;
+          font-family: MiloPro-Bold, Helvetica, sans-serif;
         }
       }
     }

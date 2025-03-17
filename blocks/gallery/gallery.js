@@ -1,9 +1,22 @@
-import { createOptimizedPicture } from '../../scripts/aem.js';
-
 function setPreview(selectedPic) {
   const previewPic = selectedPic.cloneNode(true);
   previewPic.classList.add('gallery-preview');
   return previewPic;
+}
+
+function parseClassFromString(inputString) {
+  const classRegex = /\[class:\s*([^\]]+)\]/;
+  const classMatch = inputString.match(classRegex);
+  
+  let className = null;
+  let cleanedString = inputString;
+
+  if (classMatch) {
+    className = classMatch[1].trim();
+    cleanedString = inputString.replace(classRegex, '').trim();
+  }
+
+  return { className: className, cleanedString: cleanedString };
 }
 
 function updateModal(modal, pic) {
@@ -27,22 +40,19 @@ export default function decorate(block) {
   const textWrapper = h1.closest('div');
   textWrapper.classList.add('gallery-content');
 
-  textWrapper.insertAdjacentHTML(
-    'beforeend',
-    '<div class="button-container"><button class="button" title="Contact Us">Contact Us</button></div>',
-  );
-  textWrapper.addEventListener('click', () => {
-    // open modal for contact us form
-  });
-
   if (link) {
     Array.from(link).forEach((l) => {
-      const parentDiv = l.parentElement;
-      const grandParent = parentDiv.parentElement;
-      grandParent.insertBefore(l, parentDiv);
-      parentDiv.remove();
-      l.classList.remove('button');
-      l.classList.add('text-link');
+      const parsingResult = parseClassFromString(l.title);
+      if (parsingResult.className) {
+        const parentDiv = l.parentElement;
+        const grandParent = parentDiv.parentElement;
+        grandParent.insertBefore(l, parentDiv);
+        parentDiv.remove();
+        l.classList.remove('button');
+        l.classList.add(parsingResult.className);
+        l.title = parsingResult.cleanedString;
+        l.textContent = parsingResult.cleanedString;
+      }
     })
   }
 
