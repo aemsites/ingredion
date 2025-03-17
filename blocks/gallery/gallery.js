@@ -2,16 +2,8 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 
 function setPreview(selectedPic) {
   const previewPic = selectedPic.cloneNode(true);
-  const img = previewPic.querySelector('img');
-  const optimized = createOptimizedPicture(
-    img.src,
-    img.alt,
-    false,
-    [{ width: '750' }],
-  );
-  previewPic.replaceWith(optimized);
-  optimized.classList.add('gallery-preview');
-  return optimized;
+  previewPic.classList.add('gallery-preview');
+  return previewPic;
 }
 
 function updateModal(modal, pic) {
@@ -55,13 +47,13 @@ export default function decorate(block) {
   const firstPic = allPics[0];
 
   const optimizedPicture = setPreview(firstPic);
-  const galleryWrapper = firstPic.closest('div');
-  galleryWrapper.classList.add('gallery-images-container');
-  galleryWrapper.prepend(optimizedPicture);
+  const galleryImageWrapper = firstPic.closest('div');
+  galleryImageWrapper.classList.add('gallery-images-container');
+  galleryImageWrapper.prepend(optimizedPicture);
 
   const thumbnails = document.createElement('div');
   thumbnails.classList.add('gallery-thumbnails');
-  galleryWrapper.append(thumbnails);
+  galleryImageWrapper.append(thumbnails);
 
   allPics.forEach((image) => {
     thumbnails.append(image);
@@ -77,11 +69,11 @@ export default function decorate(block) {
   const maxZoom = 3;
   const minZoom = 1;
 
-  let preview = galleryWrapper.querySelector('.gallery-preview');
+  let preview = galleryImageWrapper.querySelector('.gallery-preview');
   allPics.forEach((image) => {
     image.addEventListener('click', () => {
       const newPreview = setPreview(image);
-      galleryWrapper.querySelector('.gallery-preview').replaceWith(newPreview);
+      galleryImageWrapper.querySelector('.gallery-preview').replaceWith(newPreview);
       newPreview.addEventListener('click', () => {
         zoomLevel = 1;
         const modalImg = galleryModal.querySelector('.image-modal-container img');
@@ -94,7 +86,6 @@ export default function decorate(block) {
           block.dataset.embedLoaded = false;
         });
         actionButtons.querySelector('.zoom-in').addEventListener('click', () => {
-          console.log("aaaaa");
           if (zoomLevel < maxZoom) {
             zoomLevel += zoomStep;
             modalImg.style.transform = `scale(${zoomLevel})`;

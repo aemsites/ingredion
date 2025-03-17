@@ -29,6 +29,7 @@
       max-width: 90%;
       max-height: 90%;
       transform-origin: 50% 0;
+      transition: all 200ms ease-in-out;
     } 
   }
 
@@ -56,7 +57,8 @@
   }
 }
   
-.gallery {   
+.gallery {
+
   > div {
     display: flex;
     flex-direction: column;
@@ -66,16 +68,19 @@
     .gallery-images-container {
       display: flex;
       flex-direction: row;
+      width: 50%;
+      align-items: flex-start;
+      height: 482px;
 
       .gallery-preview {
-        flex: 1;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        max-height: 100%;
         cursor: zoom-in;
 
         img {
-          width: 80%;
-          height: 80%;
-          display: block;
-          margin: 0;
+          width: 90%;
           object-fit: contain;
         }
       }
@@ -86,57 +91,51 @@
         gap: 10px;
 
         img {
-          width: 80px;
+          width: 90px;
           height: 80px;
           object-fit: cover;
-          cursor: pointer;
-        }
-        
-        picture img:hover,
-        picture img:focus {
-          border-color: var(--blue);
         }
       }
     }
 
     .gallery-content {
       color: var(--theme-clr-text);
-      margin: 0 15px 80px;
+      display: flex;
+      flex-direction: column;
+      width: 50%;
 
       h1 {
         color: var(--green);
         font-size: var(--heading-font-size-xl);
         font-family: var(--heading-font-family);
         letter-spacing: -.0313rem;
-        margin: 0;
       }
-
+    
       h2 {
         font-size: var(--heading-font-size-l);
         letter-spacing: -.0313rem;
         line-height: 1rem;
       }
-  
+    
       h3 {
         color: var(--theme-clr-text);
         font-family: var(--heading-font-family);
         font-size: var(--heading-font-size-m);
         letter-spacing: -.0313rem;
       }
-  
-      p, ul, li {
+    
+      p, ul, li, a {
         font-family: var(--body-font-family);
         font-size:  var(--body-font-size-s);
         letter-spacing: .0156rem;
       }
-
+    
       ul {
         padding-left: 20px;
         list-style-type: disc;
       }
 
       .text-link {
-        font-size: var(--body-font-size-s);
         text-decoration: underline;
       }
 
