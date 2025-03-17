@@ -46,63 +46,70 @@ export default function decorate(block) {
 
   const firstPic = allPics[0];
 
-  const optimizedPicture = setPreview(firstPic);
-  const galleryImageWrapper = firstPic.closest('div');
-  galleryImageWrapper.classList.add('gallery-images-container');
-  galleryImageWrapper.prepend(optimizedPicture);
+  const galleryImages = firstPic.closest('div');
+  galleryImages.classList.add('gallery-images-container');
+
+  const blockImage = setPreview(firstPic);
+  galleryImages.prepend(blockImage);
 
   const thumbnails = document.createElement('div');
   thumbnails.classList.add('gallery-thumbnails');
-  galleryImageWrapper.append(thumbnails);
+  galleryImages.append(thumbnails);
 
   allPics.forEach((image) => {
     thumbnails.append(image);
   });
 
-  let galleryModal = document.createElement('div');
-  updateModal(galleryModal, optimizedPicture);
+  const galleryModal = document.createElement('div');
+  updateModal(galleryModal, blockImage);
 
-  const modalImg = galleryModal.querySelector('.image-modal-container img');
+  const modalImage = galleryModal.querySelector('.image-modal-container img');
 
   let zoomLevel = 1;
   const zoomStep = 0.1;
   const maxZoom = 3;
   const minZoom = 1;
 
-  let preview = galleryImageWrapper.querySelector('.gallery-preview');
-  allPics.forEach((image) => {
-    image.addEventListener('click', () => {
-      const newPreview = setPreview(image);
-      galleryImageWrapper.querySelector('.gallery-preview').replaceWith(newPreview);
+  Array.from(thumbnails.children).forEach((img => {
+    img.addEventListener('click', () => {
+      const newPreview = setPreview(img);
+      galleryImages.querySelector('.gallery-preview').replaceWith(newPreview);
+
       newPreview.addEventListener('click', () => {
         zoomLevel = 1;
+        updateModal(galleryModal, newPreview);
+
         const modalImg = galleryModal.querySelector('.image-modal-container img');
         modalImg.style.transform = `scale(${zoomLevel})`;
-        updateModal(galleryModal, newPreview);
+
         block.append(galleryModal);
+
         const actionButtons = galleryModal.querySelector('.zoom-buttons-container');
         actionButtons.querySelector('.close').addEventListener('click', () => {
           galleryModal.remove();
           block.dataset.embedLoaded = false;
         });
+
         actionButtons.querySelector('.zoom-in').addEventListener('click', () => {
           if (zoomLevel < maxZoom) {
             zoomLevel += zoomStep;
             modalImg.style.transform = `scale(${zoomLevel})`;
           }
         });
+
         actionButtons.querySelector('.zoom-out').addEventListener('click', () => {
           if (zoomLevel > minZoom) {
             zoomLevel -= zoomStep;
             modalImg.style.transform = `scale(${zoomLevel})`;
           }
         });
-      });
-    });
-  });
-  preview.addEventListener('click', () => {
+      })
+    })
+  }))
+
+  blockImage.addEventListener('click', () => {
     zoomLevel = 1;
-    modalImg.style.transform = `scale(${zoomLevel})`;
+    modalImage.style.transform = `scale(${zoomLevel})`;
     block.append(galleryModal);
   });
   const actionButtons = galleryModal.querySelector('.zoom-buttons-container');
@@ -113,13 +120,13 @@ export default function decorate(block) {
   actionButtons.querySelector('.zoom-in').addEventListener('click', () => {
     if (zoomLevel < maxZoom) {
       zoomLevel += zoomStep;
-      modalImg.style.transform = `scale(${zoomLevel})`;
+      modalImage.style.transform = `scale(${zoomLevel})`;
     }
   });
   actionButtons.querySelector('.zoom-out').addEventListener('click', () => {
     if (zoomLevel > minZoom) {
       zoomLevel -= zoomStep;
-      modalImg.style.transform = `scale(${zoomLevel})`;
+      modalImage.style.transform = `scale(${zoomLevel})`;
     }
   });
 }
