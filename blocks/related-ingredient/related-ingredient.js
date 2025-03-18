@@ -124,17 +124,20 @@ export default async function decorate(block) {
 
   for (let i = 0; i < buttons.length; i += 1) {
     const link = buttons[i].querySelector(':scope > a');
-    if (i < 2) {
+    const normalizedIndex = buttons.length === 2 ? i + 2 : i;
+
+    if (normalizedIndex < 2) {
       link.classList.add('icon');
-      const spanClass = i === 1 ? 'icon-download' : 'icon-eye';
+      const spanClass = normalizedIndex === 1 ? 'icon-download' : 'icon-eye';
       const spanElement = span({ class: spanClass });
-      if (i === 1) {
+
+      if (normalizedIndex === 1) {
         link.download = '';
       }
       link.prepend(spanElement);
       contentContainer.appendChild(link);
     } else {
-      if (i === 2) {
+      if (normalizedIndex === 2) {
         link.classList.add('add-sample-button');
         const ingredientName = productName.textContent;
         const ingredientUrl = window.location.href;
@@ -146,7 +149,7 @@ export default async function decorate(block) {
             cartListNotificationContainer.style.display = 'none';
           }, 5000);
         });
-      } else if (i === 3) {
+      } else if (normalizedIndex === 3) {
         link.classList.add('secondary');
       }
       buttonContainer.appendChild(link);
