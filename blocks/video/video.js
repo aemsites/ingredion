@@ -6,6 +6,31 @@
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+function embedVimeo(url, autoplay, background) {
+  const [, video] = url.pathname.split('/');
+  let suffix = '';
+  if (background || autoplay) {
+    const suffixParams = {
+      autoplay: autoplay ? '1' : '0',
+      background: background ? '1' : '0',
+    };
+    suffix = `?${Object.entries(suffixParams).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')}`;
+  }
+  const temp = document.createElement('div');
+  temp.innerHTML = `<div class="video-modal" style="display: block;">
+    <div class="video-modal-wrapper">
+      <div class='video-modal-content' style="left: 0; width: 100%; position: relative; padding-bottom: 45%;">
+        <iframe src="https://player.vimeo.com/video/${video}${suffix}" 
+          style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" 
+          frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen  
+          title="Content from Vimeo" loading="lazy"></iframe>
+        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal"></div>
+      </div>
+    </div>
+  </div>`;
+  return temp.children.item(0);
+}
+
 function embedYoutube(url, autoplay, background) {
   const usp = new URLSearchParams(url.search);
   let suffix = '';
@@ -27,30 +52,16 @@ function embedYoutube(url, autoplay, background) {
   }
 
   const temp = document.createElement('div');
-  temp.innerHTML = `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">
-      <iframe src="https://www.youtube.com${vid ? `/embed/${vid}?rel=0&v=${vid}${suffix}` : embed}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" 
-      allow="autoplay; fullscreen; picture-in-picture; encrypted-media; accelerometer; gyroscope; picture-in-picture" allowfullscreen="" scrolling="no" title="Content from Youtube" loading="lazy"></iframe>
-    </div>`;
-  return temp.children.item(0);
-}
-
-function embedVimeo(url, autoplay, background) {
-  const [, video] = url.pathname.split('/');
-  let suffix = '';
-  if (background || autoplay) {
-    const suffixParams = {
-      autoplay: autoplay ? '1' : '0',
-      background: background ? '1' : '0',
-    };
-    suffix = `?${Object.entries(suffixParams).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')}`;
-  }
-  const temp = document.createElement('div');
-  temp.innerHTML = `<div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;">
-      <iframe src="https://player.vimeo.com/video/${video}${suffix}" 
-      style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" 
-      frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen  
-      title="Content from Vimeo" loading="lazy"></iframe>
-    </div>`;
+  temp.innerHTML = `<div class="video-modal" style="display: block;">
+    <div class="video-modal-wrapper">
+      <div class='video-modal-content' style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 45%;">
+        <iframe src="https://www.youtube.com${vid ? `/embed/${vid}?rel=0&v=${vid}${suffix}` : embed}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;"
+        frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen
+        title="Content from YouTube" loading="lazy"></iframe>
+        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal"></div>
+      </div>
+    </div>
+  </div>`;
   return temp.children.item(0);
 }
 
@@ -91,11 +102,23 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
     embedWrapper.querySelector('iframe').addEventListener('load', () => {
       block.dataset.embedLoaded = true;
     });
+    document.body.classList.add('modal-open');
+    embedWrapper.querySelector('.video-modal-close').addEventListener('click', () => {
+      embedWrapper.remove();
+      block.dataset.embedLoaded = false;
+      document.body.classList.remove('modal-open');
+    });
   } else if (isVimeo) {
     const embedWrapper = embedVimeo(url, autoplay, background);
     block.append(embedWrapper);
     embedWrapper.querySelector('iframe').addEventListener('load', () => {
       block.dataset.embedLoaded = true;
+    });
+    document.body.classList.add('modal-open');
+    embedWrapper.querySelector('.video-modal-close').addEventListener('click', () => {
+      embedWrapper.remove();
+      block.dataset.embedLoaded = false;
+      document.body.classList.remove('modal-open');
     });
   } else {
     const videoEl = getVideoElement(link, autoplay, background);
