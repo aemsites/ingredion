@@ -10,6 +10,7 @@ export default async function decorate(doc) {
   const jsonPath = getMetadata('article-data');
   const articlesPerPageOptions = getMetadata('articles-per-page-options');
   const paginationMaxBtns = Number(getMetadata('pagination-max-buttons'));
+  const theme = getMetadata('theme');
   const $breadcrumbs = breadcrumbs();
   const $search = div();
   const $sort = div();
@@ -29,6 +30,8 @@ export default async function decorate(doc) {
       a({ class: 'button', href: article.path }, 'Learn More'),
     ),
   );
+
+  console.log(theme);
 
   const $articlePage = div({ class: 'article-list' },
     $breadcrumbs,
