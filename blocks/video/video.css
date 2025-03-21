@@ -1,42 +1,6 @@
-.video {
-  text-align: center;
-  max-width: 900px;
-  margin: 24px auto;
-}
-
-.video[data-embed-loaded='false']:not(.placeholder) {
-  /* reserve an approximate space to avoid extensive layout shifts */
-  aspect-ratio: 16 / 9;
-}
-
-.video > div {
-  display: flex;
-  justify-content: center;
-}
-
-.video video {
-  max-width: 100%;
-}
-
-.video .video-placeholder {
-  width: 100%;
-  aspect-ratio: 16 / 9;
+.video-placeholder {
   position: relative;
-}
-
-.video .video-placeholder > * {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  inset: 0;
-}
-
-.video[data-embed-loaded='true'] .video-placeholder,
-.video[data-embed-loaded='false'] .video-placeholder + * {
-  visibility: hidden;
-  height: 0;
-  width: 0;
+  height: auto;
 }
 
 .video .video-placeholder picture img {
@@ -45,7 +9,7 @@
   object-fit: cover;
 }
 
-.video .video-placeholder-play button {
+.video .video-placeholder button {
   cursor: pointer;
   border: 0;
   background: #fff;
@@ -56,7 +20,14 @@
   padding: 0;
 }
 
-.video .video-placeholder-play button::before {
+.video .video-placeholder .play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.video .video-placeholder button::before {
   content: '';
   display: block;
   box-sizing: border-box;
@@ -70,65 +41,110 @@
   transform: translate(-50%, -60%);
 }
 
-.video .video-placeholder-play button:hover::before {
+.video .video-placeholder button:hover::before {
   border-left-color: var(--dark-green);
 }
 
+.video-modal .video-modal-wrapper {
+  width: 100vw;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: color(srgb 0 0 0 / 40%);
+}
+
+.video-modal video {
+  width: 100%;
+  height: auto;
+  outline: 0;
+}
+
+.video-modal .video-modal-content {
+  height: 100%;
+  width: 90%;
+  margin: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.video .video-modal iframe {
+  width: auto;
+  height: auto;
+  border: none;
+}
+
 .video .video-modal {
-  position: absolute;
-
-  .video-modal-wrapper {
-    width: 100vw;
-    height: 100%;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0 0 0 / 40%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .video-modal-content {
-    height: 100%;
-    width: 100%;
-    margin: auto;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    max-width: 66.875rem;
-  }
-
-  .video-modal-content iframe,
-  .video-modal-content video {
-    max-width: 1013px;
-    height: 100%;
-  }
-
-  .video-modal-close {
-    align-self: flex-end;
-    order: -1;
-    cursor: pointer;
-    border: 0;
-    background: 0 0;
-    z-index: 2;
-    top: 10rem;
-    position: fixed;
-  }
-
-  .video-modal-close.icon-close-blk::before {  
-    font-size: 1.75rem;
-  }
-
-  .icon-close-blk::before {
-    content: "\e91c";
-    color: #fff;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  z-index: 99;
 }
 
 body.modal-open {
   overflow: hidden; /* Disable scrolling when video modal is open */
+}
+
+.video .video-modal-close.icon-close-blk::before {
+  color: #fff;
+  font-size: 1.75rem;
+}
+
+.icon-close-blk::before {
+  content: "\e91c";
+  color: #4d4f53;
+}
+
+.video .video-modal .video-modal-close {
+  align-self: flex-end;
+  order: -1;
+  cursor: pointer;
+  border: 0;
+  background: 0 0;
+  z-index: 2;
+  padding: 0;
+  position: static;
+  margin-bottom: 0.625rem;
+}
+
+@media (width >= 67.5625rem) {
+  .video-container .video-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .video-container .video-wrapper > div {
+    flex-basis: 100%;
+  }
+
+  .video-placeholder {
+    max-width: 76.4375rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .video-modal .video-modal-content {
+    width: 100%;
+    max-width: 66.875rem;
+  }
+
+  .video .video-modal iframe,
+  .video-modal video {
+    width: 100%;
+    max-width: 63.3125rem;
+  }
+}
+
+@media (width >= 48rem) {
+  .video .video-modal iframe {
+    width: 90%;
+    height: 80%;
+  }
 }

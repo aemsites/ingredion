@@ -19,10 +19,9 @@ function embedVimeo(url, autoplay, background) {
   const temp = document.createElement('div');
   temp.innerHTML = `<div class="video-modal" style="display: block;">
     <div class="video-modal-wrapper">
-      <div class='video-modal-content' style="left: 0; width: 100%; position: relative; padding-bottom: 45%;">
+      <div class='video-modal-content'">
         <iframe src="https://player.vimeo.com/video/${video}${suffix}" 
-          style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" 
-          frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen  
+          frameborder="0" allow="autoplay" scrolling="no" allowfullscreen data-ready="true"  
           title="Content from Vimeo" loading="lazy"></iframe>
         <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal"></div>
       </div>
@@ -54,9 +53,9 @@ function embedYoutube(url, autoplay, background) {
   const temp = document.createElement('div');
   temp.innerHTML = `<div class="video-modal" style="display: block;">
     <div class="video-modal-wrapper">
-      <div class='video-modal-content' style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 45%;">
-        <iframe src="https://www.youtube.com${vid ? `/embed/${vid}?rel=0&v=${vid}${suffix}` : embed}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;"
-        frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen
+      <div class='video-modal-content'>
+        <iframe src="https://www.youtube.com${vid ? `/embed/${vid}?rel=0&v=${vid}${suffix}` : embed}"
+        "rameborder="0" allow="autoplay" scrolling="no" allowfullscreen data-ready="true"
         title="Content from YouTube" loading="lazy"></iframe>
         <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal"></div>
       </div>
@@ -145,10 +144,9 @@ export default async function decorate(block) {
     if (!autoplay) {
       wrapper.insertAdjacentHTML(
         'beforeend',
-        '<div class="video-placeholder-play"><button type="button" title="Play"></button></div>',
+        '<button class="play-button"><span class="icon-play-button"></span></button?',
       );
       wrapper.addEventListener('click', () => {
-        wrapper.remove();
         loadVideoEmbed(block, link, true, false);
       });
     }
