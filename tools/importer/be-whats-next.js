@@ -95,41 +95,50 @@ const createMetadata = (main, document, url, html) => {
     meta.description = desc.content;
   }
 
-  // image
-  const img = document.querySelector("[property='og:image']");
-  if (img && img.content) {
-    const el = document.createElement('img');
-    el.src = img.content;
-    meta.Image = el;
+  // Set image metadata
+  const ogImage = document.querySelector("[property='og:image']");
+  if (ogImage?.content) {
+    meta.Image = Object.assign(document.createElement('img'), {src: ogImage.content});
   }
-  // page name
+
+  // Set page metadata
   meta['Page Name'] = getPageName(document);
-  const teaserTitle = getMetadataProp(document, '.heading > h2');
-  if (teaserTitle) meta['teaser-title'] = teaserTitle;
-  const teaserDescription = getMetadataProp(document, '.rte-block--large-body-text');
-  if (teaserDescription) meta['teaser-description'] = teaserDescription;
+
+  // Get teaser metadata
+  const teaser = {
+    title: getMetadataProp(document, '.heading > h2'),
+    description: getMetadataProp(document, '.rte-block--large-body-text')
+  };
+  if (teaser.title) meta['teaser-title'] = teaser.title;
+  if (teaser.description) meta['teaser-description'] = teaser.description;
+
+  // Get date and category metadata
   const dateCategory = getMetadataProp(document, '.date-category-tags');
   if (dateCategory) {
-    meta['published-date'] = dateCategory.split('|')[0].trim();
-    meta['categories'] = dateCategory.split('|')[1] ? dateCategory.split('|')[1].trim() : '';
+    const [date, category = ''] = dateCategory.split('|').map(s => s.trim());
+    meta['published-date'] = date;
+    meta['categories'] = category;
   }
+
+  // Get type and social metadata
   const type = getMetadataProp(document, '.category-label');
-  if (type && type !== undefined) meta['type'] = type;
+  if (type) meta.type = type;
+
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
-  const block = WebImporter.Blocks.getMetadataBlock(document, meta);
-  main.append(block);
+
+  // Create and append metadata block
+  main.append(WebImporter.Blocks.getMetadataBlock(document, meta));
   return meta;
 };
 
 export function getMetadataProp(document, queryString) {
-  let metaDataField;
   const metadata = document.querySelector(queryString);
-  if (metadata) {
-    metaDataField = metadata.textContent ? metadata.textContent.replace(/[\n\t]/gm, '') : metadata.content;
-    metadata.remove();
-  }
-  return metaDataField;
+  if (!metadata) return;
+  
+  const value = metadata.textContent ? metadata.textContent.replace(/[\n\t]/gm, '') : metadata.content;
+  metadata.remove();
+  return value;
 }
 
 function getPageName(document) {
@@ -140,15 +149,7 @@ function getPageName(document) {
 
 
 function toHex(rgb) {
-
-  // Grab the numbers
-  const match = rgb.match(/\d+/g);
-
-  // `map` over each number and return its hex
-  // equivalent making sure to `join` the array up
-  // and attaching a `#` to the beginning of the string 
-  return `#${match.map(color => {
-    const hex = Number(color).toString(16);
-    return hex.length === 1 ? `0${hex}` : hex;
-  }).join('')}`;
+  return '#' + rgb.match(/\d+/g)
+    .map(n => Number(n).toString(16).padStart(2, '0'))
+    .join('');
 }
