@@ -340,12 +340,6 @@ main > .section > .default-content-wrapper {
   height: 24rem;
 }
 
-@media (width <= 1079px) { 
-  .cards.video .video-placeholder {
-    aspect-ratio: 16 / 9;
-    height: max-content;
-  }
-}
 
 .cards.video .video-placeholder > * {
   display: flex;
@@ -353,6 +347,18 @@ main > .section > .default-content-wrapper {
   justify-content: center;
   position: absolute;
 }
+
+@media (width <= 1079px) { 
+  .cards.video .video-placeholder {
+    aspect-ratio: 16 / 9;
+    height: max-content;    
+  }
+
+  .cards.video .video-placeholder > picture {
+    position: relative;    
+  }
+}
+
 
 .cards.video[data-embed-loaded='false'] .video-placeholder + * {
   visibility: hidden;
