@@ -176,32 +176,75 @@ export function createCardsBlock(document, main) {
   let cardsBlocks = document.querySelectorAll('.section__content--columns-3');
   cardsBlocks.forEach((cardsBlock) => {
     convertHrefs(cardsBlock);
-    const cells = [['Cards']];
+    const cells = [];
     const cards = cardsBlock.querySelectorAll('.content-card');
     let cardsList = [];
-    
+    if (cardsBlock.querySelector('.video-banner')) {
+      cells.push(['Cards(video)']);
+    } else {
+      cells.push(['Cards']);
+    }
     cards.forEach((card, index) => {
-      let cardImg = card.querySelector('.content-card__image > a > picture') ? 
-        card.querySelector('.content-card__image > a > picture') : 
-        card.querySelector('.content-card__image > picture');
+      if (card.querySelector('.video-banner')) {
         
-      if (cardImg) {
-        cardImg = cardImg.outerHTML;
-      } else {
-        cardImg = '';
+        const videoBanner = card.querySelector('.video-banner');
+        let cardImg = videoBanner.querySelector('picture');
+        
+        if (cardImg) {
+          cardImg = cardImg.outerHTML;
+        } else {
+          cardImg = '';
+        }
+        
+        const cardHeading = card.querySelector('.content-card__text .heading > h3')
+          ? card.querySelector('.content-card__text .heading > h3').textContent
+          : '';
+          
+        const cardText = card.querySelector('.content-card__text .rte-block')
+          ? card.querySelector('.content-card__text .rte-block').innerHTML
+          : '';
+        cardText.replace('&nbsp;', '');
+        
+        let videoURL = videoBanner.getAttribute('data-video-url');
+        let videoID = videoURL.split('/').at(-1);
+        videoID = videoID.split('?').at(0);
+    
+        if (videoURL.includes('youtube')) {
+          videoURL = `https://youtu.be/${videoID}`;
+        } else if (videoURL.includes('vimeo')) {
+          videoURL = `https://vimeo.com/${videoID}`;
+        }
+        
+        const cardLinkText = card.querySelector('.content-card__text > a').innerText;
+        const cardLink = `<div><a href='${videoURL}'>${cardLinkText}</a></div>`;
+          
+        cells.push([`${cardImg}`, `<h3>${cardHeading}</h3> ${cardText} ${cardLink}`]);
+      } else {        
+        let cardImg = card.querySelector('.content-card__image > a > picture') 
+          ? card.querySelector('.content-card__image > a > picture')
+          : card.querySelector('.content-card__image > picture');
+          
+        if (cardImg) {
+          cardImg = cardImg.outerHTML;
+        } else {
+          cardImg = '';
+        }
+        
+        const cardHeading = card.querySelector('.content-card__text .heading > h3')
+          ? card.querySelector('.content-card__text .heading > h3').textContent
+          : '';
+          
+        const cardText = card.querySelector('.content-card__text .rte-block')
+          ? card.querySelector('.content-card__text .rte-block').innerHTML
+          : '';
+        cardText.replace('&nbsp;', '');
+        
+        const cardLink = card.querySelector('.content-card__text > a')
+          ? card.querySelector('.content-card__text > a').outerHTML
+          : '';
+          
+        cells.push([`${cardImg} <h3>${cardHeading}</h3> ${cardText} ${cardLink}`]);
       }
-      
-      const cardHeading = card.querySelector('.content-card__text .heading > h3') ? 
-        card.querySelector('.content-card__text .heading > h3').textContent : '';
-        
-      const cardText = card.querySelector('.content-card__text .rte-block') ? 
-        card.querySelector('.content-card__text .rte-block').innerHTML : '';
-      cardText.replace('&nbsp;', '');
-      
-      const cardLink = card.querySelector('.content-card__text > a') ? 
-        card.querySelector('.content-card__text > a').outerHTML : '';
-        
-      cells.push([`${cardImg} <h3>${cardHeading}</h3> ${cardText} ${cardLink}`]);
     });
     
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
@@ -318,6 +361,7 @@ export function createVideoBlock(document, main) {
 }
 
 export function createIngredientBlock(document, main) {
+  
   const relatedIngredients = document.querySelector('.relatedIngredients');
   if (!relatedIngredients) return;
   
@@ -331,7 +375,12 @@ export function createIngredientBlock(document, main) {
     cells.push([subHeading,]);
     
     const table = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(table);
+    const ptag = document.createElement('p');
+    ptag.textContent = '---';
+    const div = document.createElement('div');
+    div.appendChild(ptag);
+    div.appendChild(table);
+    relatedIngredients.replaceWith(div);
     
   } else {
     resultProdCards.forEach((resultProdCard) => {
@@ -357,21 +406,38 @@ export function createIngredientBlock(document, main) {
       const leftSide = `<h4>${heading}</h4><h3>${subHeading}</h3><p>${description}</p>${ctaAnchor}`;
       const resultCardButtons = document.querySelector('.result-card__buttons');
       const buttons = resultCardButtons.querySelectorAll('a');
-      let rightSide = '';
+      let rightSide = document.createElement('div');
       
       buttons.forEach((button) => {
-        rightSide += `<a href = '${(button.getAttribute('href'))}'>${button.innerText}</a><br/>`;
+        const url = button.getAttribute('href');
+        const innerDiv = document.createElement('div');
+        const a = document.createElement('a');
+        innerDiv.appendChild(a);
+        if (url.includes('http')) {
+          a.href = url;
+          a.textContent = button.innerText;
+         
+        } else {
+          a.href = previewURL + url;
+          a.textContent = button.innerText;
+          
+        }
+        rightSide.appendChild(innerDiv);
       });
       
       cells.push([leftSide,]);
       cells.push([rightSide,]);
       
       const table = WebImporter.DOMUtils.createTable(cells, document);
-      main.append(table);
+      const ptag = document.createElement('p');
+      ptag.textContent = '---';
+      const div = document.createElement('div');
+      div.appendChild(ptag);
+      div.appendChild(table);
+      resultProdCard.replaceWith(div);
     });
   }
   
-  relatedIngredients.remove();
   return;
 }
 
