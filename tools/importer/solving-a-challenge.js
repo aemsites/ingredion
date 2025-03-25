@@ -103,7 +103,7 @@ const createMetadata = (main, document, url, html) => {
   }
   // page name
   meta['Page Name'] = getPageName(document);
-  const teaserTitle = getMetadataProp(document, '.heading > h2');
+  const teaserTitle = getMetadataProp(document, '.heading > h1');
   if (teaserTitle) meta['teaser-title'] = teaserTitle;
   const teaserDescription = getMetadataProp(document, '.rte-block--large-body-text');
   if (teaserDescription) meta['teaser-description'] = teaserDescription;

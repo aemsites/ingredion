@@ -530,7 +530,7 @@ export function createAnchorBlock(document, main) {
     const anchor = document.createElement('a');
     anchor.textContent = tab.getAttribute('link-label');
     
-    const tabContent = tab.querySelector('.richText .rte-block  > h2');
+    const tabContent = tab.querySelector('h2');
     if (tabContent) {
       let text = tabContent.textContent.replace(/\&nbsp;/g, '');
       text = text.trim();
@@ -538,6 +538,19 @@ export function createAnchorBlock(document, main) {
       text = text.replace('\'', '').toLowerCase();
       text = text.replace(/\s+/g, '-').toLowerCase();
       anchor.href = `#${text}`;
+    } else {
+      const ptag = document.createElement('p');
+      ptag.textContent = '---';
+      const h2 = document.createElement('h2');
+      let text = tab.getAttribute('link-label');
+      h2.textContent = text;
+      text = text.trim();
+      text = text.replace('(', '').replaceAll(')', '');
+      text = text.replace('\'', '').toLowerCase();
+      text = text.replace(/\s+/g, '-').toLowerCase();
+      anchor.href = `#${text}`;     
+      tab.prepend(h2);
+      tab.prepend(ptag);
     }
     
     cells.push([`${anchor.outerHTML}`]);
