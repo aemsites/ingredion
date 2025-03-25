@@ -366,9 +366,18 @@ main > .section > .default-content-wrapper {
   object-fit: cover;
 }
 
+.cards.video .video-placeholder .video-placeholder-play {  
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .cards.video .video-placeholder-play button {
   position: relative;
   display: block;
+  border: 0;
+  cursor: pointer;
+  background: #fff;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -376,6 +385,7 @@ main > .section > .default-content-wrapper {
   padding: 0;
   color: var(--dark-green);
   border-color: var(--dark-green);
+  box-shadow: 0 10px 15px 0 rgba(0 0 0 / 10%);       
 }
 
 
@@ -384,6 +394,7 @@ main > .section > .default-content-wrapper {
   content: '';
   display: block;
   box-sizing: border-box;
+  color: var(--dark-green);
   position: absolute;
   width: 0;
   height: 24px;
@@ -417,6 +428,19 @@ main > .section > .default-content-wrapper {
   max-width: 66.875rem;
 }
 
+.cards.video .video-modal .video-modal-wrapper {
+  width: 100vw;
+  height: 100%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0 0 0 / 40%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .cards.video .video-modal-content iframe,
 .cards.video .video-modal-content video {
   width: 100%;
@@ -432,6 +456,7 @@ main > .section > .default-content-wrapper {
   background: 0 0;
   z-index: 2;
   top: 10%;
+  position: fixed;
 }
 
 .cards.video .video-modal-close.icon-close-blk::before {  
