@@ -1,15 +1,22 @@
 /* eslint-disable no-use-before-define, no-undef, function-paren-newline, object-curly-newline */
-import { script, div, aside, a, strong, p, h3, h4, h5, span, ul, li, button, img } from '../../scripts/dom-helpers.js';
-import { createOptimizedPicture } from '../../scripts/aem.js';
-import { readBlockConfig } from '../../scripts/aem.js';
+import { script, div, ul, li, h2, h3, p, button, a } from '../../scripts/dom-helpers.js';
+import { readBlockConfig, toClassName } from '../../scripts/aem.js';
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 
-let locations = [];
+
 let map;
 let bounds;
 let markers = [];
 
-
+// Add this state object at the top with other declarations
+const state = {
+  allLocations: [],
+  filteredLocations: [],
+  filters: {
+    country: '',
+    type: ''
+  }
+};
 
 // Sets the map on all markers in the array.
 function setAllMarkers(m) {
@@ -30,100 +37,27 @@ function deleteMapMarkers() {
 }
 
 /**
- * Gets the marker class based on location type
- * @param {string} type - The location type
- * @returns {string} - The CSS class for the marker
- */
-function getMarkerClass(type) {
-  switch (type?.toLowerCase()) {
-    case 'headquarters':
-      return 'headquarters';
-    case 'manufacturing':
-      return 'manufacturing';
-    case 'innovation center':
-      return 'innovation-center';
-    case 'sales':
-      return 'sales';
-    default:
-      return 'sales';  // Using sales as default
-  }
-}
-
-/**
  * Creates a marker pin element for a location.
  * @param {Object} location - The location object.
  * @param {number} i - The index of the pin.
  * @returns {HTMLElement} - The marker pin element.
  */
 function markerPin(location, i) {
-  const pin = div({ class: `pin pin-${i} ${getMarkerClass(location.type)}`, 'data-pin': i });
-  const icon = div({ class: 'marker-icon' });
-  pin.appendChild(icon);
-  return pin;
+  return div({ class: `pin pin-${i} ${toClassName(location.type)}`, 'data-pin': i }, 
+    div({ class: 'icon' }),
+    div({ class: 'details' },
+      createLocationCard(location),
+    )
+  );
 }
 
-/**
- * Checks marker position and if it's off the map moves it into view
- * @param {number} i - The index of the active home.
-*/
-function fitMarkerWithinBounds(i) {
-  // padding around marker when moved into view
-  const padding = {
-    top: 40,
-    right: 40,
-    bottom: 60,
-    left: 40,
-  };
-
-  const markerElement = document.querySelector(`[data-pin="${i}"]`);
-  const markerRect = markerElement.getBoundingClientRect();
-  const mapContainer = document.getElementById('google-map');
-  const mapRect = mapContainer.getBoundingClientRect();
-  const { top: markerTop, left: markerLeft, right: markerRight, bottom: markerBottom } = markerRect;
-  const { top: mapTop, left: mapLeft, right: mapRight, bottom: mapBottom } = mapRect;
-
-  // calculate distances
-  const markerPXfromTop = markerTop - mapTop;
-  const markerPXfromLeft = markerLeft - mapLeft;
-  const markerPXfromRight = mapRight - markerRight;
-  const markerPXfromBottom = mapBottom - markerBottom;
-
-  let panX = 0;
-  let panY = 0;
-
-  // calculate pan amounts based on padding
-  if (markerPXfromTop < padding.top) {
-    panY = (padding.top - markerPXfromTop) * -1;
-  } else if (markerPXfromBottom < padding.bottom) {
-    panY = (padding.bottom - markerPXfromBottom);
-  }
-
-  if (markerPXfromLeft < padding.left) {
-    panX = (padding.left - markerPXfromLeft) * -1;
-  } else if (markerPXfromRight < padding.right) {
-    panX = (padding.right - markerPXfromRight);
-  }
-
-  // pan the map if needed
-  if (panX !== 0 || panY !== 0) {
-    const currentCenter = map.getCenter();
-    const projection = map.getProjection();
-    const currentCenterPX = projection.fromLatLngToPoint(currentCenter);
-
-    currentCenterPX.y += (panY / 2 ** map.getZoom());
-    currentCenterPX.x += (panX / 2 ** map.getZoom());
-
-    const newCenter = projection.fromPointToLatLng(currentCenterPX);
-    map.panTo(newCenter);
-  }
-}
 
 /**
  * Adds map markers for each location in the data.
  * @param {Array} locations - The array of locations to add as markers on the map.
  * @returns {Promise<void>} - A promise that resolves when the markers are added.
  */
-async function addMapMarkers(locations) {
+async function updateMarkers(locations) {
   const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
   bounds = new google.maps.LatLngBounds();
 
@@ -147,11 +81,12 @@ async function addMapMarkers(locations) {
     markers.push(marker);
     bounds.extend(new google.maps.LatLng(lat, lng));
 
-    // Note: this empty click listener must be added in order for any other events to work
-    marker.addListener('click', () => { });
+    // Important: this must be added in order for any other events to work
+    marker.addListener('gmp-click', () => { });
 
     marker.content.addEventListener('click', () => {
       highlightActiveLocation(i);
+      highlightMarker(i);
     });
 
     map.addListener('click', () => {
@@ -160,7 +95,7 @@ async function addMapMarkers(locations) {
   });
 
   // add padding to bounds so markers aren't hidden when active
-  map.fitBounds(bounds, { top: 0, right: 0, bottom: 0, left: 100 });
+  map.fitBounds(bounds, { top: 0, right: 0, bottom: 0, left: 700 });
 }
 
 /**
@@ -173,32 +108,14 @@ async function buildMap() {
   map = new Map(document.getElementById('google-map'), {
     center: { lat: 43.696, lng: -116.641 },
     zoom: 12,
+    minZoom: 3,
     mapId: 'IM_IMPORTANT',
-    disableDefaultUI: true, // remove all buttons
-    zoomControl: true, // allow zoom buttons
-    streetViewControl: true, // allow street view control
-    fullscreenControl: true, // allow fullscreen
-    gestureHandling: 'greedy', // allow map to pan when scrolling
-  });
-
-  // style map to remove unwanted points
-  const mapStyle = [{
-    featureType: 'poi',
-    elementType: 'labels',
-    stylers: [{ visibility: 'off' }], // hide points of interest
-  }];
-  const mapType = new StyledMapType(mapStyle, { name: 'Grayscale' });
-  map.mapTypes.set('grey', mapType);
-  map.setMapTypeId('grey');
-}
-
-/**
- * Listener for 'filtersChanged' event and performs actions based on the chosen filters.
- */
-function filterListeners() {
-  window.addEventListener('filtersChanged', async (event) => {
-
-    addMapMarkers(inventoryData);
+    disableDefaultUI: false, // Enable default UI controls
+    zoomControl: false, // Ensure zoom control is enabled
+    streetViewControl: false, // Ensure street view control is enabled
+    fullscreenControl: true, // Ensure fullscreen control is enabled
+    mapTypeControl: false, // Disable map type control to remove Map/Satellite buttons
+    gestureHandling: 'cooperative', // Allow map to pan when scrolling
   });
 }
 
@@ -208,11 +125,62 @@ function filterListeners() {
  */
 function highlightActiveLocation(i) {
   resetActiveLocations();
-  // pin actions
   const $pin = document.querySelector(`[data-pin="${i}"]`);
   $pin.classList.add('active');
-  $pin.parentNode.parentNode.style.zIndex = '999'; // must use javascript to set/unset
-  // fitMarkerWithinBounds(i);
+  $pin.parentNode.style.zIndex = '999'; // must use javascript to set/unset
+
+  // Ensure the marker is not too close to the edges
+  const marker = markers[i];
+  if (marker) {
+    fitMarkerWithinBounds(marker.content);
+  }
+}
+
+function fitMarkerWithinBounds(markerElement) {
+  const padding = {
+    top: 40,
+    right: 40,
+    bottom: 40,
+    left: 700,
+  };
+
+  const markerRect = markerElement.getBoundingClientRect();
+  const mapContainer = document.getElementById('google-map');
+  const mapRect = mapContainer.getBoundingClientRect();
+  const { top: markerTop, left: markerLeft, right: markerRight, bottom: markerBottom } = markerRect;
+  const { top: mapTop, left: mapLeft, right: mapRight, bottom: mapBottom } = mapRect;
+
+  // calculate distances
+  const markerPXfromTop = markerTop - mapTop;
+  const markerPXfromLeft = markerLeft - mapLeft;
+  const markerPXfromRight = mapRight - markerRight;
+  const markerPXfromBottom = mapBottom - markerBottom;
+
+  let panX = 0;
+  let panY = 0;
+
+  if (markerPXfromTop < padding.top) {
+    panY = (padding.top - markerPXfromTop) * -1;
+  } else if (markerPXfromBottom < padding.bottom) {
+    panY = (padding.bottom - markerPXfromBottom);
+  }
+
+  if (markerPXfromLeft < padding.left) {
+    panX = (padding.left - markerPXfromLeft) * -1;
+  } else if (markerPXfromRight < padding.right) {
+    panX = (padding.right - markerPXfromRight);
+  }
+
+  // pan the map if needed
+  if (panX !== 0 || panY !== 0) {
+    const currentCenter = map.getCenter();
+    const projection = map.getProjection();
+    const currentCenterPX = projection.fromLatLngToPoint(currentCenter);
+    currentCenterPX.y += (panY / 2 ** map.getZoom());
+    currentCenterPX.x += (panX / 2 ** map.getZoom());
+    const newCenter = projection.fromPointToLatLng(currentCenterPX);
+    map.panTo(newCenter);
+  }
 }
 
 /**
@@ -222,47 +190,247 @@ function resetActiveLocations() {
   const allPins = document.querySelectorAll('.pin');
   allPins.forEach((pin) => {
     pin.classList.remove('active');
-    pin.parentNode.parentNode.style.zIndex = '';
+    pin.parentNode.style.zIndex = '';
   });
 }
 
-/**
- * Builds inventory cards for a list of homes.
- *
- * @param {Array} homes - The list of homes.
- * @returns {Array} - An array of inventory cards.
- */
-function buildInventoryCards(homes) {
-  return homes.map((home, i) => {
-    const $home = div({ class: `item-listing listing-${i}`, 'data-card': i },
-      a({ href: home.path }, createOptimizedPicture(home.image)),
-      div({ class: 'listing-info' },
-        h3(home.address),
-        div(span(home.city), span(home['home style'])),
-        div(span({ class: 'price' }, formatPrice(home.price)), span({ class: 'price' }, `${calculateMonthlyPayment(home.price)}/mo*`)),
-        div(span(home.status)),
-        ul({ class: 'specs' },
-          li(p('Beds'), p(home.beds)),
-          li(p('Baths'), p(home.baths)),
-          li(p('Sq. Ft.'), p(home['square feet'])),
-          li(p('Cars'), p(home.cars))),
-        div(
-          a({ class: 'btn yellow', href: home.path }, 'View Details'),
-        ),
-      ),
-    );
-    $home.addEventListener('mouseenter', () => {
-      highlightActiveHome(i);
+function createDropdown(title, options, type) {
+  const $list = ul({ class: 'options' });
+  const $dropdown = div({ class: `select-dropdown ${type || ''}` },
+    div({ class: 'selected' }, title),
+    $list
+  );
+
+  const toggleDropdown = (event) => {
+    event.stopPropagation();
+    $list.classList.toggle('open');
+    document.querySelectorAll('.select-dropdown .options').forEach(dropdown => {
+      if (dropdown !== $list) dropdown.classList.remove('open');
     });
-    return $home;
+  };
+
+  $dropdown.querySelector('.selected').addEventListener('click', toggleDropdown);
+  document.addEventListener('click', () => $list.classList.remove('open'));
+
+  options.forEach(option => {
+    const $option = li({ class: `option ${toClassName(option)}` }, option);
+    $option.addEventListener('click', () => {
+      $dropdown.querySelector('.selected').textContent = option;
+      $list.classList.remove('open');
+    });
+    $list.append($option);
+  });
+
+  return $dropdown;
+}
+
+function getUniqueValues(locations, key) {
+  return [...new Set(
+    locations.map(location => location[key])
+  )].filter(value => value).sort();
+}
+
+function filterLocations(locations, country, type) {
+  const defaultCountry = translate('select-country');
+  const defaultType = translate('select-type');
+  
+  // If no filters are active, return all locations
+  if (country === defaultCountry && type === defaultType) {
+    return locations;
+  }
+
+  return locations.filter(location => {
+    if (country !== defaultCountry && location.country !== country) {
+      return false;
+    }
+    if (type !== defaultType && location.type !== type) {
+      return false;
+    }
+    return true;
   });
 }
 
+function updateTypeOptions($typeFilter, locations, selectedCountry) {
+  // Get locations for selected country
+  const countryLocations = selectedCountry === translate('select-country') 
+    ? locations 
+    : locations.filter(location => location.country === selectedCountry);
+  
+  // Get unique types from filtered locations
+  const availableTypes = [...new Set(
+    countryLocations.map(location => location.type)
+  )].filter(type => type).sort();
+  
+  // Create new dropdown with filtered types
+  const newDropdown = createDropdown(translate('select-type'), availableTypes, 'type');
+  
+  // Replace the old dropdown with the new one
+  $typeFilter.replaceWith(newDropdown);
+  
+  // Return the new dropdown so it can be used in the calling function
+  return newDropdown;
+}
+
+// create location card
+function createLocationCard(location, index) {
+  // format website url
+  const formatUrl = (url) => {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.host + urlObj.pathname;
+    } catch (e) {
+      return url;
+    }
+  };
+
+  return div({ class: 'location-card', 'data-pin': index },
+    h3({ class: toClassName(location.type) }, location.location),
+    // replace \n replaced with <br>
+    ...location.address.split('\\n').map(line => p(line)),
+    // create website link if URL exists and is valid
+    ...(location.website && location.website.trim() ? [
+      a({ 
+        href: location.website,
+      }, formatUrl(location.website))
+    ] : [])
+  );
+}
+
+function handleSearch($countryFilter, $typeFilter) {
+  const selectedCountry = $countryFilter.querySelector('.selected').textContent;
+  const selectedType = $typeFilter.querySelector('.selected').textContent;
+  
+  // Update state
+  state.filters.country = selectedCountry;
+  state.filters.type = selectedType;
+  state.filteredLocations = filterLocations(state.allLocations, selectedCountry, selectedType);
+
+  // Remove existing filtered results if they exist
+  const existingFilteredResults = document.querySelector('.filtered-results');
+  if (existingFilteredResults) existingFilteredResults.remove();
+
+  const editSearch = a({ class: 'edit' }, 'Edit Search');
+  editSearch.addEventListener('click', () => {
+    $locatorSearch.classList.remove('hide-filters');
+  });
+  
+  const $results = div({ class: 'results' });
+
+  // Update UI
+  const $filteredResults = div({ class: 'filtered-results' },
+    div({ class: 'header' },
+      div({ class: 'country' }, selectedCountry), 
+      editSearch,
+    ),
+    div({ class: 'type' }, selectedType === translate('select-type') ? '' : selectedType),
+    $results,
+  );
+
+  state.filteredLocations.forEach((location, i) => {
+    const $location = createLocationCard(location, i);
+    $results.append($location);
+
+    $location.addEventListener('click', () => {
+      highlightMarker(i);
+    });
+
+  });
+
+  // insert results after filters
+  const $locatorSearch = document.querySelector('.locator-search');
+  $locatorSearch.append($filteredResults);
+  $locatorSearch.classList.add('hide-filters');
+
+  updateMarkers(state.filteredLocations);
+}
+
+function highlightMarker(index) {
+  resetActiveLocations();
+  const marker = markers[index];
+  if (marker) {
+    marker.content.classList.add('active');
+    marker.content.parentNode.style.zIndex = '999';
+  }
+
+  // remove existing active class from location cards
+  const $locationCards = document.querySelectorAll('.location-card');
+  $locationCards.forEach(card => {
+    card.classList.remove('active');
+  });
+
+  // highlight location card
+  const $location = document.querySelector(`.location-card[data-pin="${index}"]`);
+  if ($location) {
+    $location.classList.add('active');
+  }
+}
+
+function createFilters(locations) {
+  // Store locations in state
+  state.allLocations = locations;
+  state.filteredLocations = locations;
+  
+  // Create filter elements
+  const uniqueCountries = getUniqueValues(locations, 'country');
+  const uniqueTypes = getUniqueValues(locations, 'type');
+  
+  const $countryFilter = createDropdown(translate('select-country'), uniqueCountries, 'country');
+  // Add country selection handler
+  $countryFilter.querySelectorAll('.option').forEach($option => {
+    $option.addEventListener('click', () => {
+      const selectedCountry = $option.textContent;
+      $typeFilter = updateTypeOptions($typeFilter, locations, selectedCountry);
+      $searchButton.disabled = false;
+    });
+  });
+  let $typeFilter = createDropdown(translate('select-type'), uniqueTypes, 'type');
+  
+  const $searchButton = button({ class: 'button search', disabled: true }, 'Search');
+  $searchButton.addEventListener('click', () => {
+    handleSearch($countryFilter, $typeFilter);
+    $searchButton.parentElement.classList.add('reset');
+  });
+
+  // Clear button handler
+  const $clearButton = a({ class: 'clear' }, 'Clear');
+  $clearButton.addEventListener('click', () => {
+    // Reset state
+    state.filters.country = translate('select-country');
+    state.filters.type = translate('select-type');
+    state.filteredLocations = state.allLocations;
+    
+    // Reset UI
+    $countryFilter.querySelector('.selected').textContent = state.filters.country;
+    $typeFilter = updateTypeOptions($typeFilter, locations, state.filters.country);
+    // clear filter-results
+    const $filteredResults = document.querySelector('.filtered-results');
+    if ($filteredResults) $filteredResults.remove();
+    updateMarkers(state.allLocations);
+    $clearButton.parentElement.classList.remove('reset');
+    $searchButton.disabled = true;
+  });
+
+  // Return assembled filter container
+  return div({ class: 'filters' },
+    h3(translate('please-select-country')),
+    $countryFilter,
+    h3(translate('please-select-type')),
+    $typeFilter,
+    div({ class: 'search-clear' }, 
+      $searchButton,
+      $clearButton,
+    )
+  );
+}
 
 // key = AIzaSyBzkFWc7cMP0Ww_5cYqCcgxIEx-2YpNas4
 export default async function decorate(block) {
   const [region, locale] = getRegionLocale();
-  const { 'google-maps-api-key': mapKey, 'map-data': mapData } = readBlockConfig(block);
+  const { 
+    'filter-title': filterTitle, 
+    'google-maps-api-key': mapKey, 
+    'map-data': mapData 
+  } = readBlockConfig(block);
   const googleMapScript = script(`
     (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=\`https://maps.googleapis.com/maps/api/js?\`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
       key: "${mapKey}", 
@@ -282,21 +450,18 @@ export default async function decorate(block) {
   if (!mapResponse.ok) throw new Error('Failed to fetch map data');
   const locationData = await mapResponse.json();
 
-  filterListeners();
-
   const $mapFilter = div({ class: 'map-filter-container' },
     div({ class: 'map' },
       div({ id: 'google-map' }),
     ),
     div({ class: 'locator-search' },
-      div({ class: 'listings-wrapper' }),
+      h2(filterTitle),
+      createFilters(locationData.data),
     ),
   );
   block.innerHTML = '';
   block.append($mapFilter);
 
   buildMap();
-  addMapMarkers(locationData.data);
+  updateMarkers(locationData.data);
 }
-
-
