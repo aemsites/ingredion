@@ -38,13 +38,15 @@
 @media (width >=1080px) {
   .anchor-container .anchor-wrapper {
     display: block;
-    position: sticky;
+    
   }
 
   .is-fixed {
     top: 0;
     left: 0;
-    z-index: 5;
+    z-index: 50;
+    position: fixed;
+    width: 100%;
     
     a.active
     {
