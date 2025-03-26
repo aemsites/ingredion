@@ -212,6 +212,7 @@ a.button,
   letter-spacing: .0313rem;
   background: var(--green);
   color: var(--dark-grey);
+  border: 0;
   padding: 1rem;
   text-transform: capitalize;
 
