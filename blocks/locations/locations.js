@@ -84,7 +84,6 @@ async function updateMarkers(locations) {
 
     marker.content.addEventListener('click', () => {
       highlightActiveLocation(i);
-      highlightMarker(i);
     });
 
     map.addListener('click', () => {
@@ -123,12 +122,26 @@ async function buildMap() {
  */
 function highlightActiveLocation(i) {
   resetActiveLocations();
-  const $pin = document.querySelector(`[data-pin="${i}"]`);
-  $pin.classList.add('active');
-  $pin.parentNode.style.zIndex = '999'; // must use javascript to set/unset
+
+  const marker = markers[i];
+  if (marker) {
+    marker.content.classList.add('active');
+    marker.content.parentNode.style.zIndex = '999';
+  }
+
+  // Remove existing active class from location cards
+  const $locationCards = document.querySelectorAll('.location-card');
+  $locationCards.forEach((card) => {
+    card.classList.remove('active');
+  });
+
+  // Highlight location card
+  const $location = document.querySelector(`.location-card[data-pin="${i}"]`);
+  if ($location) {
+    $location.classList.add('active');
+  }
 
   // Ensure the marker is not too close to the edges
-  const marker = markers[i];
   if (marker) {
     fitMarkerWithinBounds(marker.content);
   }
@@ -329,7 +342,7 @@ function handleSearch($countryFilter, $typeFilter) {
     $results.append($location);
 
     $location.addEventListener('click', () => {
-      highlightMarker(i);
+      highlightActiveLocation(i);
     });
   });
 
@@ -339,27 +352,6 @@ function handleSearch($countryFilter, $typeFilter) {
   $locatorSearch.classList.add('hide-filters');
 
   updateMarkers(state.filteredLocations);
-}
-
-function highlightMarker(index) {
-  resetActiveLocations();
-  const marker = markers[index];
-  if (marker) {
-    marker.content.classList.add('active');
-    marker.content.parentNode.style.zIndex = '999';
-  }
-
-  // remove existing active class from location cards
-  const $locationCards = document.querySelectorAll('.location-card');
-  $locationCards.forEach((card) => {
-    card.classList.remove('active');
-  });
-
-  // highlight location card
-  const $location = document.querySelector(`.location-card[data-pin="${index}"]`);
-  if ($location) {
-    $location.classList.add('active');
-  }
 }
 
 function createFilters(locations) {
