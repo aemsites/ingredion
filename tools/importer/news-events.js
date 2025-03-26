@@ -107,6 +107,7 @@ const createMetadata = (main, document, url, html) => {
  meta['Registration'] = registrationLink;
  meta['Registration event site'] = registrationEventSite;
  meta['Template'] = 'events';
+ meta['keywords'] = '';
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
   else meta['social-share'] = '';

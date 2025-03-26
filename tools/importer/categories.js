@@ -122,6 +122,7 @@ const createMetadata = (main, document, url, html) => {
    const type = getMetadataProp(document, '.category-label');
     if (type && type !== undefined) meta['type'] = type;
   const socialShare = getSocialShare(document);
+  meta['keywords'] = '';
   if (socialShare) meta['social-share'] = socialShare;
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
   main.append(block);

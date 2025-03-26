@@ -116,6 +116,7 @@ const createMetadata = (main, document, url, html) => {
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
   else meta['social-share'] = '';
+  meta['keywords'] = '';
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
   main.append(block);
   return meta;

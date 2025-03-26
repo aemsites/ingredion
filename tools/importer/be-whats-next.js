@@ -119,7 +119,7 @@ const createMetadata = (main, document, url, html) => {
     meta['published-date'] = date;
     meta['categories'] = category;
   }
-
+  meta['keywords'] = '';
   // Get type and social metadata
   const type = getMetadataProp(document, '.category-label');
   if (type) meta.type = type;

@@ -623,10 +623,12 @@ export function createForm(document, main) {
   const cells = [['Form']];
   let formURL = '';
   let formContainer = document.querySelector('.contactUsForm')
-  
+  let submissionURL = '';
   if (formContainer) {
-    formURL = `https://main--ingredion--aemsites.aem.page/drafts/ujjgupta/contact-us-form.json`;
-    cells.push([formURL]);
+    formURL = `https://main--ingredion--aemsites.aem.live/na/en-us/forms/contact-supplier-form.json`;
+    submissionURL = `https://go.ingredion.com/l/504221/2025-03-03/2b8msvs`;
+    cells.push([`Form URL`, `${formURL}`]);
+    cells.push([`Submission Endpoint`, `${submissionURL}`]);
     const formTable = WebImporter.DOMUtils.createTable(cells, document);
     formContainer.replaceWith(formTable);
   }
