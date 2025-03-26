@@ -374,3 +374,7 @@
   .icon-check-2-blk::before {
     content: "\e91b";
   }
+  
+  .form > div > div:first-child {
+    display: none;
+  }
