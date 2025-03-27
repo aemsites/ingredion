@@ -316,6 +316,7 @@ export function createCardsBlock(document, main) {
 
   cardsBlocks = document.querySelectorAll('.fourColumnTeaserGrid .section__content');
   cardsBlocks.forEach((cardsBlock) => {
+    convertHrefs(cardsBlock);
     const cells = [['Cards(four-column)']];
     const cards = cardsBlock.querySelectorAll('.link-card');
     let cardsList = [];
@@ -688,3 +689,4 @@ export function convertHrefs(element) {
     href.href = testURL(href.href);
   });
 }
+
