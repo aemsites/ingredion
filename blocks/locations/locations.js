@@ -224,7 +224,9 @@ function createDropdown(title, options, type) {
   document.addEventListener('click', () => $list.classList.remove('open'));
 
   options.forEach((option) => {
-    const $option = li({ class: `option ${toClassName(option)}` }, option);
+    const optionClass = toClassName(option);
+    const label = type === 'country' ? option : translate(optionClass);
+    const $option = li({ class: `option ${optionClass}` }, label);
     $option.addEventListener('click', () => {
       $dropdown.querySelector('.selected').textContent = option;
       $list.classList.remove('open');
@@ -320,7 +322,7 @@ function handleSearch($countryFilter, $typeFilter) {
   const existingFilteredResults = document.querySelector('.filtered-results');
   if (existingFilteredResults) existingFilteredResults.remove();
 
-  const editSearch = a({ class: 'edit' }, 'Edit Search');
+  const editSearch = a({ class: 'edit' }, translate('edit-search'));
   editSearch.addEventListener('click', () => {
     $locatorSearch.classList.remove('hide-filters');
   });
@@ -374,14 +376,14 @@ function createFilters(locations) {
   });
   let $typeFilter = createDropdown(translate('select-type'), uniqueTypes, 'type');
 
-  const $searchButton = button({ class: 'button search', disabled: true }, 'Search');
+  const $searchButton = button({ class: 'button search', disabled: true }, translate('search'));
   $searchButton.addEventListener('click', () => {
     handleSearch($countryFilter, $typeFilter);
     $searchButton.parentElement.classList.add('reset');
   });
 
   // Clear button handler
-  const $clearButton = a({ class: 'clear' }, 'Clear');
+  const $clearButton = a({ class: 'clear' }, translate('clear'));
   $clearButton.addEventListener('click', () => {
     // Reset state
     state.filters.country = translate('select-country');
