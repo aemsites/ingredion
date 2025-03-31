@@ -1,6 +1,19 @@
-import { nav, a, li, ul, strong } from './dom-helpers.js';
+import {
+  nav, a, li, ul, strong,
+} from './dom-helpers.js';
 import { loadCSS } from './aem.js';
-import { getRegionLocale } from '../../scripts/utils.js';
+import { getRegionLocale } from './utils.js';
+
+async function fetchIndex(homePath) {
+  const indexPath = `${homePath}/indexes/global-index.json`;
+  const request = await fetch(indexPath);
+  if (request.ok) {
+    const result = await request.json();
+    const { data } = result;
+    return data;
+  }
+  throw new Error('Failed to fetch workbook');
+}
 
 // eslint-disable-next-line import/prefer-default-export
 export async function breadcrumbs() {
@@ -15,13 +28,13 @@ export async function breadcrumbs() {
   let currentPath = '';
   const breadcrumbItems = [];
   function getPageNamesByPath(path) {
-    return data.filter((page) => page.path === path).map((page) => page['title']);
+    return data.filter((page) => page.path === path).map((page) => page.title);
   }
 
   const homeLink = a({ href: `${homePath}/` }, 'Ingredion');
   const homeCrumb = li(homeLink);
   const crumbList = ul(homeCrumb);
-  
+
   pathParts.forEach((part, index) => {
     currentPath += `/${part}`;
     const pageNames = getPageNamesByPath(currentPath);
@@ -63,20 +76,4 @@ export async function breadcrumbs() {
 
   $breadcrumbs.appendChild(crumbList);
   return $breadcrumbs;
-}
-
-async function fetchIndex(homePath) {
-  // if (hh.breadcrumbs) {
-  //   return hh.breadcrumbs;
-  // }
-
-  const indexPath = `${homePath}/indexes/global-index.json`;
-  const request = await fetch(indexPath);
-  if (request.ok) {
-    const result = await request.json();
-    const { data } = result;
-    // hh.breadcrumbs = data;
-    return data;
-  }
-  throw new Error('Failed to fetch workbook');
 }
