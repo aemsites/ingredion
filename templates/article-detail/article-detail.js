@@ -3,7 +3,7 @@ import { div, h2, a, img, sup, p } from '../../scripts/dom-helpers.js';
 import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 import { breadcrumbs } from '../../scripts/breadcrumbs.js';
 
-export default function decorate(doc) {
+export default async function decorate(doc) {
   const $main = doc.querySelector('main');
   const $content = $main.querySelector('.default-content-wrapper');
   const teaserTitle = getMetadata('teaser-title');
@@ -14,7 +14,7 @@ export default function decorate(doc) {
   const categories = getMetadata('categories');
   const author = getMetadata('author');
   const socialShare = getMetadata('social-share');
-  const $breadcrumbs = breadcrumbs();
+  const $breadcrumbs = await breadcrumbs();
   const picBreakpoints = [
     { media: '(min-width: 1080px)', width: '2000' },
     { media: '(min-width: 600px)', width: '800' },
