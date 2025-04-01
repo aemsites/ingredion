@@ -384,7 +384,7 @@ export function createIngredientBlock(document, main) {
     relatedIngredients.replaceWith(div);
     
   } else {
-    resultProdCards.forEach((resultProdCard) => {
+    resultProdCards.forEach((resultProdCard, index) => {
       const cells = [['related ingredient']];
       const heading = resultProdCard.querySelector('.product-name').textContent;
       const h3 = resultProdCard.querySelector('.rte-block > h3');
@@ -433,8 +433,9 @@ export function createIngredientBlock(document, main) {
       const ptag = document.createElement('p');
       ptag.textContent = '---';
       const div = document.createElement('div');
-      div.appendChild(ptag);
+      if (index === 0) div.appendChild(ptag);
       div.appendChild(table);
+      if (index === resultProdCards.length - 1) div.appendChild(ptag);
       resultProdCard.replaceWith(div);
     });
   }
