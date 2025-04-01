@@ -307,7 +307,7 @@ export function createCardsBlock(document, main) {
       const cardLink = card.querySelector('.content-card__text > a') ? 
         card.querySelector('.content-card__text > a').outerHTML : '';
         
-      cells.push([`${cardImg} <h3>${cardHeading}<h3> ${cardText} ${cardLink}`]);
+      cells.push([`${cardImg} <h3>${cardHeading}</h3> ${cardText} ${cardLink}`]);
     });
     
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
