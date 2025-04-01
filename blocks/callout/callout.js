@@ -9,6 +9,7 @@ const themeColors = [
   'lilac',
   'purple',
   'dark-purple',
+  'dark-blue',
 ];
 
 function embedVimeo(url, autoplay, background) {
