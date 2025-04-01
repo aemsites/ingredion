@@ -281,9 +281,9 @@ export function createCardsBlock(document, main) {
   });
 
   cardsBlocks = document.querySelectorAll('.section__content--columns-2');
-  cardsBlocks.forEach((cardsBlock) => {
+  cardsBlocks.forEach((cardsBlock, index) => {
     convertHrefs(cardsBlock);
-    const cells = [['Cards']];
+    const cells = [['Cards(two-column)']];
     const cards = cardsBlock.querySelectorAll('.content-card');
     let cardsList = [];
     
@@ -334,6 +334,28 @@ export function createCardsBlock(document, main) {
       cells.push([`${cardImg} <a href='${card.href}'>${card.textContent}</a>`]);
     });
     
+    const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
+    cardsBlock.replaceWith(cardsTable);
+  });
+
+  cardsBlocks = document.querySelectorAll('.twoColumnImageWithCaption');
+  cardsBlocks.forEach((cardsBlock) => {    
+    convertHrefs(cardsBlock);
+    const cards = cardsBlock.querySelectorAll('.section .section__content .two-col-images .img-caption');
+    const cells = [['Cards(two-column)']];
+    cards.forEach((card) => {      
+      const cardImg = card.querySelector('.img-caption__image > picture').outerHTML;
+      const cardTexts = card.querySelectorAll('.caption-text > p');
+      const div = document.createElement('div');
+      cardTexts.forEach((cardText) => {
+        const innerDiv = document.createElement('div');
+        const h6 = document.createElement('h6');
+        h6.appendChild(cardText);
+        innerDiv.appendChild(h6);
+        div.appendChild(innerDiv);
+      });
+      cells.push([`${cardImg} ${div.innerHTML}`]);
+    });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
     cardsBlock.replaceWith(cardsTable);
   });
@@ -539,6 +561,7 @@ export function createAnchorBlock(document, main) {
       text = text.replace('(', '').replaceAll(')', '');
       text = text.replace('\'', '').toLowerCase();
       text = text.replace(/\s+/g, '-').toLowerCase();
+      text = text.replaceAll(/[^a-z0-9-]/g, '');
       anchor.href = `#${text}`;
     } else {
       const ptag = document.createElement('p');
@@ -550,6 +573,7 @@ export function createAnchorBlock(document, main) {
       text = text.replace('(', '').replaceAll(')', '');
       text = text.replace('\'', '').toLowerCase();
       text = text.replace(/\s+/g, '-').toLowerCase();
+      text = text.replaceAll(/[^a-z0-9-]/g, '');
       anchor.href = `#${text}`;     
       tab.prepend(h2);
       tab.prepend(ptag);

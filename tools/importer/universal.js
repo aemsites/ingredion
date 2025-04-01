@@ -11,17 +11,20 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
-import { createColorBlock, 
-  createIngredientBlock, 
-  createContactUs, 
-  createCalloutBlock, 
+
+import {
+  createCalloutBlock,
   createCardsBlock, 
-  createVideoBlock, 
-  getSocialShare, 
-  createHeroBlock,
-  createTableBlock,
-  convertHrefs,
+  createVideoBlock,
+  getSocialShare,
   createAnchorBlock,
+  createHeroBlock,
+  addAuthorBio,
+  createColorBlock,
+  createIngredientBlock,
+  createContactUs,
+  createForm,
+  createTableBlock,
 } from './helper.js';
 
 export default {
@@ -40,18 +43,19 @@ export default {
   }) => {
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
-    //convertHrefs(document);
     createHeroBlock(document, main);
-    createAnchorBlock(document, main);
-    createColorBlock(document, main);
-    createIngredientBlock(document, main);
-    createContactUs(main, document);
-    getSocialShare(document, main);
+    getSocialShare(document, main);    
     createCalloutBlock(document, main);
     createCardsBlock(document, main);
     createVideoBlock(document, main);
+    createColorBlock(document, main);
+    createIngredientBlock(document, main);
+    createContactUs(main, document);
+    createForm(document, main);
     createTableBlock(document, main);
-    createMetadata(main, document, url, html);
+    createAnchorBlock(document, main);
+    addAuthorBio(document, main);
+    createMetadata(main, document, url, html);   
 
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
@@ -68,7 +72,6 @@ export default {
     WebImporter.rules.transformBackgroundImages(main, document);
     WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
     WebImporter.rules.convertIcons(main, document);
-
 
     const path = ((u) => {
       let p = new URL(u).pathname;
@@ -88,7 +91,6 @@ export default {
   },
 };
 
-
 const createMetadata = (main, document, url, html) => {
   //const meta = updateCommonMetadata(document, url, html);
   const meta = {};
@@ -97,55 +99,70 @@ const createMetadata = (main, document, url, html) => {
   if (title) {
     meta.Title = title.textContent.replace(/[\n\t]/gm, '');
   }
-
+  const template = document.querySelector('.blog-header');
+  if (template) {
+    meta.template = 'article-detail';
+  }
   // description
   const desc = document.querySelector("[property='og:description']");
   if (desc) {
     meta.description = desc.content;
   }
 
-  // image
-  const img = document.querySelector("[property='og:image']");
-  if (img && img.content) {
-    const el = document.createElement('img');
-    el.src = img.content;
-    meta.Image = el;
+  // Set image metadata
+  const ogImage = document.querySelector("[property='og:image']");
+  if (ogImage?.content) {
+    meta.Image = Object.assign(document.createElement('img'), {src: ogImage.content});
   }
-  // page name
+
+  // Set page metadata
   meta['Page Name'] = getPageName(document);
-  const teaserTitle = getMetadataProp(document, '.heading > h2');
-  if (teaserTitle) meta['teaser-title'] = teaserTitle;
-  const teaserDescription = getMetadataProp(document, '.rte-block--large-body-text');
-  if (teaserDescription) meta['teaser-description'] = teaserDescription;
+
+  // Get teaser metadata
+  const teaser = {
+    title: getMetadataProp(document, '.heading > h2'),
+    description: getMetadataProp(document, '.rte-block--large-body-text')
+  };
+  if (teaser.title) meta['teaser-title'] = teaser.title;
+  if (teaser.description) meta['teaser-description'] = teaser.description;
+
+  // Get date and category metadata
   const dateCategory = getMetadataProp(document, '.date-category-tags');
   if (dateCategory) {
-    meta['published-date'] = dateCategory.split('|')[0].trim();
-    meta['categories'] = dateCategory.split('|')[1] ? dateCategory.split('|')[1].trim() : '';
+    const [date, category = ''] = dateCategory.split('|').map(s => s.trim());
+    meta['published-date'] = date;
+    meta['categories'] = category;
   }
-   const type = getMetadataProp(document, '.category-label');
-    if (type && type !== undefined) meta['type'] = type;
-  const socialShare = getSocialShare(document);
   meta['keywords'] = '';
+  // Get type and social metadata
+  const type = getMetadataProp(document, '.category-label');
+  if (type) meta.type = type;
+
+  const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
-  const block = WebImporter.Blocks.getMetadataBlock(document, meta);
-  main.append(block);
+
+  // Create and append metadata block
+  main.append(WebImporter.Blocks.getMetadataBlock(document, meta));
   return meta;
 };
 
 export function getMetadataProp(document, queryString) {
-  let metaDataField;
   const metadata = document.querySelector(queryString);
-  if (metadata) {
-    metaDataField = metadata.textContent ? metadata.textContent.replace(/[\n\t]/gm, '') : metadata.content;
-    metadata.remove();
-  }
-  return metaDataField;
+  if (!metadata) return;
+  
+  const value = metadata.textContent ? metadata.textContent.replace(/[\n\t]/gm, '') : metadata.content;
+  metadata.remove();
+  return value;
 }
-
-
 
 function getPageName(document) {
   const breadcrumbElement = document.querySelector('.breadcrumbs > ul > li:last-of-type > a');
   if (!breadcrumbElement) return '';
   else return breadcrumbElement.textContent;
+}
+
+function toHex(rgb) {
+  return '#' + rgb.match(/\d+/g)
+    .map(n => Number(n).toString(16).padStart(2, '0'))
+    .join('');
 }

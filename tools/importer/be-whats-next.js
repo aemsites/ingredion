@@ -12,7 +12,20 @@
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
 
-import { createCalloutBlock, createCardsBlock, createVideoBlock, getSocialShare, createAnchorBlock, createHeroBlock, addAuthorBio } from './helper.js';
+import {
+  createCalloutBlock,
+  createCardsBlock, 
+  createVideoBlock,
+  getSocialShare,
+  createAnchorBlock,
+  createHeroBlock,
+  addAuthorBio,
+  createColorBlock,
+  createIngredientBlock,
+  createContactUs,
+  createForm,
+  createTableBlock,
+} from './helper.js';
 
 export default {
   /**
@@ -35,10 +48,15 @@ export default {
     createCalloutBlock(document, main);
     createCardsBlock(document, main);
     createVideoBlock(document, main);
+    createColorBlock(document, main);
+    createIngredientBlock(document, main);
+    createContactUs(main, document);
+    createForm(document, main);
+    createTableBlock(document, main);
     createAnchorBlock(document, main);
     addAuthorBio(document, main);
     createMetadata(main, document, url, html);
-    
+    createAnchorBlock(document, main);
 
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
@@ -55,7 +73,6 @@ export default {
     WebImporter.rules.transformBackgroundImages(main, document);
     WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
     WebImporter.rules.convertIcons(main, document);
-
 
     const path = ((u) => {
       let p = new URL(u).pathname;
@@ -74,8 +91,6 @@ export default {
     }];
   },
 };
-
-
 
 const createMetadata = (main, document, url, html) => {
   //const meta = updateCommonMetadata(document, url, html);
@@ -146,7 +161,6 @@ function getPageName(document) {
   if (!breadcrumbElement) return '';
   else return breadcrumbElement.textContent;
 }
-
 
 function toHex(rgb) {
   return '#' + rgb.match(/\d+/g)
