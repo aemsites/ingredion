@@ -10,6 +10,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta property="og:title" content="Error">
   <script src="/scripts/scripts.js" type="module" crossorigin="use-credentials"></script>
+  <script type="module">
+    import { sampleRUM } from '/scripts/aem.js';
+    sampleRUM('404', { source: document.referrer });
+  </script>
   <link rel="stylesheet" href="/styles/styles.css">
   <link rel="stylesheet" href="/styles/lazy-styles.css">
 </head>
@@ -17,8 +21,8 @@
 <body>
   <header></header>
   <main class="error">
-    <div class="section">
-      <div class="error-page">
+    <div class="error-page">
+      <div>
         <div class="error-block-wrapper">
           <div class="img-caption">
             <div class="img-caption-image">
