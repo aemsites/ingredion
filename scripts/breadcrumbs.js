@@ -38,7 +38,7 @@ export async function breadcrumbs() {
       pages = data.filter((page) => page.path === pagePath);
     }
     const pageNames = pages.map((page) => page.title);
-    return { pageNames, path: pagePath };
+    return { pageNames, pagePath };
   }
 
   const homeLink = a({ href: `${homePath}/` }, 'Ingredion');
@@ -48,6 +48,7 @@ export async function breadcrumbs() {
   pathParts.forEach((part, index) => {
     currentPath += `/${part}`;
     const { pageNames, pagePath } = getPageNamesByPath(currentPath);
+    console.log(pagePath);
     if (pageNames.length === 0) return;
 
     const lastBreadcrumb = breadcrumbItems[breadcrumbItems.length - 1];
