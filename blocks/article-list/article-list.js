@@ -5,8 +5,6 @@ import { formatDate } from '../../scripts/utils.js';
 import ArticleRenderer from './article-renderer.js';
 
 export default async function decorate(block) {
-  const isCards = block.classList.contains('cards');
-
   const {
     'article-data': jsonPath,
     'articles-per-page-options': articlesPerPageOptions,
@@ -14,19 +12,22 @@ export default async function decorate(block) {
   } = readBlockConfig(block);
 
   const $search = div();
-  const $sort = div();
+  const $sortDropdown = div();
   const $count = h3({ class: 'count' });
   const $pagination = div({ class: 'pagination' });
-  const $perPage = div();
-  const $filters = div();
-  const $filterYears = div();
-  const $filterTypes = div();
+  const $perPageDropdown = div();
   const $articles = div({ class: 'articles' });
 
   let $articlePage;
   let $articleCard;
 
-  if (isCards) {
+  if (block.classList.contains('cards')) {
+    // cards view
+    const $filterYearsDropdown = div();
+    const $filterTypesDropdown = div();
+    const $filterMarketsDropdown = div({ 'data-tag': 'Markets' }); // pass the tag 
+    const $clearFilters = a({ class: 'clear-all' }, 'Clear All');
+
     $articleCard = (article) => a({ class: 'card', href: article.path },
       a({ class: 'thumb', href: article.path },
         createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
@@ -43,17 +44,19 @@ export default async function decorate(block) {
     $articlePage = div({ class: 'article-list' },
       div({ class: 'filter-search-sort' },
         $search,
-        $filterTypes,
-        $filterYears,
-        $sort,
+        $filterTypesDropdown,
+        $filterYearsDropdown,
+        $filterMarketsDropdown,
+        $sortDropdown,
       ),
+      $clearFilters,
       div({ class: 'filter-results-wrapper' },
         div({ class: 'results cards' },
           $count,
           $articles,
           div({ class: 'controls' },
             $pagination,
-            $perPage,
+            $perPageDropdown,
           ),
         ),
       ),
@@ -65,16 +68,21 @@ export default async function decorate(block) {
       paginationMaxBtns,
       articleDiv: $articles,
       articleCard: $articleCard,
-      filterYearsDiv: $filterYears,
-      filterTypesDiv: $filterTypes,
+      clearFilters: $clearFilters,
+      filterYearsDropdown: $filterYearsDropdown,
+      filterTypesDropdown: $filterTypesDropdown,
+      filterByTagDropdown: $filterMarketsDropdown,
       searchDiv: $search,
-      sortDiv: $sort,
+      sortDropdown: $sortDropdown,
       paginationDiv: $pagination,
-      perPageDiv: $perPage,
+      perPageDropdown: $perPageDropdown,
       countDiv: $count,
     }).render();
 
   } else {
+    // list view
+    const $filtersList = div();
+
     $articleCard = (article) => div({ class: 'card' },
       a({ class: 'thumb', href: article.path },
         createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
@@ -90,18 +98,18 @@ export default async function decorate(block) {
     $articlePage = div({ class: 'article-list' },
       div({ class: 'filter-search-sort' },
         $search,
-        $sort,
+        $sortDropdown,
       ),
       div({ class: 'filter-results-wrapper' },
         div({ class: 'filter' },
-          $filters,
+          $filtersList,
         ),
         div({ class: 'results' },
           $count,
           $articles,
           div({ class: 'controls' },
             $pagination,
-            $perPage,
+            $perPageDropdown,
           ),
         ),
       ),
@@ -113,11 +121,11 @@ export default async function decorate(block) {
       paginationMaxBtns,
       articleDiv: $articles,
       articleCard: $articleCard,
-      filterDiv: $filters,
+      filterTagsList: $filtersList,
       searchDiv: $search,
-      sortDiv: $sort,
+      sortDropdown: $sortDropdown,
       paginationDiv: $pagination,
-      perPageDiv: $perPage,
+      perPageDropdown: $perPageDropdown,
       countDiv: $count,
     }).render();
   }
@@ -125,6 +133,4 @@ export default async function decorate(block) {
 
 
   block.replaceWith($articlePage);
-
-
 }

@@ -27,8 +27,11 @@ function createSelectDropdown({
       count !== undefined ? small(` (${count})`) : ''
     );
 
-    $option.addEventListener('click', () => {
+    $option.addEventListener('click', (event) => {
+      event.stopPropagation();
       onSelect(value, $option, $dropdown);
+      // Close this dropdown after selection
+      $dropdown.querySelector('.options').classList.remove('open');
     });
 
     $dropdown.querySelector('.options').appendChild($option);
@@ -37,12 +40,24 @@ function createSelectDropdown({
   // Add click handler to toggle dropdown
   $dropdown.querySelector('.selected').addEventListener('click', (event) => {
     event.stopPropagation();
-    $dropdown.querySelector('.options').classList.toggle('open');
+    
+    const thisOptionsList = $dropdown.querySelector('.options');
+    const isCurrentlyOpen = thisOptionsList.classList.contains('open');
+    
+    // close all open dropdowns
+    document.querySelectorAll('.select-dropdown .options.open').forEach(optionsList => {
+      optionsList.classList.remove('open');
+    });
+    
+    // open this one if it was closed
+    if (!isCurrentlyOpen) thisOptionsList.classList.add('open');
   });
 
-  // Close dropdown when clicking outside
+  // Close all dropdowns when clicking outside
   document.addEventListener('click', () => {
-    $dropdown.querySelector('.options').classList.remove('open');
+    document.querySelectorAll('.select-dropdown .options.open').forEach(optionsList => {
+      optionsList.classList.remove('open');
+    });
   });
 
   return $dropdown;
@@ -56,11 +71,14 @@ function createSelectDropdown({
  * @param {string|number} [options.articlesPerPageOptions=10] - The options for the number of articles per page.
  * @param {Element} options.paginationDiv - The container element for the pagination.
  * @param {number} [options.paginationMaxBtns=7] - The maximum number of pagination buttons.
- * @param {Element} options.filterDiv - The container element for the filters.
+ * @param {Element} options.filterTagsList - The container element for the filters.
  * @param {Element} options.searchDiv - The container element for the search form.
- * @param {Element} options.sortDiv - The container element for the sort dropdown.
+ * @param {Element} options.sortDropdown - The container element for the sort dropdown.
  * @param {Element} options.countDiv - The container element for the article count.
- * @param {Element} options.perPageDiv - The container element for the per-page dropdown.
+ * @param {Element} options.perPageDropdown - The container element for the per-page dropdown.
+ * @param {Element} options.filterYearsDropdown - The container element for the filter years dropdown.
+ * @param {Element} options.filterTypesDropdown - The container element for the filter types dropdown.
+ * @param {Element} options.filterByTagDropdown - The container element for the filter by specific tag dropdown.
  */
 export default class ArticleRenderer {
   constructor({
@@ -70,13 +88,15 @@ export default class ArticleRenderer {
     articlesPerPageOptions = '10, 25, 50',
     paginationDiv,
     paginationMaxBtns = 7,
-    filterDiv,
-    filterYearsDiv,
-    filterTypesDiv,
+    filterTagsList,
+    filterYearsDropdown,
+    filterTypesDropdown,
     searchDiv,
-    sortDiv,
+    sortDropdown,
     countDiv,
-    perPageDiv,
+    perPageDropdown,
+    filterByTagDropdown,
+    clearFilters,
   }) {
     this.jsonPath = jsonPath;
     this.articleDiv = articleDiv;
@@ -84,13 +104,15 @@ export default class ArticleRenderer {
     this.articlesPerPageOptions = String(articlesPerPageOptions).split(',').map(Number);
     this.paginationDiv = paginationDiv;
     this.paginationMaxBtns = paginationMaxBtns;
-    this.filterDiv = filterDiv;
-    this.filterYearsDiv = filterYearsDiv;
-    this.filterTypesDiv = filterTypesDiv;
+    this.filterTagsList = filterTagsList;
+    this.filterYearsDropdown = filterYearsDropdown;
+    this.filterTypesDropdown = filterTypesDropdown;
     this.searchDiv = searchDiv;
-    this.sortDiv = sortDiv;
+    this.sortDropdown = sortDropdown;
     this.countDiv = countDiv;
-    this.perPageDiv = perPageDiv; // Initialize it
+    this.perPageDropdown = perPageDropdown;
+    this.filterByTagDropdown = filterByTagDropdown;
+    this.clearFilters = clearFilters;
     this.state = {
       allArticles: [],
       totalArticles: 0,
@@ -175,14 +197,16 @@ export default class ArticleRenderer {
     this.state.filteredArticles = articles;
     this.state.totalArticles = articles.length;
     this.renderArticles(articles.slice(currentPage * articlesPerPage, (currentPage + 1) * articlesPerPage));
-    this.renderFilter();
+    this.renderFilterTags();
     this.renderFilterYears();
     this.renderFilterTypes();
+    this.renderFilterByTagDropdown();
     this.renderSearchForm();
     this.renderSortDropdown();
     this.renderCount();
     this.renderPagination();
     this.renderPerPageDropdown();
+    this.renderClearFilters();
     this.updateUrl(); // sync state
   }
 
@@ -244,8 +268,8 @@ export default class ArticleRenderer {
   }
 
   renderFilterYears() {
-    if (!this.filterYearsDiv) return;
-    this.filterYearsDiv.innerHTML = '';
+    if (!this.filterYearsDropdown) return;
+    this.filterYearsDropdown.innerHTML = '';
     
     const years = {};
     this.state.allArticles.forEach((article) => {
@@ -278,12 +302,12 @@ export default class ArticleRenderer {
       cssClass: ['filter-years']
     });
 
-    this.filterYearsDiv.appendChild($dropdown);
+    this.filterYearsDropdown.appendChild($dropdown);
   }
 
   renderFilterTypes() {
-    if (!this.filterTypesDiv) return;
-    this.filterTypesDiv.innerHTML = '';
+    if (!this.filterTypesDropdown) return;
+    this.filterTypesDropdown.innerHTML = '';
     
     const types = {};
     this.state.allArticles.forEach((article) => {
@@ -325,12 +349,85 @@ export default class ArticleRenderer {
       cssClass: ['filter-types']
     });
 
-    this.filterTypesDiv.appendChild($dropdown);
+    this.filterTypesDropdown.appendChild($dropdown);
   }
 
-  renderFilter() {
-    if (!this.filterDiv) return;
-    this.filterDiv.innerHTML = '';
+  renderFilterByTagDropdown() {
+    if (!this.filterByTagDropdown) return;
+    const tagCategory = this.filterByTagDropdown.getAttribute('data-tag');
+    if (!tagCategory) return;
+    
+    this.filterByTagDropdown.innerHTML = '';
+    
+    const tags = {};
+    
+    // Build tag counts from all articles
+    this.state.allArticles.forEach((article) => {
+      article.tags.split(',').forEach((tag) => {
+        const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
+        if (cleanedTag.startsWith(`${tagCategory} /`)) {
+          tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
+        }
+      });
+    });
+
+    // Process tags to get just the second part after "Markets /"
+    const tagOptions = Object.keys(tags)
+      .map(fullTag => {
+        const [category, tag] = fullTag.split(' / ');
+        const cleanedValue = tag.toLowerCase().replace(/\s+/g, '-'); // for filtering
+        return {
+          value: cleanedValue,  // lowercase hyphenated for filtering
+          label: tag.trim(),    // original format for display
+          count: tags[fullTag]
+        };
+      })
+      .sort((a, b) => a.label.localeCompare(b.label));
+
+    // Add "All Markets" option at the end
+    tagOptions.push({ value: '', label: `All ${tagCategory}` });
+
+    // Find the currently selected option and use its label for display
+    const selectedTag = this.state.tags.find(tag => 
+      tagOptions.some(option => option.value === tag)
+    );
+    const selectedOption = tagOptions.find(opt => opt.value === selectedTag);
+    const selectedDisplay = selectedOption ? selectedOption.label : '';
+
+    const $dropdown = createSelectDropdown({
+      options: tagOptions,
+      selectedValue: selectedDisplay, // Use the display label instead of the value
+      defaultText: tagCategory,
+      onSelect: (value, option, dropdown) => {
+        this.state.currentPage = 0;
+        
+        // Remove any existing tags from this category
+        this.state.tags = this.state.tags.filter(tag => 
+          !tagOptions.some(option => option.value === tag)
+        );
+        
+        // Add the new tag if one was selected
+        if (value) {
+          this.state.tags.push(value);
+        }
+        
+        // Use the original format label for display
+        const selectedOption = tagOptions.find(opt => opt.value === value);
+        dropdown.querySelector('.selected').textContent = selectedOption ? 
+          selectedOption.label :  // Use the original format label
+          tagCategory;
+        
+        this.updatePage();
+      },
+      cssClass: ['filter-by-tag']
+    });
+
+    this.filterByTagDropdown.appendChild($dropdown);
+  }
+
+  renderFilterTags() {
+    if (!this.filterTagsList) return;
+    this.filterTagsList.innerHTML = '';
     const tags = {};
 
     // Build tag counts from the filtered articles
@@ -390,7 +487,7 @@ export default class ArticleRenderer {
       });
       $appliedFilters.append($clearAll);
 
-      this.filterDiv.append($appliedFilterHeading, $appliedFilters);
+      this.filterTagsList.append($appliedFilterHeading, $appliedFilters);
     }
 
     // Initialize state to keep track of open/closed groups
@@ -434,40 +531,49 @@ export default class ArticleRenderer {
       $filter.append($groupHeading, $filters);
     });
 
-    this.filterDiv.appendChild($filter);
+    this.filterTagsList.appendChild($filter);
   }
 
   renderSortDropdown() {
-    if (!this.sortDiv) return;
-    this.sortDiv.innerHTML = '';
+    if (!this.sortDropdown) return;
+    this.sortDropdown.innerHTML = '';
 
     const sortOptions = ['newest', 'oldest', 'a-z', 'z-a'].map(value => ({
-      value,
-      label: translate(value)
+      value: value,                    // Keep original value for state
+      label: translate(value),         // Translated label for display
+      count: undefined
     }));
+
+    // Find the currently selected option and use its label for display
+    const selectedOption = sortOptions.find(opt => opt.value === this.state.sort);
+    const selectedDisplay = selectedOption ? selectedOption.label : translate('newest');
 
     const $dropdown = createSelectDropdown({
       options: sortOptions,
-      selectedValue: this.state.sort,
+      selectedValue: selectedDisplay,  // Use the translated label for display
       defaultText: translate('newest'),
       labelPrefix: 'Sort by: ',
       onSelect: (value, option, dropdown) => {
         if (this.state.sort !== value) {
           this.state.sort = value;
           this.state.currentPage = 0;
+          
+          // Use the translated label for display
+          const selectedOption = sortOptions.find(opt => opt.value === value);
+          dropdown.querySelector('.selected').textContent = `Sort by: ${selectedOption.label}`;
+          
           this.updatePage();
         }
-        dropdown.querySelector('.selected').textContent = `Sort by: ${translate(value)}`;
       },
       cssClass: ['filter-sort']
     });
 
-    this.sortDiv.appendChild($dropdown);
+    this.sortDropdown.appendChild($dropdown);
   }
 
   renderPerPageDropdown() {
-    if (!this.perPageDiv) return;
-    this.perPageDiv.innerHTML = '';
+    if (!this.perPageDropdown) return;
+    this.perPageDropdown.innerHTML = '';
 
     const perPageOptions = this.articlesPerPageOptions.map(value => ({
       value,
@@ -489,7 +595,7 @@ export default class ArticleRenderer {
       cssClass: ['per-page']
     });
 
-    this.perPageDiv.appendChild($dropdown);
+    this.perPageDropdown.appendChild($dropdown);
   }
 
   renderSearchForm() {
@@ -655,6 +761,43 @@ export default class ArticleRenderer {
       await this.updatePage();
     } catch (error) {
       console.error('Error during render:', error);
+    }
+  }
+
+  renderClearFilters() {
+    if (!this.clearFilters) return;
+    
+    // Check if any filters are active
+    const hasActiveFilters = 
+      this.state.tags.length > 0 || 
+      this.state.searchQuery || 
+      this.state.year || 
+      this.state.type;
+
+    // Show/hide clear filters based on active filters
+    if (hasActiveFilters) {
+      this.clearFilters.classList.remove('hidden');
+      
+      // Add click handler if not already added
+      if (!this.clearFilters._hasClickHandler) {
+        this.clearFilters.addEventListener('click', (event) => {
+          event.preventDefault();
+          
+          // Reset all filters to default state
+          this.state.tags = [];
+          this.state.searchQuery = '';
+          this.state.year = '';
+          this.state.type = '';
+          this.state.sort = 'newest';
+          this.state.currentPage = 0;
+          
+          // Update the page with reset filters
+          this.updatePage();
+        });
+        this.clearFilters._hasClickHandler = true;
+      }
+    } else {
+      this.clearFilters.classList.add('hidden');
     }
   }
 }
