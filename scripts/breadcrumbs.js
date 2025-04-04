@@ -23,12 +23,22 @@ export async function breadcrumbs() {
   const [region, locale] = getRegionLocale();
   const homePath = `/${region}/${locale}`;
   const data = await fetchIndex(homePath);
-  const { pathname } = window.location;
+  let { pathname } = window.location;
+  if (pathname.startsWith(homePath)) {
+    pathname = pathname.slice(homePath.length);
+  }
   const pathParts = pathname.split('/').filter((part) => part);
-  let currentPath = '';
+  let currentPath = homePath;
   const breadcrumbItems = [];
   function getPageNamesByPath(path) {
-    return data.filter((page) => page.path === path).map((page) => page.title);
+    let pagePath = path;
+    let pages = data.filter((page) => page.path === pagePath);
+    if (pages.length === 0 && !pagePath.endsWith('/')) {
+      pagePath = `${pagePath}/`;
+      pages = data.filter((page) => page.path === pagePath);
+    }
+    const pageNames = pages.map((page) => page.title);
+    return { pageNames, path: pagePath };
   }
 
   const homeLink = a({ href: `${homePath}/` }, 'Ingredion');
@@ -37,7 +47,7 @@ export async function breadcrumbs() {
 
   pathParts.forEach((part, index) => {
     currentPath += `/${part}`;
-    const pageNames = getPageNamesByPath(currentPath);
+    const { pageNames, pagePath } = getPageNamesByPath(currentPath);
     if (pageNames.length === 0) return;
 
     const lastBreadcrumb = breadcrumbItems[breadcrumbItems.length - 1];
@@ -53,7 +63,7 @@ export async function breadcrumbs() {
 
       // Set the href for all but the last part
       if (index < pathParts.length - 1 || idx < pageNames.length - 1) {
-        link.setAttribute('href', currentPath);
+        link.setAttribute('href', pagePath);
       } else {
         link = strong();
       }
