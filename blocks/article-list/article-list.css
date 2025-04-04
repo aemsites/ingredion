@@ -214,6 +214,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 2rem;
+
             @media ( width <= 1200px) { flex-direction: column }
 
             .card {
@@ -251,9 +252,9 @@
                 .date {
                   font-size: 14px;
                   font-family: OpenSans-Bold, Helvetica, sans-serif;
-                  font-weight: 800;                  
+                  font-weight: 800;
                 }
-                
+
                  .arrow {
                   position: relative;
                   color: var(--green);
@@ -277,6 +278,7 @@
 
                   &:hover {
                     color: var(--dark-green);
+
                     &::after {
                       border-top: 6px solid var(--dark-green);
                     }

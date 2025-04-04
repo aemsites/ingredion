@@ -1,4 +1,4 @@
-/* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
+/* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
 import { div, h3, h4, h5, ul, li, a, small, span, form, input, button } from '../../scripts/dom-helpers.js';
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 
@@ -7,24 +7,24 @@ function getUrlParams(key) {
   return key ? params.get(key) : params;
 }
 
-function createSelectDropdown({ 
-  options, 
-  selectedValue, 
-  onSelect, 
-  defaultText = 'Select', 
-  labelPrefix = '', 
+function createSelectDropdown({
+  options,
+  selectedValue,
+  onSelect,
+  defaultText = 'Select',
+  labelPrefix = '',
   labelSuffix = '',
-  cssClass = [] 
+  cssClass = [],
 }) {
   const $dropdown = div({ class: ['select-dropdown', cssClass] },
     div({ class: 'selected' }, `${labelPrefix}${selectedValue || defaultText}${labelSuffix}`),
-    ul({ class: 'options' })
+    ul({ class: 'options' }),
   );
 
   options.forEach(({ value, label, count }) => {
     const $option = li({ class: `option ${value === selectedValue ? 'active' : ''}` },
       label,
-      count !== undefined ? small(` (${count})`) : ''
+      count !== undefined ? small(` (${count})`) : '',
     );
 
     $option.addEventListener('click', (event) => {
@@ -40,22 +40,22 @@ function createSelectDropdown({
   // Add click handler to toggle dropdown
   $dropdown.querySelector('.selected').addEventListener('click', (event) => {
     event.stopPropagation();
-    
+
     const thisOptionsList = $dropdown.querySelector('.options');
     const isCurrentlyOpen = thisOptionsList.classList.contains('open');
-    
+
     // close all open dropdowns
-    document.querySelectorAll('.select-dropdown .options.open').forEach(optionsList => {
+    document.querySelectorAll('.select-dropdown .options.open').forEach((optionsList) => {
       optionsList.classList.remove('open');
     });
-    
+
     // open this one if it was closed
     if (!isCurrentlyOpen) thisOptionsList.classList.add('open');
   });
 
   // Close all dropdowns when clicking outside
   document.addEventListener('click', () => {
-    document.querySelectorAll('.select-dropdown .options.open').forEach(optionsList => {
+    document.querySelectorAll('.select-dropdown .options.open').forEach((optionsList) => {
       optionsList.classList.remove('open');
     });
   });
@@ -270,7 +270,7 @@ export default class ArticleRenderer {
   renderFilterYears() {
     if (!this.filterYearsDropdown) return;
     this.filterYearsDropdown.innerHTML = '';
-    
+
     const years = {};
     this.state.allArticles.forEach((article) => {
       const year = new Date(article.publishDate * 1000).getFullYear();
@@ -281,12 +281,12 @@ export default class ArticleRenderer {
       ...Object.keys(years)
         .sort()
         .reverse()
-        .map(year => ({
+        .map((year) => ({
           value: year,
           label: year,
-          count: years[year]
+          count: years[year],
         })),
-        { value: '', label: 'All Years' }
+      { value: '', label: 'All Years' },
     ];
 
     const $dropdown = createSelectDropdown({
@@ -299,7 +299,7 @@ export default class ArticleRenderer {
         dropdown.querySelector('.selected').textContent = value || 'Year';
         this.updatePage();
       },
-      cssClass: ['filter-years']
+      cssClass: ['filter-years'],
     });
 
     this.filterYearsDropdown.appendChild($dropdown);
@@ -308,7 +308,7 @@ export default class ArticleRenderer {
   renderFilterTypes() {
     if (!this.filterTypesDropdown) return;
     this.filterTypesDropdown.innerHTML = '';
-    
+
     const types = {};
     this.state.allArticles.forEach((article) => {
       if (article.type) {
@@ -326,14 +326,14 @@ export default class ArticleRenderer {
 
     const typeOptions = [
       ...Object.keys(types)
-        .filter(type => type && type !== 'undefined') // Extra safety filter
+        .filter((type) => type && type !== 'undefined') // Extra safety filter
         .sort()
-        .map(type => ({
+        .map((type) => ({
           value: type,
           label: type,
-          count: types[type]
+          count: types[type],
         })),
-      { value: '', label: 'All Types' }
+      { value: '', label: 'All Types' },
     ];
 
     const $dropdown = createSelectDropdown({
@@ -346,7 +346,7 @@ export default class ArticleRenderer {
         dropdown.querySelector('.selected').textContent = value || 'Type';
         this.updatePage();
       },
-      cssClass: ['filter-types']
+      cssClass: ['filter-types'],
     });
 
     this.filterTypesDropdown.appendChild($dropdown);
@@ -356,11 +356,11 @@ export default class ArticleRenderer {
     if (!this.filterByTagDropdown) return;
     const tagCategory = this.filterByTagDropdown.getAttribute('data-tag');
     if (!tagCategory) return;
-    
+
     this.filterByTagDropdown.innerHTML = '';
-    
+
     const tags = {};
-    
+
     // Build tag counts from all articles
     this.state.allArticles.forEach((article) => {
       article.tags.split(',').forEach((tag) => {
@@ -373,13 +373,13 @@ export default class ArticleRenderer {
 
     // Process tags to get just the second part after "Markets /"
     const tagOptions = Object.keys(tags)
-      .map(fullTag => {
-        const [category, tag] = fullTag.split(' / ');
+      .map((fullTag) => {
+        const [, tag] = fullTag.split(' / ');
         const cleanedValue = tag.toLowerCase().replace(/\s+/g, '-'); // for filtering
         return {
-          value: cleanedValue,  // lowercase hyphenated for filtering
-          label: tag.trim(),    // original format for display
-          count: tags[fullTag]
+          value: cleanedValue, // lowercase hyphenated for filtering
+          label: tag.trim(), // original format for display
+          count: tags[fullTag],
         };
       })
       .sort((a, b) => a.label.localeCompare(b.label));
@@ -388,10 +388,9 @@ export default class ArticleRenderer {
     tagOptions.push({ value: '', label: `All ${tagCategory}` });
 
     // Find the currently selected option and use its label for display
-    const selectedTag = this.state.tags.find(tag => 
-      tagOptions.some(option => option.value === tag)
+    const selectedTag = this.state.tags.find((tag) => tagOptions.some((option) => option.value === tag),
     );
-    const selectedOption = tagOptions.find(opt => opt.value === selectedTag);
+    const selectedOption = tagOptions.find((opt) => opt.value === selectedTag);
     const selectedDisplay = selectedOption ? selectedOption.label : '';
 
     const $dropdown = createSelectDropdown({
@@ -400,26 +399,25 @@ export default class ArticleRenderer {
       defaultText: tagCategory,
       onSelect: (value, option, dropdown) => {
         this.state.currentPage = 0;
-        
+
         // Remove any existing tags from this category
-        this.state.tags = this.state.tags.filter(tag => 
-          !tagOptions.some(option => option.value === tag)
+        this.state.tags = this.state.tags.filter((tag) => !tagOptions.some((option) => option.value === tag),
         );
-        
+
         // Add the new tag if one was selected
         if (value) {
           this.state.tags.push(value);
         }
-        
+
         // Use the original format label for display
-        const selectedOption = tagOptions.find(opt => opt.value === value);
-        dropdown.querySelector('.selected').textContent = selectedOption ? 
-          selectedOption.label :  // Use the original format label
-          tagCategory;
-        
+        const selectedOption = tagOptions.find((opt) => opt.value === value);
+        dropdown.querySelector('.selected').textContent = selectedOption
+          ? selectedOption.label // Use the original format label
+          : tagCategory;
+
         this.updatePage();
       },
-      cssClass: ['filter-by-tag']
+      cssClass: ['filter-by-tag'],
     });
 
     this.filterByTagDropdown.appendChild($dropdown);
@@ -538,34 +536,34 @@ export default class ArticleRenderer {
     if (!this.sortDropdown) return;
     this.sortDropdown.innerHTML = '';
 
-    const sortOptions = ['newest', 'oldest', 'a-z', 'z-a'].map(value => ({
-      value: value,                    // Keep original value for state
-      label: translate(value),         // Translated label for display
-      count: undefined
+    const sortOptions = ['newest', 'oldest', 'a-z', 'z-a'].map((value) => ({
+      value, // Keep original value for state
+      label: translate(value), // Translated label for display
+      count: undefined,
     }));
 
     // Find the currently selected option and use its label for display
-    const selectedOption = sortOptions.find(opt => opt.value === this.state.sort);
+    const selectedOption = sortOptions.find((opt) => opt.value === this.state.sort);
     const selectedDisplay = selectedOption ? selectedOption.label : translate('newest');
 
     const $dropdown = createSelectDropdown({
       options: sortOptions,
-      selectedValue: selectedDisplay,  // Use the translated label for display
+      selectedValue: selectedDisplay, // Use the translated label for display
       defaultText: translate('newest'),
       labelPrefix: 'Sort by: ',
       onSelect: (value, option, dropdown) => {
         if (this.state.sort !== value) {
           this.state.sort = value;
           this.state.currentPage = 0;
-          
+
           // Use the translated label for display
-          const selectedOption = sortOptions.find(opt => opt.value === value);
+          const selectedOption = sortOptions.find((opt) => opt.value === value);
           dropdown.querySelector('.selected').textContent = `Sort by: ${selectedOption.label}`;
-          
+
           this.updatePage();
         }
       },
-      cssClass: ['filter-sort']
+      cssClass: ['filter-sort'],
     });
 
     this.sortDropdown.appendChild($dropdown);
@@ -575,7 +573,7 @@ export default class ArticleRenderer {
     if (!this.perPageDropdown) return;
     this.perPageDropdown.innerHTML = '';
 
-    const perPageOptions = this.articlesPerPageOptions.map(value => ({
+    const perPageOptions = this.articlesPerPageOptions.map((value) => ({
       value,
       label: value.toString(),
     }));
@@ -592,7 +590,7 @@ export default class ArticleRenderer {
         }
         dropdown.querySelector('.selected').textContent = `${value} per page`;
       },
-      cssClass: ['per-page']
+      cssClass: ['per-page'],
     });
 
     this.perPageDropdown.appendChild($dropdown);
@@ -766,36 +764,41 @@ export default class ArticleRenderer {
 
   renderClearFilters() {
     if (!this.clearFilters) return;
-    
+
     // Check if any filters are active
-    const hasActiveFilters = 
-      this.state.tags.length > 0 || 
-      this.state.searchQuery || 
-      this.state.year || 
-      this.state.type;
+    const hasActiveFilters = this.state.tags.length > 0
+      || this.state.searchQuery
+      || this.state.year
+      || this.state.type;
 
     // Show/hide clear filters based on active filters
     if (hasActiveFilters) {
       this.clearFilters.classList.remove('hidden');
-      
-      // Add click handler if not already added
-      if (!this.clearFilters._hasClickHandler) {
-        this.clearFilters.addEventListener('click', (event) => {
-          event.preventDefault();
-          
-          // Reset all filters to default state
-          this.state.tags = [];
-          this.state.searchQuery = '';
-          this.state.year = '';
-          this.state.type = '';
-          this.state.sort = 'newest';
-          this.state.currentPage = 0;
-          
-          // Update the page with reset filters
-          this.updatePage();
-        });
-        this.clearFilters._hasClickHandler = true;
+
+      // Remove any existing click handlers
+      const oldHandler = this.clearFiltersHandler;
+      if (oldHandler) {
+        this.clearFilters.removeEventListener('click', oldHandler);
       }
+
+      // Create and store the new handler
+      this.clearFiltersHandler = (event) => {
+        event.preventDefault();
+
+        // Reset all filters to default state
+        this.state.tags = [];
+        this.state.searchQuery = '';
+        this.state.year = '';
+        this.state.type = '';
+        this.state.sort = 'newest';
+        this.state.currentPage = 0;
+
+        // Update the page with reset filters
+        this.updatePage();
+      };
+
+      // Add the new handler
+      this.clearFilters.addEventListener('click', this.clearFiltersHandler);
     } else {
       this.clearFilters.classList.add('hidden');
     }

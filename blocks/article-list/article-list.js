@@ -25,7 +25,7 @@ export default async function decorate(block) {
     // cards view
     const $filterYearsDropdown = div();
     const $filterTypesDropdown = div();
-    const $filterMarketsDropdown = div({ 'data-tag': 'Markets' }); // pass the tag 
+    const $filterMarketsDropdown = div({ 'data-tag': 'Markets' }); // pass the tag
     const $clearFilters = a({ class: 'clear-all' }, 'Clear All');
 
     $articleCard = (article) => a({ class: 'card', href: article.path },
@@ -78,7 +78,6 @@ export default async function decorate(block) {
       perPageDropdown: $perPageDropdown,
       countDiv: $count,
     }).render();
-
   } else {
     // list view
     const $filtersList = div();
@@ -129,8 +128,6 @@ export default async function decorate(block) {
       countDiv: $count,
     }).render();
   }
-
-
 
   block.replaceWith($articlePage);
 }
