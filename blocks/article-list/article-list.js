@@ -49,7 +49,7 @@ export default async function decorate(block) {
         $filterMarketsDropdown,
         $sortDropdown,
       ),
-      $clearFilters,
+      div({ class: 'clear-all-wrapper' }, $clearFilters),
       div({ class: 'filter-results-wrapper' },
         div({ class: 'results cards' },
           $count,

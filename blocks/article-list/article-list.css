@@ -59,8 +59,12 @@
       }
       .filter-years { width: 110px }
       .filter-by-tag { width: 260px }
+
+
     }
 
+
+    .clear-all-wrapper { margin: -40px 0 10px }
 
     .clear-all {
       font-size: 1rem;
