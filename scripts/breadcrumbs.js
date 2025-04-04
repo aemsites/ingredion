@@ -48,6 +48,7 @@ export async function breadcrumbs() {
   pathParts.forEach((part, index) => {
     currentPath += `/${part}`;
     const { pageNames, pagePath } = getPageNamesByPath(currentPath);
+
     if (pageNames.length === 0) return;
 
     const lastBreadcrumb = breadcrumbItems[breadcrumbItems.length - 1];
