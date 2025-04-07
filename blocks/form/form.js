@@ -416,7 +416,7 @@ export async function createForm(formURL, submitUrl, problemOptionsUrl) {
   form.method = 'GET';
   form.action = submitUrl;
 
-  const [region, locale] = getRegionLocale();
+  const [, locale] = getRegionLocale();
   await (async () => {
     // await loadFormTranslations(`${formURL}?sheet=translations`, locale || 'en');
     await loadFormTranslations('/form-translations.json?sheet=translations', locale || 'en');
