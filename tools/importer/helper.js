@@ -252,7 +252,7 @@ export function createCardsBlock(document, main) {
   });
 
   cardsBlocks = document.querySelectorAll('.card-slider__wrapper');
-  cardsBlocks.forEach((cardsBlock) => {
+  cardsBlocks.forEach((cardsBlock, index) => {
     convertHrefs(cardsBlock);
     const cells = [['Cards(slim)']];
     const cards = cardsBlock.querySelectorAll('.card');
@@ -277,7 +277,13 @@ export function createCardsBlock(document, main) {
     });
     
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
+    if (cardsBlocks.length > 1) {
+      const ptag = document.createElement('p');
+      ptag.textContent = '---';
+      cardsTable.append(ptag);
+    }
     cardsBlock.replaceWith(cardsTable);
+    
   });
 
   cardsBlocks = document.querySelectorAll('.section__content--columns-2');
@@ -611,6 +617,9 @@ export function createCarouselBlock(document, main) {
     });
     
     const carouselTable = WebImporter.DOMUtils.createTable(cells, document);
+    const ptag = document.createElement('p');
+    ptag.textContent = '---';
+    carouselTable.append(ptag);
     carousel.replaceWith(carouselTable);
   });
 }
@@ -626,22 +635,18 @@ export function addAuthorBio(document, main) {
   
   if (authorBio) {
     const cells = [['Author']];
-    const authorName = authorBio.querySelector('.author-bio__text .heading').innerHTML;
-    const authorImage = authorBio.querySelector('.author-bio__image > picture').outerHTML;
-    const authorBioText = authorBio.querySelector('.author-bio__text .body-text').innerHTML;
+    const authorName = authorBio.querySelector('.author-bio__text .heading').innerHTML;   
     
-    cells.push([`${authorImage}`, `${authorName} ${authorBioText}`]);
+    cells.push([`${authorName}`]);
     const authorBioTable = WebImporter.DOMUtils.createTable(cells, document);
     authorBio.replaceWith(authorBioTable);
     
-  } else {
-    const authorName = imageWithDesc.querySelector('.image-desc__text .heading').innerText;
-    const authorImage = imageWithDesc.querySelector('.image-desc__image > picture').outerHTML;
-    const authorBioText = imageWithDesc.querySelector('.image-desc__text .rte-block').innerText;
-    
-    cells.push([`${authorImage}`, `${authorName} ${authorBioText}`]);
+  } else if (imageWithDesc) {
+    const cells = [['Author']];
+    const authorName = imageWithDesc.querySelector('.image-desc__text .heading').innerText;  
+    cells.push([`${authorName}`]);
     const authorBioTable = WebImporter.DOMUtils.createTable(cells, document);
-    authorBio.replaceWith(authorBioTable);
+    imageWithDesc.replaceWith(authorBioTable);
   }
 }
 

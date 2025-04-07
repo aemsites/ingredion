@@ -26,6 +26,7 @@ import {
   createForm,
   createTableBlock,
   createCTAIconBlock,
+  createCarouselBlock,
 } from './helper.js';
 
 export default {
@@ -52,6 +53,7 @@ export default {
     createColorBlock(document, main);
     createIngredientBlock(document, main);
     createContactUs(main, document);
+    createCarouselBlock(document, main);
     createForm(document, main);
     createTableBlock(document, main);
     createAnchorBlock(document, main);
@@ -122,8 +124,8 @@ const createMetadata = (main, document, url, html) => {
 
   // Get teaser metadata
   const teaser = {
-    title: getMetadataProp(document, '.heading > h2'),
-    description: getMetadataProp(document, '.rte-block--large-body-text')
+    title: getMetadataProp(document, '.heading > h2', false),
+    description: getMetadataProp(document, '.rte-block--large-body-text', false)
   };
   if (teaser.title) meta['teaser-title'] = teaser.title;
   if (teaser.description) meta['teaser-description'] = teaser.description;
@@ -148,12 +150,12 @@ const createMetadata = (main, document, url, html) => {
   return meta;
 };
 
-export function getMetadataProp(document, queryString) {
+export function getMetadataProp(document, queryString, remove = true) {
   const metadata = document.querySelector(queryString);
   if (!metadata) return;
   
   const value = metadata.textContent ? metadata.textContent.replace(/[\n\t]/gm, '') : metadata.content;
-  metadata.remove();
+  if (remove) metadata.remove();
   return value;
 }
 
