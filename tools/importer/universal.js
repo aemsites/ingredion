@@ -25,6 +25,7 @@ import {
   createContactUs,
   createForm,
   createTableBlock,
+  createCTAIconBlock,
 } from './helper.js';
 
 export default {
@@ -54,6 +55,7 @@ export default {
     createForm(document, main);
     createTableBlock(document, main);
     createAnchorBlock(document, main);
+    createCTAIconBlock(document, main);
     addAuthorBio(document, main);
     createMetadata(main, document, url, html);   
 

@@ -715,3 +715,29 @@ export function convertHrefs(element) {
   });
 }
 
+export function createCTAIconBlock(document, main) {
+  const ctaIconBlocks = document.querySelectorAll('.section__content--columns-6');
+  if (!ctaIconBlocks) return;  
+  ctaIconBlocks.forEach((ctaIconBlock) => {    
+    const cells = [['CTA Icons']];
+    const ctaIcons = ctaIconBlock.querySelectorAll('.icon-card');
+    let ctaIconString = '';
+    ctaIcons.forEach((ctaIcon, index) => {
+      let ctaIconURL = ctaIcon.href;
+     if (ctaIcon.href .includes('localhost:3001') || ctaIcon.href.includes('ingredion.com')) {
+        ctaIconURL = testURL(ctaIconURL);
+      }
+      const ctaIconImg = ctaIcon.querySelector('.icon-card__wrapper > img');
+      const ctaIconText = ctaIcon.querySelector('.icon-card__wrapper > h3').textContent;
+      const ctaIconImgURL = ctaIconImg.src ? ctaIconImg.src : 'https://main--ingredion--aemsites.aem.live/na/en-us/images/blank-cta-icon.jpg';
+      ctaIconString += `<div><div><img src = '${ctaIconImgURL}'></div><div><a href = '${ctaIconURL}'>${ctaIconText}</a></div></div>`;
+      if (index !== 0 && index % 5 === 0) {
+        cells.push([ctaIconString]);
+        ctaIconString = '';
+      }
+      else if (index === ctaIcons.length - 1) cells.push([ctaIconString]);
+    });
+    const ctaIconTable = WebImporter.DOMUtils.createTable(cells, document);
+    ctaIconBlock.replaceWith(ctaIconTable);
+  });
+}
