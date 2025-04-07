@@ -10,6 +10,9 @@
     color: var(--text-color);
     border-radius: 2px;
     border: 1px solid var(--border-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     cursor: pointer;
     user-select: none;
     &:has(+ .options.open) { border-color: var(--green) }
