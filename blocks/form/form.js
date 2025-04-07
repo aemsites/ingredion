@@ -1,4 +1,9 @@
-import { getCookie } from '../../scripts/utils.js';
+import {
+  getCookie,
+  getRegionLocale,
+  loadFormTranslations,
+  translateFormLabels,
+} from '../../scripts/utils.js';
 
 function createErrorElements(element) {
   const errorDiv = document.createElement('div');
@@ -96,7 +101,7 @@ function createOption(label, value, initialValue) {
   return option;
 }
 
-function createSelect(fd) {
+function createSelect(fd, problemOptionsUrl) {
   const wrapper = document.createElement('div');
   wrapper.className = 'form-input__input-wrapper';
 
@@ -191,7 +196,7 @@ function createSelect(fd) {
 
   // Populate options
   if (fd.Options && fd.Options?.startsWith('https://')) {
-    const optionsUrl = new URL(fd.Options);
+    const optionsUrl = fd.Field === 'problem' && problemOptionsUrl ? new URL(problemOptionsUrl) : new URL(fd.Options);
     fetch(`${optionsUrl.pathname}${optionsUrl.search}`)
       .then(async (response) => {
         const json = await response.json();
@@ -353,6 +358,7 @@ function createLabel(fd) {
   label.textContent = fd.Label;
   if (fd.Required && fd.Required !== 'false') {
     label.classList.add('required');
+    label.textContent = `${label.textContent} *`;
   }
   return label;
 }
@@ -403,14 +409,21 @@ function handleFormElement(form, fieldWrapper, fd, element) {
   }
 }
 
-export async function createForm(formURL, submitUrl) {
+export async function createForm(formURL, submitUrl, problemOptionsUrl) {
   const resp = await fetch(formURL);
   const json = await resp.json();
   const form = document.createElement('form');
   form.method = 'GET';
   form.action = submitUrl;
 
+  const [region, locale] = getRegionLocale();
+  await (async () => {
+    // await loadFormTranslations(`${formURL}?sheet=translations`, locale || 'en');
+    await loadFormTranslations('/form-translations.json?sheet=translations', locale || 'en');
+  })();
+
   json.data.forEach((fd) => {
+    fd.Label = translateFormLabels(fd.Label);
     fd.Type = fd.Type || 'text-input';
     const fieldWrapper = document.createElement('div');
     const style = fd.Style ? ` form-${fd.Style}` : '';
@@ -428,7 +441,7 @@ export async function createForm(formURL, submitUrl) {
     let element;
     switch (fd.Type) {
       case 'select':
-        element = createSelect(fd);
+        element = createSelect(fd, problemOptionsUrl);
         break;
       case 'heading':
         element = createHeading(fd);
@@ -479,7 +492,11 @@ export default async function decorate(block) {
     const submitAction = block.querySelectorAll('p > a')[1];
     const submitUrl = submitAction ? submitAction.href : String(pathname).split('.json')[0];
     submitAction.parentElement.style.display = 'none';
-    const formElement = await createForm(pathname, submitUrl);
+    const problemOptions = block.querySelectorAll('p > a')[2];
+    if (problemOptions) {
+      problemOptions.parentElement.style.display = 'none';
+    }
+    const formElement = await createForm(pathname, submitUrl, problemOptions?.href);
 
     // Add form submit handler for client-side validation
     formElement.addEventListener('submit', (e) => {
