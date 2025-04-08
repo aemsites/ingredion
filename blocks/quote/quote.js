@@ -20,7 +20,7 @@ export default async function decorate(block) {
 
   if (paragraphs.length >= 1) {
     mainHeading.appendChild(paragraphs[0]);
-    firstSubheading.appendChild(paragraphs[1]); 
+    firstSubheading.appendChild(paragraphs[1]);
     secondSubheading.appendChild(paragraphs[2]);
   }
 }
