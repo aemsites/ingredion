@@ -182,11 +182,11 @@ main > .section > .default-content-wrapper {
   margin: 1rem 0 0;
   letter-spacing: normal;
   height: auto;
+  min-height: 0;
 }
 
 .cards.four-column > ul > li {
   margin-right: 20px;
-  flex: 1;
   margin-bottom: 2.5rem;
 }
 
@@ -220,7 +220,7 @@ main > .section > .default-content-wrapper {
   }
 
   .cards.four-column > ul > li {
-    flex-basis: calc(40% - 12px);
+    flex-basis: calc(50% - 12px);
     margin-left: 0.75rem;
     margin-right: 0.75rem;
   }
