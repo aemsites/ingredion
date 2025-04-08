@@ -121,13 +121,10 @@ function createSlide(row, i) {
       child.classList.add('slide-image');
     } else {
       child.classList.add('slide-body');
-      console.log(child);
       const links = child.querySelectorAll('a');
-      console.log(links);
       if (links) {
         Array.from(links).forEach((l) => {
           const parsingResult = parseClassFromString(l.title);
-          console.log(parsingResult);
           if (parsingResult.className) {
             const parentDiv = l.parentElement;
             const grandParent = parentDiv.parentElement;

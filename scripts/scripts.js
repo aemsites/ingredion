@@ -33,12 +33,12 @@ export function unwrapNestedDivs(element) {
 }
 
 /**
- * Extracts a class name from a string like "Some text [class:some-class]" 
+ * Extracts a class name from a string like "Some text [class:some-class]"
  * and returns it with the cleaned text.
  * Useful to style links as highlighted text instead of default button style.
  *
- * @param {string} inputString - String that may contain a class tag.
- * @returns {{ className: string|null, cleanedString: string }} Parsed class name and cleaned string.
+ * @param {string} inputString
+ * @returns {{ className: string|null, cleanedString: string }}
  */
 export function parseClassFromString(inputString) {
   const classRegex = /\[class:\s*([^\]]+)\]/;
