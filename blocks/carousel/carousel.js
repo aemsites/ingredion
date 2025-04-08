@@ -1,6 +1,7 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, ul, li, button, nav } from '../../scripts/dom-helpers.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
+import { parseClassFromString } from '../../scripts/scripts.js';
 
 function showSlide(block, slideIndex = 0) {
   block.dataset.activeSlide = slideIndex;
@@ -120,6 +121,25 @@ function createSlide(row, i) {
       child.classList.add('slide-image');
     } else {
       child.classList.add('slide-body');
+      console.log(child);
+      const links = child.querySelectorAll('a');
+      console.log(links);
+      if (links) {
+        Array.from(links).forEach((l) => {
+          const parsingResult = parseClassFromString(l.title);
+          console.log(parsingResult);
+          if (parsingResult.className) {
+            const parentDiv = l.parentElement;
+            const grandParent = parentDiv.parentElement;
+            grandParent.insertBefore(l, parentDiv);
+            parentDiv.remove();
+            l.classList.remove('button');
+            l.classList.add(parsingResult.className);
+            l.title = parsingResult.cleanedString;
+            l.textContent = parsingResult.cleanedString;
+          }
+        });
+      }
     }
   });
 
