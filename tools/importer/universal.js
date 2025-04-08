@@ -56,7 +56,7 @@ export default {
     createCarouselBlock(document, main);
     createForm(document, main);
     createTableBlock(document, main);
-    createAnchorBlock(document, main);
+    //createAnchorBlock(document, main);
     createCTAIconBlock(document, main);
     addAuthorBio(document, main);
     createMetadata(main, document, url, html);   
@@ -72,6 +72,7 @@ export default {
       'iframe',
       'noscript',
       '.popup',
+      '.embeddedServiceHelpButton',
     ]);
     WebImporter.rules.transformBackgroundImages(main, document);
     WebImporter.rules.adjustImageUrls(main, url, params.originalURL);

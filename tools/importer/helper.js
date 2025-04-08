@@ -20,11 +20,17 @@ var r = new RegExp('^(?:[a-z+]+:)?//', 'i');
 
 export function createHeroBlock(document, main) {
   const hero = document.querySelector('.hero__wrapper');
-  if (hero) {
+  if (hero) {    
     const ptag = document.createElement('p');
     ptag.textContent = '---';
     hero.insertAdjacentElement('afterend', ptag);
-    
+    const breadcrumbs = WebImporter.DOMUtils.createTable([['Breadcrumbs']], document);
+    hero.insertAdjacentElement('afterend', breadcrumbs);
+    const anchorBlock = createAnchorBlock(document, main);
+    if (anchorBlock) {
+      console.log('anchorBlock');
+      hero.insertAdjacentElement('afterend', anchorBlock);
+    }
     const cells = hero.classList.contains('hero--text-left') ? [['Hero(align-left)']] : [['Hero']];
     
     const image = hero.querySelector('.hero__image > picture').outerHTML;
@@ -33,7 +39,7 @@ export function createHeroBlock(document, main) {
     
     let cta = hero.querySelector('.hero__text .primary-cta') ? hero.querySelector('.hero__text .primary-cta') : '';
     if (cta !== '') {
-      cta.href = previewURL + cta.href;
+      cta.href = testURL(cta.href);
       cta = cta.outerHTML;
     }
     
@@ -337,7 +343,7 @@ export function createCardsBlock(document, main) {
         cardImg = '';
       }
       
-      cells.push([`${cardImg} <a href='${card.href}'>${card.textContent}</a>`]);
+      cells.push([`${cardImg}`, `<a href='${card.href}'>${card.textContent}</a>`]);
     });
     
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
@@ -523,14 +529,16 @@ export function createColorBlock(document) {
     const cells = colorMapping.has(color) ? [[`Quote(${colorMapping.get(color)}) `]] : [[`Quote(${color}) `]];
     
     const heading = colorBlockQuote.querySelector('.heading > h1').textContent;
-    cells.push([heading]);
+    cells.push([`<p>${heading}</p>`]);
     
     const subHeading = colorBlockQuote.querySelector('.heading > h3');
-    if (subHeading) cells.push([subHeading.textContent,]);
-    
+    if (subHeading) cells.push([`<p>${subHeading.textContent}</p>`]);
+    else cells.push(['']);
+
     const label = colorBlockQuote.querySelector('.label-text');
-    if (label) cells.push([label.textContent,]);
-    
+    if (label) cells.push([`<p>${label.textContent}</p>`]);
+    else cells.push(['']);
+
     const table = WebImporter.DOMUtils.createTable(cells, document);
     colorBlock.append(table);
     colorBlockQuote.remove();
@@ -555,7 +563,7 @@ export function createAnchorBlock(document, main) {
   
   const cells = [['Anchor']];
   const tabs = document.querySelectorAll('.contentTab .content-tabs__section');
-  
+  const contentTabsNavWrapper = document.querySelector('.content-tabs__navigationWrapper');
   tabs.forEach((tab) => {
     const anchor = document.createElement('a');
     anchor.textContent = tab.getAttribute('link-label');
@@ -589,7 +597,9 @@ export function createAnchorBlock(document, main) {
   });
   
   const table = WebImporter.DOMUtils.createTable(cells, document);
-  contentTabs.prepend(table);
+  contentTabsNavWrapper.remove();
+  return table;
+  
 }
 
 export function createCarouselBlock(document, main) {
