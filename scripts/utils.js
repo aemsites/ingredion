@@ -89,6 +89,35 @@ export async function loadTranslations(sheet = 'default') {
   }
 }
 
+// Function to fetch translations and return a lookup object
+let formTranslations = {};
+export async function loadFormTranslations(url, locale) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Failed to fetch translations');
+    const data = await response.json();
+
+    // Create a lookup object for translations
+    formTranslations = data.data.reduce((acc, item) => {
+      acc[item.key] = item[locale] || item.en;
+      return acc;
+    }, {});
+    return formTranslations;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error loading form translations:', error);
+    return {};
+  }
+}
+
+/**
+ * Translates a given key using the fetched translations.
+ * If the key is not found in the translations, returns the key itself.
+ * @param {string} key - The key to translate.
+ * @returns {string} The translated string or the key if not found.
+ */
+export function translateFormLabels(key) { return formTranslations[key] || key; }
+
 /**
  * Translates a given key using the fetched translations.
  * If the key is not found in the translations, returns the key itself.
