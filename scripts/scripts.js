@@ -33,6 +33,29 @@ export function unwrapNestedDivs(element) {
 }
 
 /**
+ * Extracts a class name from a string like "Some text [class:some-class]" 
+ * and returns it with the cleaned text.
+ * Useful to style links as highlighted text instead of default button style.
+ *
+ * @param {string} inputString - String that may contain a class tag.
+ * @returns {{ className: string|null, cleanedString: string }} Parsed class name and cleaned string.
+ */
+export function parseClassFromString(inputString) {
+  const classRegex = /\[class:\s*([^\]]+)\]/;
+  const classMatch = inputString.match(classRegex);
+
+  let className = null;
+  let cleanedString = inputString;
+
+  if (classMatch) {
+    className = classMatch[1].trim();
+    cleanedString = inputString.replace(classRegex, '').trim();
+  }
+
+  return { className, cleanedString };
+}
+
+/**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
  */
