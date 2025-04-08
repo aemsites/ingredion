@@ -18,9 +18,9 @@ export default async function decorate(block) {
   const secondSubheading = document.querySelector('.quoteblock-wrapper .label-text.label-text-center');
   const paragraphs = document.querySelectorAll('.quoteblock-wrapper ~ p');
 
-  if (paragraphs.length >= 3) {
+  if (paragraphs.length >= 1) {
     mainHeading.appendChild(paragraphs[0]);
-    firstSubheading.appendChild(paragraphs[1]);
+    firstSubheading.appendChild(paragraphs[1]); 
     secondSubheading.appendChild(paragraphs[2]);
   }
 }
