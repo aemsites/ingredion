@@ -112,9 +112,18 @@ function bindEvents(block) {
 }
 
 function createSlide(row, i) {
-  return li({ class: 'carousel-slide', 'data-slide-index': i },
-    ...Array.from(row.children),
-  );
+  const children = Array.from(row.children);
+
+  children.forEach((child) => {
+    // Check if this div contains an <img> element anywhere inside
+    if (child.querySelector('img')) {
+      child.classList.add('slide-image');
+    } else {
+      child.classList.add('slide-body');
+    }
+  });
+
+  return li({ class: 'carousel-slide', 'data-slide-index': i }, ...children);
 }
 
 let carouselId = 0;
