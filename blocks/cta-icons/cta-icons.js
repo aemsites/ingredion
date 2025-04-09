@@ -1,5 +1,6 @@
 import { unwrapNestedDivs } from '../../scripts/scripts.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { div } from '../../scripts/dom-helpers.js';
 
 export default function decorate(block) {
   const firstDiv = block.querySelectorAll('div')[0];
@@ -64,11 +65,9 @@ export default function decorate(block) {
     buttons.forEach((button) => {
       const linkElement = button.querySelector('a');
 
-      const eager = imageCount < eagerLoadLimit;
       imageCount += 1;
 
-      const optimizedPicture = createOptimizedPicture('/img/cta-icons-blank.webp', 'blank image', eager);
-
+      const iconPlaceholder = div({ class: 'icon-card-icon' });
       if (linkElement) {
         const linkHref = linkElement.getAttribute('href');
         const linkTitle = linkElement.getAttribute('title');
@@ -85,8 +84,7 @@ export default function decorate(block) {
           </div>
         `;
 
-        optimizedPicture.querySelector('img').classList.add('icon-card-icon');
-        iconWrapper.querySelector('.icon-card-wrapper').prepend(optimizedPicture);
+        iconWrapper.querySelector('.icon-card-wrapper').prepend(iconPlaceholder);
         button.replaceWith(iconWrapper);
       }
     });
