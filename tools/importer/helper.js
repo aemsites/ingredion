@@ -395,7 +395,7 @@ export function createVideoBlock(document, main) {
   });
 }
 
-export function createIngredientBlock(document, main) {
+export function createIngredientBlock(document, main, formulation = false) {
   
   const relatedIngredients = document.querySelector('.relatedIngredients');
   if (!relatedIngredients) return;
@@ -415,6 +415,12 @@ export function createIngredientBlock(document, main) {
     const div = document.createElement('div');
     div.appendChild(ptag);
     div.appendChild(table);
+    if (formulation) {
+      const section = [['Section Metadata']];
+      section.push(['Style', 'full-page']);
+      const fullPage = WebImporter.DOMUtils.createTable(section, document);
+      div.appendChild(fullPage);
+    }
     relatedIngredients.replaceWith(div);
     
   } else {
@@ -469,8 +475,16 @@ export function createIngredientBlock(document, main) {
       const div = document.createElement('div');
       if (index === 0) div.appendChild(ptag);
       div.appendChild(table);
-      if (index === resultProdCards.length - 1) div.appendChild(ptag);
-      resultProdCard.replaceWith(div);
+      if (index === resultProdCards.length - 1){
+        if (formulation) {
+          const section = [['Section Metadata']];
+          section.push(['Style', 'full-page']);
+          const fullPage = WebImporter.DOMUtils.createTable(section, document);
+          div.appendChild(fullPage);
+        }
+        div.appendChild(ptag);
+      }
+      resultProdCard.replaceWith(div);            
     });
   }
   
