@@ -1,8 +1,10 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, h3, a, table, tr, th, td, label, input, span, h1, p } from '../../scripts/dom-helpers.js';
 
-const productId = new URLSearchParams(window.location.search).get('product-id');
-const productName = 'nhance-59-07730402';
+// Example URL: https://www.ingredion.com/na/en-us/ingredient/nhance-59-07730402.html#
+
+const productId = new URLSearchParams(window.location.search).get('pid'); // 3891
+const productName = new URLSearchParams(window.location.search).get('name'); // nhance-59-07730402
 
 const SERVICE_HOST = 'https://www.ingredion.com';
 const GET_ALL_DOCUMENTS = `${SERVICE_HOST}/content/ingredion-com/na/en-us/search/jcr:content/searchResults.view.json?productId=${productId}`;
@@ -120,6 +122,7 @@ export default async function decorate(doc) {
     if (!selectedIds) return;
 
     const downloadUrl = `${DOWNLOAD_DOCUMENTS}?productId=${productId}&documentType=${docType}&assetId=${selectedIds}`;
+
 
     // Use a temp link for reliability across browsers
     const tempLink = a({ href: downloadUrl, download: `${docType}-documents.zip`, style: 'display: none' });
