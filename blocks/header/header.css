@@ -176,13 +176,18 @@ header {
                     border-top: 0;
                     border-left: 0;
                     border-bottom: 0;
-                    height: 2.375rem;
+                    height: 2.5rem;
                     width: 7.5rem;
                     display: flex;
                     align-items: center;
                     padding: 0 .625rem;
                     font-size: .875rem;
-                    color: #b2b4b3;
+                    white-space: normal;
+                    line-height: 1;
+                }
+
+                .form-typeahead {
+                    width: 100%;
                 }
 
                 input#search {
@@ -484,3 +489,50 @@ header {
         }
     }
 }
+  
+.dropdown-options {
+    background: #fff;
+    position: absolute;
+    display: block;
+    min-width: 6.25rem;
+    top: 100%;
+    left: 0;
+    right: 0;
+    transition: all .5s;
+    pointer-events: none;
+    z-index: 100;
+    border: 1px solid #6cb33e;
+    border-radius: 2px;
+    max-height: 18.125rem;
+    overflow-y: auto;
+}
+
+.dropdown-options.hidden {
+    display: none;
+    pointer-events: none;
+}
+
+.dropdown-option {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all .5s;
+    font-size: .875rem;
+    color: #373738;
+    line-height: 1.5rem;
+    padding: .5rem 0;
+    padding-left: .5rem;
+}
+
+.dropdown-options:not(.hidden) {
+    pointer-events: auto;
+}
+
+.dropdown-option:hover {
+    background: #efefef;
+    color: #6cb33e;
+    outline: 0;
+}
+  

@@ -3,6 +3,7 @@
   position: relative;
   display: inline-block;
   font-size: 1rem;
+  cursor: pointer;
 
   .selected {
     position: relative;
