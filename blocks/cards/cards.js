@@ -1,4 +1,6 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { div, ul, li, button, nav } from '../../scripts/dom-helpers.js';
+import { fetchPlaceholders } from '../../scripts/aem.js';
 
 const isDesktop = window.matchMedia('(width >= 1280px)');
 
@@ -46,7 +48,62 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
   }
 };
 
-export default function decorate(block) {
+function enableDragging(block) {
+  const slidesContainer = block.querySelector('ul');
+  console.log(slidesContainer);
+  let isDragging = false;
+  let startX = 0;
+  let lastScrollLeft = 0;
+
+  function onMove(x) {
+    if (!isDragging) return;
+    const deltaX = startX - x;
+    slidesContainer.scrollLeft = lastScrollLeft + deltaX; // Move smoothly with the mouse
+  }
+
+  function onEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    slidesContainer.classList.remove('dragging');
+    // snapToSlide(block);
+  }
+
+  slidesContainer.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    slidesContainer.classList.add('dragging');
+    startX = e.pageX;
+    lastScrollLeft = slidesContainer.scrollLeft;
+    console.log('mouse down');
+  });
+
+  slidesContainer.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      e.preventDefault();
+      onMove(e.pageX);
+    }
+  });
+
+  slidesContainer.addEventListener('mouseup', onEnd);
+  slidesContainer.addEventListener('mouseleave', onEnd);
+
+  // Touch support for mobile
+  slidesContainer.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    slidesContainer.classList.add('dragging');
+    startX = e.touches[0].pageX;
+    lastScrollLeft = slidesContainer.scrollLeft;
+  });
+
+  slidesContainer.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    onMove(e.touches[0].pageX);
+  });
+
+  slidesContainer.addEventListener('touchend', onEnd);
+}
+
+export default async function decorate(block) {
   const ul = document.createElement('ul');
   [...block.children].forEach((row) => {
     const li = document.createElement('li');
@@ -144,6 +201,9 @@ export default function decorate(block) {
   block.append(ul);
   if (block.classList.contains('slim')) {
     const dotsNav = document.createElement('div');
+    const placeholders = await fetchPlaceholders();
+    const prevButton = button({ type: 'button', class: 'slide-prev', 'aria-label': placeholders.previousSlide || 'Previous Slide' });
+    const nextButton = button({ type: 'button', class: 'slide-next', 'aria-label': placeholders.nextSlide || 'Next Slide' });
     dotsNav.className = 'dots-nav';
     [...ul.children].forEach((_, index) => {
       const dot = document.createElement('span');
@@ -167,7 +227,12 @@ export default function decorate(block) {
           dots[n].className += ' active';
         }
       });
+      if (!isDesktop.matches) {
+        enableDragging(block);
+      }
     });
+    block.append(prevButton);
+    block.append(nextButton);
     block.append(dotsNav);
   }
   isDesktop.addEventListener('change', () => {
