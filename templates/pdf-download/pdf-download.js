@@ -23,7 +23,7 @@ export default async function decorate(doc) {
       // header
       div({ class: 'product-header' },
         div({ class: 'content' },
-          h1('N-HANCE® 59 - 07730402'),
+          h1('NEED SERVICE FOR TITLE'),
           div({ class: 'cta-links' },
             a({ class: 'view-all', href: '#documents' }, 'View All Documents'),
             a({ class: 'download-all', href: DOWNLOAD_ALL_DOCUMENTS }, 'Download All Documents'),
@@ -39,7 +39,7 @@ export default async function decorate(doc) {
         ),
       ),
 
-      p('N-HANCE® 59 functional native starch is a high viscosity potato-based starch that is recommended for low temperature and low shear food processing. Functional native starches are made with a revolutionary technology that gives properties similar to modified starches while meeting clean labeling criteria. This product is produced under Ingredion Incorporated\'s TRUETRACE® Identity Preserved Program for non-GM products.'),
+      p('NEED SERVICE FOR PRODUCT DESCRIPTION'),
 
       // Technical Documents Table
       div({ class: 'table-wrapper', id: 'technical-documents' },
