@@ -50,95 +50,59 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
 
 function enableDragging(block) {
   const slidesContainer = block.querySelector('ul');
-  const originalItems = Array.from(slidesContainer.children);
-  const itemWidth = originalItems[0].offsetWidth + 40;
-
-  // Clear all current content
-  slidesContainer.innerHTML = '';
-
-  // Clone original items: left + originals + right
-  const leftClones = originalItems.map(item => item.cloneNode(true));
-  const rightClones = originalItems.map(item => item.cloneNode(true));
-
-  leftClones.forEach(clone => slidesContainer.appendChild(clone));
-  originalItems.forEach(item => slidesContainer.appendChild(item));
-  rightClones.forEach(clone => slidesContainer.appendChild(clone));
-
-  const buffer = originalItems.length * itemWidth;
-  slidesContainer.scrollLeft = buffer;
-
   let isDragging = false;
   let startX = 0;
-  let scrollStart = 0;
+  let lastScrollLeft = 0;
 
-  const startDrag = (x) => {
-    isDragging = true;
-    slidesContainer.classList.add('dragging');
-    startX = x;
-    scrollStart = slidesContainer.scrollLeft;
-    console.log("scrollStart: "+scrollStart);
-    console.log("slidesContainer.scrollLeft: "+slidesContainer.scrollLeft);
-  };
-
-  const onMove = (x) => {
+  function onMove(x) {
     if (!isDragging) return;
     const deltaX = startX - x;
-    console.log("deltaX: "+deltaX);
-    console.log("startX: "+startX);
-    slidesContainer.scrollLeft = scrollStart + deltaX;
-  
-    const scrollLeft = slidesContainer.scrollLeft;
-    const scrollWidth = slidesContainer.scrollWidth;
-  
-    // 🔁 Wrap the scroll during drag
-    if (scrollLeft <= itemWidth) {
-      slidesContainer.scrollLeft += buffer;
-      scrollStart += buffer; // update so drag continues smooth
-      startX = x;
-    } else if (scrollLeft >= scrollWidth - buffer - itemWidth) {
-      slidesContainer.scrollLeft -= buffer;
-      scrollStart -= buffer;
-      startX = x;
-    }
-  };  
+    slidesContainer.scrollLeft = lastScrollLeft + deltaX; // Move smoothly with the mouse
+  }
 
-  const stopDrag = () => {
+  function onEnd() {
+    if (!isDragging) return;
     isDragging = false;
     slidesContainer.classList.remove('dragging');
+  }
 
-    // 🧠 Only after drag ends, fix scroll position if too far out
-    const scrollLeft = slidesContainer.scrollLeft;
-    const scrollWidth = slidesContainer.scrollWidth;
-    const threshold = buffer / 2;
+  slidesContainer.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    slidesContainer.classList.add('dragging');
+    startX = e.pageX;
+    lastScrollLeft = slidesContainer.scrollLeft;
+  });
 
-    if (scrollLeft <= threshold) {
-      console.log('qui');
-      slidesContainer.scrollLeft += buffer;
-    } else if (scrollLeft >= scrollWidth - threshold) {
-      console.log('oppure qui');
-      slidesContainer.scrollLeft -= buffer;
-    }
-  };
-
-  // Mouse
-  slidesContainer.addEventListener('mousedown', e => startDrag(e.pageX));
-  slidesContainer.addEventListener('mousemove', e => {
+  slidesContainer.addEventListener('mousemove', (e) => {
     if (isDragging) {
       e.preventDefault();
       onMove(e.pageX);
     }
   });
-  slidesContainer.addEventListener('mouseup', stopDrag);
-  slidesContainer.addEventListener('mouseleave', stopDrag);
 
-  // Touch
-  slidesContainer.addEventListener('touchstart', e => startDrag(e.touches[0].pageX));
-  slidesContainer.addEventListener('touchmove', e => {
+  slidesContainer.addEventListener('mouseup', onEnd);
+  slidesContainer.addEventListener('mouseleave', onEnd);
+
+  // Touch support for mobile
+  slidesContainer.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    slidesContainer.classList.add('dragging');
+    startX = e.touches[0].pageX;
+    lastScrollLeft = slidesContainer.scrollLeft;
+  });
+
+  slidesContainer.addEventListener('touchmove', (e) => {
     if (!isDragging) return;
     e.preventDefault();
     onMove(e.touches[0].pageX);
   });
-  slidesContainer.addEventListener('touchend', stopDrag);
+
+  slidesContainer.addEventListener('touchend', onEnd);
+
+  // Prevent images from being dragged
+  block.querySelectorAll('.carousel-slide img').forEach((img) => {
+    img.addEventListener('dragstart', (e) => e.preventDefault());
+  });
 }
 
 export default async function decorate(block) {
@@ -265,10 +229,10 @@ export default async function decorate(block) {
           dots[n].className += ' active';
         }
       });
-      if (!isDesktop.matches) {
-        enableDragging(block);
-      }
     });
+    if (!isDesktop.matches) {
+      enableDragging(block);
+    }
     block.append(prevButton);
     block.append(nextButton);
     block.append(dotsNav);
