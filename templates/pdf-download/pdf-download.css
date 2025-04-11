@@ -1,5 +1,15 @@
+html {
+    scroll-behavior: smooth;
+}
+
 .product-header {
-   
+    transition: opacity 200ms ease;
+    
+    &.fade-out {
+        opacity: 0;
+        pointer-events: none;
+    }
+
     .cta-links {
         .view {
             position: relative;
@@ -31,9 +41,7 @@
     }
 
 
-    .anchor-links {
-        display: none;
-    }
+    .anchor-links { display: none}
 
     &.fixed {
         position: fixed;
@@ -75,9 +83,26 @@
             }
         }
 
-        .anchor-links {
+        .anchor-nav {
             display: block;
-            background: gray; 
+            background: #efefef; 
+            .content { 
+                min-height: 40px;
+                justify-content: space-between;
+                padding: 0 80px;
+                
+                a {
+                    font-family: MiloPro-Bold, Helvetica, sans-serif;
+                    text-transform: uppercase;
+                    font-size: 14px;
+                    color: var(--text-color);
+                    transition: color 0.3s ease;
+                    
+                    &.active {
+                        color: var(--green);
+                    }
+                }
+            }
         }
 
     }
@@ -91,6 +116,10 @@ p {
 .table-wrapper {
     max-width: 1024px;
     margin: 0 auto;
+
+    h3 {
+        scroll-margin-top: 160px;
+    }
 
     table {
         width: 100%;
