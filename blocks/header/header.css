@@ -188,38 +188,44 @@ header {
 
                 .form-typeahead {
                     width: 100%;
-                }
 
-                input#search {
-                    border: 0;
-                    height: 2.375rem;
-                    width: 100%;
-                    outline: none;
-                    padding: .78rem .625rem;
-                    font-size: .875rem;
-                    color: #373738;
-                }
+                    input#search {
+                        border: 0;
+                        height: 2.375rem;
+                        width: 100%;
+                        outline: none;
+                        padding: .78rem .625rem;
+                        font-size: .875rem;
+                        color: #373738;
+                    }
 
-                button.icon-search {
-                    width: 40px;
-                    height: 38px;
-                    font-family: OpenSans-Bold, Helvetica, sans-serif;
-                    font-size: 1.5rem;
-                    cursor: pointer;
-                    background: transparent;
-                    border: 0;
+                    button.icon-search {
+                        position: absolute;
+                        right: .625rem;
+                        top: .5rem;
+                        font-size: 1.5rem;
+                        border: none;
+                        background-color: transparent;
+                        padding: 0;
+                        cursor: pointer;
+    
+                        &::before {
+                            content: "\e93c";
+                            color: var(--green);
+                            font-family: ingredion-icon;
+                            speak: never;
+                            font-style: normal;
+                            font-weight: 400;
+                            font-variant: normal;
+                            text-transform: none;
+                            line-height: 1;
+                            -webkit-font-smoothing: antialiased;
+                        }
 
-                    &::before {
-                        content: "\e93c";
-                        color: var(--green);
-                        font-family: ingredion-icon;
-                        speak: never;
-                        font-style: normal;
-                        font-weight: 400;
-                        font-variant: normal;
-                        text-transform: none;
-                        line-height: 1;
-                        -webkit-font-smoothing: antialiased;
+                        @media (width < 1080px) {
+                            right: 1.625rem;
+                            top: 1.3rem;
+                        }
                     }
                 }
             }
@@ -489,8 +495,8 @@ header {
         }
     }
 }
-  
-.dropdown-options {
+
+.dropdown-options, .typeahead-dropdown-options {
     background: #fff;
     position: absolute;
     display: block;
@@ -507,12 +513,12 @@ header {
     overflow-y: auto;
 }
 
-.dropdown-options.hidden {
+.dropdown-options.hidden, .typeahead-dropdown-options.hidden, .form-dropdown.hidden {
     display: none;
     pointer-events: none;
 }
 
-.dropdown-option {
+.dropdown-option, .typeahead-dropdown-option {
     position: relative;
     display: flex;
     justify-content: space-between;
@@ -526,13 +532,16 @@ header {
     padding-left: .5rem;
 }
 
-.dropdown-options:not(.hidden) {
+.dropdown-options:not(.hidden), .typeahead-dropdown-options:not(.hidden), .form-dropdown:not(.hidden) {
     pointer-events: auto;
 }
 
-.dropdown-option:hover {
+.dropdown-option:hover, .typeahead-dropdown-option:hover {
     background: #efefef;
     color: #6cb33e;
     outline: 0;
 }
-  
+
+.form-dropdown {
+    position: relative;
+}

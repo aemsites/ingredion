@@ -1,7 +1,7 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
 import { div, h3, h4, p, a } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, readBlockConfig } from '../../scripts/aem.js';
-import { formatDate } from '../../scripts/utils.js';
+import { getRegionLocale, loadTranslations, formatDate } from '../../scripts/utils.js';
 import ArticleRenderer from './article-renderer.js';
 
 export default async function decorate(block) {
@@ -62,8 +62,20 @@ export default async function decorate(block) {
       ),
     );
 
+    const [, locale] = getRegionLocale();
+
+    // fetch both articles and translations
+    const [articlesResponse] = await Promise.all([
+      fetch(this.jsonPath),
+      loadTranslations(locale),
+    ]);
+
+    // handle articles response
+    if (!articlesResponse.ok) throw new Error('Failed to fetch articles');
+    const { data } = await articlesResponse.json();
+
     await new ArticleRenderer({
-      jsonPath,
+      data,
       articlesPerPageOptions,
       paginationMaxBtns,
       articleDiv: $articles,
@@ -114,8 +126,20 @@ export default async function decorate(block) {
       ),
     );
 
+    const [, locale] = getRegionLocale();
+
+    // fetch both articles and translations
+    const [articlesResponse] = await Promise.all([
+      fetch(this.jsonPath),
+      loadTranslations(locale),
+    ]);
+
+    // handle articles response
+    if (!articlesResponse.ok) throw new Error('Failed to fetch articles');
+    const { data } = await articlesResponse.json();
+
     await new ArticleRenderer({
-      jsonPath,
+      data,
       articlesPerPageOptions,
       paginationMaxBtns,
       articleDiv: $articles,
