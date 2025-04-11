@@ -1,15 +1,10 @@
 const SERVICE_HOST = 'https://www.ingredion.com';
 
-export const URL_PARAMS = {
-  PRODUCT_ID: 'pid',
-  PRODUCT_NAME: 'name',
-};
-
 export const getUrlParams = () => {
   const params = new URLSearchParams(window.location.search);
   return {
-    productId: params.get(URL_PARAMS.PRODUCT_ID),
-    productName: params.get(URL_PARAMS.PRODUCT_NAME),
+    productId: params.get('pid'),
+    productName: params.get('name'),
   };
 };
 
