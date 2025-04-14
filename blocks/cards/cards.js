@@ -47,6 +47,30 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
   }
 };
 
+function showCard(block, cardIndex = 0) {
+  block.dataset.activeCard = cardIndex;
+  const cards = block.querySelectorAll('li');
+  const realCardIndex = Math.max(0, Math.min(cardIndex, cards.length - 1));
+  const activeCard = block.querySelector(`li[card-index="${realCardIndex}"]`);
+  const indicators = block.querySelectorAll('.dots-nav');
+
+  indicators.forEach((indicator, i) => {
+    if (i !== realCardIndex) indicator.removeAttribute('disabled');
+    else indicator.setAttribute('disabled', 'true');
+  });
+
+  block.querySelector('.slide-prev').toggleAttribute('disabled', realCardIndex === 0);
+  block.querySelector('.slide-next').toggleAttribute('disabled', realCardIndex === cards.length - 1);
+
+  const cardWidth = activeCard.offsetWidth;
+  const scrollPosition = cardWidth * realCardIndex;
+
+  block.querySelector('ul').scrollTo({
+    left: scrollPosition,
+    behavior: 'smooth',
+  });
+}
+
 function enableDragging(block) {
   const slidesContainer = block.querySelector('ul');
   let isDragging = false;
@@ -104,10 +128,28 @@ function enableDragging(block) {
   });
 }
 
+function bindEvents(block) {
+  block.querySelectorAll('.dots-nav').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const cardIndex = parseInt(e.target.dataset.index, 10);
+      showCard(block, cardIndex);
+    });
+  });
+
+  block.querySelector('.slide-prev').addEventListener('click', () => {
+    showCard(block, parseInt(block.dataset.activeCard, 10) - 1);
+  });
+
+  block.querySelector('.slide-next').addEventListener('click', () => {
+    showCard(block, parseInt(block.dataset.activeCard, 10) + 1);
+  });
+}
+
 export default async function decorate(block) {
   const ul = document.createElement('ul');
-  [...block.children].forEach((row) => {
+  [...block.children].forEach((row, i) => {
     const li = document.createElement('li');
+    li.setAttribute('card-index', i);
     while (row.firstElementChild) li.append(row.firstElementChild);
     if (block.classList.contains('video')) {
       const placeholder = li.querySelector('picture');
@@ -212,29 +254,32 @@ export default async function decorate(block) {
       if (index === 0) dot.classList.add('active');
       dot.dataset.index = index;
       dotsNav.append(dot);
-      dotsNav.addEventListener('click', (e) => {
-        if (e.target.classList.contains('dot')) {
-          let i;
-          const n = parseInt(e.target.dataset.index, 10);
-          const slides = ul.children;
-          const dots = dotsNav.children;
-          for (i = 0; i < slides.length; i += 1) {
-            slides[i].style.display = 'none';
-          }
-          for (i = 0; i < dots.length; i += 1) {
-            dots[i].className = dots[i].className.replace(' active', '');
-          }
-          slides[n].style.display = 'block';
-          dots[n].className += ' active';
-        }
-      });
+      // dotsNav.addEventListener('click', (e) => {
+      //   if (e.target.classList.contains('dot')) {
+      //     let i;
+      //     const n = parseInt(e.target.dataset.index, 10);
+      //     const slides = ul.children;
+      //     const dots = dotsNav.children;
+      //     for (i = 0; i < slides.length; i += 1) {
+      //       slides[i].style.display = 'none';
+      //     }
+      //     for (i = 0; i < dots.length; i += 1) {
+      //       dots[i].className = dots[i].className.replace(' active', '');
+      //     }
+      //     slides[n].style.display = 'block';
+      //     dots[n].className += ' active';
+      //   }
+      // });
     });
-    if (!isDesktop.matches) {
-      enableDragging(block);
-    }
     block.append(prevButton);
     block.append(nextButton);
     block.append(dotsNav);
+
+    if (!isDesktop.matches) {
+      bindEvents(block);
+      enableDragging(block);
+      showCard(block, 0);
+    }
   }
   isDesktop.addEventListener('change', () => {
     requestAnimationFrame(window.location.reload());
