@@ -58,7 +58,7 @@ function showCard(block, cardIndex = 0) {
     else indicator.setAttribute('active', 'true');
   });
 
-  const cardWidth = activeCard.offsetWidth + 40;
+  const cardWidth = activeCard.offsetWidth + 25;
   const scrollPosition = cardWidth * realCardIndex;
 
   block.querySelector('ul').scrollTo({
@@ -67,8 +67,17 @@ function showCard(block, cardIndex = 0) {
   });
 }
 
+function snapToSlide(block) {
+  const cardsContainer = block.querySelector('ul');
+  const cards = [...block.querySelectorAll('li')];
+  const cardWidth = cards[0].offsetWidth;
+  const closestCardIndex = Math.round(cardsContainer.scrollLeft / cardWidth);
+
+  showCard(block, closestCardIndex);
+}
+
 function enableDragging(block) {
-  const slidesContainer = block.querySelector('ul');
+  const cardsContainer = block.querySelector('ul');
   let isDragging = false;
   let startX = 0;
   let lastScrollLeft = 0;
@@ -76,47 +85,49 @@ function enableDragging(block) {
   function onMove(x) {
     if (!isDragging) return;
     const deltaX = startX - x;
-    slidesContainer.scrollLeft = lastScrollLeft + deltaX; // Move smoothly with the mouse
+    cardsContainer.scrollLeft = lastScrollLeft + deltaX; // Move smoothly with the mouse
+    snapToSlide(block);
   }
 
   function onEnd() {
     if (!isDragging) return;
     isDragging = false;
-    slidesContainer.classList.remove('dragging');
+    cardsContainer.classList.remove('dragging');
+    snapToSlide(block);
   }
 
-  slidesContainer.addEventListener('mousedown', (e) => {
+  cardsContainer.addEventListener('mousedown', (e) => {
     isDragging = true;
-    slidesContainer.classList.add('dragging');
+    cardsContainer.classList.add('dragging');
     startX = e.pageX;
-    lastScrollLeft = slidesContainer.scrollLeft;
+    lastScrollLeft = cardsContainer.scrollLeft;
   });
 
-  slidesContainer.addEventListener('mousemove', (e) => {
+  cardsContainer.addEventListener('mousemove', (e) => {
     if (isDragging) {
       e.preventDefault();
       onMove(e.pageX);
     }
   });
 
-  slidesContainer.addEventListener('mouseup', onEnd);
-  slidesContainer.addEventListener('mouseleave', onEnd);
+  cardsContainer.addEventListener('mouseup', onEnd);
+  cardsContainer.addEventListener('mouseleave', onEnd);
 
   // Touch support for mobile
-  slidesContainer.addEventListener('touchstart', (e) => {
+  cardsContainer.addEventListener('touchstart', (e) => {
     isDragging = true;
-    slidesContainer.classList.add('dragging');
+    cardsContainer.classList.add('dragging');
     startX = e.touches[0].pageX;
-    lastScrollLeft = slidesContainer.scrollLeft;
+    lastScrollLeft = cardsContainer.scrollLeft;
   });
 
-  slidesContainer.addEventListener('touchmove', (e) => {
+  cardsContainer.addEventListener('touchmove', (e) => {
     if (!isDragging) return;
     e.preventDefault();
     onMove(e.touches[0].pageX);
   });
 
-  slidesContainer.addEventListener('touchend', onEnd);
+  cardsContainer.addEventListener('touchend', onEnd);
 
   // Prevent images from being dragged
   block.querySelectorAll('.carousel-slide img').forEach((img) => {
