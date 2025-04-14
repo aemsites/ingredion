@@ -52,15 +52,15 @@ function showCard(block, cardIndex = 0) {
   const cards = block.querySelectorAll('li');
   const realCardIndex = Math.max(0, Math.min(cardIndex, cards.length - 1));
   const activeCard = block.querySelector(`li[card-index="${realCardIndex}"]`);
-  const indicators = block.querySelectorAll('.dots-nav');
+  const indicators = block.querySelectorAll('.dots-nav span');
 
   indicators.forEach((indicator, i) => {
-    if (i !== realCardIndex) indicator.removeAttribute('disabled');
-    else indicator.setAttribute('disabled', 'true');
+    if (i !== realCardIndex) indicator.removeAttribute('active');
+    else indicator.setAttribute('active', 'true');
   });
 
-  block.querySelector('.slide-prev').toggleAttribute('disabled', realCardIndex === 0);
-  block.querySelector('.slide-next').toggleAttribute('disabled', realCardIndex === cards.length - 1);
+  block.querySelector('.slide-prev').toggleAttribute('active', realCardIndex === 0);
+  block.querySelector('.slide-next').toggleAttribute('active', realCardIndex === cards.length - 1);
 
   const cardWidth = activeCard.offsetWidth + 40;
   const scrollPosition = cardWidth * realCardIndex;
@@ -251,25 +251,8 @@ export default async function decorate(block) {
     [...ul.children].forEach((_, index) => {
       const dot = document.createElement('span');
       dot.className = 'dot';
-      if (index === 0) dot.classList.add('active');
       dot.dataset.index = index;
       dotsNav.append(dot);
-      // dotsNav.addEventListener('click', (e) => {
-      //   if (e.target.classList.contains('dot')) {
-      //     let i;
-      //     const n = parseInt(e.target.dataset.index, 10);
-      //     const slides = ul.children;
-      //     const dots = dotsNav.children;
-      //     for (i = 0; i < slides.length; i += 1) {
-      //       slides[i].style.display = 'none';
-      //     }
-      //     for (i = 0; i < dots.length; i += 1) {
-      //       dots[i].className = dots[i].className.replace(' active', '');
-      //     }
-      //     slides[n].style.display = 'block';
-      //     dots[n].className += ' active';
-      //   }
-      // });
     });
     block.append(prevButton);
     block.append(nextButton);

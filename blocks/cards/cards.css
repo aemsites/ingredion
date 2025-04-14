@@ -373,10 +373,10 @@ main > .section > .default-content-wrapper {
     background-color: #ccc;
     border-radius: 50%;
     cursor: pointer;
-  }
 
-  .dot.active {
-    background-color: #333;
+    &[active="true"] {
+      background-color: var(--green);
+    }
   }
 }
 
