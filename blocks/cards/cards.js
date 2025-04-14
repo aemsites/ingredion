@@ -59,9 +59,6 @@ function showCard(block, cardIndex = 0) {
     else indicator.setAttribute('active', 'true');
   });
 
-  block.querySelector('.slide-prev').toggleAttribute('active', realCardIndex === 0);
-  block.querySelector('.slide-next').toggleAttribute('active', realCardIndex === cards.length - 1);
-
   const cardWidth = activeCard.offsetWidth + 40;
   const scrollPosition = cardWidth * realCardIndex;
 
@@ -134,14 +131,6 @@ function bindEvents(block) {
       const cardIndex = parseInt(e.target.dataset.index, 10);
       showCard(block, cardIndex);
     });
-  });
-
-  block.querySelector('.slide-prev').addEventListener('click', () => {
-    showCard(block, parseInt(block.dataset.activeCard, 10) - 1);
-  });
-
-  block.querySelector('.slide-next').addEventListener('click', () => {
-    showCard(block, parseInt(block.dataset.activeCard, 10) + 1);
   });
 }
 
@@ -244,18 +233,16 @@ export default async function decorate(block) {
   block.append(ul);
   if (block.classList.contains('slim')) {
     const dotsNav = document.createElement('div');
-    const placeholders = await fetchPlaceholders();
-    const prevButton = button({ type: 'button', class: 'slide-prev', 'aria-label': placeholders.previousSlide || 'Previous Slide' });
-    const nextButton = button({ type: 'button', class: 'slide-next', 'aria-label': placeholders.nextSlide || 'Next Slide' });
     dotsNav.className = 'dots-nav';
     [...ul.children].forEach((_, index) => {
       const dot = document.createElement('span');
+      if (index === 0) {
+        if (index === 0) dot.setAttribute('active', 'true');
+      }
       dot.className = 'dot';
       dot.dataset.index = index;
       dotsNav.append(dot);
     });
-    block.append(prevButton);
-    block.append(nextButton);
     block.append(dotsNav);
 
     if (!isDesktop.matches) {
