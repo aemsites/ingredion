@@ -62,7 +62,7 @@ function showCard(block, cardIndex = 0) {
   block.querySelector('.slide-prev').toggleAttribute('disabled', realCardIndex === 0);
   block.querySelector('.slide-next').toggleAttribute('disabled', realCardIndex === cards.length - 1);
 
-  const cardWidth = activeCard.offsetWidth;
+  const cardWidth = activeCard.offsetWidth + 40;
   const scrollPosition = cardWidth * realCardIndex;
 
   block.querySelector('ul').scrollTo({
