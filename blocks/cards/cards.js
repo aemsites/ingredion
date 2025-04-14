@@ -1,5 +1,4 @@
-import { createOptimizedPicture, fetchPlaceholders } from '../../scripts/aem.js';
-import { button } from '../../scripts/dom-helpers.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 const isDesktop = window.matchMedia('(width >= 1280px)');
 
