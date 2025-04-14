@@ -6,45 +6,7 @@ import {
 } from '../../scripts/dom-helpers.js';
 
 import { unwrapNestedDivs } from '../../scripts/scripts.js';
-import { getCookie } from '../../scripts/utils.js';
-
-function addIngredientToCart(ingredientName, ingredientUrl) {
-  const cartCookies = getCookie('cartCookies');
-  if (cartCookies) {
-    document.cookie = `cartCookies=${cartCookies} cookie ${ingredientName},url=${ingredientUrl}; path=/`;
-  } else {
-    document.cookie = `cartCookies=cookie ${ingredientName},url=${ingredientUrl}; path=/`;
-  }
-
-  const cartCount = document.querySelector('.icon-cart > .count');
-  if (cartCount) {
-    cartCount.textContent = parseInt(cartCount.textContent, 10) + 1;
-    cartCount.style.display = 'block';
-  }
-  if (cartCount.textContent === '0') {
-    cartCount.style.display = 'none';
-  }
-}
-
-function removeIngredientFromCart() {
-  const cartCookies = getCookie('cartCookies');
-  const cookies = cartCookies.split('cookie ');
-  const lastCookie = cookies[cookies.length - 1];
-  const lastCookieUrl = lastCookie.split('=')[1];
-  if (lastCookieUrl === window.location.href) {
-    const updatedCookies = cookies.slice(0, -1);
-    document.cookie = `cartCookies=${updatedCookies.join(' cookie ').trim()}; path=/`;
-  }
-
-  const cartCount = document.querySelector('.icon-cart > .count');
-  if (cartCount) {
-    cartCount.textContent = parseInt(cartCount.textContent, 10) - 1;
-    cartCount.style.display = 'block';
-  }
-  if (cartCount.textContent === '0') {
-    cartCount.style.display = 'none';
-  }
-}
+import { addIngredientToCart, removeIngredientFromCart } from '../../scripts/add-to-cart.js';
 
 export default async function decorate(block) {
   unwrapNestedDivs(block);

@@ -1,10 +1,15 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, h3, a, table, tr, th, td, label, input, span, h1, p } from '../../scripts/dom-helpers.js';
 import { PRODUCT_API, getUrlParams } from '../../scripts/product-api.js';
+import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
+import { addIngredientToCart, removeIngredientFromCart } from '../../scripts/add-to-cart.js';
 
 const { productId, productName } = getUrlParams();
 
 export default async function decorate(doc) {
+  const [region, locale] = getRegionLocale();
+  await loadTranslations(locale);
+
   const $main = doc.querySelector('main');
 
   // Fetch product details
@@ -28,16 +33,16 @@ export default async function decorate(doc) {
           ),
           div({ class: 'buttons' },
             // TODO: Add sample functionality
-            a({ class: 'button' }, product.primaryCtaLabel),
-            // TODO: Learn More Page??
-            a({ class: 'button secondary', href: product.secondaryCtaUrl }, product.secondaryCtaLabel),
+            a({ class: 'button', id: 'add-sample-btn' }, 'Add Sample'),
+            // TODO: add modal for contact us and pass product name
+            a({ class: 'button secondary', href: `contact-us-modal?${productName}` }, translate('contact-us')),
           ),
         ),
         div({ class: 'anchor-nav' },
             div({ class: 'content' },
-                a({ href: '#' }, 'Details'),
-                a({ href: '#technical-documents' }, 'Technical Documents'),
-                a({ href: '#sds-documents' }, 'SDS Documents'),
+                a({ href: '#' }, translate('details')),
+                a({ href: '#technical-documents' }, translate('technical-documents')),
+                a({ href: '#sds-documents' }, translate('sds-documents')),
             ),
         ),
       ),
@@ -46,13 +51,13 @@ export default async function decorate(doc) {
 
       // Technical Documents Table
       div({ class: 'table-wrapper' },
-        h3({ id: 'technical-documents' }, 'Technical Documents'),
+        h3({ id: 'technical-documents' }, translate('technical-documents')),
         table(
           tr(
-            th(a({ class: 'select-all' }, 'Select All')),
-            th('Document Type'),
-            th('Format'),
-            th('Size'),
+            th(a({ class: 'select-all' }, translate('select-all'))),
+            th(translate('document-type')),
+            th(translate('format')),
+            th(translate('size')),
           ),
           ...productData.technicalDocuments.map((techDoc) => tr(
             td(label({ class: 'checkbox' }, input({ type: 'checkbox', 'data-doc-id': techDoc.id }))),
@@ -67,13 +72,13 @@ export default async function decorate(doc) {
 
       // // SDS Documents Table
       div({ class: 'table-wrapper' },
-        h3({ id: 'sds-documents' }, 'SDS Documents'),
+        h3({ id: 'sds-documents' }, translate('sds-documents')),
         table(
           tr(
-            th(a({ class: 'select-all' }, 'Select All')),
-            th('Region'),
-            th('Language'),
-            th('Size'),
+            th(a({ class: 'select-all' }, translate('select-all'))),
+            th(translate('region')),
+            th(translate('language')),
+            th(translate('size')),
           ),
           ...productData.sdsDocuments.map((sdsDoc) => tr(
             td(label({ class: 'checkbox' }, input({ type: 'checkbox', 'data-doc-id': sdsDoc.id }))),
@@ -88,9 +93,14 @@ export default async function decorate(doc) {
     ),
   );
 
-  // Clear and append both tables
-
   $main.append($page);
+
+
+  // add sample button
+  const addSampleBtn = document.getElementById('add-sample-btn');
+  addSampleBtn.addEventListener('click', () => {
+    addIngredientToCart(productName, window.location.href);
+  });
 
   // Add Select All functionality for both tables
   document.querySelectorAll('.select-all').forEach((btn) => {
@@ -117,13 +127,18 @@ export default async function decorate(doc) {
           document.body.appendChild(fixedHeader);
           // Fade out the original header
           productHeader.classList.add('fade-out');
+          // Add 'on' class after a small delay to allow for transition
+          setTimeout(() => fixedHeader.classList.add('on'), 10);
         }
       } else if (fixedHeader) {
-        // Remove the fixed header when scrolling back up
-        fixedHeader.remove();
-        fixedHeader = null;
         // Fade in the original header
         productHeader.classList.remove('fade-out');
+        fixedHeader.classList.remove('on');
+        // Wait for transition to complete before removing fixed header
+        setTimeout(() => {
+          fixedHeader.remove();
+          fixedHeader = null;
+        }, 200);
       }
     }
 

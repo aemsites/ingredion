@@ -50,6 +50,12 @@ html {
         right: 0;
         z-index: 100;
         background: #fff;
+        opacity: 0;
+        transition: opacity 160ms ease;
+        
+        &.on {
+            opacity: 1;
+        }
 
         .content {
             position: relative;
