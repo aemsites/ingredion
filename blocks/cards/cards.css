@@ -146,12 +146,11 @@
   .cards.slim > ul {
     display: flex;
     flex-wrap: nowrap;
-    overflow-x: auto;
-    width: fit-content;
     gap: 20px;
     scrollbar-width: none;
     -ms-overflow-style: none;
     width: 100%;
+    overflow-x: auto;
   }
 
   .cards.slim > ul::-webkit-scrollbar {
