@@ -1,85 +1,19 @@
-import {
-  div,
-  span,
-  p,
-  button,
-} from '../../scripts/dom-helpers.js';
-
+/* eslint-disable function-paren-newline, object-curly-newline */
+import { div, span } from '../../scripts/dom-helpers.js';
 import { unwrapNestedDivs } from '../../scripts/scripts.js';
-import { getCookie } from '../../scripts/utils.js';
-
-function addIngredientToCart(ingredientName, ingredientUrl) {
-  const cartCookies = getCookie('cartCookies');
-  if (cartCookies) {
-    document.cookie = `cartCookies=${cartCookies} cookie ${ingredientName},url=${ingredientUrl}; path=/`;
-  } else {
-    document.cookie = `cartCookies=cookie ${ingredientName},url=${ingredientUrl}; path=/`;
-  }
-
-  const cartCount = document.querySelector('.icon-cart > .count');
-  if (cartCount) {
-    cartCount.textContent = parseInt(cartCount.textContent, 10) + 1;
-    cartCount.style.display = 'block';
-  }
-  if (cartCount.textContent === '0') {
-    cartCount.style.display = 'none';
-  }
-}
-
-function removeIngredientFromCart() {
-  const cartCookies = getCookie('cartCookies');
-  const cookies = cartCookies.split('cookie ');
-  const lastCookie = cookies[cookies.length - 1];
-  const lastCookieUrl = lastCookie.split('=')[1];
-  if (lastCookieUrl === window.location.href) {
-    const updatedCookies = cookies.slice(0, -1);
-    document.cookie = `cartCookies=${updatedCookies.join(' cookie ').trim()}; path=/`;
-  }
-
-  const cartCount = document.querySelector('.icon-cart > .count');
-  if (cartCount) {
-    cartCount.textContent = parseInt(cartCount.textContent, 10) - 1;
-    cartCount.style.display = 'block';
-  }
-  if (cartCount.textContent === '0') {
-    cartCount.style.display = 'none';
-  }
-}
+import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 
 export default async function decorate(block) {
   unwrapNestedDivs(block);
 
-  const contentContainer = div(
-    { class: 'related-ingredient-content', tabIndex: 0 },
+  const contentContainer = div({ class: 'related-ingredient-content', tabIndex: 0 },
     div({ class: 'related-ingredient-text' }),
   );
 
   const buttonContainer = div({ class: 'related-ingredient-buttons' });
-  const cartListNotificationContainer = div(
-    { class: 'cart-list-notification' },
-    div(
-      { class: 'cart-list-notification-wrapper' },
-      p('Product successfully added to cart!'),
-      button({ class: 'cart-list-notification-undo icon-close' }, 'Undo'),
-      button({ class: 'cart-list-notification-close icon-close' }),
-    ),
-  );
-
-  const undoButton = cartListNotificationContainer.querySelector('.cart-list-notification-undo');
-  const closeButton = cartListNotificationContainer.querySelector('.cart-list-notification-close');
-
-  undoButton.addEventListener('click', () => {
-    removeIngredientFromCart();
-    cartListNotificationContainer.style.display = 'none';
-  });
-
-  closeButton.addEventListener('click', () => {
-    cartListNotificationContainer.style.display = 'none';
-  });
 
   block.appendChild(contentContainer);
   block.appendChild(buttonContainer);
-  block.appendChild(cartListNotificationContainer);
 
   const textContainer = block.querySelector('.related-ingredient-text');
   const productName = block.querySelector('.related-ingredient.block h4');
@@ -144,10 +78,6 @@ export default async function decorate(block) {
         link.addEventListener('click', (e) => {
           e.preventDefault();
           addIngredientToCart(ingredientName, ingredientUrl);
-          cartListNotificationContainer.style.display = 'block';
-          setTimeout(() => {
-            cartListNotificationContainer.style.display = 'none';
-          }, 5000);
         });
       } else if (normalizedIndex === 3) {
         link.classList.add('secondary');
