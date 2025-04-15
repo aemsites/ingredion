@@ -1,47 +1,18 @@
-import {
-  div,
-  span,
-  p,
-  button,
-} from '../../scripts/dom-helpers.js';
-
+import { div, span } from '../../scripts/dom-helpers.js';
 import { unwrapNestedDivs } from '../../scripts/scripts.js';
-import { addIngredientToCart, removeIngredientFromCart } from '../../scripts/add-to-cart.js';
+import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 
 export default async function decorate(block) {
   unwrapNestedDivs(block);
 
-  const contentContainer = div(
-    { class: 'related-ingredient-content', tabIndex: 0 },
+  const contentContainer = div({ class: 'related-ingredient-content', tabIndex: 0 },
     div({ class: 'related-ingredient-text' }),
   );
 
   const buttonContainer = div({ class: 'related-ingredient-buttons' });
-  const cartListNotificationContainer = div(
-    { class: 'cart-list-notification' },
-    div(
-      { class: 'cart-list-notification-wrapper' },
-      p('Product successfully added to cart!'),
-      button({ class: 'cart-list-notification-undo icon-close' }, 'Undo'),
-      button({ class: 'cart-list-notification-close icon-close' }),
-    ),
-  );
-
-  const undoButton = cartListNotificationContainer.querySelector('.cart-list-notification-undo');
-  const closeButton = cartListNotificationContainer.querySelector('.cart-list-notification-close');
-
-  undoButton.addEventListener('click', () => {
-    removeIngredientFromCart();
-    cartListNotificationContainer.style.display = 'none';
-  });
-
-  closeButton.addEventListener('click', () => {
-    cartListNotificationContainer.style.display = 'none';
-  });
 
   block.appendChild(contentContainer);
   block.appendChild(buttonContainer);
-  block.appendChild(cartListNotificationContainer);
 
   const textContainer = block.querySelector('.related-ingredient-text');
   const productName = block.querySelector('.related-ingredient.block h4');
@@ -106,10 +77,6 @@ export default async function decorate(block) {
         link.addEventListener('click', (e) => {
           e.preventDefault();
           addIngredientToCart(ingredientName, ingredientUrl);
-          cartListNotificationContainer.style.display = 'block';
-          setTimeout(() => {
-            cartListNotificationContainer.style.display = 'none';
-          }, 5000);
         });
       } else if (normalizedIndex === 3) {
         link.classList.add('secondary');

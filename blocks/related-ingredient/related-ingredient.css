@@ -161,72 +161,7 @@ a.button.icon .icon-eye {
   top: -0.5em;
 }
 
-.cart-list-notification {
-  display: none;
-  line-height: 1.15;
-}
 
-.cart-list-notification-wrapper {
-  position: fixed;
-  bottom: 2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  padding: 0.75rem 1.5rem;
-  background: #4d4e4c;
-  border-radius: 0.25rem;
-  box-shadow: 0 0 20px 0 rgb(0 0 0 / 10%);
-  margin: 2.5rem auto 0;
-  width: 23.875rem;
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-}
-
-.cart-list-notification button {
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  outline: 0;
-}
-
-.cart-list-notification-undo {
-  margin-left: auto;
-  font-family: MiloPro-Bold, Helvetica, sans-serif;
-  color: var(--green);
-  letter-spacing: 0.0313rem;
-  padding: 1px 6px;
-}
-
-.cart-list-notification p,
-.cart-list-notification-undo {
-  font-size: 1rem;
-  line-height: 1.5rem;
-}
-
-.cart-list-notification-undo:hover {
-  color: var(--dark-green);
-}
-
-.cart-list-notification-close {
-  margin-left: 1.25rem;
-  padding: 1px 6px;
-}
-
-.icon-close::before {
-  content: "\e91c";
-  color: #4d4f53;
-}
-
-.cart-list-notification-close::before {
-  color: var(--white);
-  font-size: 1.25rem;
-}
-
-.cart-list-notification p {
-  color: var(--white);
-  letter-spacing: 0.0187rem;
-}
 
 @media (width >= 67.5625rem) {
   .related-ingredient-content > a.button.icon {
