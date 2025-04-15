@@ -52,7 +52,7 @@ export default async function decorate(doc) {
                 a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(productName, productId) }, 'Download All Documents'),
               ),
               div({ class: 'cta-buttons' },
-                a({ class: 'button', id: 'add-sample-btn' }, 'Add Sample'),
+                a({ class: 'button add-sample-btn'}, 'Add Sample'),
                 // TODO: add modal for contact us and pass product name
                 a({ class: 'button secondary', href: `contact-us-modal?${productName}` }, translate('contact-us')),
               ),
@@ -138,50 +138,24 @@ export default async function decorate(doc) {
     });
   }
 
-  // add sample button
-  const addSampleBtn = document.getElementById('add-sample-btn');
-  addSampleBtn.addEventListener('click', () => {
-    addIngredientToCart(productName, window.location.href);
-  });
-
-  // Add Select All functionality for both tables
-  document.querySelectorAll('.select-all').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const checkboxes = e.target.closest('table').querySelectorAll('input[type="checkbox"]');
-      const allChecked = Array.from(checkboxes).every((cb) => cb.checked);
-      checkboxes.forEach((cb) => {
-        cb.checked = !allChecked;
-      });
-    });
-  });
 
   // Add scroll behavior for fixed header and active nav links
   const productHeader = document.querySelector('.product-header');
-  let fixedHeader = null;
+  const fixedHeader = productHeader.cloneNode(true);
+  fixedHeader.classList.add('fixed');
+  document.body.appendChild(fixedHeader);
+
+  // let fixedHeader = null;
 
   window.addEventListener('scroll', () => {
-    if (productHeader) {
-      if (window.scrollY > 280) {
-        if (!fixedHeader) {
-          // Clone the header and add fixed class
-          fixedHeader = productHeader.cloneNode(true);
-          fixedHeader.classList.add('fixed');
-          document.body.appendChild(fixedHeader);
-          // Fade out the original header
-          productHeader.classList.add('fade-out');
-          // Add 'on' class after a small delay to allow for transition
-          setTimeout(() => fixedHeader.classList.add('on'), 10);
-        }
-      } else if (fixedHeader) {
-        // Fade in the original header
-        productHeader.classList.remove('fade-out');
-        fixedHeader.classList.remove('on');
-        // Wait for transition to complete before removing fixed header
-        setTimeout(() => {
-          fixedHeader.remove();
-          fixedHeader = null;
-        }, 200);
-      }
+    // show-hide fixed header
+    if (window.scrollY > 280) {
+      productHeader.classList.add('fade-out');
+      // Add 'on' class after a small delay to allow for transition
+      setTimeout(() => fixedHeader.classList.add('on'), 10);
+    } else {
+      productHeader.classList.remove('fade-out');
+      fixedHeader.classList.remove('on');
     }
 
     // Handle active state for nav links
@@ -204,6 +178,26 @@ export default async function decorate(doc) {
       if (link.getAttribute('href') === currentSection) {
         link.classList.add('active');
       }
+    });
+  });
+
+
+  // add sample button
+  const addSampleBtns = document.querySelectorAll('.add-sample-btn');
+  addSampleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      addIngredientToCart(productName, window.location.href);
+    });
+  });
+
+  // Add Select All functionality for both tables
+  document.querySelectorAll('.select-all').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const checkboxes = e.target.closest('table').querySelectorAll('input[type="checkbox"]');
+      const allChecked = Array.from(checkboxes).every((cb) => cb.checked);
+      checkboxes.forEach((cb) => {
+        cb.checked = !allChecked;
+      });
     });
   });
 
