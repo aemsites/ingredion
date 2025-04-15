@@ -1,32 +1,33 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, p, button } from '../../scripts/dom-helpers.js';
+import { div, p, button } from './dom-helpers.js';
 import { getCookie } from './utils.js';
 import { loadCSS } from './aem.js';
 
 let notificationTimeout;
 
 function removeIngredientFromCart() {
-    const cartCookies = getCookie('cartCookies');
-    const cookies = cartCookies.split('cookie ');
-    const lastCookie = cookies[cookies.length - 1];
-    const lastCookieUrl = lastCookie.split('=')[1];
-    if (lastCookieUrl === window.location.href) {
-      const updatedCookies = cookies.slice(0, -1);
-      document.cookie = `cartCookies=${updatedCookies.join(' cookie ').trim()}; path=/`;
-    }
-  
-    const cartCount = document.querySelector('.icon-cart > .count');
-    if (cartCount) {
-      const currentCount = parseInt(cartCount.textContent || '0', 10);
-      cartCount.textContent = currentCount - 1;
-      cartCount.style.display = 'block';
-      
-      if (cartCount.textContent === '0') {
-        cartCount.style.display = 'none';
-      }
-    }
-} 
+  const cartCookies = getCookie('cartCookies');
+  const cookies = cartCookies.split('cookie ');
+  const lastCookie = cookies[cookies.length - 1];
+  const lastCookieUrl = lastCookie.split('=')[1];
+  if (lastCookieUrl === window.location.href) {
+    const updatedCookies = cookies.slice(0, -1);
+    document.cookie = `cartCookies=${updatedCookies.join(' cookie ').trim()}; path=/`;
+  }
 
+  const cartCount = document.querySelector('.icon-cart > .count');
+  if (cartCount) {
+    const currentCount = parseInt(cartCount.textContent || '0', 10);
+    cartCount.textContent = currentCount - 1;
+    cartCount.style.display = 'block';
+
+    if (cartCount.textContent === '0') {
+      cartCount.style.display = 'none';
+    }
+  }
+}
+
+// eslint-disable-next-line import/prefer-default-export
 export function addIngredientToCart(ingredientName, ingredientUrl) {
   const cartCookies = getCookie('cartCookies');
   if (cartCookies) {
@@ -40,15 +41,15 @@ export function addIngredientToCart(ingredientName, ingredientUrl) {
     const currentCount = parseInt(cartCount.textContent || '0', 10);
     cartCount.textContent = currentCount + 1;
     cartCount.style.display = 'block';
-    
+
     if (cartCount.textContent === '0') {
       cartCount.style.display = 'none';
     }
   }
 
-  // Cart Notification 
+  // Cart Notification
   let cartNotification = document.querySelector('.cart-notification');
-  
+
   if (!cartNotification) {
     loadCSS('/styles/cart-notifications.css');
     const undoBtn = button({ class: 'undo' }, 'Undo');
@@ -63,9 +64,9 @@ export function addIngredientToCart(ingredientName, ingredientUrl) {
     });
 
     cartNotification = div({ class: 'cart-notification active' },
-        p('Product successfully added to cart!'), 
-        undoBtn,
-        closeBtn,
+      p('Product successfully added to cart!'),
+      undoBtn,
+      closeBtn,
     );
 
     document.body.appendChild(cartNotification);
@@ -81,7 +82,3 @@ export function addIngredientToCart(ingredientName, ingredientUrl) {
     if (cartNotification) cartNotification.classList.remove('active');
   }, 5000);
 }
-
-
-
-

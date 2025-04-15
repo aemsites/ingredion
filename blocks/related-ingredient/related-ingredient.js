@@ -1,3 +1,4 @@
+/* eslint-disable function-paren-newline, object-curly-newline */
 import { div, span } from '../../scripts/dom-helpers.js';
 import { unwrapNestedDivs } from '../../scripts/scripts.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';

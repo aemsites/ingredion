@@ -1,4 +1,4 @@
-// This file contains all the product API endpoints 
+// This file contains all the product API endpoints
 
 export const API_HOST = 'https://www.ingredion.com';
 
@@ -15,4 +15,4 @@ export const API_PRODUCT = {
   ALL_DOCUMENTS: (productId) => `${API_HOST}/content/ingredion-com/na/en-us/search/jcr:content/searchResults.view.json?productId=${productId}`,
   DOWNLOAD_DOCUMENTS: (productName) => `${API_HOST}/content/ingredion-com/ingredients/na/${productName}/jcr:content.download.zip`,
   DOWNLOAD_ALL_DOCUMENTS: (productName, productId) => `${API_HOST}/content/ingredion-com/ingredients/na/${productName}/jcr:content.download.zip?productId=${productId}&documentType=all`,
-}; 
+};
