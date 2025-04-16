@@ -125,6 +125,7 @@ a.button.icon .icon-eye {
   margin-left: 0.9375rem;
   margin-right: 0.9375rem;
   padding: 5rem 0 7.5rem;
+  max-width: 76.5rem;
 }
 
 .section.related-ingredient-container .default-content-wrapper h2 {
