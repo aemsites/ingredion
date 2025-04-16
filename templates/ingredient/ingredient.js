@@ -52,7 +52,7 @@ export default async function decorate(doc) {
                 a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(productName, productId) }, 'Download All Documents'),
               ),
               div({ class: 'cta-buttons' },
-                a({ class: 'button add-sample-btn'}, 'Add Sample'),
+                a({ class: 'button add-sample-btn' }, 'Add Sample'),
                 // TODO: add modal for contact us and pass product name
                 a({ class: 'button secondary', href: `contact-us-modal?${productName}` }, translate('contact-us')),
               ),
@@ -138,7 +138,6 @@ export default async function decorate(doc) {
     });
   }
 
-
   // Add scroll behavior for fixed header and active nav links
   const productHeader = document.querySelector('.product-header');
   const fixedHeader = productHeader.cloneNode(true);
@@ -181,10 +180,9 @@ export default async function decorate(doc) {
     });
   });
 
-
   // add sample button
   const addSampleBtns = document.querySelectorAll('.add-sample-btn');
-  addSampleBtns.forEach(btn => {
+  addSampleBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       addIngredientToCart(productName, window.location.href);
     });
