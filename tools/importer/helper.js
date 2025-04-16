@@ -28,7 +28,7 @@ export function createHeroBlock(document, main) {
     hero.insertAdjacentElement('afterend', breadcrumbs);
     const anchorBlock = createAnchorBlock(document, main);
     if (anchorBlock) {
-      console.log('anchorBlock');
+      console.log('anchorBlock found');
       hero.insertAdjacentElement('afterend', anchorBlock);
     }
     const cells = hero.classList.contains('hero--text-left') ? [['Hero(align-left)']] : [['Hero']];
@@ -518,7 +518,7 @@ export function createContactUs(main, document) {
 export function getSocialShare(document) {
   const socialShare = document.querySelector('.social-share');
   const socialMetaProp = [];
-  
+  if (!socialShare) return;
   const facebook = socialShare.querySelector('.icon-Facebook');
   if (facebook) {
     socialMetaProp.push('facebook');
@@ -576,8 +576,9 @@ export function createAnchorBlock(document, main) {
   if (!contentTabs) return;
   
   const cells = [['Anchor']];
-  const tabs = document.querySelectorAll('.contentTab .content-tabs__section');
-  const contentTabsNavWrapper = document.querySelector('.content-tabs__navigationWrapper');
+  const tabs = contentTabs.querySelectorAll('.contentTab .content-tabs__section');
+  const contentTabsNavWrapper = contentTabs.querySelector('.content-tabs__navigationWrapper');
+  if (!contentTabsNavWrapper) return;
   tabs.forEach((tab) => {
     const anchor = document.createElement('a');
     anchor.textContent = tab.getAttribute('link-label');
@@ -686,7 +687,7 @@ export function createForm(document, main) {
     cells.push([`Submission Endpoint`, `${submissionURL}`]);
     const formTable = WebImporter.DOMUtils.createTable(cells, document);
     formContainer.replaceWith(formTable);
-  }
+  } 
   
   return;
 }
@@ -769,4 +770,22 @@ export function createCTAIconBlock(document, main) {
     const ctaIconTable = WebImporter.DOMUtils.createTable(cells, document);
     ctaIconBlock.replaceWith(ctaIconTable);
   });
+}
+
+export function sanitizeMetaTags(tags) {
+  const tagsArray = tags.split(',');
+  const sanitizedTags = [];
+  let faltTags = [];
+  tagsArray.forEach(tag => {   
+    if (tag.includes('Ingredion :')) {
+      let temp = tag.replace('Ingredion :', '');
+      temp = temp.split('/');
+      temp.forEach(item => faltTags.push(item.trim()));      
+    } else if (tag.includes('Ingredion-com :')) {   
+      sanitizedTags.push(tag.replace('Ingredion-com :', ''));
+    } else
+      faltTags.push(tag);
+  });  
+  let tempArray = faltTags.filter((item, index) => faltTags.indexOf(item) === index);
+  return [sanitizedTags, tempArray];
 }

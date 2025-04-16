@@ -11,7 +11,7 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
-import { createColorBlock, createIngredientBlock, createContactUs, getSocialShare, createCardsBlock } from './helper.js';
+import { createColorBlock, createIngredientBlock, createContactUs, getSocialShare, createCardsBlock, sanitizeMetaTags } from './helper.js';
 import { newsMap } from './mapping.js';
 
 let title = '';
@@ -46,14 +46,13 @@ export default {
         p = `${p}index`;
       }
       return decodeURIComponent(p)
-        .toLowerCase()
-        .replace(/\.html$/, '')
-        .replace(/[^a-z0-9/]/gm, '-');
+      .replace(/\.html$/, '')
+      .replace(/[^a-zA-Z0-9/]/gm, '-');
     })(url);
 
     const main = document.body;
     createEventTemplate(document, main);
-    createMetadata(main, document, path, html);
+    createMetadata(main, document, path.toLowerCase(), html);
     resetVariables();
 
     // attempt to remove non-content elements
@@ -111,6 +110,14 @@ const createMetadata = (main, document, url, html) => {
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
   else meta['social-share'] = '';
+  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
+  if (caseInsensitiveUrl) {
+    const sanitizedTags = sanitizeMetaTags(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
+    if (sanitizedTags[0].length > 0) meta['tags'] = sanitizedTags[0].join(', ');
+    if (sanitizedTags[1].length > 0) meta['categories'] = sanitizedTags[1].join(', ');
+  } else {
+    meta['tags'] = '';
+  }
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
   main.append(block);
   return meta;

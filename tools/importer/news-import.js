@@ -11,7 +11,7 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
-import { createColorBlock, createIngredientBlock, createContactUs, getSocialShare, createCardsBlock } from './helper.js';
+import { createColorBlock, createIngredientBlock, createContactUs, getSocialShare, createCardsBlock, sanitizeMetaTags } from './helper.js';
 import { newsMap } from './mapping.js';
 
 export default {
@@ -35,9 +35,8 @@ export default {
         p = `${p}index`;
       }
       return decodeURIComponent(p)
-        .toLowerCase()
-        .replace(/\.html$/, '')
-        .replace(/[^a-z0-9/]/gm, '-');
+      .replace(/\.html$/, '')
+      .replace(/[^a-zA-Z0-9/]/gm, '-');
     })(url);
 
     const main = document.body;
@@ -140,20 +139,3 @@ function getPageName(document) {
   else return breadcrumbElement.textContent;
 }
 
-function sanitizeMetaTags(tags) {
-  const tagsArray = tags.split(',');
-  const sanitizedTags = [];
-  let faltTags = [];
-  tagsArray.forEach(tag => {   
-    if (tag.includes('Ingredion :')) {
-      let temp = tag.replace('Ingredion :', '');
-      temp = temp.split('/');
-      temp.forEach(item => faltTags.push(item.trim()));      
-    } else if (tag.includes('Ingredion-com :')) {   
-      sanitizedTags.push(tag.replace('Ingredion-com :', ''));
-    } else
-      faltTags.push(tag);
-  });  
-  let tempArray = faltTags.filter((item, index) => faltTags.indexOf(item) === index);
-  return [sanitizedTags, tempArray];
-}
