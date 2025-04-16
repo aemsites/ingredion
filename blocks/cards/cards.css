@@ -464,7 +464,7 @@ main > .section > .default-content-wrapper {
   border-radius: 50%;
   outline: 2px solid;
   padding: 0;
-  color: var(--dark-green);
+  color: var(--white);
   border-color: var(--dark-green);
   box-shadow: 0 10px 15px 0 rgba(0 0 0 / 10%);       
 }
@@ -477,8 +477,7 @@ main > .section > .default-content-wrapper {
   box-sizing: border-box;
   color: var(--dark-green);
   position: absolute;
-  width: 0;
-  height: 24px;
+  width: 0;  
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
   border-left: 18px solid;
@@ -571,3 +570,4 @@ main > .section > .default-content-wrapper {
     gap: 40px 20px;
   }
 }
+
