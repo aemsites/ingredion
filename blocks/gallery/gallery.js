@@ -1,22 +1,9 @@
+import { parseClassFromString } from '../../scripts/scripts.js';
+
 function setPreview(selectedPic) {
   const previewPic = selectedPic.cloneNode(true);
   previewPic.classList.add('gallery-preview');
   return previewPic;
-}
-
-function parseClassFromString(inputString) {
-  const classRegex = /\[class:\s*([^\]]+)\]/;
-  const classMatch = inputString.match(classRegex);
-
-  let className = null;
-  let cleanedString = inputString;
-
-  if (classMatch) {
-    className = classMatch[1].trim();
-    cleanedString = inputString.replace(classRegex, '').trim();
-  }
-
-  return { className, cleanedString };
 }
 
 function updateModal(modal, pic) {

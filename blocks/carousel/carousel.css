@@ -1,6 +1,7 @@
 .section > .carousel-wrapper {
   max-width: 90rem;
   padding: 0;
+  margin: 0 0 150px 100px;
 }
 
 .carousel {
@@ -81,10 +82,15 @@
               letter-spacing: 0.0156rem;
             }
 
-            a {
+            .text-link {
               display: unset;
               margin-top: 8px;
               text-decoration: underline;
+              color: var(--green);
+              font-size: var(--body-font-size-s);
+            }
+
+            .text-link:hover {
               color: var(--dark-green);
             }
           }
