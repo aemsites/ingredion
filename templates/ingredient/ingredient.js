@@ -21,68 +21,63 @@ export default async function decorate(doc) {
   const response = await fetch(API_PRODUCT.ALL_DOCUMENTS(productId));
   const productData = await response.json();
 
+  // update the title tag with the product name
+  document.title = product.heading;
+
   let gallery = '';
 
   const description = div({ class: 'description' });
   description.innerHTML = product.description;
 
-  let $page = '';
-  let productHeader = '';
-  
-  // Helper function to update fixed header
-  const updateFixedHeader = (productHeader) => {
-    // const fixedHeader = productHeader.cloneNode(true);
-    // fixedHeader.classList.add('fixed');
-    const existingFixedHeader = document.body.querySelector('.product-header.fixed');
-    let fixedHeader = '';
+  // Update fixed header
+  const updateFixedHeader = ($productHeader) => {
+    const $existingFixedHeader = document.body.querySelector('.product-header.fixed');
+    let $fixedHeader = '';
 
-    if (!existingFixedHeader) {
-      fixedHeader = productHeader.cloneNode(true);
-      fixedHeader.classList.add('fixed');
-      document.body.appendChild(fixedHeader);
-
+    if (!$existingFixedHeader) {
+      $fixedHeader = $productHeader.cloneNode(true);
+      $fixedHeader.classList.add('fixed');
+      document.body.appendChild($fixedHeader);
     } else {
-      existingFixedHeader.innerHTML = productHeader.innerHTML;
+      $existingFixedHeader.innerHTML = $productHeader.innerHTML;
     }
 
     window.addEventListener('scroll', () => {
       // show-hide fixed header
       if (window.scrollY > 280) {
-        productHeader.classList.add('fade-out');
+        $productHeader.classList.add('fade-out');
         // Add 'on' class after a small delay to allow for transition
-        setTimeout(() => fixedHeader.classList.add('on'), 10);
+        setTimeout(() => $fixedHeader.classList.add('on'), 10);
       } else {
-        productHeader.classList.remove('fade-out');
-        fixedHeader.classList.remove('on');
+        $productHeader.classList.remove('fade-out');
+        $fixedHeader.classList.remove('on');
       }
-  
+
       // Handle active state for nav links
       const sections = ['#technical-documents', '#sds-documents'];
       const navLinks = document.querySelectorAll('.anchor-nav a');
-  
+
       let currentSection = '';
       sections.forEach((section) => {
         const element = document.querySelector(section);
         if (element) {
           const rect = element.getBoundingClientRect();
-          if (rect.top <= 200) {
-            currentSection = section;
-          }
+          if (rect.top <= 200) currentSection = section;
         }
       });
-  
+
       navLinks.forEach((link) => {
         link.classList.remove('active');
-        if (link.getAttribute('href') === currentSection) {
-          link.classList.add('active');
-        }
+        if (link.getAttribute('href') === currentSection) link.classList.add('active');
       });
     });
   };
 
-
   // render page content based on screen size
   const renderPageContent = () => {
+    let $page = '';
+    let $productHeader = '';
+
     if (window.matchMedia('(max-width: 1024px)').matches) {
       // mobile view
 
@@ -97,7 +92,7 @@ export default async function decorate(doc) {
         );
       }
 
-      productHeader = div({ class: 'product-header' },
+      $productHeader = div({ class: 'product-header' },
         div({ class: 'content mobile-view' },
           h1(product.heading),
           div({ class: 'type' }, strong('Product Type: '), product.productType),
@@ -105,7 +100,7 @@ export default async function decorate(doc) {
             a({ class: 'view-all', href: '#technical-documents' }, 'View All Documents'),
           ),
           div({ class: 'cta-buttons' },
-            a({ class: 'button add-sample-btn'}, 'Add Sample'),
+            a({ class: 'button add-sample-btn' }, 'Add Sample'),
             a({ class: 'button secondary', href: `contact-us-modal?${productName}` }, translate('contact-us')),
           ),
         ),
@@ -119,18 +114,18 @@ export default async function decorate(doc) {
       );
 
       // Update fixed header
-      updateFixedHeader(productHeader);
+      updateFixedHeader($productHeader);
 
       $page = div({ class: 'section  mobile-view' },
         div({ class: 'default-content-wrapper' },
           div({ class: 'product-content' },
-            productHeader,
+            $productHeader,
             gallery,
             description,
           ),
 
           h4('Technical and SDS Documents'),
-          
+
           div({ class: 'view-all-docs-btn-wrapper', id: 'view-documents' }, button({ class: 'button view-all-docs-btn' }, 'View All Documents')),
 
           div({ class: 'view-all-docs-wrapper' },
@@ -151,7 +146,7 @@ export default async function decorate(doc) {
                 ),
                 ...productData.technicalDocuments.map((techDoc) => tr(
                   td({ class: 'document-type' }, techDoc.documentType),
-                  td(a({ class: 'doc', href: API_HOST + techDoc.path, target: '_blank'  }, 'VIEW')),
+                  td(a({ class: 'doc', href: API_HOST + techDoc.path, target: '_blank' }, 'VIEW')),
                 ),
                 ),
               ),
@@ -166,7 +161,7 @@ export default async function decorate(doc) {
                 ),
                 ...productData.sdsDocuments.map((sdsDoc) => tr(
                   td({ class: 'region' }, sdsDoc.locale.region),
-                  td(a({ class: 'doc', href: API_HOST + sdsDoc.path, target: '_blank'  }, 'VIEW')),
+                  td(a({ class: 'doc', href: API_HOST + sdsDoc.path, target: '_blank' }, 'VIEW')),
                 ),
                 ),
               ),
@@ -187,7 +182,6 @@ export default async function decorate(doc) {
       document.querySelector('.close-docs').addEventListener('click', () => {
         document.querySelector('.view-all-docs-wrapper').classList.remove('active');
       });
-      
     } else {
       // desktop view
       if (product.resourceLinks) {
@@ -203,7 +197,7 @@ export default async function decorate(doc) {
         );
       }
 
-      productHeader = div({ class: 'product-header' },
+      $productHeader = div({ class: 'product-header' },
         div({ class: 'content' },
           h1(product.heading),
           div({ class: 'type' }, strong('Product Type: '), product.productType),
@@ -212,7 +206,7 @@ export default async function decorate(doc) {
             a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(productName, productId) }, 'Download All Documents'),
           ),
           div({ class: 'cta-buttons' },
-            a({ class: 'button add-sample-btn'}, 'Add Sample'),
+            a({ class: 'button add-sample-btn' }, 'Add Sample'),
             a({ class: 'button secondary', href: `contact-us-modal?${productName}` }, translate('contact-us')),
           ),
         ),
@@ -226,13 +220,13 @@ export default async function decorate(doc) {
       );
 
       // Update fixed header
-      updateFixedHeader(productHeader);
+      updateFixedHeader($productHeader);
 
       $page = div({ class: 'section' },
         div({ class: 'default-content-wrapper' },
           div({ class: 'product-content' },
             div({ class: 'left-column' },
-              productHeader,
+              $productHeader,
               description,
             ),
             gallery,
@@ -281,7 +275,7 @@ export default async function decorate(doc) {
       // Clear existing content and append new content
       $main.innerHTML = '';
       $main.append($page);
-    
+
       // Add Select All functionality for both tables
       document.querySelectorAll('.select-all').forEach((btn) => {
         btn.addEventListener('click', (e) => {
@@ -294,9 +288,9 @@ export default async function decorate(doc) {
       });
 
       // Add download functionality
-      const downloadSelectedDocuments = (button) => {
-        const { docType } = button.dataset;
-        const selectedIds = Array.from(button.closest('.table-wrapper').querySelectorAll('input[type="checkbox"]:checked'))
+      const downloadSelectedDocuments = ($button) => {
+        const { docType } = $button.dataset;
+        const selectedIds = Array.from($button.closest('.table-wrapper').querySelectorAll('input[type="checkbox"]:checked'))
           .map((cb) => cb.dataset.docId)
           .join(',');
 
@@ -311,20 +305,19 @@ export default async function decorate(doc) {
         tempLink.remove();
       };
 
-      document.querySelectorAll('.download-wrapper .button').forEach((button) => {
-        button.addEventListener('click', () => downloadSelectedDocuments(button));
+      document.querySelectorAll('.download-wrapper .button').forEach(($button) => {
+        $button.addEventListener('click', () => downloadSelectedDocuments($button));
       });
     } // end desktop view
-    
+
     // add sample button (both mobile and desktop)
     const addSampleBtns = document.querySelectorAll('.add-sample-btn');
-    addSampleBtns.forEach(btn => {
+    addSampleBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
         addIngredientToCart(productName, window.location.href);
       });
     });
   };
-
 
   // render page
   renderPageContent();
