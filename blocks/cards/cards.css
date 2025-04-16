@@ -58,11 +58,7 @@
     gap: 40px 20px;
   }
 
-  .cards.two-column > ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
-    gap: 40px 20px;
-  }
+  
 }
 
 @media (width <= 1079px) {
@@ -566,4 +562,12 @@ main > .section > .default-content-wrapper {
 .cards.video .button {
   text-align: left;
   color: var(--dark-green);
+}
+
+@media (width >= 1080px) {
+  .cards.two-column > ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
+    gap: 40px 20px;
+  }
 }
