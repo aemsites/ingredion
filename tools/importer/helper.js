@@ -16,7 +16,7 @@ const colorMapping = new Map([
 ]);
 
 const previewURL = 'https://main--ingredion--aemsites.aem.page';
-var r = new RegExp('^(?:[a-z+]+:)?//', 'i');
+const r = new RegExp('^(?:[a-z+]+:)?//', 'i');
 
 export function createHeroBlock(document, main) {
   const hero = document.querySelector('.hero__wrapper');
@@ -48,8 +48,14 @@ export function createHeroBlock(document, main) {
     
     const heroTable = WebImporter.DOMUtils.createTable(cells, document);
     hero.replaceWith(heroTable);
+  } else {
+    const breadcrumbs = WebImporter.DOMUtils.createTable([['Breadcrumbs']], document);    
+    main.prepend(breadcrumbs);
   }
-  return;
+}
+
+function pTag() {
+  return document.createElement('hr');
 }
 
 export function createCalloutBlock(document, main) {
@@ -82,7 +88,7 @@ export function createCalloutBlock(document, main) {
         
         ctalink = child.querySelector('.colorblock-img-text__text--wrapper .secondary-cta-link') ?
           child.querySelector('.colorblock-img-text__text--wrapper .secondary-cta-link').outerHTML : '';
-          
+      
         if (ctalink === '') {
           ctalink = child.querySelector('.colorblock-img-text__text--wrapper .primary-cta') ?
             child.querySelector('.colorblock-img-text__text--wrapper .primary-cta').outerHTML : '';
@@ -254,7 +260,10 @@ export function createCardsBlock(document, main) {
     });
     
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
-    cardsBlock.replaceWith(cardsTable);
+    const div = document.createElement('div');
+    div.appendChild(cardsTable);
+    div.appendChild(pTag());
+    cardsBlock.replaceWith(div);
   });
 
   cardsBlocks = document.querySelectorAll('.card-slider__wrapper');
@@ -288,27 +297,66 @@ export function createCardsBlock(document, main) {
       ptag.textContent = '---';
       cardsTable.append(ptag);
     }
-    cardsBlock.replaceWith(cardsTable);
+    const div = document.createElement('div');
+    div.appendChild(cardsTable);
+    div.appendChild(pTag());
+    cardsBlock.replaceWith(div);
     
   });
 
   cardsBlocks = document.querySelectorAll('.section__content--columns-2');
   cardsBlocks.forEach((cardsBlock, index) => {
     convertHrefs(cardsBlock);
-    const cells = [['Cards(two-column)']];
+    const cells = [];
     const cards = cardsBlock.querySelectorAll('.content-card');
     let cardsList = [];
     
     cards.forEach((card, index) => {
-      let cardImg = card.querySelector('.content-card__image > a > picture') ? 
-        card.querySelector('.content-card__image > a > picture') : 
-        card.querySelector('.content-card__image > picture');
+      if (card.querySelector('.video-banner')) {
+        if (index === 0) cells.push(['Cards(video,two-column)']);
+        const videoBanner = card.querySelector('.video-banner');
+        let cardImg = videoBanner.querySelector('picture');
         
-      if (cardImg) {
-        cardImg = cardImg.outerHTML;
+        if (cardImg) {
+          cardImg = cardImg.outerHTML;
+        } else {
+          cardImg = '';
+        }
+        
+        const cardHeading = card.querySelector('.content-card__text .heading > h3')
+          ? card.querySelector('.content-card__text .heading > h3').textContent
+          : '';
+
+        const cardText = card.querySelector('.content-card__text .rte-block')
+          ? card.querySelector('.content-card__text .rte-block').innerHTML
+          : '';
+        cardText.replace('&nbsp;', '');
+
+        let videoURL = videoBanner.getAttribute('data-video-url');
+        let videoID = videoURL.split('/').at(-1);
+        videoID = videoID.split('?').at(0);
+    
+        if (videoURL.includes('youtube')) {
+          videoURL = `https://youtu.be/${videoID}`;
+        } else if (videoURL.includes('vimeo')) {
+          videoURL = `https://vimeo.com/${videoID}`;
+        }
+        
+        const cardLinkText = card.querySelector('.content-card__text > a').innerText;
+        const cardLink = `<div><a href='${videoURL}'>${cardLinkText}</a></div>`;
+          
+        cells.push([`${cardImg}`, `<h3>${cardHeading}</h3> ${cardText} ${cardLink}`]);
       } else {
-        cardImg = '';
-      }
+        if (index === 0) cells.push(['Cards(two-column)']);
+        let cardImg = card.querySelector('.content-card__image > a > picture') 
+          ? card.querySelector('.content-card__image > a > picture') 
+          : card.querySelector('.content-card__image > picture');
+        
+        if (cardImg) {
+          cardImg = cardImg.outerHTML;
+        } else {
+          cardImg = '';
+        }
       
       const cardHeading = card.querySelector('.content-card__text .heading > h3') ? 
         card.querySelector('.content-card__text .heading > h3').textContent : '';
@@ -319,11 +367,15 @@ export function createCardsBlock(document, main) {
       const cardLink = card.querySelector('.content-card__text > a') ? 
         card.querySelector('.content-card__text > a').outerHTML : '';
         
-      cells.push([`${cardImg} <h3>${cardHeading}</h3> ${cardText} ${cardLink}`]);
+        cells.push([`${cardImg} <h3>${cardHeading}</h3> ${cardText} ${cardLink}`]);
+      }
     });
     
-    const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
-    cardsBlock.replaceWith(cardsTable);
+    const cardsTable = WebImporter.DOMUtils.createTable(cells, document);    
+    const div = document.createElement('div');
+    div.appendChild(cardsTable);
+    div.appendChild(pTag());
+    cardsBlock.replaceWith(div);
   });
 
   cardsBlocks = document.querySelectorAll('.fourColumnTeaserGrid .section__content');
@@ -347,7 +399,10 @@ export function createCardsBlock(document, main) {
     });
     
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
-    cardsBlock.replaceWith(cardsTable);
+    const div = document.createElement('div');
+    div.appendChild(cardsTable);
+    div.appendChild(pTag());
+    cardsBlock.replaceWith(div);
   });
 
   cardsBlocks = document.querySelectorAll('.twoColumnImageWithCaption');
@@ -369,7 +424,10 @@ export function createCardsBlock(document, main) {
       cells.push([`${cardImg} ${div.innerHTML}`]);
     });
     const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
-    cardsBlock.replaceWith(cardsTable);
+    const div = document.createElement('div');
+    div.appendChild(cardsTable);
+    div.appendChild(pTag());
+    cardsBlock.replaceWith(div);
   });
 }
 
@@ -399,7 +457,7 @@ export function createIngredientBlock(document, main, formulation = false) {
   
   const relatedIngredients = document.querySelector('.relatedIngredients');
   if (!relatedIngredients) return;
-  
+  const mainHeading = relatedIngredients.querySelector('.section-title-description-wrapper .heading > h2');
   const resultProdCards = document.querySelectorAll('.result-prod-card');
   if (!resultProdCards) {
     const cells = [['related ingredient']];
@@ -414,6 +472,9 @@ export function createIngredientBlock(document, main, formulation = false) {
     ptag.textContent = '---';
     const div = document.createElement('div');
     div.appendChild(ptag);
+    if (mainHeading) {
+      div.appendChild(mainHeading);
+    }
     div.appendChild(table);
     if (formulation) {
       const section = [['Section Metadata']];
@@ -473,7 +534,12 @@ export function createIngredientBlock(document, main, formulation = false) {
       const ptag = document.createElement('p');
       ptag.textContent = '---';
       const div = document.createElement('div');
-      if (index === 0) div.appendChild(ptag);
+      if (index === 0) {
+        div.appendChild(ptag);
+        if (mainHeading) {
+          div.appendChild(mainHeading);
+        }
+      }
       div.appendChild(table);
       if (index === resultProdCards.length - 1){
         if (formulation) {
@@ -487,8 +553,6 @@ export function createIngredientBlock(document, main, formulation = false) {
       resultProdCard.replaceWith(div);            
     });
   }
-  
-  return;
 }
 
 export function createContactUs(main, document) {
@@ -614,7 +678,6 @@ export function createAnchorBlock(document, main) {
   const table = WebImporter.DOMUtils.createTable(cells, document);
   contentTabsNavWrapper.remove();
   return table;
-  
 }
 
 export function createCarouselBlock(document, main) {
@@ -678,18 +741,16 @@ export function addAuthorBio(document, main) {
 export function createForm(document, main) {
   const cells = [['Form']];
   let formURL = '';
-  let formContainer = document.querySelector('.contactUsForm')
+  let formContainer = document.querySelector('.contactUsForm');
   let submissionURL = '';
   if (formContainer) {
-    formURL = `https://main--ingredion--aemsites.aem.live/na/en-us/forms/contact-supplier-form.json`;
-    submissionURL = `https://go.ingredion.com/l/504221/2025-03-03/2b8msvs`;
+    formURL = 'https://main--ingredion--aemsites.aem.live/na/en-us/forms/contact-supplier-form.json';
+    submissionURL = 'https://go.ingredion.com/l/504221/2025-03-03/2b8msvs';
     cells.push([`Form URL`, `${formURL}`]);
     cells.push([`Submission Endpoint`, `${submissionURL}`]);
     const formTable = WebImporter.DOMUtils.createTable(cells, document);
     formContainer.replaceWith(formTable);
   } 
-  
-  return;
 }
 
 export function createTableBlock(document, main) {
@@ -717,24 +778,28 @@ export function createTableBlock(document, main) {
   
   const table = WebImporter.DOMUtils.createTable(cells, document);
   tableParent.replaceWith(table);
-  return;
 }
 
 function testURL(url) {
   const r = new RegExp('^(?:[a-z+]+:)?//', 'i');
   let newURL = '';
   
-  if (r.test(url)) {
+  if (r.test(url)) {    
     if (url.includes('localhost:3001')) {
       newURL = url.replace('http://localhost:3001', previewURL);
+      newURL = newURL.split('.html').at(0);
     } else if (url.includes('ingredion.com')) {
       newURL = url.replace('https://www.ingredion.com', previewURL);
+      newURL = newURL.split('.html').at(0);
+    } else {
+      newURL = url;
     }
+    
   } else {
     newURL = previewURL + url;
-  }
-  
-  newURL = newURL.split('.html').at(0);
+    newURL = newURL.split('.html').at(0);
+  } 
+
   return newURL;
 }
 
@@ -754,7 +819,7 @@ export function createCTAIconBlock(document, main) {
     let ctaIconString = '';
     ctaIcons.forEach((ctaIcon, index) => {
       let ctaIconURL = ctaIcon.href;
-     if (ctaIcon.href .includes('localhost:3001') || ctaIcon.href.includes('ingredion.com')) {
+     if (ctaIcon.href.includes('localhost:3001') || ctaIcon.href.includes('ingredion.com')) {
         ctaIconURL = testURL(ctaIconURL);
       }
       const ctaIconImg = ctaIcon.querySelector('.icon-card__wrapper > img');
