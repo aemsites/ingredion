@@ -1,6 +1,6 @@
 // This file contains all the product API endpoints
 
-export const API_HOST = 'https://ingredion-stage65.adobecqms.net/';
+export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
 
 export const getUrlParams = () => {
   const params = new URLSearchParams(window.location.search);
