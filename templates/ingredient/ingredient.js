@@ -1,97 +1,170 @@
-/* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h1, h2, h3, h4, a, button, table, tr, th, td, label, input, img, strong, ul, li } from '../../scripts/dom-helpers.js';
+/* eslint-disable function-paren-newline, object-curly-newline, no-underscore-dangle */
+import { div, h1, h2, h3, h4, a, button, table, tr, th, td, label, input, img, strong, script } from '../../scripts/dom-helpers.js';
 import { API_HOST, API_PRODUCT, getUrlParams } from '../../scripts/product-api.js';
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 
-const { productId, productName } = getUrlParams();
+// Update fixed header
+function updateFixedHeader($productHeader) {
+  // clean up any existing fixed headers and observers
+  const cleanup = () => {
+    const existingFixed = document.body.querySelector('.product-header.fixed');
+    if (existingFixed) existingFixed.remove();
+  };
+
+  // clean up on init
+  cleanup();
+
+  const $fixedHeader = $productHeader.cloneNode(true);
+  $fixedHeader.classList.add('fixed', 'hidden');
+  document.body.appendChild($fixedHeader);
+
+  const rightColumn = document.querySelector('.right-column');
+
+  // Create intersection observer for header
+  const headerObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // fade out fixed header (fade in product header)
+          $productHeader.classList.remove('fade-out');
+          $fixedHeader.classList.remove('visible');
+          // slide up gallery
+          if (rightColumn) rightColumn.classList.remove('slide-down');
+          // Wait for transition to complete then hide
+          setTimeout(() => $fixedHeader.classList.add('hidden'), 300);
+        } else {
+          // fade in fixed header (fade out product header)
+          $productHeader.classList.add('fade-out');
+          $fixedHeader.classList.remove('hidden');
+          // slide down gallery
+          if (rightColumn) rightColumn.classList.add('slide-down');
+          requestAnimationFrame(() => {
+            // eslint-disable-next-line no-unused-expressions
+            $fixedHeader.offsetHeight; // force reflow
+            $fixedHeader.classList.add('visible');
+          });
+        }
+      });
+    },
+    {
+      rootMargin: '-200px 0px 0px 0px',
+      threshold: 0.1,
+    },
+  );
+
+  // Ensure the observer is connected
+  headerObserver.observe($productHeader);
+
+  // Handle active state for nav links
+  const handleNavLinks = () => {
+    const sections = ['#technical-documents', '#sds-documents'];
+    const navLinks = document.querySelectorAll('.anchor-nav a');
+    let currentSection = '';
+
+    sections.forEach((section) => {
+      const element = document.querySelector(section);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        if (rect.top <= 200) currentSection = section;
+      }
+    });
+
+    navLinks.forEach((link) => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === currentSection) link.classList.add('active');
+    });
+  };
+
+  // Add scroll listener for nav links
+  window.addEventListener('scroll', handleNavLinks);
+
+  // Return cleanup function
+  return () => {
+    headerObserver.disconnect();
+    window.removeEventListener('scroll', handleNavLinks);
+    cleanup();
+  };
+}
 
 export default async function decorate(doc) {
+  const { productId, productName } = getUrlParams();
   const [, locale] = getRegionLocale();
   await loadTranslations(locale);
 
   const $main = doc.querySelector('main');
 
-  // Fetch product details
-  const productDetailsResponse = await fetch(API_PRODUCT.PRODUCT_DETAILS(productName));
-  const productDetails = await productDetailsResponse.json();
+  // get product details
+  const fetchProductDetails = await fetch(API_PRODUCT.PRODUCT_DETAILS(productName));
+  const productDetails = await fetchProductDetails.json();
   const product = productDetails.results[0];
 
-  // get the response from the API
-  const response = await fetch(API_PRODUCT.ALL_DOCUMENTS(productId));
-  const productData = await response.json();
+  // get product documents
+  const fetchProductDocs = await fetch(API_PRODUCT.ALL_DOCUMENTS(productId));
+  const productDocs = await fetchProductDocs.json();
 
   // update the title tag with the product name
   document.title = product.heading;
 
-  let gallery = '';
-
   const description = div({ class: 'description' });
   description.innerHTML = product.description;
 
-  // Update fixed header
-  const updateFixedHeader = ($productHeader) => {
-    const $existingFixedHeader = document.body.querySelector('.product-header.fixed');
-    let $fixedHeader = '';
-
-    if (!$existingFixedHeader) {
-      $fixedHeader = $productHeader.cloneNode(true);
-      $fixedHeader.classList.add('fixed');
-      document.body.appendChild($fixedHeader);
-    } else {
-      $existingFixedHeader.innerHTML = $productHeader.innerHTML;
-    }
-
-    window.addEventListener('scroll', () => {
-      // show-hide fixed header
-      if (window.scrollY > 280) {
-        $productHeader.classList.add('fade-out');
-        // Add 'on' class after a small delay to allow for transition
-        setTimeout(() => $fixedHeader.classList.add('on'), 10);
-      } else {
-        $productHeader.classList.remove('fade-out');
-        $fixedHeader.classList.remove('on');
-      }
-
-      // Handle active state for nav links
-      const sections = ['#technical-documents', '#sds-documents'];
-      const navLinks = document.querySelectorAll('.anchor-nav a');
-
-      let currentSection = '';
-      sections.forEach((section) => {
-        const element = document.querySelector(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 200) currentSection = section;
+  let gallery = '';
+  if (product.resourceLinks) {
+    // If videos exist, load Vimeo script
+    if (product.resourceLinks.some((link) => link.teaserVideo)) {
+      await new Promise((resolve) => {
+        if (window.Vimeo) {
+          resolve();
+        } else {
+          const vimeoScript = script({ src: 'https://player.vimeo.com/api/player.js' });
+          vimeoScript.onload = resolve;
+          document.head.appendChild(vimeoScript);
         }
       });
+    }
 
-      navLinks.forEach((link) => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === currentSection) link.classList.add('active');
-      });
-    });
-  };
+    gallery = div({ class: 'gallery' },
+      div({ class: 'slides-wrapper' },
+        div({ class: 'slides' },
+          ...product.resourceLinks.map((link, index) => {
+            if (link.teaserVideo) {
+              // Video
+              const videoId = link.teaserVideo.split('/').pop();
+              return div({ class: `video slide ${index === 0 ? 'active' : ''}` },
+                div({ class: 'vimeo-player', 'data-vimeo-id': videoId }),
+                div({ class: 'play-btn' }),
+                img({ src: API_HOST + link.teaserVideoThumbnail, alt: 'video thumbnail' }),
+              );
+            }
+            // Image
+            return div({ class: `image slide ${index === 0 ? 'active' : ''}` },
+              img({ src: API_HOST + link.resourceLink, alt: 'product image' }),
+            );
+          }),
+        ),
+        div({ class: 'slide-nav' },
+          ...product.resourceLinks.map((link, index) => div({ class: `thumb ${index === 0 ? 'active' : ''}` },
+            img({ src: API_HOST + (link.teaserVideoThumbnail || link.resourceLink), alt: 'thumb image' }),
+          )),
+        ),
+      ),
+    );
+  }
 
-  // render page content based on screen size
-  const renderPageContent = () => {
+  // render page content (mobile or desktop)
+  let cleanupHeader = null;
+  function renderPageContent() {
+    // cleanup previous header if it exists
+    if (cleanupHeader) cleanupHeader();
+
     let $page = '';
     let $productHeader = '';
 
     if (window.matchMedia('(max-width: 1024px)').matches) {
-      // mobile view
-
-      if (product.resourceLinks) {
-        gallery = div({ class: 'gallery' },
-          div({ class: 'selected' },
-            ...product.resourceLinks.map((link, index) => img({ src: API_HOST + link, alt: 'product image', class: index === 0 ? 'active' : '' })),
-          ),
-          ul({ class: 'dots' },
-            ...product.resourceLinks.map((link, index) => li({ class: `thumb ${index === 0 ? 'active' : ''}` })),
-          ),
-        );
-      }
-
+      /*
+        MOBILE VIEW
+      */
       $productHeader = div({ class: 'product-header' },
         div({ class: 'content mobile-view' },
           h1(product.heading),
@@ -112,15 +185,13 @@ export default async function decorate(doc) {
           ),
         ),
       );
-
-      // Update fixed header
-      updateFixedHeader($productHeader);
+      cleanupHeader = updateFixedHeader($productHeader);
 
       $page = div({ class: 'section  mobile-view' },
         div({ class: 'default-content-wrapper' },
           div({ class: 'product-content' },
             $productHeader,
-            gallery,
+            gallery !== '' ? gallery : null,
             description,
           ),
 
@@ -144,13 +215,14 @@ export default async function decorate(doc) {
                   th(translate('document-type')),
                   th(),
                 ),
-                ...productData.technicalDocuments.map((techDoc) => tr(
+                ...productDocs.technicalDocuments.map((techDoc) => tr(
                   td({ class: 'document-type' }, techDoc.documentType),
                   td(a({ class: 'doc', href: API_HOST + techDoc.path, target: '_blank' }, 'VIEW')),
                 ),
                 ),
               ),
             ),
+
             // SDS Documents Table
             div({ class: 'table-wrapper mobile-view' },
               h3({ id: 'sds-documents' }, translate('sds-documents')),
@@ -159,7 +231,7 @@ export default async function decorate(doc) {
                   th(translate('region')),
                   th(),
                 ),
-                ...productData.sdsDocuments.map((sdsDoc) => tr(
+                ...productDocs.sdsDocuments.map((sdsDoc) => tr(
                   td({ class: 'region' }, sdsDoc.locale.region),
                   td(a({ class: 'doc', href: API_HOST + sdsDoc.path, target: '_blank' }, 'VIEW')),
                 ),
@@ -183,20 +255,9 @@ export default async function decorate(doc) {
         document.querySelector('.view-all-docs-wrapper').classList.remove('active');
       });
     } else {
-      // desktop view
-      if (product.resourceLinks) {
-        gallery = div({ class: 'right-column gallery' },
-          div({ class: 'selected' },
-            ...product.resourceLinks.map((link, index) => img({ src: API_HOST + link, alt: 'product image', class: index === 0 ? 'active' : '' })),
-          ),
-          div({ class: 'thumbs' },
-            ...product.resourceLinks.map((link, index) => div({ class: `thumb ${index === 0 ? 'active' : ''}` },
-              img({ src: API_HOST + link, alt: 'thumb image' }),
-            )),
-          ),
-        );
-      }
-
+      /*
+        DESKTOP VIEW
+      */
       $productHeader = div({ class: 'product-header' },
         div({ class: 'content' },
           h1(product.heading),
@@ -218,9 +279,7 @@ export default async function decorate(doc) {
           ),
         ),
       );
-
-      // Update fixed header
-      updateFixedHeader($productHeader);
+      cleanupHeader = updateFixedHeader($productHeader);
 
       $page = div({ class: 'section' },
         div({ class: 'default-content-wrapper' },
@@ -229,8 +288,9 @@ export default async function decorate(doc) {
               $productHeader,
               description,
             ),
-            gallery,
+            gallery && div({ class: 'right-column' }, gallery),
           ),
+
           // Technical Documents Table
           div({ class: 'table-wrapper' },
             h3({ id: 'technical-documents' }, translate('technical-documents')),
@@ -241,7 +301,7 @@ export default async function decorate(doc) {
                 th(translate('format')),
                 th(translate('size')),
               ),
-              ...productData.technicalDocuments.map((techDoc) => tr(
+              ...productDocs.technicalDocuments.map((techDoc) => tr(
                 td(label({ class: 'checkbox' }, input({ type: 'checkbox', 'data-doc-id': techDoc.id }))),
                 td(a({ class: 'doc', href: API_HOST + techDoc.path, target: '_blank' }, techDoc.documentType)),
                 td(techDoc.format),
@@ -249,7 +309,9 @@ export default async function decorate(doc) {
               ),
               ),
             ),
+            div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'technical' }, 'Download Documents')),
           ),
+
           // SDS Documents Table
           div({ class: 'table-wrapper' },
             h3({ id: 'sds-documents' }, translate('sds-documents')),
@@ -260,7 +322,7 @@ export default async function decorate(doc) {
                 th(translate('language')),
                 th(translate('size')),
               ),
-              ...productData.sdsDocuments.map((sdsDoc) => tr(
+              ...productDocs.sdsDocuments.map((sdsDoc) => tr(
                 td(label({ class: 'checkbox' }, input({ type: 'checkbox', 'data-doc-id': sdsDoc.id }))),
                 td(a({ class: 'doc', href: API_HOST + sdsDoc.path, target: '_blank' }, sdsDoc.locale.region)),
                 td(sdsDoc.locale.language),
@@ -268,6 +330,7 @@ export default async function decorate(doc) {
               ),
               ),
             ),
+            div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'sds' }, 'Download Documents')),
           ),
         ),
       );
@@ -317,32 +380,107 @@ export default async function decorate(doc) {
         addIngredientToCart(productName, window.location.href);
       });
     });
-  };
+
+    // After creating new header
+    cleanupHeader = updateFixedHeader($productHeader);
+  }
 
   // render page
   renderPageContent();
-  window.addEventListener('resize', renderPageContent);
 
-  // image gallery
-  // TODO: clean up for mobile carousel
-  // add video support
+  // Debounce resize handler to prevent too many updates
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(renderPageContent, 100);
+  });
+
+  // Gallery & Video Handling
   if (product.resourceLinks) {
-    const thumbs = document.querySelectorAll('.gallery .thumb');
+    const thumbs = document.querySelectorAll('.gallery .slide-nav .thumb');
     thumbs.forEach((thumb, index) => {
       thumb.addEventListener('click', () => {
-        const oldSelectedImage = document.querySelector('.gallery img.active');
-        const newSelectedImage = document.querySelector(`.gallery img:nth-child(${index + 1})`);
+        // ignore if thumb is already active
+        if (thumb.classList.contains('active')) return;
+
+        const oldSelectedImage = document.querySelector('.gallery .slides .slide.active');
+        const newSelectedImage = document.querySelector(`.gallery .slides .slide:nth-child(${index + 1})`);
+        const slidesContainer = document.querySelector('.gallery .slides');
+
+        // Reset any playing videos when switching
+        document.querySelectorAll('.slide.playing').forEach((slide) => {
+          slide.classList.remove('playing');
+          if (slide._player) {
+            slide._player.destroy();
+            slide._player = null;
+          }
+        });
+
         thumbs.forEach((t) => { t.classList.remove('active'); });
         thumb.classList.add('active');
-        newSelectedImage.classList.add('new');
-        setTimeout(() => {
-          newSelectedImage.classList.add('active');
-          oldSelectedImage.classList.remove('active');
-          // After transition completes, remove new class
+
+        if (oldSelectedImage && newSelectedImage) {
+          newSelectedImage.classList.add('new');
+          requestAnimationFrame(() => {
+            newSelectedImage.classList.add('active');
+            slidesContainer.style.aspectRatio = newSelectedImage.classList.contains('video') ? '16/9' : 'auto';
+          });
           setTimeout(() => {
             newSelectedImage.classList.remove('new');
+            oldSelectedImage.classList.remove('active');
           }, 400);
-        }, 50);
+        }
+      });
+    });
+
+    // play on click
+    document.querySelectorAll('.play-btn').forEach((playBtn) => {
+      playBtn.addEventListener('click', async (e) => {
+        const slide = e.target.closest('.slide');
+        if (!slide.classList.contains('playing')) {
+          // Wait for Vimeo API to be ready
+          if (typeof Vimeo === 'undefined') {
+            await new Promise((resolve) => {
+              const checkVimeo = setInterval(() => {
+                if (typeof Vimeo !== 'undefined') {
+                  clearInterval(checkVimeo);
+                  resolve();
+                }
+              }, 100);
+            });
+          }
+
+          slide.classList.add('playing');
+
+          // Initialize Vimeo player only when clicked
+          const playerElement = slide.querySelector('.vimeo-player');
+          const videoId = playerElement.getAttribute('data-vimeo-id');
+
+          if (!slide._player) {
+            // eslint-disable-next-line no-undef
+            slide._player = new Vimeo.Player(playerElement, {
+              id: videoId,
+              responsive: true,
+              controls: true,
+              title: false,
+              byline: false,
+              portrait: false,
+              autoplay: true,
+            });
+
+            // Handle player errors
+            slide._player.on('error', (error) => {
+              console.error('Vimeo player error:', error);
+              slide.classList.remove('playing');
+              if (slide._player) {
+                slide._player.destroy();
+                slide._player = null;
+              }
+            });
+          } else {
+            slide._player.play();
+          }
+        }
       });
     });
   }

@@ -12,7 +12,6 @@ html { scroll-behavior: smooth }
 
     .mobile-view & {
       flex-direction: column;
-      padding: 0 20px;
     }
 
     .left-column {
@@ -69,11 +68,9 @@ html { scroll-behavior: smooth }
     }
 
     .cta-buttons {
-      margin-top: 30px;
-
       .button {
         min-width: 210px;
-        margin-right: 40px;
+        margin: 30px 40px 0 0;
         transition: all 0.3s ease;
       }
     }
@@ -82,15 +79,27 @@ html { scroll-behavior: smooth }
 
     &.fixed {
       position: fixed;
+      display: block;
       top: 0;
       left: 0;
       right: 0;
       z-index: 100;
       background: #fff;
       opacity: 0;
-      transition: opacity 160ms ease;
+      transform: translateY(-40%);
+      transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
+      will-change: transform, opacity;
 
-      &.on { opacity: 1 }
+      &.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      &.hidden {
+        display: none;
+        pointer-events: none;
+      }
 
       .content {
         position: relative;
@@ -118,7 +127,10 @@ html { scroll-behavior: smooth }
 
           .mobile-view & { display: none }
 
-          .button { min-width: 160px }
+          .button { 
+            min-width: 160px; 
+            margin-top: 0; 
+          }
         }
 
         .cta-links { 
@@ -371,48 +383,139 @@ html { scroll-behavior: smooth }
   .gallery {
     position: relative;
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
+    height: 100%;
 
-    .selected {
-      position: relative;
+    .slides-wrapper {
+      position: sticky;
+      top: 20px;
       width: 100%;
-      height: 400px;
-      overflow: hidden;
+      height: fit-content;
+      transition: top 240ms ease-in-out;
 
-      img {
-        position: absolute;
-        z-index: 0;
+      /* slide down when fixed header is visible */
+      .slide-down & { top: 180px }
+    }
+
+    .slides {
+      position: relative;
+
+      .slide {
+        display: none;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
         opacity: 0;
         transition: opacity 400ms ease-in-out;
 
-        &.active { opacity: 1 }
+        &.active {
+          display: block;
+          opacity: 1;
+          position: relative;
+        }
 
         &.new {
-          z-index: 1;
-          opacity: 1;
+          display: block;
+          position: absolute;
+          z-index: 2;
+          opacity: 0;
+        }
+
+        &.new.active { opacity: 1 }
+
+        &.video { aspect-ratio: 16 / 9 }
+
+        &.image { aspect-ratio: auto }
+
+        .play-btn {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: #fff;
+          border-radius: 50%;
+          width: 80px;
+          height: 80px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          transition: all 160ms ease;
+
+          /* triangle */
+          &::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 15px 0 15px 26px;
+            border-color: transparent transparent transparent var(--green);
+            margin-left: 5px;
+            transition: all 160ms ease;
+          }
+
+          &:hover::before {
+            border-color: transparent transparent transparent var(--dark-green);
+          }
+
+          &:hover {
+            /* zoom in */
+            transform: translate(-50%, -50%) scale(1.1);
+          }
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .vimeo-player {
+          display: none;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 2;
+        }
+
+        &.playing {
+          .play-btn {
+            display: none;
+          }
+          .vimeo-player {
+            display: block;
+          }
         }
       }
     }
 
-    .thumbs {
+    .slide-nav {
+      position: relative;
       display: flex;
       gap: 10px;
-      margin-top: 10px;
-      padding: 10px;
+      margin-top: 20px;
       overflow-x: auto;
+      z-index: 1;
 
       .thumb {
         flex: 0 0 100px;
         height: 75px;
         cursor: pointer;
-        opacity: 0.7;
-        transition: opacity 200ms ease;
+        border: 3px solid transparent;
+        transition: all 200ms ease;
 
-        &.active { display: none }
+        &:hover, &.active { 
+          border: 2px solid var(--green);
+        }
+
+        .mobile-view & {
+          flex: 0 0 75px;
+          height: 50px;
+        }
 
         img {
           width: 100%;
