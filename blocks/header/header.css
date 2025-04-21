@@ -346,13 +346,15 @@ header {
             z-index: 1;
             height: 100%;
             overflow-y: auto;
-            background: var(--light-grey);
+            background: #fff;
         }
 
         .logo-cart-burger-wrap {
-            height: 68px;
-            padding: 10px 0;
-            box-shadow: 0 2px 8px 0 rgba(0 0 0 / 10%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .1);
+            padding: .5rem .9375rem;
             background: #fff;
 
             .logo {
@@ -382,6 +384,26 @@ header {
                     color: var(--green);
                 }
                 .menu-open &::before { content: '\e91c' }
+            }
+
+            .back-button {
+                font-size: 1rem;
+                color: #6cb33e;
+                font-family: MiloPro-Bold, Helvetica, sans-serif;
+                letter-spacing: .03125rem;
+                margin: 1rem 0;
+            }
+
+            .back-button .icon-green-arrow-up {
+                display: inline-block;
+                transform: rotate(-90deg);
+                font-size: .75rem;
+                height: .75rem;
+            }
+
+            .back-button .icon-green-arrow-up::before {
+                content: "\e925";
+                color: #6cb33e;
             }
         }
 
@@ -435,8 +457,13 @@ header {
                         border-bottom: 1px solid var(--border-color);
                         font-weight: bold;
                     }
-                }
+
+                &:nth-child(2) > li, &:nth-child(3) > li {
+                font-weight: bold;
+                .loaded & > .dropdown { right: auto }
             }
+        }
+    }
 
             .btn-tech-doc-samples {
                 padding: 30px;
