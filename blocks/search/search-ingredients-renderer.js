@@ -1,7 +1,56 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
-import { div, h4, ul, li, small, form, input, button, span } from '../../scripts/dom-helpers.js';
+import { div, h4, ul, li, small, button, span } from '../../scripts/dom-helpers.js';
 import { translate } from '../../scripts/utils.js';
 import { decorateBlock, loadBlock } from '../../scripts/aem.js';
+
+const API_CONFIG = {
+  baseUrl: 'https://www.ingredion.com',
+  searchPath: '/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json',
+};
+
+// API service for making fetch calls
+async function fetchIngredientResults(searchParams) {
+  try {
+    const response = await fetch(
+      `${API_CONFIG.baseUrl}${API_CONFIG.searchPath}?${searchParams.toString()}`,
+    );
+    if (!response.ok) throw new Error('Failed to fetch');
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching ingredient results:', error);
+    throw error;
+  }
+}
+
+// Helper to update URL and state
+async function updateUrlAndFetchResults(url, context, resetToFirstPage = true) {
+  try {
+    // Update URL without page refresh
+    window.history.pushState({}, '', url.toString());
+
+    // Make API call with updated params
+    const newResults = await fetchIngredientResults(url.searchParams);
+
+    // Update the ingredient results while preserving applied facets
+    context.ingredientResults = {
+      ...newResults,
+      appliedFacets: context.ingredientResults.appliedFacets,
+    };
+
+    // Update state with new data
+    context.state = {
+      ...context.state,
+      allArticles: newResults.results,
+      totalArticles: newResults.totalItemsCount,
+      currentPage: resetToFirstPage ? 0 : context.state.currentPage,
+    };
+
+    return newResults;
+  } catch (error) {
+    console.error('Error updating results:', error);
+    throw error;
+  }
+}
 
 function getUrlParams(key) {
   const params = new URLSearchParams(window.location.search);
@@ -39,7 +88,6 @@ function createSelectDropdown({
     $option.addEventListener('click', (event) => {
       event.stopPropagation();
       onSelect(value, $option, $dropdown);
-      // Close this dropdown after selection
       $dropdown.querySelector('.options').classList.remove('open');
     });
 
@@ -81,13 +129,9 @@ function createSelectDropdown({
  * @param {Element} options.paginationDiv - The container element for the pagination.
  * @param {number} [options.paginationMaxBtns=7] - The maximum number of pagination buttons.
  * @param {Element} options.filterTagsList - The container element for the filters.
- * @param {Element} options.searchDiv - The container element for the search form.
  * @param {Element} options.sortDropdown - The container element for the sort dropdown.
  * @param {Element} options.countDiv - The container element for the article count.
  * @param {Element} options.perPageDropdown - The container element for the per-page dropdown.
- * @param {Element} options.filterYearsDropdown - The container element for the filter years dropdown.
- * @param {Element} options.filterTypesDropdown - The container element for the filter types dropdown.
- * @param {Element} options.filterByTagDropdown - The container element for the filter by specific tag dropdown.
  */
 export default class IngredientRenderer {
   constructor({
@@ -97,15 +141,10 @@ export default class IngredientRenderer {
     articlesPerPageOptions = '10, 25, 50',
     paginationDiv,
     paginationMaxBtns = 7,
-    filterTagsList,
-    filterYearsDropdown,
-    filterTypesDropdown,
-    searchDiv,
     sortDropdown,
     countDiv,
     perPageDropdown,
-    filterByTagDropdown,
-    clearFilters,
+    filterTagsList,
   }) {
     this.ingredientResults = ingredientResults;
     this.articleDiv = articleDiv;
@@ -113,15 +152,10 @@ export default class IngredientRenderer {
     this.articlesPerPageOptions = String(articlesPerPageOptions).split(',').map(Number);
     this.paginationDiv = paginationDiv;
     this.paginationMaxBtns = paginationMaxBtns;
-    this.filterTagsList = filterTagsList;
-    this.filterYearsDropdown = filterYearsDropdown;
-    this.filterTypesDropdown = filterTypesDropdown;
-    this.searchDiv = searchDiv;
     this.sortDropdown = sortDropdown;
     this.countDiv = countDiv;
     this.perPageDropdown = perPageDropdown;
-    this.filterByTagDropdown = filterByTagDropdown;
-    this.clearFilters = clearFilters;
+    this.filterTagsList = filterTagsList;
 
     // Parse initial URL parameters for facets
     const url = new URL(window.location);
@@ -165,26 +199,11 @@ export default class IngredientRenderer {
     if (hasFacetParams) {
       (async () => {
         try {
-          const response = await fetch(
-            `https://www.ingredion.com/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json?${url.searchParams.toString()}`,
-          );
-          if (!response.ok) throw new Error('Failed to fetch');
-          const newResults = await response.json();
-
-          // Update the ingredient results with both new data and applied facets
+          await updateUrlAndFetchResults(url, this);
           this.ingredientResults = {
-            ...newResults,
+            ...this.ingredientResults,
             appliedFacets,
           };
-
-          // Update state with new data
-          this.state = {
-            ...this.state,
-            allArticles: newResults.results,
-            totalArticles: newResults.totalItemsCount,
-          };
-
-          // Re-render the page with new data
           this.updatePage();
         } catch (error) {
           console.error('Error fetching initial results:', error);
@@ -232,7 +251,6 @@ export default class IngredientRenderer {
     this.renderCount();
     this.renderPagination();
     this.renderPerPageDropdown();
-    this.renderClearFilters();
     this.updateUrl(); // sync state
   }
 
@@ -295,124 +313,6 @@ export default class IngredientRenderer {
     }
   }
 
-  renderFilterTypes() {
-    if (!this.filterTypesDropdown) return;
-    this.filterTypesDropdown.innerHTML = '';
-
-    const types = {};
-    this.state.allArticles.forEach((article) => {
-      if (article.type) {
-        try {
-          const type = JSON.parse(article.type)[0];
-          if (type && type !== 'undefined') { // Only count defined types
-            types[type] = (types[type] || 0) + 1;
-          }
-        } catch (e) {
-          // Skip invalid JSON
-          console.warn('Invalid type format:', article.type);
-        }
-      }
-    });
-
-    const typeOptions = [
-      ...Object.keys(types)
-        .filter((type) => type && type !== 'undefined') // Extra safety filter
-        .sort()
-        .map((type) => ({
-          value: type,
-          label: type,
-          count: types[type],
-        })),
-      { value: '', label: 'All Types' },
-    ];
-
-    const $dropdown = createSelectDropdown({
-      options: typeOptions,
-      selectedValue: this.state.type,
-      defaultText: 'Type',
-      onSelect: (value, option, dropdown) => {
-        this.state.currentPage = 0;
-        this.state.type = value;
-        dropdown.querySelector('.selected').textContent = value || 'Type';
-        this.updatePage();
-      },
-      cssClass: ['filter-types'],
-    });
-
-    this.filterTypesDropdown.appendChild($dropdown);
-  }
-
-  renderFilterByTagDropdown() {
-    if (!this.filterByTagDropdown) return;
-    const tagCategory = this.filterByTagDropdown.getAttribute('data-tag');
-    if (!tagCategory) return;
-
-    this.filterByTagDropdown.innerHTML = '';
-
-    const tags = {};
-
-    // Build tag counts from all articles
-    this.state.allArticles.forEach((article) => {
-      article.tags.split(',').forEach((tag) => {
-        const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
-        if (cleanedTag.startsWith(`${tagCategory} /`)) {
-          tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
-        }
-      });
-    });
-
-    // Process tags to get just the second part after "Markets /"
-    const tagOptions = Object.keys(tags)
-      .map((fullTag) => {
-        const [, tag] = fullTag.split(' / ');
-        const cleanedValue = tag.toLowerCase().replace(/\s+/g, '-'); // for filtering
-        return {
-          value: cleanedValue, // lowercase hyphenated for filtering
-          label: tag.trim(), // original format for display
-          count: tags[fullTag],
-        };
-      })
-      .sort((a, b) => a.label.localeCompare(b.label));
-
-    // Add "All Markets" option at the end
-    tagOptions.push({ value: '', label: `All ${tagCategory}` });
-
-    // Find the currently selected option and use its label for display
-    const selectedTag = this.state.tags.find((tag) => tagOptions.some((option) => option.value === tag),
-    );
-    const selectedOption = tagOptions.find((opt) => opt.value === selectedTag);
-    const selectedDisplay = selectedOption ? selectedOption.label : '';
-
-    const $dropdown = createSelectDropdown({
-      options: tagOptions,
-      selectedValue: selectedDisplay, // Use the display label instead of the value
-      defaultText: tagCategory,
-      onSelect: (value, option, dropdown) => {
-        this.state.currentPage = 0;
-
-        // Remove any existing tags from this category
-        this.state.tags = this.state.tags.filter((tag) => !tagOptions.some((option) => option.value === tag),
-        );
-
-        // Add the new tag if one was selected
-        if (value) {
-          this.state.tags.push(value);
-        }
-
-        // Use the original format label for display
-        const selectedOption = tagOptions.find((opt) => opt.value === value);
-        dropdown.querySelector('.selected').textContent = selectedOption
-          ? selectedOption.label // Use the original format label
-          : tagCategory;
-
-        this.updatePage();
-      },
-      cssClass: ['filter-by-tag'],
-    });
-
-    this.filterByTagDropdown.appendChild($dropdown);
-  }
-
   renderFilterTags() {
     if (!this.filterTagsList) return;
     this.filterTagsList.innerHTML = '';
@@ -456,7 +356,6 @@ export default class IngredientRenderer {
         label.appendChild(div({ class: 'form-checkbox-check' }));
 
         checkbox.addEventListener('change', async () => {
-          // Create filter object
           const filter = {
             group: facetKey,
             value: option.value,
@@ -464,17 +363,14 @@ export default class IngredientRenderer {
           };
 
           try {
-            // Get current URL parameters
             const url = new URL(window.location);
             const currentValue = url.searchParams.get(filter.group) || '';
 
             // Update URL parameters based on checkbox state
             if (filter.checked) {
-              // Add value to parameter
               const newValue = currentValue ? `${currentValue},${filter.value}` : filter.value;
               url.searchParams.set(filter.group, newValue);
             } else {
-              // Remove value from parameter
               const values = currentValue.split(',').filter((v) => v !== filter.value);
               if (values.length > 0) {
                 url.searchParams.set(filter.group, values.join(','));
@@ -492,16 +388,6 @@ export default class IngredientRenderer {
             if (initialTab) url.searchParams.set('initialTab', initialTab);
             if (query) url.searchParams.set('q', query);
 
-            // Update URL without page refresh
-            window.history.pushState({}, '', url.toString());
-
-            // Make API call with updated params
-            const response = await fetch(
-              `https://www.ingredion.com/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json?${url.searchParams.toString()}`,
-            );
-            if (!response.ok) throw new Error('Failed to fetch');
-            const newResults = await response.json();
-
             // Update appliedFacets based on checkbox state
             if (filter.checked) {
               this.ingredientResults.appliedFacets = [
@@ -517,20 +403,7 @@ export default class IngredientRenderer {
                 .filter((f) => !(f.group === filter.group && f.value === filter.value));
             }
 
-            // Update the ingredient results and state
-            this.ingredientResults = {
-              ...newResults,
-              appliedFacets: this.ingredientResults.appliedFacets,
-            };
-
-            // Update state with new data
-            this.state = {
-              ...this.state,
-              allArticles: newResults.results,
-              totalArticles: newResults.totalItemsCount,
-              currentPage: 0, // Reset to first page when filters change
-            };
-
+            await updateUrlAndFetchResults(url, this);
             this.updatePage();
           } catch (error) {
             console.error('Error updating filters:', error);
@@ -598,7 +471,6 @@ export default class IngredientRenderer {
         // Add click handler for remove button
         removeButton.addEventListener('click', async () => {
           try {
-            // Get current URL parameters
             const url = new URL(window.location);
             const currentValue = url.searchParams.get(facet.group) || '';
 
@@ -619,34 +491,11 @@ export default class IngredientRenderer {
             if (initialTab) url.searchParams.set('initialTab', initialTab);
             if (query) url.searchParams.set('q', query);
 
-            // Update URL without page refresh
-            window.history.pushState({}, '', url.toString());
-
-            // Make API call with updated params
-            const response = await fetch(
-              `https://www.ingredion.com/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json?${url.searchParams.toString()}`,
-            );
-            if (!response.ok) throw new Error('Failed to fetch');
-            const newResults = await response.json();
-
             // Remove from appliedFacets
             this.ingredientResults.appliedFacets = (this.ingredientResults.appliedFacets || [])
               .filter((f) => !(f.group === facet.group && f.value === facet.value));
 
-            // Update the ingredient results and state
-            this.ingredientResults = {
-              ...newResults,
-              appliedFacets: this.ingredientResults.appliedFacets,
-            };
-
-            // Update state with new data
-            this.state = {
-              ...this.state,
-              allArticles: newResults.results,
-              totalArticles: newResults.totalItemsCount,
-              currentPage: 0, // Reset to first page when filters change
-            };
-
+            await updateUrlAndFetchResults(url, this);
             this.updatePage();
           } catch (error) {
             console.error('Error removing filter:', error);
@@ -666,32 +515,19 @@ export default class IngredientRenderer {
       clearAll.style.display = 'none';
     }
     clearAll.addEventListener('click', async () => {
-      this.ingredientResults.appliedFacets = [];
-      this.state.currentPage = 0;
-      // update url by removing all facets
-      const url = new URL(window.location);
-      url.searchParams.delete('applications');
-      url.searchParams.delete('productType');
-      url.searchParams.delete('subApplications');
-      // Always set activePage to 1 when clearing filters
-      url.searchParams.set('activePage', '1');
-      window.history.pushState({}, '', url.toString());
-      const response = await fetch(
-        `https://www.ingredion.com/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json?${url.searchParams.toString()}`,
-      );
-      if (!response.ok) throw new Error('Failed to fetch');
-      const newResults = await response.json();
-      this.ingredientResults = {
-        ...newResults,
-        appliedFacets: [],
-      };
-      this.state = {
-        ...this.state,
-        allArticles: newResults.results,
-        totalArticles: newResults.totalItemsCount,
-        currentPage: 0, // Reset to first page when filters change
-      };
-      this.updatePage();
+      try {
+        const url = new URL(window.location);
+        url.searchParams.delete('applications');
+        url.searchParams.delete('productType');
+        url.searchParams.delete('subApplications');
+        url.searchParams.set('activePage', '1');
+
+        this.ingredientResults.appliedFacets = [];
+        await updateUrlAndFetchResults(url, this);
+        this.updatePage();
+      } catch (error) {
+        console.error('Error clearing filters:', error);
+      }
     });
     filtersList.appendChild(clearAll);
 
@@ -731,45 +567,33 @@ export default class IngredientRenderer {
       selectedValue: selectedDisplay,
       onSelect: async (value, option, dropdown) => {
         if (this.state.sort !== value) {
-          this.state.sort = value;
-          this.state.currentPage = 0;
+          try {
+            const url = new URL(window.location);
+            url.searchParams.set('sortBy', value);
+            url.searchParams.set('activePage', '1');
 
-          // Use the translated label for display
-          const selectedOption = sortOptions.find((opt) => opt.value === value);
-          dropdown.querySelector('.selected').textContent = `${selectedOption.label}`;
+            // Update dropdown display
+            const selectedOption = sortOptions.find((opt) => opt.value === value);
+            dropdown.querySelector('.selected').textContent = `${selectedOption.label}`;
 
-          // Remove active class from all options and add it to the selected one
-          dropdown.querySelectorAll('.options .option').forEach((opt) => {
-            opt.classList.remove('active');
-            opt.style.paddingRight = '';
-          });
-          // Find and update the selected option
-          const selectedLi = Array.from(dropdown.querySelectorAll('.options .option')).find((li) => li.textContent.includes(selectedOption.label));
-          if (selectedLi) {
-            selectedLi.classList.add('active');
-            selectedLi.style.paddingRight = '30px';
+            // Update selected option styling
+            dropdown.querySelectorAll('.options .option').forEach((opt) => {
+              opt.classList.remove('active');
+              opt.style.paddingRight = '';
+            });
+            const selectedLi = Array.from(dropdown.querySelectorAll('.options .option'))
+              .find((li) => li.textContent.includes(selectedOption.label));
+            if (selectedLi) {
+              selectedLi.classList.add('active');
+              this.state.sort = selectedOption.value;
+              selectedLi.style.paddingRight = '30px';
+            }
+
+            await updateUrlAndFetchResults(url, this);
+            this.updatePage();
+          } catch (error) {
+            console.error('Error updating sort:', error);
           }
-
-          // on changing sort by option, i want to call respective api and update the page
-          const url = new URL(window.location);
-          url.searchParams.set('sortBy', value);
-          // Always set activePage to 1 when changing sort
-          url.searchParams.set('activePage', '1');
-          window.history.pushState({}, '', url.toString());
-
-          const response = await fetch(`https://www.ingredion.com/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json?${url.searchParams.toString()}`);
-          const newResults = await response.json();
-          this.ingredientResults = {
-            ...newResults,
-            appliedFacets: this.ingredientResults.appliedFacets,
-          };
-          this.state = {
-            ...this.state,
-            allArticles: newResults.results,
-            totalArticles: newResults.totalItemsCount,
-            currentPage: 0, // Reset to first page when filters change
-          };
-          this.updatePage();
         }
       },
       cssClass: ['filter-sort'],
@@ -791,44 +615,15 @@ export default class IngredientRenderer {
       options: perPageOptions,
       selectedValue: this.state.articlesPerPage,
       labelSuffix: ' per page',
-      onSelect: async (value, option, dropdown) => {
+      onSelect: async (value) => {
         if (this.state.articlesPerPage !== value) {
           try {
-            // Get current URL parameters
             const url = new URL(window.location);
-            // Update perPage parameter
             url.searchParams.set('perPage', value);
-            // Reset activePage to 1
             url.searchParams.set('activePage', '1');
 
-            // Update URL without page refresh
-            window.history.pushState({}, '', url.toString());
-
-            // Make API call with updated params
-            const response = await fetch(
-              `https://www.ingredion.com/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json?${url.searchParams.toString()}`,
-            );
-            if (!response.ok) throw new Error('Failed to fetch');
-            const newResults = await response.json();
-
-            // Update the ingredient results while preserving applied facets
-            this.ingredientResults = {
-              ...newResults,
-              appliedFacets: this.ingredientResults.appliedFacets,
-            };
-
-            // Update state with new data
-            this.state = {
-              ...this.state,
-              allArticles: newResults.results,
-              totalArticles: newResults.totalItemsCount,
-              currentPage: 0, // Reset to first page
-              articlesPerPage: value,
-            };
-
-            // Update dropdown display
-            dropdown.querySelector('.selected').textContent = `${value} per page`;
-
+            await updateUrlAndFetchResults(url, this);
+            this.state.articlesPerPage = value; // Update articles per page
             this.updatePage();
           } catch (error) {
             console.error('Error updating per page:', error);
@@ -841,43 +636,6 @@ export default class IngredientRenderer {
     this.perPageDropdown.appendChild($dropdown);
   }
 
-  renderSearchForm() {
-    if (!this.searchDiv) return;
-    this.searchDiv.innerHTML = '';
-    this.searchDiv.classList.add('filter-search');
-    const searchPlaceholder = translate('search');
-    const $form = form();
-    const $input = input({
-      type: 'listing-search',
-      name: 'q',
-      placeholder: searchPlaceholder,
-      value: this.state.searchQuery || '',
-    });
-
-    $input.addEventListener('focus', () => {
-      $input.placeholder = '';
-    });
-
-    $input.addEventListener('blur', () => {
-      if (!$input.value.trim()) {
-        $input.placeholder = searchPlaceholder;
-      }
-    });
-
-    const $submit = button({ class: 'icon-search', type: 'submit', 'aria-label': 'Search Button' });
-    $form.append($input, $submit);
-
-    $form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const query = $input.value.trim();
-      this.state.currentPage = 0;
-      this.state.searchQuery = query;
-      this.updatePage();
-    });
-
-    this.searchDiv.appendChild($form);
-  }
-
   /**
    * Create a pagination button.
    * @param {number} n - The page number.
@@ -888,37 +646,12 @@ export default class IngredientRenderer {
     $pageBtn.addEventListener('click', async () => {
       if (this.state.currentPage !== n) {
         try {
-          // Get current URL parameters
           const url = new URL(window.location);
-          // Update activePage parameter
           url.searchParams.set('activePage', (n + 1).toString());
-
-          // Update URL without page refresh
-          window.history.pushState({}, '', url.toString());
-
-          // Make API call with updated params
-          const response = await fetch(
-            `https://www.ingredion.com/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json?${url.searchParams.toString()}`,
-          );
-          if (!response.ok) throw new Error('Failed to fetch');
-          const newResults = await response.json();
-
-          // Update the ingredient results while preserving applied facets
-          this.ingredientResults = {
-            ...newResults,
-            appliedFacets: this.ingredientResults.appliedFacets,
-          };
-
-          // Update state with new data
-          this.state = {
-            ...this.state,
-            allArticles: newResults.results,
-            totalArticles: newResults.totalItemsCount,
-            currentPage: n,
-          };
+          this.state.currentPage = n;
+          await updateUrlAndFetchResults(url, this, false);
           this.updatePage();
-          this.renderArticles(newResults.results);
-
+          this.renderArticles(this.state.allArticles);
           this.scrollTop();
         } catch (error) {
           console.error('Error updating page:', error);
@@ -945,37 +678,12 @@ export default class IngredientRenderer {
       if (this.state.currentPage > 0) {
         try {
           const newPage = this.state.currentPage - 1;
-          // Get current URL parameters
           const url = new URL(window.location);
-          // Update activePage parameter
           url.searchParams.set('activePage', (newPage + 1).toString());
-
-          // Update URL without page refresh
-          window.history.pushState({}, '', url.toString());
-
-          // Make API call with updated params
-          const response = await fetch(
-            `https://www.ingredion.com/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json?${url.searchParams.toString()}`,
-          );
-          if (!response.ok) throw new Error('Failed to fetch');
-          const newResults = await response.json();
-
-          // Update the ingredient results while preserving applied facets
-          this.ingredientResults = {
-            ...newResults,
-            appliedFacets: this.ingredientResults.appliedFacets,
-          };
-
-          // Update state with new data
-          this.state = {
-            ...this.state,
-            allArticles: newResults.results,
-            totalArticles: newResults.totalItemsCount,
-            currentPage: newPage,
-          };
+          this.state.currentPage = newPage;
+          await updateUrlAndFetchResults(url, this, false);
           this.updatePage();
-          this.renderArticles(newResults.results);
-
+          this.renderArticles(this.state.allArticles);
           this.scrollTop();
         } catch (error) {
           console.error('Error updating page:', error);
@@ -1029,37 +737,12 @@ export default class IngredientRenderer {
       if (this.state.currentPage < totalPages - 1) {
         try {
           const newPage = this.state.currentPage + 1;
-          // Get current URL parameters
           const url = new URL(window.location);
-          // Update activePage parameter
           url.searchParams.set('activePage', (newPage + 1).toString());
-
-          // Update URL without page refresh
-          window.history.pushState({}, '', url.toString());
-
-          // Make API call with updated params
-          const response = await fetch(
-            `https://www.ingredion.com/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json?${url.searchParams.toString()}`,
-          );
-          if (!response.ok) throw new Error('Failed to fetch');
-          const newResults = await response.json();
-
-          // Update the ingredient results while preserving applied facets
-          this.ingredientResults = {
-            ...newResults,
-            appliedFacets: this.ingredientResults.appliedFacets,
-          };
-
-          // Update state with new data
-          this.state = {
-            ...this.state,
-            allArticles: newResults.results,
-            totalArticles: newResults.totalItemsCount,
-            currentPage: newPage,
-          };
+          this.state.currentPage = newPage;
+          await updateUrlAndFetchResults(url, this, false);
           this.updatePage();
-          this.renderArticles(newResults.results);
-
+          this.renderArticles(this.state.allArticles);
           this.scrollTop();
         } catch (error) {
           console.error('Error updating page:', error);
@@ -1089,51 +772,9 @@ export default class IngredientRenderer {
       this.state.totalArticles = this.ingredientResults.totalItemsCount;
 
       // render page after data and translations are loaded
-      await this.updatePage();
+      this.updatePage();
     } catch (error) {
       console.error('Error during render:', error);
-    }
-  }
-
-  renderClearFilters() {
-    if (!this.clearFilters) return;
-
-    // Check if any filters are active
-    const hasActiveFilters = this.state.tags.length > 0
-      || this.state.searchQuery
-      || this.state.year
-      || this.state.type;
-
-    // Show/hide clear filters based on active filters
-    if (hasActiveFilters) {
-      this.clearFilters.classList.remove('hidden');
-
-      // Remove any existing click handlers
-      const oldHandler = this.clearFiltersHandler;
-      if (oldHandler) {
-        this.clearFilters.removeEventListener('click', oldHandler);
-      }
-
-      // Create and store the new handler
-      this.clearFiltersHandler = (event) => {
-        event.preventDefault();
-
-        // Reset all filters to default state
-        this.state.tags = [];
-        this.state.searchQuery = '';
-        this.state.year = '';
-        this.state.type = '';
-        this.state.sort = 'newest';
-        this.state.currentPage = 0;
-
-        // Update the page with reset filters
-        this.updatePage();
-      };
-
-      // Add the new handler
-      this.clearFilters.addEventListener('click', this.clearFiltersHandler);
-    } else {
-      this.clearFilters.classList.add('hidden');
     }
   }
 }

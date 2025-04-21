@@ -11,6 +11,7 @@ import {
   loadBlock,
 } from '../../scripts/aem.js';
 import IngredientRenderer from './search-ingredients-renderer.js';
+import DocumentRenderer from './search-documents-renderer.js';
 
 function filterGlobalIndex(results, query) {
   if (!query) return [];
@@ -119,7 +120,7 @@ async function createIngredientPanel(ingredientResults) {
   const $articlePage = div(
     { class: 'article-list' },
     div(
-      { class: 'filter-search-sort' },
+      { class: 'filter-search-sort', style: 'justify-content: end;' },
       $sortDropdown,
     ),
     div(
@@ -236,7 +237,93 @@ async function createGlobalPanel(filteredGlobalResults) {
 
 // Helper function to create tech docs panel
 async function createTechDocsPanel(techDocsResults) {
-  const panel = document.createElement('div');
+  const $sortDropdown = div();
+  const $count = h3({ class: 'count' });
+  const $pagination = div({ class: 'pagination' });
+  const $perPageDropdown = div();
+  const $articles = div({ class: 'articles' });
+  const $filtersList = div();
+
+  const $articleCard = (article) => {
+    const contentSection = div(
+      div(
+        { 'data-valign': 'middle' },
+        h4(
+          { id: article.assetName },
+          `${article.assetName || article.title}`,
+        ),
+        article.assetSize && (() => {
+          const description = p({ class: 'description' });
+          description.innerHTML = `Document size: ${article.assetSize}`;
+          return description;
+        })(),
+      ),
+    );
+
+    const actionSection = div(
+      div(
+        { 'data-valign': 'middle' },
+        p(
+          { class: 'button-container' },
+          a(
+            { href: article.assetUrl || '#', title: 'Download', class: 'button' },
+            'Download',
+          ),
+        ),
+      ),
+    );
+
+    const relatedIngredientBlock = buildBlock('related-ingredient', '');
+    relatedIngredientBlock.classList.add('search-docs');
+    relatedIngredientBlock.innerHTML = '';
+    relatedIngredientBlock.append(contentSection, actionSection);
+
+    return div(
+      { class: 'related-ingredient-wrapper' },
+      relatedIngredientBlock,
+    );
+  };
+
+  const $articlePage = div(
+    { class: 'article-list' },
+    div(
+      { class: 'filter-search-sort', style: 'justify-content: end;' },
+      $sortDropdown,
+    ),
+    div(
+      { class: 'filter-results-wrapper' },
+      div(
+        { class: 'filter' },
+        $filtersList,
+      ),
+      div(
+        { class: 'results' },
+        $count,
+        $articles,
+        div(
+          { class: 'controls' },
+          $pagination,
+          $perPageDropdown,
+        ),
+      ),
+    ),
+  );
+
+  await new DocumentRenderer({
+    techDocsResults,
+    articlesPerPageOptions: ['6', '12', '18', '24', '30'],
+    paginationMaxBtns: 5,
+    articleDiv: $articles,
+    articleCard: $articleCard,
+    filterTagsList: $filtersList,
+    sortDropdown: $sortDropdown,
+    paginationDiv: $pagination,
+    perPageDropdown: $perPageDropdown,
+    countDiv: $count,
+  }).render();
+
+  return $articlePage;
+  /* const panel = document.createElement('div');
   if (techDocsResults.results.length > 0) {
     // Create blocks for each ingredient
     await Promise.all(techDocsResults.results.map(async (asset) => {
@@ -298,7 +385,7 @@ async function createTechDocsPanel(techDocsResults) {
   } else {
     panel.append(div({ class: 'no-results-message' }, 'No tech docs results found.'));
   }
-  return panel;
+  return panel; */
 }
 
 async function displaySearchResults(
@@ -377,6 +464,34 @@ async function displaySearchResults(
   }
 }
 
+// Add this new function near the top of the file, after imports
+async function fetchSearchResults(searchParams) {
+  const basePath = '/content/ingredion-com/na/en-us/search/jcr:content/searchResults';
+  const baseUrl = `https://www.ingredion.com${basePath}`;
+  const globalIndexUrl = 'https://main--ingredion--aemsites.aem.live'
+    + '/na/en-us/indexes/global-index.json';
+
+  try {
+    const [ingredientResults, techDocsResults, globalResults] = await Promise.all([
+      fetch(`${baseUrl}.ingredients.json?${searchParams.toString()}`)
+        .then((res) => res.json()),
+      fetch(`${baseUrl}.techDocs.json?${searchParams.toString()}`)
+        .then((res) => res.json()),
+      fetch(globalIndexUrl)
+        .then((res) => res.json()),
+    ]);
+
+    return {
+      ingredientResults,
+      techDocsResults,
+      globalResults,
+    };
+  } catch (error) {
+    console.error('Error fetching search results:', error);
+    throw error;
+  }
+}
+
 export default async function decorate(block) {
   let totalResults = 0;
   block.classList.add('search', 'block');
@@ -397,19 +512,14 @@ export default async function decorate(block) {
     const searchParams = new URLSearchParams({
       initialTab: initialTab || '',
       q: query || '',
-      // returnTabCounts: 'true',
     });
 
     // Show loader
     loadingEl.style.display = 'flex';
     block.style.display = 'none';
 
-    // Make API calls and parse JSON in parallel
-    const [ingredientResults, techDocsResults, globalResults] = await Promise.all([
-      fetch(`https://www.ingredion.com/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json?${searchParams.toString()}`).then((res) => res.json()),
-      fetch(`https://www.ingredion.com/content/ingredion-com/na/en-us/search/jcr:content/searchResults.techDocs.json?${searchParams.toString()}`).then((res) => res.json()),
-      fetch('https://main--ingredion--aemsites.aem.live/na/en-us/indexes/global-index.json').then((res) => res.json()),
-    ]);
+    // Use the new consolidated API call
+    const { ingredientResults, techDocsResults, globalResults } = await fetchSearchResults(searchParams);
 
     const filteredGlobalResults = filterGlobalIndex(globalResults, query);
     const ingredientCount = ingredientResults.totalItemsCount;
@@ -421,8 +531,7 @@ export default async function decorate(block) {
     loadingEl.style.display = 'none';
     block.style.display = 'block';
 
-    const args = [block, ingredientResults, techDocsResults, filteredGlobalResults, totalResults];
-    await displaySearchResults(...args);
+    await displaySearchResults(block, ingredientResults, techDocsResults, filteredGlobalResults, totalResults);
   } catch (error) {
     console.error('Error during search:', error);
     loadingEl.style.display = 'none';
