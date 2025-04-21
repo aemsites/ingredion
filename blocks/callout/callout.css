@@ -354,3 +354,7 @@
 body.modal-open {
   overflow: hidden; /* Disable scrolling when video modal is open */
 }
+
+.search-content {
+  border: 2px solid #706f73;
+}

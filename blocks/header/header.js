@@ -180,7 +180,7 @@ export default async function decorate(block) {
           button({ type: 'submit', class: 'icon-search', 'aria-label': 'Search Button' }),
         ),
       ),
-      button({ type: 'submit', form: 'searchForm', class: 'button-search', 'aria-label': 'Search Button' }, 'Search'),
+      button({ type: 'submit', form: 'searchForm', class: 'button-search hidden', 'aria-label': 'Search Button' }, 'Search'),
     ),
   );
 
@@ -231,6 +231,8 @@ export default async function decorate(block) {
   });
 
   $searchInput.addEventListener('focus', async () => {
+    // button-search should be visible
+    $searchBar.querySelector('button.button-search').classList.remove('hidden');
     if (!typeaheadData) {
       try {
         const response = await fetch('https://www.ingredion.com/content/ingredion-com/na/en-us.ingredient-search-typeahead.json');

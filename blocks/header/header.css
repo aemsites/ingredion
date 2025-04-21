@@ -231,6 +231,7 @@ header {
             }
 
             /* only show on mobile */
+
             .button-search { display: none }
         }
     }
@@ -410,6 +411,7 @@ header {
             }
 
             button.button-search {
+                /* display: none; */
                 width: 100%;
                 background: var(--green);
                 border: 0;
@@ -420,10 +422,20 @@ header {
                 font-family: MiloPro-Bold, Helvetica, sans-serif;
                 letter-spacing: .042rem;
                 transition: all 200ms;
+                cursor: pointer;
 
                 /* show on focus */
                 .search-box:focus-within ~ & { display: block }
+
+                &:hover {
+                    background: #b41f75;
+                    color: #fff;
+                }
+
+                &.hidden { display: none }
             }
+
+
         }
 
         .mobile-menu {

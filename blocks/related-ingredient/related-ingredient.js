@@ -83,9 +83,11 @@ export default async function decorate(block) {
 
   const textContainer = block.querySelector('.related-ingredient-text');
   const productName = block.querySelector('.related-ingredient.block h4');
-  productName.classList.add('product-name');
-  productName.setAttribute('tabIndex', 0);
-  contentContainer.insertBefore(productName, textContainer);
+  if (productName) {
+    productName.classList.add('product-name');
+    productName.setAttribute('tabIndex', 0);
+    contentContainer.insertBefore(productName, textContainer);
+  }
 
   const children = Array.from(block.children);
 
@@ -122,47 +124,50 @@ export default async function decorate(block) {
 
   const buttons = block.querySelectorAll('.button-container');
 
-  for (let i = 0; i < buttons.length; i += 1) {
-    const link = buttons[i].querySelector(':scope > a');
-    const normalizedIndex = buttons.length === 2 ? i + 2 : i;
-
-    if (normalizedIndex < 2) {
-      link.classList.add('icon');
-      const spanClass = normalizedIndex === 1 ? 'icon-download' : 'icon-eye';
-      const spanElement = span({ class: spanClass });
-
-      if (normalizedIndex === 1) {
-        link.download = '';
+  if (block.classList.contains('search-docs')) {
+    const link = buttons[0].querySelector(':scope > a');
+    buttonContainer.appendChild(link);
+    buttons[0].remove();
+  } else {
+    for (let i = 0; i < buttons.length; i += 1) {
+      const link = buttons[i].querySelector(':scope > a');
+      const normalizedIndex = buttons.length === 2 ? i + 2 : i;
+      if (normalizedIndex < 2) {
+        link.classList.add('icon');
+        const spanClass = normalizedIndex === 1 ? 'icon-download' : 'icon-eye';
+        const spanElement = span({ class: spanClass });
+        if (normalizedIndex === 1) {
+          link.download = '';
+        }
+        link.prepend(spanElement);
+        contentContainer.appendChild(link);
+      } else {
+        if (normalizedIndex === 2) {
+          link.classList.add('add-sample-button');
+          const ingredientName = productName.textContent;
+          const ingredientUrl = window.location.href;
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            addIngredientToCart(ingredientName, ingredientUrl);
+            cartListNotificationContainer.style.display = 'block';
+            setTimeout(() => {
+              cartListNotificationContainer.style.display = 'none';
+            }, 5000);
+          });
+        } else if (normalizedIndex === 3) {
+          link.classList.add('secondary');
+        }
+        buttonContainer.appendChild(link);
       }
-      link.prepend(spanElement);
-      contentContainer.appendChild(link);
-    } else {
-      if (normalizedIndex === 2) {
-        link.classList.add('add-sample-button');
-        const ingredientName = productName.textContent;
-        const ingredientUrl = window.location.href;
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          addIngredientToCart(ingredientName, ingredientUrl);
-          cartListNotificationContainer.style.display = 'block';
-          setTimeout(() => {
-            cartListNotificationContainer.style.display = 'none';
-          }, 5000);
-        });
-      } else if (normalizedIndex === 3) {
-        link.classList.add('secondary');
-      }
-      buttonContainer.appendChild(link);
+      buttons[i].remove();
     }
-    buttons[i].remove();
   }
-
-  if (!document.querySelector('.section-related-ingredient-wrapper')) {
+  /* if (!document.querySelector('.section-related-ingredient-wrapper')) {
     const section = document.querySelector(
       '.section.related-ingredient-container',
     );
     const sectionWrapper = div({ class: 'section-related-ingredient-wrapper' });
     section.parentNode.insertBefore(sectionWrapper, section);
     sectionWrapper.appendChild(section);
-  }
+  } */
 }

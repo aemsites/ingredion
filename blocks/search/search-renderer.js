@@ -64,7 +64,7 @@ function createSelectDropdown({
 }
 
 /**
- * Create an ArticleRenderer.
+ * Create an SearchRenderer.
  * @param {string} options.jsonPath - The path to the JSON file containing the articles.
  * @param {Element} options.articleDiv - The container element for the articles.
  * @param {Function} options.articleCard - The function to create an article card element.
@@ -80,7 +80,7 @@ function createSelectDropdown({
  * @param {Element} options.filterTypesDropdown - The container element for the filter types dropdown.
  * @param {Element} options.filterByTagDropdown - The container element for the filter by specific tag dropdown.
  */
-export default class ArticleRenderer {
+export default class SearchRenderer {
   constructor({
     jsonPath,
     articleDiv,
@@ -161,7 +161,7 @@ export default class ArticleRenderer {
     // Filter articles by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      articles = articles.filter((article) => article.title.toLowerCase().includes(query) || article.description.toLowerCase().includes(query));
+      articles = articles.filter((article) => article.heading.toLowerCase().includes(query) || article.description.toLowerCase().includes(query));
     }
 
     // Filter articles by year
@@ -742,7 +742,7 @@ export default class ArticleRenderer {
   async render() {
     try {
       // eslint-disable-next-line no-unused-vars
-      const [region, locale] = getRegionLocale();
+      /* const [region, locale] = getRegionLocale();
 
       // fetch both articles and translations
       const [articlesResponse] = await Promise.all([
@@ -752,7 +752,9 @@ export default class ArticleRenderer {
 
       // handle articles response
       if (!articlesResponse.ok) throw new Error('Failed to fetch articles');
-      const { data } = await articlesResponse.json();
+      const { data } = await articlesResponse.json(); */
+      // const { data } = this.jsonPath;
+      const data = this.jsonPath;
       this.state.allArticles = data;
 
       // render page after data and translations are loaded

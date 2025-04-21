@@ -66,6 +66,7 @@
         &::after {
           content: '\e91b';
           position: absolute;
+          right: 10px;
           margin-left: 6px;
           font-family: ingredion-icon;
           -webkit-font-smoothing: antialiased;
