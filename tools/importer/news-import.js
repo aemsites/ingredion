@@ -110,6 +110,7 @@ const createMetadata = (main, document, url, html) => {
   } else {
     meta['tags'] = '';
   }
+  meta.category = 'news-article';
   const type = getMetadataProp(document, '.category-label');
   if (type) meta['type'] = type;
   const socialShare = getSocialShare(document);

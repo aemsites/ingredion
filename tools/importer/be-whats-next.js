@@ -120,7 +120,7 @@ const createMetadata = (main, document, url, html) => {
 
   // Set page metadata
   meta['Page Name'] = getPageName(document);
-
+  meta.category = 'be-whats-next';
   // Get teaser metadata
   const teaser = {
     title: getMetadataProp(document, '.heading > h2'),

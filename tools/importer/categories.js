@@ -128,6 +128,7 @@ const createMetadata = (main, document, url, html) => {
     if (type && type !== undefined) meta['type'] = type;
   const socialShare = getSocialShare(document);
   meta['keywords'] = '';
+  meta.category = 'categories-page';
   const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
     const sanitizedTags = sanitizeMetaTags(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);

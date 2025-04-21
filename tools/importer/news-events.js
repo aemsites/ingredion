@@ -23,6 +23,7 @@ let location = '';
 let boothNumber = '';
 let registrationLink = '';
 let registrationEventSite = '';
+let eventDate = '';
 
 
 export default {
@@ -106,6 +107,8 @@ const createMetadata = (main, document, url, html) => {
  meta['Registration'] = registrationLink;
  meta['Registration event site'] = registrationEventSite;
  meta['Template'] = 'events';
+ meta.category = 'news-events';
+ meta['event-date'] = eventDate;
  meta['keywords'] = '';
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
@@ -145,7 +148,12 @@ export function createEventTemplate(document, main) {
   const eventDetails = eventWrapper.querySelectorAll('.event-detail__details');
   eventDetails.forEach(detail => {
     if (detail.textContent.includes('Duration')) {
-      duration = detail.textContent.split(':')[1].trim();
+      const tempDate = detail.textContent.split(':')[1].trim();
+      if (tempDate.includes(',')) {
+        duration = `${tempDate.split(',')[0].trim()}, ${tempDate.split(',')[1].trim()}`;
+      } else {
+        duration = tempDate;
+      }
     } else if (detail.textContent.includes('Event Type')) {
       eventType = detail.textContent.split(':')[1].trim();
     } else if (detail.textContent.includes('Location')) {
@@ -155,7 +163,17 @@ export function createEventTemplate(document, main) {
     }
     detail.remove();
   });
-  const rteBlock = eventWrapper.querySelector('.rte-block--large-body-text');
+  const rteBlock = eventWrapper.querySelector('.rte-block--large-body-text');  
+  const p = rteBlock.querySelectorAll('p');
+  p.forEach(paragraph => {
+    if (paragraph.textContent.includes('Date:')) {
+      const tempDate = paragraph.textContent.split(':')[1].trim();      
+      eventDate = `${tempDate.split(',')[0].trim()}, ${tempDate.split(',')[1].trim()}`;
+    }
+  });
+  if (eventDate === '') {
+    eventDate = duration === '' ? new Date().toISOString() : duration;
+  }
   const links = rteBlock.querySelectorAll('a');
   links.forEach(link => {
     if (link.textContent.includes('Register')) {
@@ -196,4 +214,5 @@ function resetVariables() {
   boothNumber = '';
   registrationLink = '';
   registrationEventSite = '';
+  eventDate = '';
 }

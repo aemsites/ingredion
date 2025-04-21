@@ -124,7 +124,8 @@ const createMetadata = (main, document, url, html) => {
 
   // Set page metadata
   meta['Page Name'] = getPageName(document);
-
+  const category = url.split('/')[3];
+  if (category) meta.category = category;  
   // Get teaser metadata
   const teaser = {
     title: getMetadataProp(document, '.heading > h2', false),

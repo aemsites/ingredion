@@ -145,7 +145,7 @@ const createMetadata = (main, document, url, html) => {
   } else {
     meta['tags'] = '';
   }
-
+  meta.category = 'solving-a-challenge';
   // Extract date and category
   const dateCategory = getMetadataProp(document, '.date-category-tags');
   if (dateCategory) {
