@@ -24,6 +24,7 @@ import {
   createForm,
   createTableBlock,
   sanitizeMetaTags,
+  addAuthorBio,
 } from './helper.js';
 
 import { newsMap } from './mapping.js';
@@ -58,6 +59,7 @@ export default {
       createTableBlock(document, main);      
       createIngredientBlock(document, main);
       createForm(document, main);
+      addAuthorBio(document, main);
     }
 
     createMetadata(main, document, url, html);

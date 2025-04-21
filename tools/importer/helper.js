@@ -20,6 +20,7 @@ const r = new RegExp('^(?:[a-z+]+:)?//', 'i');
 
 export function createHeroBlock(document, main) {
   const hero = document.querySelector('.hero__wrapper');
+  const blogHeader = document.querySelector('.blog-header');
   if (hero) {    
     const ptag = document.createElement('p');
     ptag.textContent = '---';
@@ -48,7 +49,7 @@ export function createHeroBlock(document, main) {
     
     const heroTable = WebImporter.DOMUtils.createTable(cells, document);
     hero.replaceWith(heroTable);
-  } else {
+  } else if (!blogHeader) {
     const breadcrumbs = WebImporter.DOMUtils.createTable([['Breadcrumbs']], document);    
     main.prepend(breadcrumbs);
   }
@@ -713,29 +714,29 @@ export function createCarouselBlock(document, main) {
 }
 
 export function addAuthorBio(document, main) {
-  const authorBio = document.querySelector('.author-bio');
-  const imageWithDesc = document.querySelector('.imageWithDescription .image-desc .image-desc__wrapper');
+  const authorBio = document.querySelectorAll('.author-bio');
+  const imageWithDesc = document.querySelectorAll('.imageWithDescription .image-desc .image-desc__wrapper');
   
   if (!authorBio && !imageWithDesc) {
     console.log('No author bio found');
     return;
   }
-  
-  if (authorBio) {
+
+  authorBio.forEach((author) => {
     const cells = [['Author']];
-    const authorName = authorBio.querySelector('.author-bio__text .heading').innerHTML;   
-    
+    const authorName = author.querySelector('.author-bio__text .heading').innerHTML;
     cells.push([`${authorName}`]);
     const authorBioTable = WebImporter.DOMUtils.createTable(cells, document);
-    authorBio.replaceWith(authorBioTable);
-    
-  } else if (imageWithDesc) {
+    author.replaceWith(authorBioTable);
+  })
+
+  imageWithDesc.forEach((image) => {
     const cells = [['Author']];
-    const authorName = imageWithDesc.querySelector('.image-desc__text .heading').innerText;  
+    const authorName = image.querySelector('.image-desc__text .heading').innerText;
     cells.push([`${authorName}`]);
     const authorBioTable = WebImporter.DOMUtils.createTable(cells, document);
-    imageWithDesc.replaceWith(authorBioTable);
-  }
+    image.replaceWith(authorBioTable);
+  }) 
 }
 
 export function createForm(document, main) {
