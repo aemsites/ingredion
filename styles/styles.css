@@ -78,6 +78,7 @@
 .purple { --theme-clr-background: var(--purple); --theme-clr-text: #fff }
 .dark-purple { --theme-clr-background: var(--dark-purple); --theme-clr-text: #fff }
 .dark-blue { --theme-clr-background: var(--dark-blue); --theme-clr-text: #fff }
+.yellow { --theme-clr-background: var(--yellow); --theme-clr-text: var(--black) }
 
 /* fallback fonts */
 @font-face {
