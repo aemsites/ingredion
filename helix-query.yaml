@@ -33,3 +33,6 @@ indices:
       content:
         select: main > div
         values: characters(textContent(el), 0, 200)
+      category:
+        select: head > meta[name="category"]
+        values: attribute(el, "content")
