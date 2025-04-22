@@ -1,4 +1,4 @@
-/* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
+/* stylelint-disable selector-class-pattern, no-duplicate-selectors, font-family-no-missing-generic-family-keyword, no-descending-specificity */
 @import url('/styles/select-dropdown.css');
 @import url('/styles/pagination.css');
 
