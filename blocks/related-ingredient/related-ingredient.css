@@ -60,6 +60,8 @@
         letter-spacing: .032rem;
         transition: color 0.3s ease;
         font-size: 1rem;
+        color: var(--green);
+        cursor: pointer;
 
         &:hover { color: var(--dark-green) }
 

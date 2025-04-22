@@ -25,7 +25,7 @@ async function renderRelatedIngredient(productDisplayName) {
     const addSampleBtn = a({ title: 'Add Sample', class: 'button add-sample-button' }, translate('add-sample'));
     addSampleBtn.addEventListener('click', () => addIngredientToCart(product.productName, window.location.href));
 
-    const viewAllDocsLink = a({ class: 'view-all', href: '#all-documents' }, 'View All Documents');
+    const viewAllDocsLink = a({ class: 'view-all' }, 'View All Documents');
     viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(product));
 
     const relatedIngredientBlock = div({ class: 'related-ingredient' },
