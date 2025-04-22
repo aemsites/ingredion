@@ -336,11 +336,10 @@ function createInput(fd) {
     input.setAttribute('validation-error-message', fd.ValidationErrorMessage);
   }
   if (fd.Field === 'ingredient') {
-    // set the value of the input to the value from url params 'name'
     const urlParams = new URLSearchParams(window.location.search);
     const ingredient = urlParams.get('name');
     if (ingredient) {
-      input.value = ingredient;
+      input.value = `${ingredient}. `;
     }
   }
   return input;
@@ -542,7 +541,7 @@ export default async function decorate(block) {
       const ingredient = formElement.querySelector('input[name="ingredient"]');
       if (ingredient) {
         const messageTextArea = formElement.querySelector('textarea[name="Message"]');
-        messageTextArea.value += `${ingredient.value}.`;
+        messageTextArea.value += `${ingredient.value}`;
       }
     });
 
