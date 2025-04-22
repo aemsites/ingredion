@@ -1,4 +1,6 @@
-.related-ingredient2 {
+/* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
+
+.related-ingredient {
   --border-color: #706f73;
 
 	background: var(--theme-clr-background);
@@ -48,7 +50,7 @@
 
     .cta-links {
       margin-top: 20px;
-  
+
       a {
         position: relative;
         text-decoration: underline;
@@ -58,9 +60,9 @@
         letter-spacing: .032rem;
         transition: color 0.3s ease;
         font-size: 1rem;
-  
+
         &:hover { color: var(--dark-green) }
-  
+
         &::before {
           font-family: ingredion-icon;
           text-decoration: none !important;
@@ -70,9 +72,9 @@
           -webkit-font-smoothing: antialiased;
         }
       }
-  
+
       .view-all::before { content: '\e920' }
-  
+
       .download-all::before { content: '\e94b' }
     }
   }
