@@ -1,8 +1,10 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, h4, a } from '../../scripts/dom-helpers.js';
 import { API_PRODUCT } from '../../scripts/product-api.js';
+import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 import { readBlockConfig } from '../../scripts/aem.js';
+import { viewAllDocsModal } from '../../scripts/product-utils.js';
 
 async function renderRelatedIngredient(productDisplayName) {
   try {
@@ -16,24 +18,22 @@ async function renderRelatedIngredient(productDisplayName) {
 
     const product = productDetails.results[0];
 
-    // Get product documents after we have the product ID
-    // const productDocsResponse = await fetch(API_PRODUCT.ALL_DOCUMENTS(product.productId));
-    // const productDoc = await productDocsResponse.json();
-
     const description = div({ class: 'description' });
-    // Replace &nbsp; with regular spaces to allow natural word wrapping
-    description.innerHTML = (product.description).replace(/&nbsp;/g, ' ');
+    description.innerHTML = (product.description).replace(/&nbsp;/g, ' '); // replace &nbsp; for natural word wrapping
 
     // add sample button
-    const addSampleBtn = a({ title: 'Add Sample', class: 'button add-sample-button' }, 'Add Sample');
+    const addSampleBtn = a({ title: 'Add Sample', class: 'button add-sample-button' }, translate('add-sample'));
     addSampleBtn.addEventListener('click', () => addIngredientToCart(product.productName, window.location.href));
+
+    const viewAllDocsLink = a({ class: 'view-all', href: '#all-documents' }, 'View All Documents');
+    viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(product));
 
     const relatedIngredientBlock = div({ class: 'related-ingredient' },
       div({ class: 'content' },
         h4({ class: 'product-name' }, productDisplayName),
         description,
         div({ class: 'cta-links' },
-          a({ class: 'view-all', href: '#technical-documents' }, 'View All Documents'),
+          viewAllDocsLink,
           a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(product.productName, product.productId) }, 'Download All Documents'),
         ),
       ),
@@ -50,12 +50,12 @@ async function renderRelatedIngredient(productDisplayName) {
   }
 }
 
-export default function decorate(block) {
-  const {
-    'product-name': productDisplayName,
-  } = readBlockConfig(block);
+export default async function decorate(block) {
+  const { 'product-name': productDisplayName } = readBlockConfig(block);
+  const [, locale] = getRegionLocale();
+  await loadTranslations(locale);
 
-  // Create a placeholder div to maintain the space
+  // placeholder until rendered
   const placeholder = div({ class: 'related-ingredient' });
   block.replaceWith(placeholder);
 

@@ -8,7 +8,7 @@
 	border: 2px solid var(--border-color);
   display: flex;
   gap: 2rem;
-  min-height: 375px;
+  min-height: 200px;
 
   h3 {
     font-family: OpenSans-Regular, Helvetica, sans-serif;
@@ -87,9 +87,10 @@
     position: relative;
     width: 21rem;
     border-left: 2px solid var(--border-color);
+    padding: 2.6rem 0;
 
     .button {
-      margin-bottom: 2rem;
+      margin: 1rem 0;
     }
   }
 }
