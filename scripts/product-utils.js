@@ -1,20 +1,22 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h2, h3, a, table, tr, th, td, label, input } from './dom-helpers.js';
+import { div, h4, h3, a, table, tr, th, td, label, input } from './dom-helpers.js';
 import { API_PRODUCT, API_HOST } from './product-api.js';
 import { translate } from './utils.js';
 import { createModal } from '../blocks/modal/modal.js';
+import { loadCSS } from './aem.js';
 
 // eslint-disable-next-line import/prefer-default-export
 export async function viewAllDocsModal(product) {
+  loadCSS('/styles/documents-table.css');
+
   // Get product documents after we have the product ID
   const productDocsResponse = await fetch(API_PRODUCT.ALL_DOCUMENTS(product.productId));
   const productDocs = await productDocsResponse.json();
 
-  const modalContent = div(
-    { class: 'modal-content' },
-    h2(product.heading),
+  const modalContent = div({ class: 'related-ingredient-modal' },
     // Technical Documents Table
     div({ class: 'table-wrapper' },
+      h4(product.heading),
       h3({ id: 'technical-documents' }, translate('technical-documents')),
       table(
         tr(
@@ -54,6 +56,40 @@ export async function viewAllDocsModal(product) {
     ),
   );
 
-  const { showModal } = await createModal([modalContent]);
+  // Add Select All functionality for both tables
+  modalContent.querySelectorAll('.select-all').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const checkboxes = e.target.closest('table').querySelectorAll('input[type="checkbox"]');
+      const allChecked = Array.from(checkboxes).every((cb) => cb.checked);
+      checkboxes.forEach((cb) => {
+        cb.checked = !allChecked;
+      });
+    });
+  });
+
+  // Add download functionality
+  const downloadSelectedDocuments = ($button) => {
+    const { docType } = $button.dataset;
+    const selectedIds = Array.from($button.closest('.table-wrapper').querySelectorAll('input[type="checkbox"]:checked'))
+      .map((cb) => cb.dataset.docId)
+      .join(',');
+
+    if (!selectedIds) return;
+
+    const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(product.productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
+
+    // Use a temp link for reliability across browsers
+    const tempLink = a({ href: downloadUrl, download: `${docType}-documents.zip`, style: 'display: none' });
+    document.body.appendChild(tempLink);
+    tempLink.click();
+    tempLink.remove();
+  };
+
+  modalContent.querySelectorAll('.download-wrapper .button').forEach(($button) => {
+    $button.addEventListener('click', () => downloadSelectedDocuments($button));
+  });
+
+  const { showModal, block } = await createModal([modalContent]);
+  block.querySelector('dialog').classList.add('related-ingredient-modal');
   showModal();
 }
