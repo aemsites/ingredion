@@ -10,11 +10,15 @@ import {
   decorateBlock,
   loadBlock,
   createOptimizedPicture,
+  loadCSS,
 } from '../../scripts/aem.js';
-import { getRegionLocale, formatDate } from '../../scripts/utils.js';
+import { formatDate, translate } from '../../scripts/utils.js';
 import IngredientRenderer from './search-ingredients-renderer.js';
 import ContentResourcesRenderer from './search-content-resources-renderer.js';
 import DocumentRenderer from './search-documents-renderer.js';
+import { addIngredientToCart } from '../../scripts/add-to-cart.js';
+import { viewAllDocsModal } from '../../scripts/product-utils.js';
+import { API_HOST, API_PRODUCT } from '../../scripts/product-api.js';
 
 function filterGlobalIndex(results, query) {
   if (!query) return [];
@@ -35,8 +39,6 @@ function filterGlobalIndex(results, query) {
 
 // Helper function to create ingredient panel
 async function createIngredientPanel(ingredientResults) {
-  // get region locale using functions
-  const [region, locale] = getRegionLocale();
   const $sortDropdown = div();
   const $count = h3({ class: 'count' });
   const $pagination = div({ class: 'pagination' });
@@ -45,81 +47,33 @@ async function createIngredientPanel(ingredientResults) {
   const $filtersList = div();
 
   const $articleCard = (article) => {
-    const contentSection = div(
-      div(
-        { 'data-valign': 'middle' },
-        h4(
-          { id: article.heading?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || '' },
-          `${article.heading || article.title}`,
-        ),
-        article.description && (() => {
-          const description = p({ class: 'description' });
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = article.description;
-          const textContent = tempDiv.textContent || tempDiv.innerText;
+    const addSampleBtn = a({ title: 'Add Sample', class: 'button add-sample-button' }, translate('add-sample'));
+    addSampleBtn.addEventListener('click', () => addIngredientToCart(article.productName, window.location.href));
 
-          if (textContent.length > 300) {
-            const truncatedText = textContent.substring(0, 300);
-            const truncatedTextWithEllipsis = `${truncatedText}...`;
-            description.innerHTML = truncatedTextWithEllipsis;
-          } else {
-            description.innerHTML = article.description;
-          }
-          return description;
-        })(),
-        p(
-          { class: 'button-container' },
-          a(
-            {
-              href: article.path || '#',
-              title: 'View All Documents',
-              class: 'button',
-            },
-            'View All Documents',
-          ),
-        ),
-        p(
-          { class: 'button-container' },
-          a(
-            {
-              href: `https://www.ingredion.com/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.download.zip?productId=${article.productId}&documentType=all`,
-              title: 'Download All Documents',
-              class: 'button',
-            },
-            'Download All Documents',
-          ),
+    const description = div({ class: 'description' });
+    description.innerHTML = (article.description).replace(/&nbsp;/g, ' '); // replace &nbsp; for natural word wrapping
+
+    const viewAllDocsLink = a({ class: 'view-all' }, 'View All Documents');
+    viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(article));
+    const relatedIngredientBlock = div(
+      { class: 'related-ingredient' },
+      div(
+        { class: 'content' },
+        h4({ class: 'product-name' }, article.heading),
+        description,
+        div(
+          { class: 'cta-links' },
+          viewAllDocsLink,
+          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(article.productId) }, 'Download All Documents'),
         ),
       ),
-    );
-
-    const actionSection = div(
       div(
-        { 'data-valign': 'middle' },
-        p(
-          { class: 'button-container' },
-          a(
-            { href: article.path || '#', title: 'Add sample', class: 'button' },
-            'Add sample',
-          ),
-        ),
-        p(
-          { class: 'button-container' },
-          a(
-            { href: `https://main--ingredion--aemsites.aem.live/${region}/${locale}/ingredient?pid=${article.productId}&name=${article.productName}`, title: 'Learn more', class: 'button' },
-            'Learn more',
-          ),
-        ),
+        { class: 'buttons' },
+        addSampleBtn,
+        a({ class: 'button secondary', href: `/na/en-us/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
       ),
     );
-
-    const relatedIngredientBlock = buildBlock('related-ingredient', '');
-    relatedIngredientBlock.innerHTML = '';
-    relatedIngredientBlock.append(contentSection, actionSection);
-
-    return div(
-      { class: 'related-ingredient-wrapper' },
-      relatedIngredientBlock,
-    );
+    return relatedIngredientBlock;
   };
 
   const $articlePage = div(
@@ -238,43 +192,22 @@ async function createTechDocsPanel(techDocsResults) {
   const $filtersList = div();
 
   const $articleCard = (article) => {
-    const contentSection = div(
+    const description = div({ class: 'description' });
+    description.innerHTML = `Document size: ${article.assetSize}`;
+
+    const relatedIngredientBlock = div(
+      { class: 'related-ingredient' },
       div(
-        { 'data-valign': 'middle' },
-        h4(
-          { id: article.assetName },
-          `${article.assetName || article.title}`,
-        ),
-        article.assetSize && (() => {
-          const description = p({ class: 'description' });
-          description.innerHTML = `Document size: ${article.assetSize}`;
-          return description;
-        })(),
+        { class: 'content' },
+        h4({ class: 'product-name' }, article.assetName),
+        description,
+      ),
+      div(
+        { class: 'buttons' },
+        a({ class: 'button secondary', href: `${API_HOST}${article.assetUrl}`, title: 'Download' }, 'Download'),
       ),
     );
-
-    const actionSection = div(
-      div(
-        { 'data-valign': 'middle' },
-        p(
-          { class: 'button-container' },
-          a(
-            { href: `https://www.ingredion.com${article.assetUrl}`, title: 'Download', class: 'button' },
-            'Download',
-          ),
-        ),
-      ),
-    );
-
-    const relatedIngredientBlock = buildBlock('related-ingredient', '');
-    relatedIngredientBlock.classList.add('search-docs');
-    relatedIngredientBlock.innerHTML = '';
-    relatedIngredientBlock.append(contentSection, actionSection);
-
-    return div(
-      { class: 'related-ingredient-wrapper' },
-      relatedIngredientBlock,
-    );
+    return relatedIngredientBlock;
   };
 
   const $articlePage = div(
@@ -357,6 +290,7 @@ async function displaySearchResults(
     },
   ];
 
+  loadCSS('/blocks/related-ingredient/related-ingredient.css');
   // Filter out sections with no results
   const visibleSections = sections.filter((section) => section.doShow);
 
@@ -401,18 +335,14 @@ async function displaySearchResults(
   }
 }
 
-// Add this new function near the top of the file, after imports
 async function fetchSearchResults(searchParams) {
-  const basePath = '/content/ingredion-com/na/en-us/search/jcr:content/searchResults';
-  const baseUrl = `https://www.ingredion.com${basePath}`;
-  const globalIndexUrl = 'https://main--ingredion--aemsites.aem.live'
-    + '/na/en-us/indexes/global-index.json';
+  const globalIndexUrl = '/na/en-us/indexes/global-index.json';
 
   try {
     const [ingredientResults, techDocsResults, globalResults] = await Promise.all([
-      fetch(`${baseUrl}.ingredients.json?${searchParams.toString()}`)
+      fetch(`${API_PRODUCT.SEARCH_INGREDIENTS()}?${searchParams.toString()}`)
         .then((res) => res.json()),
-      fetch(`${baseUrl}.techDocs.json?${searchParams.toString()}`)
+      fetch(`${API_PRODUCT.SEARCH_DOCUMENTS()}?${searchParams.toString()}`)
         .then((res) => res.json()),
       fetch(globalIndexUrl)
         .then((res) => res.json()),
@@ -437,23 +367,11 @@ export default async function decorate(block) {
   const query = params.get('q');
   const initialTab = params.get('initialTab');
 
-  // Create loader and add it before the block
-  const loadingEl = div(
-    { class: 'search-loading' },
-    div({ class: 'loading-spinner' }),
-    div({ class: 'loading-text' }, 'Searching...'),
-  );
-  block.parentNode.insertBefore(loadingEl, block);
-
   try {
     const searchParams = new URLSearchParams({
       initialTab: initialTab || '',
       q: query || '',
     });
-
-    // Show loader
-    loadingEl.style.display = 'flex';
-    block.style.display = 'none';
 
     // Use the new consolidated API call
     const {
@@ -468,10 +386,6 @@ export default async function decorate(block) {
     const globalCount = filteredGlobalResults?.length || 0;
     totalResults = ingredientCount + techDocsCount + globalCount;
 
-    // Hide loader and show results
-    loadingEl.style.display = 'none';
-    block.style.display = 'block';
-
     await displaySearchResults(
       block,
       ingredientResults,
@@ -481,8 +395,6 @@ export default async function decorate(block) {
     );
   } catch (error) {
     console.error('Error during search:', error);
-    loadingEl.style.display = 'none';
-    block.style.display = 'block';
     const errorMsg = 'An error occurred while searching. Please try again later.';
     block.innerHTML = `<div class="error-message">${errorMsg}</div>`;
   }

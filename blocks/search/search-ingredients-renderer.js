@@ -2,17 +2,13 @@
 import { div, h4, h5, ul, li, small, button, span } from '../../scripts/dom-helpers.js';
 import { translate } from '../../scripts/utils.js';
 import { decorateBlock, loadBlock } from '../../scripts/aem.js';
-
-const API_CONFIG = {
-  baseUrl: 'https://www.ingredion.com',
-  searchPath: '/content/ingredion-com/na/en-us/search/jcr:content/searchResults.ingredients.json',
-};
+import { API_PRODUCT } from '../../scripts/product-api.js';
 
 // API service for making fetch calls
 async function fetchIngredientResults(searchParams) {
   try {
     const response = await fetch(
-      `${API_CONFIG.baseUrl}${API_CONFIG.searchPath}?${searchParams.toString()}`,
+      `${API_PRODUCT.SEARCH_INGREDIENTS()}?${searchParams.toString()}`,
     );
     if (!response.ok) throw new Error('Failed to fetch');
     return response.json();

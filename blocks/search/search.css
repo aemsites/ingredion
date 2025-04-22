@@ -263,7 +263,7 @@
           letter-spacing: .016rem;
         }
 
-        .articles {
+        /* .articles {
           .related-ingredient-wrapper {
             margin-bottom: 1.5rem;
 
@@ -281,7 +281,7 @@
               }
             }
           }
-        }
+        } */
 
         .controls {
           display: flex;
