@@ -4,7 +4,7 @@ import { API_HOST, API_PRODUCT, getUrlParams } from '../../scripts/product-api.j
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 
-const { productId, productName } = getUrlParams();
+const { productName } = getUrlParams();
 
 export default async function decorate(doc) {
   const [, locale] = getRegionLocale();
@@ -18,8 +18,8 @@ export default async function decorate(doc) {
   const product = productDetails.results[0];
 
   // get the response from the API
-  const response = await fetch(API_PRODUCT.ALL_DOCUMENTS(productId));
-  const productData = await response.json();
+  const productDocsResponse = await fetch(API_PRODUCT.ALL_DOCUMENTS(product.productId));
+  const productDoc = await productDocsResponse.json();
 
   let gallery = '';
   if (product.resourceLinks) {
@@ -49,7 +49,7 @@ export default async function decorate(doc) {
               div({ class: 'type' }, strong('Product Type: '), product.productType),
               div({ class: 'cta-links' },
                 a({ class: 'view-all', href: '#technical-documents' }, 'View All Documents'),
-                a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(productName, productId) }, 'Download All Documents'),
+                a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(productName, product.productId) }, 'Download All Documents'),
               ),
               div({ class: 'cta-buttons' },
                 a({ class: 'button add-sample-btn' }, 'Add Sample'),
@@ -80,7 +80,7 @@ export default async function decorate(doc) {
             th(translate('format')),
             th(translate('size')),
           ),
-          ...productData.technicalDocuments.map((techDoc) => tr(
+          ...productDoc.technicalDocuments.map((techDoc) => tr(
             td(label({ class: 'checkbox' }, input({ type: 'checkbox', 'data-doc-id': techDoc.id }))),
             td(a({ class: 'doc', href: techDoc.path }, techDoc.documentType)),
             td(techDoc.format),
@@ -101,7 +101,7 @@ export default async function decorate(doc) {
             th(translate('language')),
             th(translate('size')),
           ),
-          ...productData.sdsDocuments.map((sdsDoc) => tr(
+          ...productDoc.sdsDocuments.map((sdsDoc) => tr(
             td(label({ class: 'checkbox' }, input({ type: 'checkbox', 'data-doc-id': sdsDoc.id }))),
             td(a({ class: 'doc', href: sdsDoc.path }, sdsDoc.locale.region)),
             td(sdsDoc.locale.language),
@@ -208,7 +208,7 @@ export default async function decorate(doc) {
 
     if (!selectedIds) return;
 
-    const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(productName, productId)}?productId=${productId}&documentType=${docType}&assetId=${selectedIds}`;
+    const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
 
     // Use a temp link for reliability across browsers
     const tempLink = a({ href: downloadUrl, download: `${docType}-documents.zip`, style: 'display: none' });

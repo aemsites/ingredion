@@ -1,245 +1,95 @@
-.related-ingredient {
-  background: var(--theme-clr-background);
-  margin-bottom: 1.5rem;
-  padding: 2.5rem 0.9688rem;
-  border: 2px solid #706f73;
-}
+.related-ingredient2 {
+  --border-color: #706f73;
 
-.section.related-ingredient-container .related-ingredient-wrapper:last-child .related-ingredient {
-  margin-bottom: 0;
-}
+	background: var(--theme-clr-background);
+	margin-bottom: 1.5rem;
+	border: 2px solid var(--border-color);
+  display: flex;
+  gap: 2rem;
+  min-height: 375px;
 
-.related-ingredient-text {
-  margin: 1.5rem 0;
-  line-height: 1.15;
-}
-
-.related-ingredient-text h3 {
-  font-family: OpenSans-Regular, Helvetica, sans-serif;
-  font-size: 1.375rem;
-  line-height: 2rem;
-  letter-spacing: 0.0156rem;
-  font-weight: bolder;
-  margin: 22px 0;
-}
-
-.related-ingredient-content h4 {
-  font-family: MiloPro-Bold, Helvetica, sans-serif;
-  margin: 0 0 0.5rem;
-  font-size: 1.5rem;
-  line-height: 2rem;
-  color: var(--text-color);
-}
-
-.related-ingredient p {
-  font-size: 1rem;
-  font-family: OpenSans-Regular, Helvetica, sans-serif;
-  line-height: 1.5rem;
-  letter-spacing: 0.0156rem;
-  color: var(--text-color);
-  margin: 16px 0;
-}
-
-.related-ingredient-content .product-type {
-  font-size: 1rem;
-  line-height: 1.5rem;
-  letter-spacing: 0.0156rem;
-  color: var(--text-color);
-  margin: 0 0 0.5rem;
-}
-
-.related-ingredient-content strong {
-  font-family: OpenSans-Bold, Helvetica, sans-serif;
-}
-
-.related-ingredient-buttons {
-  margin-top: 1.5rem;
-}
-
-.related-ingredient-content > a.button.icon {
-  display: inline-block;
-  font-family: MiloPro-Bold, Helvetica, sans-serif;
-  font-size: 1rem;
-  line-height: 1.5rem;
-  letter-spacing: 0.0313rem;
-  color: var(--green);
-  position: relative;
-  text-decoration: underline !important;
-  background: var(--theme-clr-background);
-  padding: 0;
-  min-width: 0;
-  text-align: start;
-}
-
-a.button.icon .icon-download {
-  padding-right: 1.2rem;
-  padding-left: 0.2rem;
-}
-
-a.button.icon .icon-download::before {
-  font-size: 0.9375rem;
-  top: 4px;
-  content: "\e94b";
-}
-
-a.button.icon .icon-eye::before {
-  font-size: 1.1875rem;
-  top: 3px;
-  content: "\e920";
-}
-
-a.button.icon .icon-download::before,
-a.button.icon .icon-eye::before {
-  color: var(--green);
-  position: absolute;
-}
-
-a.button.icon:hover,
-a.button.icon:hover .icon-eye::before,
-a.button.icon:hover .icon-download::before {
-  color: var(--dark-green);
-}
-
-a.button.icon .icon-eye {
-  padding-right: 1.5rem;
-}
-
-.related-ingredient a.button.icon[download] {
-  display: none;
-}
-
-.related-ingredient-buttons a.button,
-.related-ingredient-buttons a.button.secondary {
-  min-width: 10.3125rem;
-}
-
-.related-ingredient-buttons a.button.secondary {
-  margin-right: 0;
-}
-
-.related-ingredient-buttons a.button {
-  margin-right: 1.5rem;
-}
-
-.section.related-ingredient-container {
-  margin-left: 0.9375rem;
-  margin-right: 0.9375rem;
-  padding: 5rem 0 7.5rem;
-  max-width: 76.5rem;
-}
-
-.section.related-ingredient-container .default-content-wrapper h2 {
-  text-align: center;
-  font-size: 2rem;
-  line-height: 3rem;
-  letter-spacing: -0.0313rem;
-  font-family: MiloPro-Bold, Helvetica, sans-serif;
-  color: var(--text-color);
-  margin: 0;
-}
-
-.section.related-ingredient-container .default-content-wrapper {
-  max-width: 50.1875rem;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 2.5rem;
-}
-
-.section-related-ingredient-wrapper {
-  background: rgb(239 239 239 / 40%);
-  margin: 0;
-}
-
-.related-ingredient sub,
-.related-ingredient sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}
-
-.related-ingredient sup {
-  top: -0.5em;
-}
-
-
-
-@media (width >= 67.5625rem) {
-  .related-ingredient-content > a.button.icon {
-    margin-right: 2.5rem;
+  h3 {
+    font-family: OpenSans-Regular, Helvetica, sans-serif;
+    font-size: 1.3rem;
+    line-height: 2rem;
+    letter-spacing: 0.0156rem;
+    font-weight: bolder;
+    margin: 22px 0;
   }
 
-  .section.related-ingredient-container>div {
-    flex-basis: 100%;
+  h4 {
+    font-family: MiloPro-Bold, Helvetica, sans-serif;
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    color: var(--text-color);
   }
 
-  .related-ingredient-content {
-    flex-basis: 70%;
-    padding: 2.5938rem 2.5rem 2.4688rem 3.1563rem;
+  .description {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    p {
+      font-size: 1rem;
+      font-family: OpenSans-Regular, Helvetica, sans-serif;
+      line-height: 1.5rem;
+      letter-spacing: 0.0156rem;
+      color: var(--text-color);
+      margin: 16px 0;
+    }
   }
 
-  .related-ingredient {
-    margin-bottom: 2.5rem;
-    padding: 0;
-    display: flex;
-    justify-content: space-between;
+  .content {
+    flex: 1;
+    padding: 2.6rem 2.5rem 2.5rem 3.2rem;
+
+    .cta-links {
+      margin-top: 20px;
+  
+      a {
+        position: relative;
+        text-decoration: underline;
+        padding-left: 24px;
+        margin: 40px 40px 0 0;
+        font-family: MiloPro-Bold, Helvetica, sans-serif;
+        letter-spacing: .032rem;
+        transition: color 0.3s ease;
+        font-size: 1rem;
+  
+        &:hover { color: var(--dark-green) }
+  
+        &::before {
+          font-family: ingredion-icon;
+          text-decoration: none !important;
+          position: absolute;
+          left: 0;
+          font-size: 1.2rem;
+          -webkit-font-smoothing: antialiased;
+        }
+      }
+  
+      .view-all::before { content: '\e920' }
+  
+      .download-all::before { content: '\e94b' }
+    }
   }
 
-  .related-ingredient-buttons {
-    padding: 33px 0;
-    max-width: 21rem;
-    margin-top: 0;
-    width: 100%;
+  .buttons {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-  }
+    width: 21rem;
+    border-left: 2px solid var(--border-color);
 
-  .related-ingredient-buttons::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    background: #706f73;
-    width: 2px;
-  }
-
-  .section.related-ingredient-container {
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 7.5rem 0;
-  }
-
-  .related-ingredient-content a.button.icon:last-child {
-    margin-right: 0;
-    display: inline-block;
-  }
-
-  .related-ingredient-buttons a.button {
-    margin-bottom: 1.6875rem;
-    margin-right: 0;
-  }
-
-  .related-ingredient-buttons a.button.secondary {
-    margin-bottom: 0;
-  }
-
-  .section.related-ingredient-container .default-content-wrapper h2 {
-    font-size: 2.5rem;
+    .button {
+      margin-bottom: 2rem;
+    }
   }
 }
 
-@media (width <= 24.375rem) {
-  .related-ingredient-buttons a.button {
-    margin-bottom: 1.5rem;
-  }
 
-  .related-ingredient-buttons a.button.secondary {
-    margin-bottom: 0;
-  }
-}
