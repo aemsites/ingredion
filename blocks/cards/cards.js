@@ -46,10 +46,109 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
   }
 };
 
-export default function decorate(block) {
+function showCard(block, cardIndex = 0) {
+  block.dataset.activeCard = cardIndex;
+  const cards = block.querySelectorAll('li');
+  const realCardIndex = Math.max(0, Math.min(cardIndex, cards.length - 1));
+  const activeCard = block.querySelector(`li[card-index="${realCardIndex}"]`);
+  const indicators = block.querySelectorAll('.dots-nav span');
+
+  indicators.forEach((indicator, i) => {
+    if (i !== realCardIndex) indicator.removeAttribute('active');
+    else indicator.setAttribute('active', 'true');
+  });
+
+  const cardWidth = activeCard.offsetWidth + 25;
+  const scrollPosition = cardWidth * realCardIndex;
+
+  block.querySelector('ul').scrollTo({
+    left: scrollPosition,
+    behavior: 'smooth',
+  });
+}
+
+function snapToSlide(block) {
+  const cardsContainer = block.querySelector('ul');
+  const cards = [...block.querySelectorAll('li')];
+  const cardWidth = cards[0].offsetWidth;
+  const closestCardIndex = Math.round(cardsContainer.scrollLeft / cardWidth);
+
+  showCard(block, closestCardIndex);
+}
+
+function enableDragging(block) {
+  const cardsContainer = block.querySelector('ul');
+  let isDragging = false;
+  let startX = 0;
+  let lastScrollLeft = 0;
+
+  function onMove(x) {
+    if (!isDragging) return;
+    const deltaX = startX - x;
+    cardsContainer.scrollLeft = lastScrollLeft + deltaX; // Move smoothly with the mouse
+    snapToSlide(block);
+  }
+
+  function onEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    cardsContainer.classList.remove('dragging');
+    snapToSlide(block);
+  }
+
+  cardsContainer.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    cardsContainer.classList.add('dragging');
+    startX = e.pageX;
+    lastScrollLeft = cardsContainer.scrollLeft;
+  });
+
+  cardsContainer.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      e.preventDefault();
+      onMove(e.pageX);
+    }
+  });
+
+  cardsContainer.addEventListener('mouseup', onEnd);
+  cardsContainer.addEventListener('mouseleave', onEnd);
+
+  // Touch support for mobile
+  cardsContainer.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    cardsContainer.classList.add('dragging');
+    startX = e.touches[0].pageX;
+    lastScrollLeft = cardsContainer.scrollLeft;
+  });
+
+  cardsContainer.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    onMove(e.touches[0].pageX);
+  });
+
+  cardsContainer.addEventListener('touchend', onEnd);
+
+  // Prevent images from being dragged
+  block.querySelectorAll('.carousel-slide img').forEach((img) => {
+    img.addEventListener('dragstart', (e) => e.preventDefault());
+  });
+}
+
+function bindEvents(block) {
+  block.querySelectorAll('.dots-nav').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const cardIndex = parseInt(e.target.dataset.index, 10);
+      showCard(block, cardIndex);
+    });
+  });
+}
+
+export default async function decorate(block) {
   const ul = document.createElement('ul');
-  [...block.children].forEach((row) => {
+  [...block.children].forEach((row, i) => {
     const li = document.createElement('li');
+    li.setAttribute('card-index', i);
     while (row.firstElementChild) li.append(row.firstElementChild);
     if (block.classList.contains('video')) {
       const placeholder = li.querySelector('picture');
@@ -147,28 +246,20 @@ export default function decorate(block) {
     dotsNav.className = 'dots-nav';
     [...ul.children].forEach((_, index) => {
       const dot = document.createElement('span');
+      if (index === 0) {
+        if (index === 0) dot.setAttribute('active', 'true');
+      }
       dot.className = 'dot';
-      if (index === 0) dot.classList.add('active');
       dot.dataset.index = index;
       dotsNav.append(dot);
-      dotsNav.addEventListener('click', (e) => {
-        if (e.target.classList.contains('dot')) {
-          let i;
-          const n = parseInt(e.target.dataset.index, 10);
-          const slides = ul.children;
-          const dots = dotsNav.children;
-          for (i = 0; i < slides.length; i += 1) {
-            slides[i].style.display = 'none';
-          }
-          for (i = 0; i < dots.length; i += 1) {
-            dots[i].className = dots[i].className.replace(' active', '');
-          }
-          slides[n].style.display = 'block';
-          dots[n].className += ' active';
-        }
-      });
     });
     block.append(dotsNav);
+
+    if (!isDesktop.matches) {
+      bindEvents(block);
+      enableDragging(block);
+      showCard(block, 0);
+    }
   }
   isDesktop.addEventListener('change', () => {
     requestAnimationFrame(window.location.reload());

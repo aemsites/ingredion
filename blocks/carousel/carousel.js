@@ -1,6 +1,7 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, ul, li, button, nav } from '../../scripts/dom-helpers.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
+import { parseClassFromString } from '../../scripts/scripts.js';
 
 function showSlide(block, slideIndex = 0) {
   block.dataset.activeSlide = slideIndex;
@@ -112,9 +113,34 @@ function bindEvents(block) {
 }
 
 function createSlide(row, i) {
-  return li({ class: 'carousel-slide', 'data-slide-index': i },
-    ...Array.from(row.children),
-  );
+  const children = Array.from(row.children);
+
+  children.forEach((child) => {
+    // Check if this div contains an <img> element anywhere inside
+    if (child.querySelector('img')) {
+      child.classList.add('slide-image');
+    } else {
+      child.classList.add('slide-body');
+      const links = child.querySelectorAll('a');
+      if (links) {
+        Array.from(links).forEach((l) => {
+          const parsingResult = parseClassFromString(l.title);
+          if (parsingResult.className) {
+            const parentDiv = l.parentElement;
+            const grandParent = parentDiv.parentElement;
+            grandParent.insertBefore(l, parentDiv);
+            parentDiv.remove();
+            l.classList.remove('button');
+            l.classList.add(parsingResult.className);
+            l.title = parsingResult.cleanedString;
+            l.textContent = parsingResult.cleanedString;
+          }
+        });
+      }
+    }
+  });
+
+  return li({ class: 'carousel-slide', 'data-slide-index': i }, ...children);
 }
 
 let carouselId = 0;
