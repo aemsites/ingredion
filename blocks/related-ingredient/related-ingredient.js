@@ -56,7 +56,7 @@ export default async function decorate(block) {
   await loadTranslations(locale);
 
   // placeholder until rendered
-  const placeholder = div({ class: 'related-ingredient' });
+  const placeholder = div({ class: 'related-ingredient loading' }, div({ class: 'loader' }));
   block.replaceWith(placeholder);
 
   const observer = new IntersectionObserver((entries) => {
