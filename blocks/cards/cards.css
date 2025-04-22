@@ -131,9 +131,16 @@
 }
 
 @media (width >= 1080px) {
+  .cards.slim {
+    display: flex;
+    justify-content: center;
+  }
+
   .cards.slim > ul {
+    width: auto;
+    display: flex;
     grid-template-columns: repeat(auto-fill, minmax(23%, 1fr));
-    gap: 20px;
+    gap: 10px;
   }
 }
 
