@@ -28,9 +28,12 @@ import {
   createCTAIconBlock,
   createCarouselBlock,
   sanitizeMetaTags,
+  createArticleList,
+  addKeywords
 } from './helper.js';
 
 import { newsMap } from './mapping.js';
+import { urlCategoryMap } from './keywords.js';
 
 export default {
   /**
@@ -47,6 +50,16 @@ export default {
     document, url, html, params,
   }) => {
     // define the main element: the one that will be transformed to Markdown
+    const path = ((u) => {
+      let p = new URL(u).pathname;
+      if (p.endsWith('/')) {
+        p = `${p}index`;
+      }
+      return decodeURIComponent(p)
+      .replace(/\.html$/, '')
+      .replace(/[^a-zA-Z0-9/]/gm, '-');
+    })(url);
+    
     const main = document.body;
     createHeroBlock(document, main);
     getSocialShare(document, main);    
@@ -61,8 +74,9 @@ export default {
     createTableBlock(document, main);
     //createAnchorBlock(document, main);
     createCTAIconBlock(document, main);
+    createArticleList(document, main);
     addAuthorBio(document, main);
-    createMetadata(main, document, url, html);   
+    createMetadata(main, document, path, html);   
 
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
@@ -81,15 +95,7 @@ export default {
     WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
     WebImporter.rules.convertIcons(main, document);
 
-    const path = ((u) => {
-      let p = new URL(u).pathname;
-      if (p.endsWith('/')) {
-        p = `${p}index`;
-      }
-      return decodeURIComponent(p)
-      .replace(/\.html$/, '')
-      .replace(/[^a-zA-Z0-9/]/gm, '-');
-    })(url);
+   
 
     return [{
       element: main,
@@ -148,7 +154,7 @@ const createMetadata = (main, document, url, html) => {
     meta['published-date'] = date;
     meta['categories'] = category;
   }
-  meta['keywords'] = '';
+  meta['keywords'] = addKeywords(url);
   // Get type and social metadata
   const type = getMetadataProp(document, '.category-label');
   if (type) meta.type = type;
@@ -169,6 +175,7 @@ export function getMetadataProp(document, queryString, remove = true) {
   if (remove) metadata.remove();
   return value;
 }
+
 
 function getPageName(document) {
   const breadcrumbElement = document.querySelector('.breadcrumbs > ul > li:last-of-type > a');

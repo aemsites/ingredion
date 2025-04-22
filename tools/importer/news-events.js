@@ -11,7 +11,7 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
-import { createColorBlock, createIngredientBlock, createContactUs, getSocialShare, createCardsBlock, sanitizeMetaTags } from './helper.js';
+import { createColorBlock, createIngredientBlock, createContactUs, getSocialShare, createCardsBlock, sanitizeMetaTags, addKeywords } from './helper.js';
 import { newsMap } from './mapping.js';
 
 let title = '';
@@ -109,7 +109,7 @@ const createMetadata = (main, document, url, html) => {
  meta['Template'] = 'events';
  meta.category = 'news-events';
  meta['event-date'] = eventDate;
- meta['keywords'] = '';
+ meta['keywords'] = addKeywords(url);
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
   else meta['social-share'] = '';

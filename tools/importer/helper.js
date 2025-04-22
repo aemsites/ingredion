@@ -1,3 +1,4 @@
+import { urlCategoryMap } from './keywords.js';
 const colorMapping = new Map([
   ['#0073d8', 'blue'],
   ['#273691', 'dark-blue'],
@@ -14,6 +15,13 @@ const colorMapping = new Map([
   ['#ffffff', ''],
   ['#68e0a1', 'teal']
 ]);
+
+const sheet = new Map([
+  ['be-whats-next' ,'be-whats-next'],
+  ['events', 'news-events'],
+  ['news', 'news'],
+  ['resource-library', 'formulation']
+])
 
 const previewURL = 'https://main--ingredion--aemsites.aem.page';
 const r = new RegExp('^(?:[a-z+]+:)?//', 'i');
@@ -463,11 +471,7 @@ export function createIngredientBlock(document, main, formulation = false) {
   if (!resultProdCards) {
     const cells = [['related ingredient']];
     const heading = relatedIngredients.querySelector('.heading > h2').textContent;
-    const subHeading = relatedIngredients.querySelector('.rte-block').textContent;
-    
-    cells.push([heading,]);
-    cells.push([subHeading,]);
-    
+    cells.push(['Product Name', heading.trim()]);    
     const table = WebImporter.DOMUtils.createTable(cells, document);
     const ptag = document.createElement('p');
     ptag.textContent = '---';
@@ -489,47 +493,7 @@ export function createIngredientBlock(document, main, formulation = false) {
     resultProdCards.forEach((resultProdCard, index) => {
       const cells = [['related ingredient']];
       const heading = resultProdCard.querySelector('.product-name').textContent;
-      const h3 = resultProdCard.querySelector('.rte-block > h3');
-      const subHeading = h3 ? h3.textContent : '';
-      const pTag = resultProdCard.querySelector('.rte-block > p');
-      const description = pTag ? pTag.textContent : '';
-      
-      const ctas = resultProdCard.querySelectorAll('.cta-icon');
-      let ctaAnchor = '';
-      
-      ctas.forEach((cta) => {
-        const url = cta.getAttribute('href');
-        if (url.includes('http')) {
-          ctaAnchor += `<a href = '${(cta.getAttribute('href'))}'>${cta.innerText}</a>`;
-        } else {
-          ctaAnchor += `<a href = '${previewURL}${(cta.getAttribute('href'))}'>${cta.innerText}</a>`;
-        }
-      });
-      
-      const leftSide = `<h4>${heading}</h4><h3>${subHeading}</h3><p>${description}</p>${ctaAnchor}`;
-      const resultCardButtons = document.querySelector('.result-card__buttons');
-      const buttons = resultCardButtons.querySelectorAll('a');
-      let rightSide = document.createElement('div');
-      
-      buttons.forEach((button) => {
-        const url = button.getAttribute('href');
-        const innerDiv = document.createElement('div');
-        const a = document.createElement('a');
-        innerDiv.appendChild(a);
-        if (url.includes('http')) {
-          a.href = url;
-          a.textContent = button.innerText;
-         
-        } else {
-          a.href = previewURL + url;
-          a.textContent = button.innerText;
-          
-        }
-        rightSide.appendChild(innerDiv);
-      });
-      
-      cells.push([leftSide,]);
-      cells.push([rightSide,]);
+      cells.push(['Product Name', heading.trim()]);          
       
       const table = WebImporter.DOMUtils.createTable(cells, document);
       const ptag = document.createElement('p');
@@ -540,7 +504,7 @@ export function createIngredientBlock(document, main, formulation = false) {
         if (mainHeading) {
           div.appendChild(mainHeading);
         }
-      }
+      } 
       div.appendChild(table);
       if (index === resultProdCards.length - 1){
         if (formulation) {
@@ -854,4 +818,38 @@ export function sanitizeMetaTags(tags) {
   });  
   let tempArray = faltTags.filter((item, index) => faltTags.indexOf(item) === index);
   return [sanitizedTags, tempArray];
+}
+
+export function createArticleList(document, main) {
+  const element = document.querySelector('.news-blog-article-mount, .resource-listing-mount, .events-listing-mount');
+  if (!element) return;
+  
+  const data_url = element.getAttribute('data-url');
+  const pathBase = data_url.split('/jcr:content')[0];
+  const sheetName = sheet.get(pathBase.split('/').pop());
+  if (!sheetName) return;
+  const perPageOptions = document.createElement('div');
+  perPageOptions.innerHTML = `<div>6</div><div>12</div><div>18</div><div>24</div><div>30</div>`;
+  const cells = [
+    ['Article List'],
+    ['Article Data', `/na/en-us/indexes/global-index.json?sheet=${sheetName}`],
+    ['Articles per page options', perPageOptions.outerHTML],
+    ['Pagination max buttons', '5']
+  ];
+  
+  const articleListTable = WebImporter.DOMUtils.createTable(cells, document);
+  const div = document.createElement('div');
+  div.append(pTag());
+  div.append(articleListTable);
+  element.replaceWith(div);
+}
+
+export function addKeywords(url) {  
+  const caseInsensitiveUrl = Array.from(urlCategoryMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
+  if (caseInsensitiveUrl === undefined || caseInsensitiveUrl === null) return '';
+  else if (undefined !== caseInsensitiveUrl && null !== caseInsensitiveUrl) {
+    const sanitizedTags = sanitizeMetaTags(urlCategoryMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
+    if (sanitizedTags[0].length > 0) return sanitizedTags[0].join(', ');
+    if (sanitizedTags[1].length > 0) return sanitizedTags[1].join(', ');
+  }
 }

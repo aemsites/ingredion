@@ -11,7 +11,7 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
-import { createColorBlock, createIngredientBlock, createContactUs, getSocialShare, createCardsBlock, sanitizeMetaTags } from './helper.js';
+import { createColorBlock, createIngredientBlock, createContactUs, getSocialShare, createCardsBlock, sanitizeMetaTags, addKeywords } from './helper.js';
 import { newsMap } from './mapping.js';
 
 export default {
@@ -116,7 +116,7 @@ const createMetadata = (main, document, url, html) => {
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
   else meta['social-share'] = '';
-  meta['keywords'] = '';
+  meta['keywords'] = addKeywords(url);
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
   main.append(block);
   return meta;
