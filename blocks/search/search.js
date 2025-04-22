@@ -16,11 +16,12 @@ import { formatDate, translate } from '../../scripts/utils.js';
 import IngredientRenderer from './search-ingredients-renderer.js';
 import ContentResourcesRenderer from './search-content-resources-renderer.js';
 import DocumentRenderer from './search-documents-renderer.js';
+import EventsRenderer from './search-events-renderer.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 import { viewAllDocsModal } from '../../scripts/product-utils.js';
 import { API_HOST, API_PRODUCT } from '../../scripts/product-api.js';
 
-function filterGlobalIndex(results, query) {
+function filterIndex(results, query) {
   if (!query) return [];
 
   const searchQuery = query.toLowerCase();
@@ -251,11 +252,76 @@ async function createTechDocsPanel(techDocsResults) {
   return $articlePage;
 }
 
+// Helper function to create global panel
+async function createEventPanel() {
+  const $search = div();
+  const $sortDropdown = div();
+  const $count = h3({ class: 'count' });
+  const $pagination = div({ class: 'pagination' });
+  const $perPageDropdown = div();
+  const $articles = div({ class: 'articles' });
+  const $filtersList = div();
+
+  const $articleCard = (article) => div(
+    { class: 'card' },
+    a(
+      { class: 'thumb', href: article.path },
+      createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
+    ),
+    div(
+      { class: 'info' },
+      h4(article.title),
+      p(article.description),
+    ),
+  );
+
+  const $articlePage = div(
+    { class: 'article-list' },
+    div(
+      { class: 'filter-search-sort', style: 'justify-content: end;' },
+      $search,
+      $sortDropdown,
+    ),
+    div(
+      { class: 'filter-results-wrapper' },
+      div(
+        { class: 'filter' },
+        $filtersList,
+      ),
+      div(
+        { class: 'results' },
+        $count,
+        $articles,
+        div(
+          { class: 'controls' },
+          $pagination,
+          $perPageDropdown,
+        ),
+      ),
+    ),
+  );
+
+  await new EventsRenderer({
+    jsonPath: '/na/en-us/indexes/global-index.json?sheet=news-events',
+    articlesPerPageOptions: ['6', '12', '18', '24', '30'],
+    paginationMaxBtns: 5,
+    articleDiv: $articles,
+    articleCard: $articleCard,
+    // filterTagsList: $filtersList,
+    // sortDropdown: $sortDropdown,
+    paginationDiv: $pagination,
+    perPageDropdown: $perPageDropdown,
+    countDiv: $count,
+  }).render();
+  return $articlePage;
+}
+
 async function displaySearchResults(
   block,
   ingredientResults,
   techDocsResults,
-  filteredGlobalResults,
+  contentResourcesResults,
+  eventsResults,
   totalResults,
 ) {
   const params = new URLSearchParams(window.location.search);
@@ -271,9 +337,9 @@ async function displaySearchResults(
   // Create sections for each tab
   const sections = [
     {
-      title: `Content & Resources (${filteredGlobalResults?.length || 0})`,
+      title: `Content & Resources (${contentResourcesResults?.length || 0})`,
       panel: await createContentResourcesPanel(),
-      doShow: (filteredGlobalResults?.length || 0) > 0,
+      doShow: (contentResourcesResults?.length || 0) > 0,
       index: 0,
     },
     {
@@ -287,6 +353,12 @@ async function displaySearchResults(
       panel: await createTechDocsPanel(techDocsResults),
       doShow: techDocsResults.totalItemsCount > 0,
       index: 2,
+    },
+    {
+      title: `Events (${eventsResults?.length || 0})`,
+      panel: await createEventPanel(),
+      doShow: (eventsResults?.length || 0) > 0,
+      index: 3,
     },
   ];
 
@@ -339,19 +411,25 @@ async function fetchSearchResults(searchParams) {
   const globalIndexUrl = '/na/en-us/indexes/global-index.json';
 
   try {
-    const [ingredientResults, techDocsResults, globalResults] = await Promise.all([
+    const [ingredientResults,
+      techDocsResults,
+      contentResourcesResults,
+      eventsResults] = await Promise.all([
       fetch(`${API_PRODUCT.SEARCH_INGREDIENTS()}?${searchParams.toString()}`)
         .then((res) => res.json()),
       fetch(`${API_PRODUCT.SEARCH_DOCUMENTS()}?${searchParams.toString()}`)
         .then((res) => res.json()),
       fetch(globalIndexUrl)
         .then((res) => res.json()),
+      fetch(`${globalIndexUrl}?sheet=news-events`)
+        .then((res) => res.json()),
     ]);
 
     return {
       ingredientResults,
       techDocsResults,
-      globalResults,
+      contentResourcesResults,
+      eventsResults,
     };
   } catch (error) {
     console.error('Error fetching search results:', error);
@@ -377,20 +455,24 @@ export default async function decorate(block) {
     const {
       ingredientResults,
       techDocsResults,
-      globalResults,
+      contentResourcesResults,
+      eventsResults,
     } = await fetchSearchResults(searchParams);
 
-    const filteredGlobalResults = filterGlobalIndex(globalResults, query);
+    const filteredContentResorcesResults = filterIndex(contentResourcesResults, query);
     const ingredientCount = ingredientResults.totalItemsCount;
     const techDocsCount = techDocsResults.totalItemsCount;
-    const globalCount = filteredGlobalResults?.length || 0;
-    totalResults = ingredientCount + techDocsCount + globalCount;
+    const globalCount = filteredContentResorcesResults?.length || 0;
+    const filteredEventsResults = filterIndex(eventsResults, query);
+    const eventsCount = filteredEventsResults?.length || 0;
+    totalResults = ingredientCount + techDocsCount + globalCount + eventsCount;
 
     await displaySearchResults(
       block,
       ingredientResults,
       techDocsResults,
-      filteredGlobalResults,
+      filteredContentResorcesResults,
+      filteredEventsResults,
       totalResults,
     );
   } catch (error) {
