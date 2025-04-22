@@ -3,6 +3,7 @@
   position: relative;
   display: inline-block;
   font-size: 1rem;
+  cursor: pointer;
 
   .selected {
     position: relative;
@@ -65,6 +66,7 @@
         &::after {
           content: '\e91b';
           position: absolute;
+          right: 10px;
           margin-left: 6px;
           font-family: ingredion-icon;
           -webkit-font-smoothing: antialiased;
