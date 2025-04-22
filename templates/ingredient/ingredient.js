@@ -89,7 +89,7 @@ function updateFixedHeader($productHeader) {
 
 export default async function decorate(doc) {
   const { productName } = getUrlParams();
-  const [, locale] = getRegionLocale();
+  const [region, locale] = getRegionLocale();
   await loadTranslations(locale);
 
   const $main = doc.querySelector('main');
