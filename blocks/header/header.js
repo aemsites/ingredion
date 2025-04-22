@@ -180,7 +180,7 @@ export default async function decorate(block) {
           button({ type: 'submit', class: 'icon-search', 'aria-label': 'Search Button' }),
         ),
       ),
-      button({ type: 'submit', form: 'searchForm', class: 'button-search hidden', 'aria-label': 'Search Button' }, 'Search'),
+      button({ type: 'submit', form: 'searchForm', class: 'button-search', 'aria-label': 'Search Button' }, 'Search'),
     ),
   );
 
@@ -231,8 +231,9 @@ export default async function decorate(block) {
   });
 
   $searchInput.addEventListener('focus', async () => {
-    // button-search should be visible
-    $searchBar.querySelector('button.button-search').classList.remove('hidden');
+    // Show search button
+    const searchButton = $searchBar.querySelector('button.button-search');
+    searchButton.classList.remove('hidden');
     if (!typeaheadData) {
       try {
         const response = await fetch('https://www.ingredion.com/content/ingredion-com/na/en-us.ingredient-search-typeahead.json');
@@ -249,11 +250,18 @@ export default async function decorate(block) {
     }
   });
 
-  // Handle clicking outside to close dropdown
+  // Prevent hiding search button when clicking it
+  const searchButton = $searchBar.querySelector('button.button-search');
+  searchButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // Handle clicking outside to close dropdown and hide search button
   document.addEventListener('click', (e) => {
-    if (!$searchInput.contains(e.target)) {
+    if (!$searchInput.contains(e.target) && !searchButton.contains(e.target)) {
       const dropdown = $dropdownOptions.closest('.form-dropdown');
       dropdown.classList.add('hidden');
+      searchButton.classList.add('hidden');
     }
   });
 

@@ -9,8 +9,11 @@ import {
   buildBlock,
   decorateBlock,
   loadBlock,
+  createOptimizedPicture,
 } from '../../scripts/aem.js';
+import { formatDate } from '../../scripts/utils.js';
 import IngredientRenderer from './search-ingredients-renderer.js';
+import ContentResourcesRenderer from './search-content-resources-renderer.js';
 import DocumentRenderer from './search-documents-renderer.js';
 
 function filterGlobalIndex(results, query) {
@@ -158,81 +161,69 @@ async function createIngredientPanel(ingredientResults) {
 }
 
 // Helper function to create global panel
-async function createGlobalPanel(filteredGlobalResults) {
-  const panel = document.createElement('div');
-  if (filteredGlobalResults.length > 0) {
-    const globalList = div({ class: 'results-list' });
-    await Promise.all(filteredGlobalResults.map(async (result) => {
-      const calloutWrapper = document.createElement('div');
-      const calloutBlock = buildBlock('callout', '');
-      calloutBlock.classList.add('search-content');
-      calloutBlock.innerHTML = '';
-      calloutBlock.setAttribute('data-block-status', 'loading');
+async function createContentResourcesPanel() {
+  const $search = div();
+  const $sortDropdown = div();
+  const $count = h3({ class: 'count' });
+  const $pagination = div({ class: 'pagination' });
+  const $perPageDropdown = div();
+  const $articles = div({ class: 'articles' });
+  const $filtersList = div();
 
-      // Create main container div
-      const contentRow = document.createElement('div');
+  const $articleCard = (article) => div(
+    { class: 'card' },
+    a(
+      { class: 'thumb', href: article.path },
+      createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
+    ),
+    div(
+      { class: 'info' },
+      h4(article.title),
+      p(article.description),
+      p({ class: 'date' }, formatDate(article.publishDate)),
+      a({ class: 'button', href: article.path }, 'Learn More'),
+    ),
+  );
 
-      // Create image section
-      const imageSection = document.createElement('div');
-      if (result.image) {
-        const picture = document.createElement('picture');
-        // Add sources for different formats and sizes
-        const webpSource1 = document.createElement('source');
-        webpSource1.type = 'image/webp';
-        webpSource1.srcset = `${result.image}?width=2000&format=webply&optimize=medium`;
-        webpSource1.media = '(min-width: 600px)';
-        const webpSource2 = document.createElement('source');
-        webpSource2.type = 'image/webp';
-        webpSource2.srcset = `${result.image}?width=750&format=webply&optimize=medium`;
-        const jpegSource = document.createElement('source');
-        jpegSource.type = 'image/jpeg';
-        jpegSource.srcset = `${result.image}?width=2000&format=jpeg&optimize=medium`;
-        jpegSource.media = '(min-width: 600px)';
-        const img = document.createElement('img');
-        img.loading = 'lazy';
-        img.alt = result.imageAlt || '';
-        img.src = `${result.image}?width=750&format=jpeg&optimize=medium`;
-        img.width = 720;
-        img.height = 560;
-        picture.append(webpSource1, webpSource2, jpegSource, img);
-        imageSection.appendChild(picture);
-      }
+  const $articlePage = div(
+    { class: 'article-list' },
+    div(
+      { class: 'filter-search-sort', style: 'justify-content: end;' },
+      $search,
+      $sortDropdown,
+    ),
+    div(
+      { class: 'filter-results-wrapper' },
+      div(
+        { class: 'filter' },
+        $filtersList,
+      ),
+      div(
+        { class: 'results' },
+        $count,
+        $articles,
+        div(
+          { class: 'controls' },
+          $pagination,
+          $perPageDropdown,
+        ),
+      ),
+    ),
+  );
 
-      // Create content section
-      const content = document.createElement('div');
-      // Title
-      const heading = document.createElement('h3');
-      heading.id = result.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || '';
-      heading.innerHTML = result.title || '';
-      // Description
-      const description = document.createElement('p');
-      description.innerHTML = result.description || '';
-      // Button container
-      const buttonContainer = document.createElement('p');
-      buttonContainer.className = 'button-container';
-      const learnMoreLink = document.createElement('a');
-      learnMoreLink.href = result.path || '#';
-      learnMoreLink.title = 'Learn more';
-      learnMoreLink.className = 'button';
-      learnMoreLink.textContent = 'Learn more';
-      buttonContainer.appendChild(learnMoreLink);
-
-      // Assemble the content
-      content.append(heading, description, buttonContainer);
-      // Assemble the block
-      contentRow.append(imageSection, content);
-      calloutBlock.appendChild(contentRow);
-      calloutWrapper.appendChild(calloutBlock);
-      // Decorate and load the block
-      decorateBlock(calloutBlock);
-      await loadBlock(calloutBlock);
-      globalList.append(calloutWrapper);
-    }));
-    panel.append(globalList);
-  } else {
-    panel.append(div({ class: 'no-results-message' }, 'No global results found.'));
-  }
-  return panel;
+  await new ContentResourcesRenderer({
+    jsonPath: '/na/en-us/indexes/global-index.json',
+    articlesPerPageOptions: ['6', '12', '18', '24', '30'],
+    paginationMaxBtns: 5,
+    articleDiv: $articles,
+    articleCard: $articleCard,
+    filterTagsList: $filtersList,
+    sortDropdown: $sortDropdown,
+    paginationDiv: $pagination,
+    perPageDropdown: $perPageDropdown,
+    countDiv: $count,
+  }).render();
+  return $articlePage;
 }
 
 // Helper function to create tech docs panel
@@ -323,69 +314,6 @@ async function createTechDocsPanel(techDocsResults) {
   }).render();
 
   return $articlePage;
-  /* const panel = document.createElement('div');
-  if (techDocsResults.results.length > 0) {
-    // Create blocks for each ingredient
-    await Promise.all(techDocsResults.results.map(async (asset) => {
-      // const relatedIngredientContainer = document.createElement('div');
-      const relatedIngredientWrapper = document.createElement('div');
-      const relatedIngredientBlock = buildBlock('related-ingredient', '');
-      relatedIngredientBlock.classList.add('search-docs');
-      relatedIngredientBlock.innerHTML = '';
-      relatedIngredientBlock.setAttribute('data-block-status', 'loading');
-
-      // Content section
-      const contentRow = document.createElement('div');
-      const contentCol = document.createElement('div');
-      contentCol.setAttribute('data-valign', 'middle');
-
-      // Title
-      const title = document.createElement('h4');
-      title.id = asset.assetName; // ?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || '';
-      title.innerHTML = `<strong>${asset.assetName}</strong>`;
-      contentCol.appendChild(title);
-
-      // Description
-      if (asset.assetSize) {
-        const description = document.createElement('p');
-        description.innerHTML = `Document Size: ${asset.assetSize}`;
-        contentCol.appendChild(description);
-      }
-
-      contentRow.appendChild(contentCol);
-
-      // Action buttons section
-      const actionRow = document.createElement('div');
-      const actionCol = document.createElement('div');
-      actionCol.setAttribute('data-valign', 'middle');
-
-      // Document buttons
-      const downloadContainer = document.createElement('p');
-      downloadContainer.className = 'button-container';
-      const viewDocsLink = document.createElement('a');
-      viewDocsLink.href = asset.assetUrl || '#';
-      viewDocsLink.title = 'Download';
-      viewDocsLink.className = 'button';
-      viewDocsLink.textContent = 'Download';
-      downloadContainer.appendChild(viewDocsLink);
-      actionCol.appendChild(downloadContainer);
-
-      actionRow.appendChild(actionCol);
-
-      // Add both sections to the block
-      relatedIngredientBlock.appendChild(contentRow);
-      relatedIngredientBlock.appendChild(actionRow);
-
-      relatedIngredientWrapper.appendChild(relatedIngredientBlock);
-      // relatedIngredientContainer.appendChild(relatedIngredientWrapper);
-      decorateBlock(relatedIngredientBlock);
-      await loadBlock(relatedIngredientBlock);
-      panel.appendChild(relatedIngredientWrapper);
-    }));
-  } else {
-    panel.append(div({ class: 'no-results-message' }, 'No tech docs results found.'));
-  }
-  return panel; */
 }
 
 async function displaySearchResults(
@@ -396,6 +324,7 @@ async function displaySearchResults(
   totalResults,
 ) {
   const params = new URLSearchParams(window.location.search);
+  const initialTab = parseInt(params.get('initialTab'), 10) || 0;
   const query = params.get('q');
   const resultsContainer = div({ class: 'search-results' });
 
@@ -408,23 +337,31 @@ async function displaySearchResults(
   const sections = [
     {
       title: `Content & Resources (${filteredGlobalResults?.length || 0})`,
-      panel: await createGlobalPanel(filteredGlobalResults),
+      panel: await createContentResourcesPanel(),
       doShow: (filteredGlobalResults?.length || 0) > 0,
+      index: 0,
     },
     {
       title: `Ingredients (${ingredientResults.totalItemsCount})`,
       panel: await createIngredientPanel(ingredientResults),
       doShow: ingredientResults.totalItemsCount > 0,
+      index: 1,
     },
     {
       title: `Technical & SDS Documents (${techDocsResults.totalItemsCount})`,
       panel: await createTechDocsPanel(techDocsResults),
       doShow: techDocsResults.totalItemsCount > 0,
+      index: 2,
     },
   ];
 
-  // i want to show result for each specific tab, hide tab if there is 0 result for that section
-  sections.forEach((section) => {
+  // Filter out sections with no results
+  const visibleSections = sections.filter((section) => section.doShow);
+
+  // Determine which tab should be active
+  const activeTabIndex = Math.min(initialTab, visibleSections.length - 1);
+
+  visibleSections.forEach((section, idx) => {
     const tabSection = document.createElement('div');
 
     const titleContainer = document.createElement('div');
@@ -434,18 +371,16 @@ async function displaySearchResults(
     const contentContainer = document.createElement('div');
     contentContainer.setAttribute('data-valign', 'middle');
     contentContainer.classList.add('button-container');
-    // create a div with class panel-content with class panel-content
     const panelContent = document.createElement('div');
     panelContent.classList.add('panel-content');
+    panelContent.setAttribute('aria-hidden', idx !== activeTabIndex);
 
     panelContent.append(section.panel);
     contentContainer.append(panelContent);
 
     tabSection.append(titleContainer, contentContainer);
-    // do not add a tab if there is 0 result for that section
-    if (section.doShow) {
-      tabBlock.append(tabSection);
-    }
+    tabSection.setAttribute('aria-selected', idx === activeTabIndex);
+    tabBlock.append(tabSection);
   });
 
   tabWrapper.append(tabBlock);
@@ -456,10 +391,10 @@ async function displaySearchResults(
   block.innerHTML = '';
 
   if (totalResults > 0) {
-    block.append(div({ class: 'total-results' }, `${totalResults} Results for "${query}"`));
+    block.append(div({ class: 'total-results' }, h3(`${totalResults} results for "${query}"`)));
     block.append(resultsContainer);
   } else {
-    block.append(div({ class: 'total-results' }, `No results for "${query}"`));
+    block.append(div({ class: 'total-results' }, h3(`No results for "${query}"`)));
     block.append(div({ class: 'no-results-message' }, 'We have found no results'));
   }
 }
@@ -519,7 +454,11 @@ export default async function decorate(block) {
     block.style.display = 'none';
 
     // Use the new consolidated API call
-    const { ingredientResults, techDocsResults, globalResults } = await fetchSearchResults(searchParams);
+    const {
+      ingredientResults,
+      techDocsResults,
+      globalResults,
+    } = await fetchSearchResults(searchParams);
 
     const filteredGlobalResults = filterGlobalIndex(globalResults, query);
     const ingredientCount = ingredientResults.totalItemsCount;
@@ -531,7 +470,13 @@ export default async function decorate(block) {
     loadingEl.style.display = 'none';
     block.style.display = 'block';
 
-    await displaySearchResults(block, ingredientResults, techDocsResults, filteredGlobalResults, totalResults);
+    await displaySearchResults(
+      block,
+      ingredientResults,
+      techDocsResults,
+      filteredGlobalResults,
+      totalResults,
+    );
   } catch (error) {
     console.error('Error during search:', error);
     loadingEl.style.display = 'none';

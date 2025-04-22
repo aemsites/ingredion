@@ -6,6 +6,7 @@ export default async function decorate(block) {
   const tablist = document.createElement('div');
   tablist.className = 'tabs-list';
   tablist.setAttribute('role', 'tablist');
+  const initialTab = [...block.children].findIndex((tab) => tab.getAttribute('aria-selected') === 'true');
 
   // decorate tabs and tabpanels
   const tabs = [...block.children].map((child) => child.firstElementChild);
@@ -16,7 +17,7 @@ export default async function decorate(block) {
     const tabpanel = block.children[i];
     tabpanel.className = 'tabs-panel';
     tabpanel.id = `tabpanel-${id}`;
-    tabpanel.setAttribute('aria-hidden', !!i);
+    tabpanel.setAttribute('aria-hidden', i !== initialTab);
     tabpanel.setAttribute('aria-labelledby', `tab-${id}`);
     tabpanel.setAttribute('role', 'tabpanel');
 
@@ -26,7 +27,7 @@ export default async function decorate(block) {
     button.id = `tab-${id}`;
     button.innerHTML = tab.innerHTML;
     button.setAttribute('aria-controls', `tabpanel-${id}`);
-    button.setAttribute('aria-selected', !i);
+    button.setAttribute('aria-selected', i === initialTab);
     button.setAttribute('role', 'tab');
     button.setAttribute('type', 'button');
     button.addEventListener('click', () => {

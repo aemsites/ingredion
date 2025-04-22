@@ -213,7 +213,7 @@ a.button.icon .icon-eye {
   padding: 1px 6px;
 }
 
-.icon-close::before {
+.icon-close-popup::before {
   content: "\e91c";
   color: #4d4f53;
 }

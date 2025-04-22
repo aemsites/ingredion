@@ -1,5 +1,5 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
-import { div, h4, ul, li, small, button, span } from '../../scripts/dom-helpers.js';
+import { div, h4, h5, ul, li, small, button, span } from '../../scripts/dom-helpers.js';
 import { translate } from '../../scripts/utils.js';
 import { decorateBlock, loadBlock } from '../../scripts/aem.js';
 
@@ -325,9 +325,12 @@ export default class DocumentRenderer {
       const facetGroupWrapper = div({ class: `facet-group__wrapper${isActive ? ' is-active' : ''}` });
 
       const header = div({ class: 'facet-group__header' });
-      header.appendChild(h4({ class: 'facet-group__title' }, facetData.label));
-      const toggleIcon = span({ class: 'icon' }, isOpen ? '－' : '＋');
-      header.appendChild(toggleIcon);
+      const title = h5({ class: 'facet-group__title' });
+      title.textContent = facetData.label;
+      const toggleIcon = span({ class: 'icon' });
+      toggleIcon.textContent = isOpen ? '－' : '＋';
+      title.appendChild(toggleIcon);
+      header.appendChild(title);
 
       const content = div({ class: 'facet-group__content' });
       content.style.display = isOpen ? 'block' : 'none';
@@ -418,7 +421,7 @@ export default class DocumentRenderer {
       });
 
       if (hasMore) {
-        const toggleView = div({ class: 'facet-toggle-view has-more' });
+        const toggleView = button({ class: 'facet-toggle-view has-more' });
         const toggleText = document.createTextNode('');
         const toggleIcon = span({ class: 'icon' }, '＋');
         toggleView.appendChild(toggleText);
@@ -459,15 +462,17 @@ export default class DocumentRenderer {
       return facetGroup;
     };
 
+    const $appliedFilterHeading = h4('Filters Applied');
     const filtersList = div({ class: 'filters-list' });
 
     // Add applied facets if they exist
     if (this.techDocsResults.appliedFacets?.length > 0) {
+      filtersList.appendChild($appliedFilterHeading);
       const appliedFacets = div({ class: 'facet-applied' });
       this.techDocsResults.appliedFacets.forEach((facet) => {
         const appliedItem = div({ class: 'facet-applied__item' });
         appliedItem.appendChild(div({ class: 'facet-applied__label' }, facet.label));
-        const removeButton = div({ class: 'facet-applied__remove icon-close' });
+        const removeButton = span({ class: 'facet-applied__remove icon-close' });
         // Add click handler for remove button
         removeButton.addEventListener('click', async () => {
           try {
@@ -607,7 +612,7 @@ export default class DocumentRenderer {
 
     const perPageOptions = this.articlesPerPageOptions.map((value) => ({
       value,
-      label: value.toString(),
+      label: `${value.toString()} per page`,
     }));
 
     const $dropdown = createSelectDropdown({

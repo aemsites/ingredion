@@ -60,8 +60,8 @@ export default async function decorate(block) {
     div(
       { class: 'cart-list-notification-wrapper' },
       p('Product successfully added to cart!'),
-      button({ class: 'cart-list-notification-undo icon-close' }, 'Undo'),
-      button({ class: 'cart-list-notification-close icon-close' }),
+      button({ class: 'cart-list-notification-undo icon-close-popup' }, 'Undo'),
+      button({ class: 'cart-list-notification-close icon-close-popup' }),
     ),
   );
 
