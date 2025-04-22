@@ -39,7 +39,7 @@ async function renderRelatedIngredient(productDisplayName) {
       ),
       div({ class: 'buttons' },
         addSampleBtn,
-        a({ class: 'button secondary', href: `/na/en-us/ingredient?pid=${product.productId}&name=${product.productName}`, title: 'Learn More' }, 'Learn More'),
+        a({ class: 'button secondary', href: `/na/en-us/ingredient?name=${product.productName}`, title: 'Learn More' }, 'Learn More'),
       ),
     );
 
