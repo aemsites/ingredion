@@ -183,6 +183,10 @@
     height: 100%;
   }
 
+  input[disabled="disabled"] {
+    cursor: not-allowed;
+  }
+
   @media (width >= 1080px) {
     .col-span-1 { flex: 8.33%; }
     .col-span-2 { flex: 16.66%; }

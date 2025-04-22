@@ -233,6 +233,21 @@
   }
 }
 
+.default.text-only {
+  .button-container {
+    a {
+      border: 2px solid var(--green);
+      color: var(--green);
+      background: transparent;
+    }
+
+    a:hover {
+      border-color: var(--dark-green);
+      color: var(--dark-green);
+    }
+  }
+}
+
 @media (width >= 1080px) {
   .callout {
     max-width: 1224px;
