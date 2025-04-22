@@ -1,98 +1,77 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, span } from '../../scripts/dom-helpers.js';
-import { unwrapNestedDivs } from '../../scripts/scripts.js';
+import { div, h4, a } from '../../scripts/dom-helpers.js';
+import { API_PRODUCT } from '../../scripts/product-api.js';
+import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
+import { readBlockConfig } from '../../scripts/aem.js';
+import { viewAllDocsModal } from '../../scripts/product-utils.js';
+
+async function renderRelatedIngredient(productDisplayName) {
+  try {
+    // Fetch product details
+    const productDetailsResponse = await fetch(API_PRODUCT.PRODUCT_DETAILS(productDisplayName));
+    const productDetails = await productDetailsResponse.json();
+
+    if (!productDetails?.results?.[0]) {
+      throw new Error('No product data found');
+    }
+
+    const product = productDetails.results[0];
+
+    const description = div({ class: 'description' });
+    description.innerHTML = (product.description).replace(/&nbsp;/g, ' '); // replace &nbsp; for natural word wrapping
+
+    // add sample button
+    const addSampleBtn = a({ title: 'Add Sample', class: 'button add-sample-button' }, translate('add-sample'));
+    addSampleBtn.addEventListener('click', () => addIngredientToCart(product.productName, window.location.href));
+
+    const viewAllDocsLink = a({ class: 'view-all' }, 'View All Documents');
+    viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(product));
+
+    const relatedIngredientBlock = div({ class: 'related-ingredient' },
+      div({ class: 'content' },
+        h4({ class: 'product-name' }, productDisplayName),
+        description,
+        div({ class: 'cta-links' },
+          viewAllDocsLink,
+          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(product.productName, product.productId) }, 'Download All Documents'),
+        ),
+      ),
+      div({ class: 'buttons' },
+        addSampleBtn,
+        a({ class: 'button secondary', href: `/na/en-us/ingredient?name=${product.productName}`, title: 'Learn More' }, 'Learn More'),
+      ),
+    );
+
+    return relatedIngredientBlock;
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+}
 
 export default async function decorate(block) {
-  unwrapNestedDivs(block);
+  const { 'product-name': productDisplayName } = readBlockConfig(block);
+  const [, locale] = getRegionLocale();
+  await loadTranslations(locale);
 
-  const contentContainer = div({ class: 'related-ingredient-content', tabIndex: 0 },
-    div({ class: 'related-ingredient-text' }),
-  );
+  // placeholder until rendered
+  const placeholder = div({ class: 'related-ingredient' });
+  block.replaceWith(placeholder);
 
-  const buttonContainer = div({ class: 'related-ingredient-buttons' });
-
-  block.appendChild(contentContainer);
-  block.appendChild(buttonContainer);
-
-  const textContainer = block.querySelector('.related-ingredient-text');
-  const productName = block.querySelector('.related-ingredient.block h4');
-  productName.classList.add('product-name');
-  productName.setAttribute('tabIndex', 0);
-  contentContainer.insertBefore(productName, textContainer);
-
-  const children = Array.from(block.children);
-
-  if (
-    children[0].tagName === 'P'
-    && !children[0].classList.contains('button-container')
-    && children[1].tagName !== 'H3'
-  ) {
-    textContainer.appendChild(children[0]);
-  } else {
-    let currentChild = block.firstElementChild;
-    let foundH3 = false;
-
-    while (currentChild) {
-      if (currentChild.classList.contains('button-container')) {
-        break;
-      }
-      if (currentChild.tagName === 'H3') {
-        foundH3 = true;
-      }
-      if (foundH3) {
-        const nextSibling = currentChild.nextElementSibling;
-        textContainer.appendChild(currentChild);
-        currentChild = nextSibling;
-      } else if (currentChild.tagName === 'P') {
-        currentChild.classList.add('product-type');
-        contentContainer.insertBefore(currentChild, textContainer);
-        currentChild = block.firstElementChild;
-      } else {
-        currentChild = currentChild.nextElementSibling;
-      }
-    }
-  }
-
-  const buttons = block.querySelectorAll('.button-container');
-
-  for (let i = 0; i < buttons.length; i += 1) {
-    const link = buttons[i].querySelector(':scope > a');
-    const normalizedIndex = buttons.length === 2 ? i + 2 : i;
-
-    if (normalizedIndex < 2) {
-      link.classList.add('icon');
-      const spanClass = normalizedIndex === 1 ? 'icon-download' : 'icon-eye';
-      const spanElement = span({ class: spanClass });
-
-      if (normalizedIndex === 1) {
-        link.download = '';
-      }
-      link.prepend(spanElement);
-      contentContainer.appendChild(link);
-    } else {
-      if (normalizedIndex === 2) {
-        link.classList.add('add-sample-button');
-        const ingredientName = productName.textContent;
-        const ingredientUrl = window.location.href;
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          addIngredientToCart(ingredientName, ingredientUrl);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        renderRelatedIngredient(productDisplayName).then((content) => {
+          placeholder.replaceWith(content);
         });
-      } else if (normalizedIndex === 3) {
-        link.classList.add('secondary');
+        observer.disconnect();
       }
-      buttonContainer.appendChild(link);
-    }
-    buttons[i].remove();
-  }
+    });
+  }, {
+    rootMargin: '400px 0px',
+    threshold: 0.01,
+  });
 
-  if (!document.querySelector('.section-related-ingredient-wrapper')) {
-    const section = document.querySelector(
-      '.section.related-ingredient-container',
-    );
-    const sectionWrapper = div({ class: 'section-related-ingredient-wrapper' });
-    section.parentNode.insertBefore(sectionWrapper, section);
-    sectionWrapper.appendChild(section);
-  }
+  observer.observe(placeholder);
 }

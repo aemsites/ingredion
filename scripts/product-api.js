@@ -9,7 +9,6 @@ export const API_HOST = 'https://www.ingredion.com';
 export const getUrlParams = () => {
   const params = new URLSearchParams(window.location.search);
   return {
-    productId: params.get('pid'),
     productName: params.get('name'),
   };
 };
