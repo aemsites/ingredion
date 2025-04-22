@@ -89,7 +89,7 @@ function updateFixedHeader($productHeader) {
 
 export default async function decorate(doc) {
   const { productId, productName } = getUrlParams();
-  const [, locale] = getRegionLocale();
+  const [region, locale] = getRegionLocale();
   await loadTranslations(locale);
 
   const $main = doc.querySelector('main');
@@ -174,7 +174,7 @@ export default async function decorate(doc) {
           ),
           div({ class: 'cta-buttons' },
             a({ class: 'button add-sample-btn' }, 'Add Sample'),
-            a({ class: 'button secondary', href: `contact-us-modal?${productName}` }, translate('contact-us')),
+            a({ class: 'button secondary', href: `/${region}/${locale}/modals/contact-us-modal` }, translate('contact-us')),
           ),
         ),
         div({ class: 'anchor-nav' },
@@ -268,7 +268,7 @@ export default async function decorate(doc) {
           ),
           div({ class: 'cta-buttons' },
             a({ class: 'button add-sample-btn' }, 'Add Sample'),
-            a({ class: 'button secondary', href: `contact-us-modal?${productName}` }, translate('contact-us')),
+            a({ class: 'button secondary', href: `/${region}/${locale}/modals/contact-us-modal` }, translate('contact-us')),
           ),
         ),
         div({ class: 'anchor-nav' },
