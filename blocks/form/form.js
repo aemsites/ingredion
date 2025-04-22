@@ -335,6 +335,14 @@ function createInput(fd) {
   if (fd.ValidationErrorMessage) {
     input.setAttribute('validation-error-message', fd.ValidationErrorMessage);
   }
+  if (fd.Field === 'ingredient') {
+    // set the value of the input to the value from url params 'name'
+    const urlParams = new URLSearchParams(window.location.search);
+    const ingredient = urlParams.get('name');
+    if (ingredient) {
+      input.value = ingredient;
+    }
+  }
   return input;
 }
 
@@ -402,6 +410,10 @@ function handleFormElement(form, fieldWrapper, fd, element) {
 
   if (fd.Extra === 'hidden') {
     fieldWrapper.style.display = 'none';
+  }
+
+  if (fd.Extra === 'disabled') {
+    fieldWrapper.querySelector('input').setAttribute('disabled', 'disabled');
   }
 
   if (fd.Value) {
@@ -524,6 +536,13 @@ export default async function decorate(block) {
           // remove cartCookies cookie
           document.cookie = 'cartCookies=; path=/';
         }
+      }
+
+      // if ingredient is present as a form field, append it's value to the message textarea
+      const ingredient = formElement.querySelector('input[name="ingredient"]');
+      if (ingredient) {
+        const messageTextArea = formElement.querySelector('textarea[name="Message"]');
+        messageTextArea.value += `${ingredient.value}.`;
       }
     });
 

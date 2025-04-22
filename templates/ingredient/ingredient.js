@@ -89,7 +89,7 @@ function updateFixedHeader($productHeader) {
 
 export default async function decorate(doc) {
   const { productId, productName } = getUrlParams();
-  const [, locale] = getRegionLocale();
+  const [region, locale] = getRegionLocale();
   await loadTranslations(locale);
 
   const $main = doc.querySelector('main');
@@ -174,7 +174,8 @@ export default async function decorate(doc) {
           ),
           div({ class: 'cta-buttons' },
             a({ class: 'button add-sample-btn' }, 'Add Sample'),
-            a({ class: 'button secondary', href: `contact-us-modal?${productName}` }, translate('contact-us')),
+            // https://main--ingredion--aemsites.aem.live/na/en-us/modals/contact-us-modal
+            a({ class: 'button secondary', href: `https://main--ingredion--aemsites.aem.live/${region}/${locale}/modals/contact-us-modal` }, translate('contact-us')),
           ),
         ),
         div({ class: 'anchor-nav' },
@@ -268,7 +269,7 @@ export default async function decorate(doc) {
           ),
           div({ class: 'cta-buttons' },
             a({ class: 'button add-sample-btn' }, 'Add Sample'),
-            a({ class: 'button secondary', href: `contact-us-modal?${productName}` }, translate('contact-us')),
+            a({ class: 'button secondary', href: `https://main--ingredion--aemsites.aem.live/${region}/${locale}/modals/contact-us-modal` }, translate('contact-us')),
           ),
         ),
         div({ class: 'anchor-nav' },
