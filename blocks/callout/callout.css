@@ -225,6 +225,14 @@
   }
 }
 
+.callout .button-container {
+  a:hover {
+    text-decoration: none;
+    border-color: var(--light-grey);
+    color: var(--light-grey);
+  }
+}
+
 .default.text-only {
   .button-container {
     a {
@@ -237,14 +245,6 @@
       border-color: var(--dark-green);
       color: var(--dark-green);
     }
-  }
-}
-
-.callout .button-container {
-  a:hover {
-    text-decoration: none;
-    border-color: var(--light-grey);
-    color: var(--light-grey);
   }
 }
 
