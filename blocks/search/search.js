@@ -11,7 +11,7 @@ import {
   loadBlock,
   createOptimizedPicture,
 } from '../../scripts/aem.js';
-import { formatDate } from '../../scripts/utils.js';
+import { getRegionLocale, formatDate } from '../../scripts/utils.js';
 import IngredientRenderer from './search-ingredients-renderer.js';
 import ContentResourcesRenderer from './search-content-resources-renderer.js';
 import DocumentRenderer from './search-documents-renderer.js';
@@ -35,6 +35,8 @@ function filterGlobalIndex(results, query) {
 
 // Helper function to create ingredient panel
 async function createIngredientPanel(ingredientResults) {
+  // get region locale using functions
+  const [region, locale] = getRegionLocale();
   const $sortDropdown = div();
   const $count = h3({ class: 'count' });
   const $pagination = div({ class: 'pagination' });
@@ -80,7 +82,7 @@ async function createIngredientPanel(ingredientResults) {
           { class: 'button-container' },
           a(
             {
-              href: article.path || '#',
+              href: `https://www.ingredion.com/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.download.zip?productId=${article.productId}&documentType=all`,
               title: 'Download All Documents',
               class: 'button',
             },
@@ -103,7 +105,7 @@ async function createIngredientPanel(ingredientResults) {
         p(
           { class: 'button-container' },
           a(
-            { href: article.path || '#', title: 'Learn more', class: 'button' },
+            { href: `https://main--ingredion--aemsites.aem.live/${region}/${locale}/ingredient?pid=${article.productId}&name=${article.productName}`, title: 'Learn more', class: 'button' },
             'Learn more',
           ),
         ),
@@ -257,7 +259,7 @@ async function createTechDocsPanel(techDocsResults) {
         p(
           { class: 'button-container' },
           a(
-            { href: article.assetUrl || '#', title: 'Download', class: 'button' },
+            { href: `https://www.ingredion.com${article.assetUrl}`, title: 'Download', class: 'button' },
             'Download',
           ),
         ),
