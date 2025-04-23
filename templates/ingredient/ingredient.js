@@ -359,7 +359,7 @@ export default async function decorate(doc) {
 
         if (!selectedIds) return;
 
-        const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
+        const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(product.productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
 
         // Use a temp link for reliability across browsers
         const tempLink = a({ href: downloadUrl, download: `${docType}-documents.zip`, style: 'display: none' });
