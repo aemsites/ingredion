@@ -292,7 +292,7 @@ export default async function decorate(doc) {
           ),
 
           // Technical Documents Table
-          div({ class: 'table-wrapper' },
+          productDocs.technicalDocuments?.length > 0 ? div({ class: 'table-wrapper' },
             h3({ id: 'technical-documents' }, translate('technical-documents')),
             table(
               tr(
@@ -306,14 +306,13 @@ export default async function decorate(doc) {
                 td(a({ class: 'doc', href: API_HOST + techDoc.path, target: '_blank' }, techDoc.documentType)),
                 td(techDoc.format),
                 td(techDoc.size),
-              ),
-              ),
+              )),
             ),
             div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'technical' }, 'Download Documents')),
-          ),
+          ) : null,
 
           // SDS Documents Table
-          div({ class: 'table-wrapper' },
+          productDocs.sdsDocuments?.length > 0 ? div({ class: 'table-wrapper' },
             h3({ id: 'sds-documents' }, translate('sds-documents')),
             table(
               tr(
@@ -327,11 +326,10 @@ export default async function decorate(doc) {
                 td(a({ class: 'doc', href: API_HOST + sdsDoc.path, target: '_blank' }, sdsDoc.locale.region)),
                 td(sdsDoc.locale.language),
                 td(sdsDoc.size),
-              ),
-              ),
+              )),
             ),
             div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'sds' }, 'Download Documents')),
-          ),
+          ) : null,
         ),
       );
 

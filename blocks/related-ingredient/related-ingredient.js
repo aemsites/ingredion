@@ -46,7 +46,12 @@ async function renderRelatedIngredient(productDisplayName) {
     return relatedIngredientBlock;
   } catch (error) {
     console.error('Error:', error);
-    return null;
+    return div({ class: 'related-ingredient error' },
+      div({ class: 'content' },
+        h4({ class: 'product-name' }, productDisplayName),
+        div({ class: 'error-message' }, 'Error retrieving data'),
+      ),
+    );
   }
 }
 
