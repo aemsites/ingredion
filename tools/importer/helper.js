@@ -776,7 +776,7 @@ export function convertHrefs(element) {
 }
 
 export function createCTAIconBlock(document, main) {
-  const ctaIconBlocks = document.querySelectorAll('.section__content--columns-6');
+  const ctaIconBlocks = document.querySelectorAll('.section__content--columns-6, .section__content--columns-4');
   if (!ctaIconBlocks) return;  
   ctaIconBlocks.forEach((ctaIconBlock) => {    
     const cells = [['CTA Icons']];
