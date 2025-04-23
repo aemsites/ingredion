@@ -853,3 +853,32 @@ export function addKeywords(url) {
     if (sanitizedTags[1].length > 0) return sanitizedTags[1].join(', ');
   }
 }
+
+export function alignCenter (document) {
+  const sections = document.querySelectorAll('.section-title-description-wrapper');
+  if (!sections) return;
+  sections.forEach((section) => {
+    const heading = section.querySelector('.heading--center');
+    if (!heading) return;
+    section.prepend(pTag());
+    const sectionMetadata = [['Section Metadata']];
+    sectionMetadata.push(['Style', 'center']);
+    const sectionMetadataTable = WebImporter.DOMUtils.createTable(sectionMetadata, document);
+    section.append(sectionMetadataTable);
+    section.append(pTag());
+  });
+  const rteBlocks = document.querySelectorAll('.rte-block');
+  rteBlocks.forEach((rteBlock) => {
+    const centerAlignPTag = rteBlock.querySelectorAll('p');
+    centerAlignPTag.forEach((p) => {
+      if (p.style.textAlign === 'center') {
+        p.prepend(pTag());
+        const sectionMetadata = [['Section Metadata']];
+        sectionMetadata.push(['Style', 'center']);
+        const sectionMetadataTable = WebImporter.DOMUtils.createTable(sectionMetadata, document);
+        p.append(sectionMetadataTable);
+        p.append(pTag());
+      }
+    });
+  });
+}

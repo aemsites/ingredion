@@ -29,7 +29,8 @@ import {
   createCarouselBlock,
   sanitizeMetaTags,
   createArticleList,
-  addKeywords
+  addKeywords,
+  alignCenter
 } from './helper.js';
 
 import { newsMap } from './mapping.js';
@@ -62,6 +63,7 @@ export default {
     
     const main = document.body;
     createHeroBlock(document, main);
+    alignCenter(document);
     getSocialShare(document, main);    
     createCalloutBlock(document, main);
     createCardsBlock(document, main);
