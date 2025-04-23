@@ -148,7 +148,7 @@ export default function decorate(block) {
       if (!autoplay) {
         picWrapper.insertAdjacentHTML(
           'beforeend',
-          '<div class="video-placeholder-play"><button type="button" title="Play"></button></div>',
+          '<div class="video-placeholder-play"><button type="button" class="button play" title="Play"></button></div>',
         );
         picWrapper.addEventListener('click', () => {
           loadVideoEmbed(block, link.href, true, false);

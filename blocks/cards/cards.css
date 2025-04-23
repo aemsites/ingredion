@@ -460,39 +460,6 @@ main > .section > .default-content-wrapper {
   transform: translate(-50%, -50%);
 }
 
-.cards.video .video-placeholder-play button {
-  position: relative;
-  display: block;
-  border: 0;
-  cursor: pointer;
-  background: #fff;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  outline: 2px solid;
-  padding: 0;
-  color: var(--white);
-  border-color: var(--dark-green);
-  box-shadow: 0 10px 15px 0 rgba(0 0 0 / 10%);       
-}
-
-
-
-.cards.video .video-placeholder-play button::before {
-  content: '';
-  display: block;
-  box-sizing: border-box;
-  color: var(--dark-green);
-  position: absolute;
-  width: 0;  
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
-  border-left: 18px solid;
-  top: 50%;
-  left: calc(50% + 2px);
-  transform: translate(-50%, -50%);
-}
-
 .cards.video .video-modal {
   position: fixed;
   top: 0;
@@ -501,7 +468,6 @@ main > .section > .default-content-wrapper {
   width: 100vw;
   z-index: 99;
 }
-
 
 .cards.video .video-modal-content {
   height: 100%;
