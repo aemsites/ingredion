@@ -376,6 +376,30 @@ main {
       margin: auto;
     }
   }
+
+  .margin-b-small {
+    margin-bottom: 3.125rem;
+  }
+
+  .margin-t-small {
+    margin-top: 3.125rem;
+  }
+
+  .margin-b-medium {
+    margin-bottom: 6.25rem;
+  }
+
+  .margin-t-medium {
+    margin-top: 6.25rem;
+  }
+
+  .margin-b-large {
+    margin-bottom: 12.5rem;
+  }
+
+  .margin-t-large {
+    margin-top: 12.5rem;
+  }
 }
 
 .icon {
