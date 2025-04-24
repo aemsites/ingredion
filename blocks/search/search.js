@@ -1,25 +1,12 @@
-import {
-  div,
-  h3,
-  h4,
-  p,
-  a,
-} from '../../scripts/dom-helpers.js';
-import {
-  buildBlock,
-  decorateBlock,
-  loadBlock,
-  createOptimizedPicture,
-  loadCSS,
-} from '../../scripts/aem.js';
+/* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
+import { div, h3, h4, p, a } from '../../scripts/dom-helpers.js';
+import { buildBlock, decorateBlock, loadBlock, createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import { formatDate, translate } from '../../scripts/utils.js';
-import IngredientRenderer from './search-ingredients-renderer.js';
-import ContentResourcesRenderer from './search-content-resources-renderer.js';
-import DocumentRenderer from './search-documents-renderer.js';
-import EventsRenderer from './search-events-renderer.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 import { viewAllDocsModal } from '../../scripts/product-utils.js';
 import { API_HOST, API_PRODUCT } from '../../scripts/product-api.js';
+import ContentResourcesRenderer from './content-renderer.js';
+import ProductApiRenderer from './product-api-renderer.js';
 
 function filterIndex(results, query) {
   if (!query) return [];
@@ -56,20 +43,16 @@ async function createIngredientPanel(ingredientResults) {
 
     const viewAllDocsLink = a({ class: 'view-all' }, 'View All Documents');
     viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(article));
-    const relatedIngredientBlock = div(
-      { class: 'related-ingredient' },
-      div(
-        { class: 'content' },
+    const relatedIngredientBlock = div({ class: 'related-ingredient' },
+      div({ class: 'content' },
         h4({ class: 'product-name' }, article.heading),
         description,
-        div(
-          { class: 'cta-links' },
+        div({ class: 'cta-links' },
           viewAllDocsLink,
           a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(article.productId) }, 'Download All Documents'),
         ),
       ),
-      div(
-        { class: 'buttons' },
+      div({ class: 'buttons' },
         addSampleBtn,
         a({ class: 'button secondary', href: `/na/en-us/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
       ),
@@ -77,24 +60,19 @@ async function createIngredientPanel(ingredientResults) {
     return relatedIngredientBlock;
   };
 
-  const $articlePage = div(
-    { class: 'article-list' },
-    div(
-      { class: 'filter-search-sort', style: 'justify-content: end;' },
+  const $articlePage = div({ class: 'article-list' },
+    div({ class: 'filter-search-sort', style: 'justify-content: end;' },
       $sortDropdown,
     ),
-    div(
-      { class: 'filter-results-wrapper' },
+    div({ class: 'filter-results-wrapper' },
       div(
         { class: 'filter' },
         $filtersList,
       ),
-      div(
-        { class: 'results' },
+      div({ class: 'results' },
         $count,
         $articles,
-        div(
-          { class: 'controls' },
+        div({ class: 'controls' },
           $pagination,
           $perPageDropdown,
         ),
@@ -102,8 +80,9 @@ async function createIngredientPanel(ingredientResults) {
     ),
   );
 
-  await new IngredientRenderer({
-    ingredientResults,
+  await new ProductApiRenderer({
+    apiEndpoint: API_PRODUCT.SEARCH_INGREDIENTS(),
+    results: ingredientResults,
     articlesPerPageOptions: ['6', '12', '18', '24', '30'],
     paginationMaxBtns: 5,
     articleDiv: $articles,
@@ -127,40 +106,35 @@ async function createContentResourcesPanel() {
   const $articles = div({ class: 'articles' });
   const $filtersList = div();
 
-  const $articleCard = (article) => div(
-    { class: 'card' },
-    a(
-      { class: 'thumb', href: article.path },
+  const $articleCard = (article) => div({ class: 'card' },
+    a({ class: 'thumb', href: article.path },
       createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
     ),
-    div(
-      { class: 'info' },
+    div({ class: 'info' },
       h4(article.title),
-      p(article.description),
+      (() => {
+        const descDiv = div({ class: 'description' });
+        descDiv.innerHTML = article.description;
+        return descDiv;
+      })(),
       p({ class: 'date' }, formatDate(article.publishDate)),
       a({ class: 'button', href: article.path }, 'Learn More'),
     ),
   );
 
-  const $articlePage = div(
-    { class: 'article-list' },
-    div(
-      { class: 'filter-search-sort', style: 'justify-content: end;' },
+  const $articlePage = div({ class: 'article-list' },
+    div({ class: 'filter-search-sort', style: 'justify-content: end;' },
       $search,
       $sortDropdown,
     ),
-    div(
-      { class: 'filter-results-wrapper' },
-      div(
-        { class: 'filter' },
+    div({ class: 'filter-results-wrapper' },
+      div({ class: 'filter' },
         $filtersList,
       ),
-      div(
-        { class: 'results' },
+      div({ class: 'results' },
         $count,
         $articles,
-        div(
-          { class: 'controls' },
+        div({ class: 'controls' },
           $pagination,
           $perPageDropdown,
         ),
@@ -196,39 +170,30 @@ async function createTechDocsPanel(techDocsResults) {
     const description = div({ class: 'description' });
     description.innerHTML = `Document size: ${article.assetSize}`;
 
-    const relatedIngredientBlock = div(
-      { class: 'related-ingredient' },
-      div(
-        { class: 'content' },
+    const relatedIngredientBlock = div({ class: 'related-ingredient' },
+      div({ class: 'content' },
         h4({ class: 'product-name' }, article.assetName),
         description,
       ),
-      div(
-        { class: 'buttons' },
+      div({ class: 'buttons' },
         a({ class: 'button secondary', href: `${API_HOST}${article.assetUrl}`, title: 'Download' }, 'Download'),
       ),
     );
     return relatedIngredientBlock;
   };
 
-  const $articlePage = div(
-    { class: 'article-list' },
-    div(
-      { class: 'filter-search-sort', style: 'justify-content: end;' },
+  const $articlePage = div({ class: 'article-list' },
+    div({ class: 'filter-search-sort', style: 'justify-content: end;' },
       $sortDropdown,
     ),
-    div(
-      { class: 'filter-results-wrapper' },
-      div(
-        { class: 'filter' },
+    div({ class: 'filter-results-wrapper' },
+      div({ class: 'filter' },
         $filtersList,
       ),
-      div(
-        { class: 'results' },
+      div({ class: 'results' },
         $count,
         $articles,
-        div(
-          { class: 'controls' },
+        div({ class: 'controls' },
           $pagination,
           $perPageDropdown,
         ),
@@ -236,8 +201,9 @@ async function createTechDocsPanel(techDocsResults) {
     ),
   );
 
-  await new DocumentRenderer({
-    techDocsResults,
+  await new ProductApiRenderer({
+    apiEndpoint: API_PRODUCT.SEARCH_DOCUMENTS(),
+    results: techDocsResults,
     articlesPerPageOptions: ['6', '12', '18', '24', '30'],
     paginationMaxBtns: 5,
     articleDiv: $articles,
@@ -262,38 +228,34 @@ async function createEventPanel() {
   const $articles = div({ class: 'articles' });
   const $filtersList = div();
 
-  const $articleCard = (article) => div(
-    { class: 'card' },
-    a(
-      { class: 'thumb', href: article.path },
+  const $articleCard = (article) => div({ class: 'card' },
+    p({ class: 'type' }, JSON.parse(article.eventType)),
+    a({ class: 'thumb', href: article.path },
       createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
     ),
-    div(
-      { class: 'info' },
+    div({ class: 'info' },
       h4(article.title),
-      p(article.description),
+      (() => {
+        const descDiv = div({ class: 'description' });
+        descDiv.innerHTML = article.description;
+        return descDiv;
+      })(),
     ),
   );
 
-  const $articlePage = div(
-    { class: 'article-list' },
-    div(
-      { class: 'filter-search-sort', style: 'justify-content: end;' },
+  const $articlePage = div({ class: 'article-list' },
+    div({ class: 'filter-search-sort', style: 'justify-content: end;' },
       $search,
       $sortDropdown,
     ),
-    div(
-      { class: 'filter-results-wrapper' },
-      div(
-        { class: 'filter' },
+    div({ class: 'filter-results-wrapper' },
+      div({ class: 'filter' },
         $filtersList,
       ),
-      div(
-        { class: 'results' },
+      div({ class: 'results' },
         $count,
         $articles,
-        div(
-          { class: 'controls' },
+        div({ class: 'controls' },
           $pagination,
           $perPageDropdown,
         ),
@@ -301,8 +263,8 @@ async function createEventPanel() {
     ),
   );
 
-  await new EventsRenderer({
-    jsonPath: '/na/en-us/indexes/global-index.json?sheet=news-events',
+  await new ContentResourcesRenderer({
+    jsonPath: '/na/en-us/indexes/news-events-index.json',
     articlesPerPageOptions: ['6', '12', '18', '24', '30'],
     paginationMaxBtns: 5,
     articleDiv: $articles,

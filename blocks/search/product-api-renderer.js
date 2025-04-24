@@ -1,19 +1,18 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
-import { div, h4, h5, ul, li, small, button, span } from '../../scripts/dom-helpers.js';
+import { div, h3, h4, h5, ul, li, small, button, span } from '../../scripts/dom-helpers.js';
 import { translate } from '../../scripts/utils.js';
 import { decorateBlock, loadBlock } from '../../scripts/aem.js';
-import { API_PRODUCT } from '../../scripts/product-api.js';
 
 // API service for making fetch calls
-async function fetchIngredientResults(searchParams) {
+async function fetchResults(searchParams, apiEndpoint) {
   try {
     const response = await fetch(
-      `${API_PRODUCT.SEARCH_INGREDIENTS()}?${searchParams.toString()}`,
+      `${apiEndpoint}?${searchParams.toString()}`,
     );
     if (!response.ok) throw new Error('Failed to fetch');
     return response.json();
   } catch (error) {
-    console.error('Error fetching ingredient results:', error);
+    console.error('Error fetching results:', error);
     throw error;
   }
 }
@@ -25,12 +24,12 @@ async function updateUrlAndFetchResults(url, context, resetToFirstPage = true) {
     window.history.pushState({}, '', url.toString());
 
     // Make API call with updated params
-    const newResults = await fetchIngredientResults(url.searchParams);
+    const newResults = await fetchResults(url.searchParams, context.apiEndpoint);
 
-    // Update the ingredient results while preserving applied facets
-    context.ingredientResults = {
+    // Update the results while preserving applied facets
+    context.results = {
       ...newResults,
-      appliedFacets: context.ingredientResults.appliedFacets,
+      appliedFacets: context.results.appliedFacets,
     };
 
     // Update state with new data
@@ -117,8 +116,9 @@ function createSelectDropdown({
 }
 
 /**
- * Create an IngredientRenderer.
- * @param {string} options.ingredientResults - array of filtered ingredient results.
+ * Create a ProductApiRenderer.
+ * @param {string} options.apiEndpoint - The API endpoint to fetch results from.
+ * @param {Object} options.results - The initial results data.
  * @param {Element} options.articleDiv - The container element for the articles.
  * @param {Function} options.articleCard - The function to create an article card element.
  * @param {string|number} [options.articlesPerPageOptions=10] - The options for the number of articles per page.
@@ -129,9 +129,10 @@ function createSelectDropdown({
  * @param {Element} options.countDiv - The container element for the article count.
  * @param {Element} options.perPageDropdown - The container element for the per-page dropdown.
  */
-export default class IngredientRenderer {
+export default class ProductApiRenderer {
   constructor({
-    ingredientResults,
+    apiEndpoint,
+    results,
     articleDiv,
     articleCard,
     articlesPerPageOptions = '10, 25, 50',
@@ -142,7 +143,8 @@ export default class IngredientRenderer {
     perPageDropdown,
     filterTagsList,
   }) {
-    this.ingredientResults = ingredientResults;
+    this.apiEndpoint = apiEndpoint;
+    this.results = results;
     this.articleDiv = articleDiv;
     this.articleCard = articleCard;
     this.articlesPerPageOptions = String(articlesPerPageOptions).split(',').map(Number);
@@ -170,7 +172,7 @@ export default class IngredientRenderer {
       const valueArray = values.split(',');
       valueArray.forEach((value) => {
         // Find the corresponding facet option to get the label
-        const facetGroup = ingredientResults.facets?.[group];
+        const facetGroup = results.facets?.[group];
         const facetOption = facetGroup?.options.find((opt) => opt.value === value);
         if (facetOption) {
           appliedFacets.push({
@@ -184,8 +186,8 @@ export default class IngredientRenderer {
 
     // Initialize state first
     this.state = {
-      allArticles: ingredientResults.results,
-      totalArticles: ingredientResults.totalItemsCount,
+      allArticles: results.results,
+      totalArticles: results.totalItemsCount,
       currentPage: (parseInt(getUrlParams('activePage'), 10) || 1) - 1,
       sort: getUrlParams('sortBy') || 'Sort By',
       articlesPerPage: getUrlParams('perPage') || this.articlesPerPageOptions[0],
@@ -196,8 +198,8 @@ export default class IngredientRenderer {
       (async () => {
         try {
           await updateUrlAndFetchResults(url, this);
-          this.ingredientResults = {
-            ...this.ingredientResults,
+          this.results = {
+            ...this.results,
             appliedFacets,
           };
           this.updatePage();
@@ -207,8 +209,8 @@ export default class IngredientRenderer {
       })();
     } else {
       // If no facet parameters, just use the provided results
-      this.ingredientResults = {
-        ...ingredientResults,
+      this.results = {
+        ...results,
         appliedFacets,
       };
     }
@@ -292,20 +294,20 @@ export default class IngredientRenderer {
     this.articleDiv.innerHTML = '';
 
     if (articles.length > 0) {
-      const ingredientBlocks = await Promise.all(
+      const articleBlocks = await Promise.all(
         articles.map(async (article) => {
           const block = this.articleCard(article);
-          const relatedIngredientBlock = block.querySelector('.related-ingredient');
-          if (relatedIngredientBlock) {
-            decorateBlock(relatedIngredientBlock);
-            await loadBlock(relatedIngredientBlock);
+          const relatedBlock = block.querySelector('.related-ingredient');
+          if (relatedBlock) {
+            decorateBlock(relatedBlock);
+            await loadBlock(relatedBlock);
           }
           return block;
         }),
       );
-      this.articleDiv.append(...ingredientBlocks);
+      this.articleDiv.append(...articleBlocks);
     } else {
-      this.articleDiv.append(div({ class: 'no-results-message' }, 'No ingredient results found.'));
+      this.articleDiv.append(div({ class: 'no-results-message' }, 'No results found.'));
     }
   }
 
@@ -316,7 +318,7 @@ export default class IngredientRenderer {
 
     // Create filters section
     const createFacetGroup = (facetKey, facetData) => {
-      const isActive = this.ingredientResults.appliedFacets?.some((f) => f.group === facetKey);
+      const isActive = this.results.appliedFacets?.some((f) => f.group === facetKey);
       const isOpen = this.groupState[facetKey] || false;
       const facetGroupWrapper = div({ class: `facet-group__wrapper${isActive ? ' is-active' : ''}` });
 
@@ -336,7 +338,7 @@ export default class IngredientRenderer {
       let isShowingAll = false;
 
       facetData.options.forEach((option) => {
-        const isSelected = this.ingredientResults.appliedFacets?.some(
+        const isSelected = this.results.appliedFacets?.some(
           (f) => f.group === facetKey && f.value === option.value,
         );
 
@@ -389,8 +391,8 @@ export default class IngredientRenderer {
 
             // Update appliedFacets based on checkbox state
             if (filter.checked) {
-              this.ingredientResults.appliedFacets = [
-                ...(this.ingredientResults.appliedFacets || []),
+              this.results.appliedFacets = [
+                ...(this.results.appliedFacets || []),
                 {
                   group: filter.group,
                   value: filter.value,
@@ -398,7 +400,7 @@ export default class IngredientRenderer {
                 },
               ];
             } else {
-              this.ingredientResults.appliedFacets = (this.ingredientResults.appliedFacets || [])
+              this.results.appliedFacets = (this.results.appliedFacets || [])
                 .filter((f) => !(f.group === filter.group && f.value === filter.value));
             }
 
@@ -462,10 +464,10 @@ export default class IngredientRenderer {
     const filtersList = div({ class: 'filters-list' });
 
     // Add applied facets if they exist
-    if (this.ingredientResults.appliedFacets?.length > 0) {
+    if (this.results.appliedFacets?.length > 0) {
       filtersList.appendChild($appliedFilterHeading);
       const appliedFacets = div({ class: 'facet-applied' });
-      this.ingredientResults.appliedFacets.forEach((facet) => {
+      this.results.appliedFacets.forEach((facet) => {
         const appliedItem = div({ class: 'facet-applied__item' });
         appliedItem.appendChild(div({ class: 'facet-applied__label' }, facet.label));
         const removeButton = span({ class: 'facet-applied__remove icon-close' });
@@ -493,7 +495,7 @@ export default class IngredientRenderer {
             if (query) url.searchParams.set('q', query);
 
             // Remove from appliedFacets
-            this.ingredientResults.appliedFacets = (this.ingredientResults.appliedFacets || [])
+            this.results.appliedFacets = (this.results.appliedFacets || [])
               .filter((f) => !(f.group === facet.group && f.value === facet.value));
 
             await updateUrlAndFetchResults(url, this);
@@ -512,18 +514,17 @@ export default class IngredientRenderer {
     // Add Clear All button
     const clearAll = div({ class: 'facet-clear-all' }, 'Clear All');
     // hide clear all button if no facets are applied
-    if (this.ingredientResults.appliedFacets?.length === 0) {
+    if (this.results.appliedFacets?.length === 0) {
       clearAll.style.display = 'none';
     }
     clearAll.addEventListener('click', async () => {
       try {
         const url = new URL(window.location);
-        url.searchParams.delete('applications');
-        url.searchParams.delete('productType');
-        url.searchParams.delete('subApplications');
+        url.searchParams.delete('documentType');
+        url.searchParams.delete('documentCategory');
         url.searchParams.set('activePage', '1');
 
-        this.ingredientResults.appliedFacets = [];
+        this.results.appliedFacets = [];
         await updateUrlAndFetchResults(url, this);
         this.updatePage();
       } catch (error) {
@@ -534,11 +535,11 @@ export default class IngredientRenderer {
 
     // Add heading
     const heading = div({ class: 'heading' });
-    heading.appendChild(h4('Filter Options'));
+    heading.appendChild(h3('Filter Options'));
     filtersList.appendChild(heading);
 
     // Add facet groups
-    Object.entries(this.ingredientResults.facets || {}).forEach(([key, data]) => {
+    Object.entries(this.results.facets || {}).forEach(([key, data]) => {
       filtersList.appendChild(createFacetGroup(key, data));
     });
 
@@ -768,9 +769,9 @@ export default class IngredientRenderer {
    */
   async render() {
     try {
-      const data = this.ingredientResults.results;
+      const data = this.results.results;
       this.state.allArticles = data;
-      this.state.totalArticles = this.ingredientResults.totalItemsCount;
+      this.state.totalArticles = this.results.totalItemsCount;
 
       // render page after data and translations are loaded
       this.updatePage();

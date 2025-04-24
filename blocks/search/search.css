@@ -5,6 +5,30 @@
 .search {
   padding: 0 16px;
 
+  /* overrides for the related ingredient block */
+  .related-ingredient {
+    --border-clr: var(--border-color);
+    --border-size: 1px;
+
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    margin-top: 2.5rem;
+
+    .content {
+      display: table-cell;
+      width: 70%;
+      vertical-align: middle;
+    }
+
+    .buttons {
+      display: table-cell;
+      width: 30%;
+      vertical-align: middle;
+      text-align: center;
+    }
+  }
+
     .filter-search-sort {
       .filter-search {
         position: relative;
@@ -77,6 +101,7 @@
 
       .filter {
         width: 275px;
+        min-width: 275px;
         margin-right: 40px;
 
         @media ( width <= 1080px) {
@@ -85,7 +110,7 @@
 
         /* Facet group styles */
         .facet-group {
-          border-top: 1px solid var(--border-color);
+          /* border-top: 1px solid var(--border-color); */
           
           &__wrapper {
             margin: 0;
@@ -262,26 +287,6 @@
           line-height: 1.5rem;
           letter-spacing: .016rem;
         }
-
-        /* .articles {
-          .related-ingredient-wrapper {
-            margin-bottom: 1.5rem;
-
-            &:last-child {
-              margin-bottom: 0;
-            }
-
-            .related-ingredient {
-              border: 1px solid var(--border-color);
-              background: #fff;
-
-              &.search-docs {
-                display: flex;
-                justify-content: space-between;
-              }
-            }
-          }
-        } */
 
         .controls {
           display: flex;

@@ -1,11 +1,12 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
 
 .related-ingredient {
-  --border-color: #706f73;
+  --border-clr: #706f73;
+  --border-size: 2px;
 
 	background: var(--theme-clr-background);
 	margin-bottom: 1.5rem;
-	border: 2px solid var(--border-color);
+	border: var(--border-size) solid var(--border-clr);
   display: flex;
   gap: 2rem;
   min-height: 200px;
@@ -88,7 +89,7 @@
     align-items: center;
     position: relative;
     width: 21rem;
-    border-left: 2px solid var(--border-color);
+    border-left: var(--border-size) solid var(--border-clr);
     padding: 2.6rem 0;
 
     .button {

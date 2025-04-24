@@ -450,7 +450,7 @@ export default class ArticleRenderer {
     });
 
     const $filter = document.createDocumentFragment();
-    const $filterHeading = h3('Filters Options');
+    const $filterHeading = h3('Filter Options');
     $filter.append($filterHeading);
 
     // if filters are selected

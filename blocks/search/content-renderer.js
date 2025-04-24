@@ -64,7 +64,7 @@ function createSelectDropdown({
 }
 
 /**
- * Create an EventsRenderer.
+ * Create an ContentResourcesRenderer.
  * @param {string} options.jsonPath - The path to the JSON file containing the articles.
  * @param {Element} options.articleDiv - The container element for the articles.
  * @param {Function} options.articleCard - The function to create an article card element.
@@ -80,7 +80,7 @@ function createSelectDropdown({
  * @param {Element} options.filterTypesDropdown - The container element for the filter types dropdown.
  * @param {Element} options.filterByTagDropdown - The container element for the filter by specific tag dropdown.
  */
-export default class EventsRenderer {
+export default class ContentResourcesRenderer {
   constructor({
     jsonPath,
     articleDiv,
@@ -441,14 +441,14 @@ export default class EventsRenderer {
       const [heading, tag] = rawTag.split(' / ');
       if (!groupedTags[heading]) groupedTags[heading] = [];
       groupedTags[heading].push({
-        tag: tag.toLowerCase().replace(/\s+/g, '-'), // cleaned tag
+        tag: tag !== undefined ? tag.toLowerCase().replace(/\s+/g, '-') : '', // cleaned tag
         original: tag,
         count: tags[rawTag],
       });
     });
 
     const $filter = document.createDocumentFragment();
-    const $filterHeading = h3('Filters Options');
+    const $filterHeading = h3('Filter Options');
     $filter.append($filterHeading);
 
     // if filters are selected
