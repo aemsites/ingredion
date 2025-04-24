@@ -443,7 +443,7 @@ export default class ArticleRenderer {
       const [heading, tag] = rawTag.split(' / ');
       if (!groupedTags[heading]) groupedTags[heading] = [];
       groupedTags[heading].push({
-        tag: tag.toLowerCase().replace(/\s+/g, '-'), // cleaned tag
+        tag: tag !== undefined ? tag.toLowerCase().replace(/\s+/g, '-') : '', // cleaned tag
         original: tag,
         count: tags[rawTag],
       });
