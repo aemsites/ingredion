@@ -719,30 +719,31 @@ export function createForm(document, main) {
 }
 
 export function createTableBlock(document, main) {
-  const tableParent = document.querySelector('.ingredionTable .ingredion-table .ingredion-table');
-  if (!tableParent) return;
-  
-  const cells = [['Table']];
-  const th = tableParent.querySelectorAll('thead > tr > th');
-  const tr = tableParent.querySelectorAll('tbody > tr');
-  
-  const headingArray = [];
-  th.forEach((heading) => {
-    headingArray.push(heading.textContent);
-  });
-  cells.push(headingArray);
-  
-  tr.forEach((row) => {
-    const rowArray = [];
-    const td = row.querySelectorAll('td');
-    td.forEach((cell) => {
-      rowArray.push(cell.textContent);
+  const tableParents = document.querySelectorAll('.ingredionTable .ingredion-table .ingredion-table');
+  if (!tableParents) return;
+  tableParents.forEach((tableParent) => {
+    const cells = [['Table']];
+    const th = tableParent.querySelectorAll('thead > tr > th');
+    const tr = tableParent.querySelectorAll('tbody > tr');
+    
+    const headingArray = [];
+    th.forEach((heading) => {
+      headingArray.push(heading.textContent);
     });
-    cells.push(rowArray);
-  });
-  
-  const table = WebImporter.DOMUtils.createTable(cells, document);
-  tableParent.replaceWith(table);
+    cells.push(headingArray);
+    
+    tr.forEach((row) => {
+      const rowArray = [];
+      const td = row.querySelectorAll('td');
+      td.forEach((cell) => {
+        rowArray.push(cell.textContent);
+      });
+      cells.push(rowArray);
+    });
+    
+    const table = WebImporter.DOMUtils.createTable(cells, document);
+    tableParent.replaceWith(table);
+});
 }
 
 function testURL(url) {
@@ -753,13 +754,15 @@ function testURL(url) {
     if (url.includes('localhost:3001')) {
       newURL = url.replace('http://localhost:3001', previewURL);
       newURL = newURL.split('.html').at(0);
-    } else if (url.includes('ingredion.com')) {
+    } else if (url.includes('@')) {
+      newURL = url;
+    }
+    else if (url.includes('ingredion.com')) {
       newURL = url.replace('https://www.ingredion.com', previewURL);
       newURL = newURL.split('.html').at(0);
     } else {
       newURL = url;
-    }
-    
+    }    
   } else {
     newURL = previewURL + url;
     newURL = newURL.split('.html').at(0);

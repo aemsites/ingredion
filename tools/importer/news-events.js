@@ -24,6 +24,7 @@ let boothNumber = '';
 let registrationLink = '';
 let registrationEventSite = '';
 let eventDate = '';
+let watchNow = '';
 
 
 export default {
@@ -110,6 +111,7 @@ const createMetadata = (main, document, url, html) => {
  meta.category = 'news-events';
  meta['event-date'] = eventDate;
  meta['keywords'] = addKeywords(url);
+ meta['watch-now'] = watchNow;
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
   else meta['social-share'] = '';
@@ -180,6 +182,9 @@ export function createEventTemplate(document, main) {
       registrationLink = link.href;
       link.remove();
     }
+    if (link.textContent.includes('Watch Now')) {
+      watchNow = link.href;
+    }
   });
 
   const eventImage = document.querySelector('.event-detail__wrapper .event-detail__media > picture > img'); 
@@ -215,4 +220,5 @@ function resetVariables() {
   registrationLink = '';
   registrationEventSite = '';
   eventDate = '';
+  watchNow = '';
 }
