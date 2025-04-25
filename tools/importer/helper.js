@@ -1,4 +1,5 @@
 import { urlCategoryMap } from './keywords.js';
+import { PDPMap } from './pdpMapping.js';
 const colorMapping = new Map([
   ['#0073d8', 'blue'],
   ['#273691', 'dark-blue'],
@@ -750,7 +751,8 @@ function testURL(url) {
   const r = new RegExp('^(?:[a-z+]+:)?//', 'i');
   let newURL = '';
   
-  if (r.test(url)) {    
+  if (r.test(url)) {
+    newURL = convertPDPURLs(url);
     if (url.includes('localhost:3001')) {
       newURL = url.replace('http://localhost:3001', previewURL);
       newURL = newURL.split('.html').at(0);
@@ -884,4 +886,19 @@ export function alignCenter (document) {
       }
     });
   });
+}
+
+function convertPDPURLs(url) {
+  if (url.includes('/ingredient/')) {
+    const newPDPURL = PDPMap.get(url);
+    if (newPDPURL) {
+      return `${previewURL}${newPDPURL}`;
+    }
+    else {
+      return url;
+    }
+  }
+  else {
+    return url;
+  }
 }

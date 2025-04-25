@@ -62,6 +62,7 @@ export default {
     })(url);
     
     const main = document.body;
+    convertHrefs(main);
     createHeroBlock(document, main);
     alignCenter(document);
     getSocialShare(document, main);    

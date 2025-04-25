@@ -11,7 +11,16 @@
  */
 /* global WebImporter */
 /* eslint-disable no-console, class-methods-use-this */
-import { createColorBlock, createIngredientBlock, createContactUs, getSocialShare, createCardsBlock, sanitizeMetaTags, addKeywords } from './helper.js';
+import {
+  createColorBlock,
+  createIngredientBlock,
+  createContactUs,
+  getSocialShare,
+  createCardsBlock,
+  sanitizeMetaTags,
+  addKeywords,
+  convertHrefs
+} from './helper.js';
 import { newsMap } from './mapping.js';
 
 let title = '';
@@ -53,6 +62,7 @@ export default {
     })(url);
 
     const main = document.body;
+    convertHrefs(main);
     createEventTemplate(document, main);
     createMetadata(main, document, path.toLowerCase(), html);
     resetVariables();
