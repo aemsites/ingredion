@@ -128,6 +128,7 @@ function createSelectDropdown({
  * @param {Element} options.sortDropdown - The container element for the sort dropdown.
  * @param {Element} options.countDiv - The container element for the article count.
  * @param {Element} options.perPageDropdown - The container element for the per-page dropdown.
+ * @param {boolean} [options.prefetchedData=false] - Indicates whether data is prefetched.
  */
 export default class ProductApiRenderer {
   constructor({
@@ -142,6 +143,7 @@ export default class ProductApiRenderer {
     countDiv,
     perPageDropdown,
     filterTagsList,
+    prefetchedData = false,
   }) {
     this.apiEndpoint = apiEndpoint;
     this.results = results;
@@ -154,6 +156,7 @@ export default class ProductApiRenderer {
     this.countDiv = countDiv;
     this.perPageDropdown = perPageDropdown;
     this.filterTagsList = filterTagsList;
+    this.prefetchedData = prefetchedData;
 
     // Parse initial URL parameters for facets
     const url = new URL(window.location);
@@ -193,8 +196,8 @@ export default class ProductApiRenderer {
       articlesPerPage: getUrlParams('perPage') || this.articlesPerPageOptions[0],
     };
 
-    // If we have facet parameters in the URL, make an API call
-    if (hasFacetParams) {
+    // If we have facet parameters in the URL and we're not using prefetched data, make an API call
+    if (hasFacetParams && !this.prefetchedData) {
       (async () => {
         try {
           await updateUrlAndFetchResults(url, this);
@@ -208,7 +211,7 @@ export default class ProductApiRenderer {
         }
       })();
     } else {
-      // If no facet parameters, just use the provided results
+      // If no facet parameters or using prefetched data, just use the provided results
       this.results = {
         ...results,
         appliedFacets,
@@ -533,10 +536,7 @@ export default class ProductApiRenderer {
     });
     filtersList.appendChild(clearAll);
 
-    // Add heading
-    const heading = div({ class: 'heading' });
-    heading.appendChild(h3('Filter Options'));
-    filtersList.appendChild(heading);
+    filtersList.append(h4('Filter Options'));
 
     // Add facet groups
     Object.entries(this.results.facets || {}).forEach(([key, data]) => {
@@ -780,3 +780,4 @@ export default class ProductApiRenderer {
     }
   }
 }
+ 

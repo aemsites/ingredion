@@ -83,6 +83,7 @@ function createSelectDropdown({
 export default class ContentResourcesRenderer {
   constructor({
     jsonPath,
+    prefetchedData,
     articleDiv,
     articleCard,
     articlesPerPageOptions = '10, 25, 50',
@@ -98,6 +99,7 @@ export default class ContentResourcesRenderer {
     clearFilters,
   }) {
     this.jsonPath = jsonPath;
+    this.prefetchedData = prefetchedData;
     this.articleDiv = articleDiv;
     this.articleCard = articleCard;
     this.articlesPerPageOptions = String(articlesPerPageOptions).split(',').map(Number);
@@ -149,31 +151,57 @@ export default class ContentResourcesRenderer {
    */
   updatePage() {
     const { currentPage, searchQuery, tags, sort, articlesPerPage, allArticles, year, type } = this.state;
+    console.log('Initial articles count:', allArticles.length);
     let articles = [...allArticles];
 
     // Filter articles by tags
     if (tags.length > 0) {
-      articles = articles.filter((article) => tags.every((tag) => article.tags.toLowerCase().replace(/\s+/g, '-').includes(tag)));
+      articles = articles.filter((article) => {
+        // Handle case where article.tags might be undefined
+        const articleTags = article.tags || '';
+        return tags.every((tag) => articleTags.toLowerCase().replace(/\s+/g, '-').includes(tag));
+      });
+      console.log('After tags filter:', articles.length);
     }
 
     // Filter articles by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      articles = articles.filter((article) => article.title.toLowerCase().includes(query) || article.description.toLowerCase().includes(query));
+      articles = articles.filter((article) => {
+        const title = (article.title || '').toLowerCase();
+        const description = (article.description || '').toLowerCase();
+        return title.includes(query) || description.includes(query);
+      });
+      console.log('After search filter:', articles.length);
     }
 
     // Filter articles by year
     if (year) {
-      articles = articles.filter((article) => new Date(article.publishDate * 1000).getFullYear() === parseInt(year, 10));
+      articles = articles.filter((article) => {
+        if (!article.publishDate) return false;
+        try {
+          return new Date(article.publishDate * 1000).getFullYear() === parseInt(year, 10);
+        } catch (e) {
+          console.warn('Error parsing date:', article.publishDate);
+          return false;
+        }
+      });
+      console.log('After year filter:', articles.length);
     }
 
     // Filter articles by type
     if (type) {
       articles = articles.filter((article) => {
-        if (!article.type) return false;
-        const articleType = JSON.parse(article.type)[0];
-        return articleType === type;
+        if (!article.eventType) return false;
+        try {
+          const articleType = JSON.parse(article.eventType)[0];
+          return articleType === type;
+        } catch (e) {
+          console.warn('Invalid eventType format:', article.eventType);
+          return false;
+        }
       });
+      console.log('After type filter:', articles.length);
     }
 
     // Sort articles
@@ -185,27 +213,28 @@ export default class ContentResourcesRenderer {
         articles = articles.sort((A, B) => B.title.localeCompare(A.title));
         break;
       case 'oldest':
-        articles = articles.sort((A, B) => parseInt(A.publishDate, 10) - parseInt(B.publishDate, 10));
+        articles = articles.sort((A, B) => parseInt(A.publishDate || 0, 10) - parseInt(B.publishDate || 0, 10));
         break;
       case 'newest': default:
-        articles = articles.sort((A, B) => parseInt(B.publishDate, 10) - parseInt(A.publishDate, 10));
+        articles = articles.sort((A, B) => parseInt(B.publishDate || 0, 10) - parseInt(A.publishDate || 0, 10));
         break;
     }
 
     this.state.filteredArticles = articles;
-    this.state.totalArticles = articles.length;
+    this.state.filteredArticlesCount = articles.length;
+    console.log('Final filtered count:', articles.length, 'Total count:', this.state.totalArticlesCount);
+    
     this.renderArticles(articles.slice(currentPage * articlesPerPage, (currentPage + 1) * articlesPerPage));
     this.renderFilterTags();
     this.renderFilterYears();
     this.renderFilterTypes();
     this.renderFilterByTagDropdown();
-    // this.renderSearchForm();
     this.renderSortDropdown();
     this.renderCount();
     this.renderPagination();
     this.renderPerPageDropdown();
     this.renderClearFilters();
-    this.updateUrl(); // sync state
+    this.updateUrl();
   }
 
   updateUrl() {
@@ -250,8 +279,8 @@ export default class ContentResourcesRenderer {
   renderCount() {
     if (!this.countDiv) return;
     const start = this.state.currentPage * this.state.articlesPerPage + 1;
-    const end = Math.min((this.state.currentPage + 1) * this.state.articlesPerPage, this.state.totalArticles);
-    this.countDiv.textContent = `${translate('items')} ${start}–${end} ${translate('of')} ${this.state.totalArticles}`;
+    const end = Math.min((this.state.currentPage + 1) * this.state.articlesPerPage, this.state.filteredArticlesCount);
+    this.countDiv.textContent = `${translate('items')} ${start}–${end} ${translate('of')} ${this.state.totalArticlesCount}`;
   }
 
   /**
@@ -448,8 +477,7 @@ export default class ContentResourcesRenderer {
     });
 
     const $filter = document.createDocumentFragment();
-    const $filterHeading = h3('Filter Options');
-    $filter.append($filterHeading);
+    $filter.append(h4('Filter Options'));
 
     // if filters are selected
     if (this.state.tags.length > 0) {
@@ -654,12 +682,92 @@ export default class ContentResourcesRenderer {
    * @async
    * @returns {Promise<void>}
    */
+  async render() {
+    try {
+      let data;
+      if (this.prefetchedData) {
+        data = Array.isArray(this.prefetchedData) ? { data: this.prefetchedData } : this.prefetchedData;
+      } else if (this.jsonPath) {
+        const response = await fetch(this.jsonPath);
+        if (!response.ok) throw new Error('Failed to fetch articles');
+        data = await response.json();
+      } else {
+        throw new Error('Either prefetchedData or jsonPath must be provided');
+      }
+
+      // Store both the total count and the articles array
+      const articles = Array.isArray(data) ? data : (data.data || []);
+      this.state.allArticles = articles;
+      this.state.totalArticlesCount = data.total || articles.length;
+      this.state.filteredArticles = [...articles];
+      this.state.filteredArticlesCount = articles.length;
+
+      // Load translations if needed
+      const [region, locale] = getRegionLocale();
+      await loadTranslations(locale);
+
+      this.parseUrl();
+      this.updatePage();
+    } catch (error) {
+      console.error('Error in render:', error);
+      throw error;
+    }
+  }
+
+  renderClearFilters() {
+    if (!this.clearFilters) return;
+
+    // Check if any filters are active
+    const hasActiveFilters = this.state.tags.length > 0
+      || this.state.searchQuery
+      || this.state.year
+      || this.state.type;
+
+    // Show/hide clear filters based on active filters
+    if (hasActiveFilters) {
+      this.clearFilters.classList.remove('hidden');
+
+      // Remove any existing click handlers
+      const oldHandler = this.clearFiltersHandler;
+      if (oldHandler) {
+        this.clearFilters.removeEventListener('click', oldHandler);
+      }
+
+      // Create and store the new handler
+      this.clearFiltersHandler = (event) => {
+        event.preventDefault();
+
+        // Reset all filters to default state
+        this.state.tags = [];
+        this.state.searchQuery = '';
+        this.state.year = '';
+        this.state.type = '';
+        this.state.sort = 'newest';
+        this.state.currentPage = 0;
+
+        // Update the page with reset filters
+        this.updatePage();
+      };
+
+      // Add the new handler
+      this.clearFilters.addEventListener('click', this.clearFiltersHandler);
+    } else {
+      this.clearFilters.classList.add('hidden');
+    }
+  }
+
+  scrollTop() {
+    const { top } = this.articleDiv.getBoundingClientRect();
+    const scrollToY = top + window.scrollY - 120; // account for header
+    window.scrollTo({ top: scrollToY, behavior: 'smooth' });
+  }
+
   renderPagination() {
     if (!this.paginationDiv) return;
     this.paginationDiv.innerHTML = '';
 
     // Exit if article count is less than max page count
-    if (this.state.totalArticles < this.state.articlesPerPage) return;
+    if (this.state.filteredArticlesCount <= this.state.articlesPerPage) return;
 
     const p = document.createDocumentFragment();
 
@@ -674,7 +782,7 @@ export default class ContentResourcesRenderer {
     $prev.disabled = this.state.currentPage === 0;
     p.appendChild($prev);
 
-    const totalPages = Math.ceil(this.state.totalArticles / this.state.articlesPerPage);
+    const totalPages = Math.ceil(this.state.filteredArticlesCount / this.state.articlesPerPage);
 
     if (totalPages <= this.paginationMaxBtns + 2) {
       Array.from({ length: totalPages }, (_, i) => p.appendChild(this.createPageBtn(i)));
@@ -725,80 +833,5 @@ export default class ContentResourcesRenderer {
     p.appendChild($next);
 
     this.paginationDiv.appendChild(p);
-    this.updateUrl();
-  }
-
-  scrollTop() {
-    const { top } = this.articleDiv.getBoundingClientRect();
-    const scrollToY = top + window.scrollY - 120; // account for header
-    window.scrollTo({ top: scrollToY, behavior: 'smooth' });
-  }
-
-  /**
-   * Render the article list and initialize event listeners.
-   */
-  async render() {
-    try {
-      // eslint-disable-next-line no-unused-vars
-      const [region, locale] = getRegionLocale();
-
-      // fetch both articles and translations
-      const [articlesResponse] = await Promise.all([
-        fetch(this.jsonPath),
-        loadTranslations(locale),
-      ]);
-
-      // handle articles response
-      if (!articlesResponse.ok) throw new Error('Failed to fetch articles');
-      const { data } = await articlesResponse.json();
-      this.state.allArticles = data;
-
-      // render page after data and translations are loaded
-      await this.updatePage();
-    } catch (error) {
-      console.error('Error during render:', error);
-    }
-  }
-
-  renderClearFilters() {
-    if (!this.clearFilters) return;
-
-    // Check if any filters are active
-    const hasActiveFilters = this.state.tags.length > 0
-      || this.state.searchQuery
-      || this.state.year
-      || this.state.type;
-
-    // Show/hide clear filters based on active filters
-    if (hasActiveFilters) {
-      this.clearFilters.classList.remove('hidden');
-
-      // Remove any existing click handlers
-      const oldHandler = this.clearFiltersHandler;
-      if (oldHandler) {
-        this.clearFilters.removeEventListener('click', oldHandler);
-      }
-
-      // Create and store the new handler
-      this.clearFiltersHandler = (event) => {
-        event.preventDefault();
-
-        // Reset all filters to default state
-        this.state.tags = [];
-        this.state.searchQuery = '';
-        this.state.year = '';
-        this.state.type = '';
-        this.state.sort = 'newest';
-        this.state.currentPage = 0;
-
-        // Update the page with reset filters
-        this.updatePage();
-      };
-
-      // Add the new handler
-      this.clearFilters.addEventListener('click', this.clearFiltersHandler);
-    } else {
-      this.clearFilters.classList.add('hidden');
-    }
   }
 }
