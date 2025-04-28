@@ -25,7 +25,8 @@ import {
   createTableBlock,
   sanitizeMetaTags,
   addAuthorBio,
-  addKeywords
+  addKeywords,
+  convertHrefs
 } from './helper.js';
 
 import { newsMap } from './mapping.js';
@@ -56,7 +57,7 @@ export default {
     })(url);
     const main = document.body;
     const isFormulationTemplate = document.querySelector('.formulation-page');
-
+    convertHrefs(main);
     if (isFormulationTemplate) {
       createFormulationTemplate(document, main);
     } else {
@@ -220,9 +221,11 @@ function createFormulationTemplate(document, main) {
 
   createGalleryBlock(formulationHeader);
 
-  const formulationInstructions = formulationPage.querySelector('.formulation-header .ingredientListingTable');
-  if (formulationInstructions) {
-    createFormulationInstructions(formulationInstructions);
+  const formulationInstructions = formulationPage.querySelectorAll('.formulation-header .ingredientListingTable');
+  if (formulationInstructions && formulationInstructions.length === 1) {
+    createFormulationInstructions(formulationInstructions[0]);
+  } else if (formulationInstructions && formulationInstructions.length > 1) {
+    createFormulationInstructionsWithMultipleTables(formulationInstructions);
   }
  
 
@@ -289,7 +292,7 @@ function createGalleryBlock(formulationHeader) {
 }
 
 
-function createFormulationInstructions(instructions) {
+function createFormulationInstructions(instructions, formulationPage) {
   // Create main container div
   const formulationInstructionsDiv = document.createElement('div');
 
@@ -331,7 +334,7 @@ function createFormulationInstructions(instructions) {
   if (prepTable) {
     const prepHeading = prepTable.querySelector('.heading > h3');
     formulaDiv.append(prepHeading);
-
+    
     // Add ordered lists
     const ols = prepTable.querySelectorAll('.rte-block > ol');
     const guidelineText = prepTable.querySelector('.rte-block > h2');
@@ -408,4 +411,84 @@ function createFormulationTable(tableParent, blockOption) {
     cells.push(rowArray);
   });  
   return WebImporter.DOMUtils.createTable(cells, document);
+}
+
+function createFormulationInstructionsWithMultipleTables(instructions) {
+  // Create main container div
+  const formulationInstructionsDiv = document.createElement('div');
+  
+  // Add description section
+  const description = instructions[0].querySelector('.section .section__content .section-title-description-wrapper .heading > h2');
+  formulationInstructionsDiv.append(description);
+
+  // Add section metadata for instructions
+  const section = [['Section Metadata']];
+  section.push(['Style', 'instructions-section']);
+  const instructionsSection = WebImporter.DOMUtils.createTable(section, document);
+  formulationInstructionsDiv.append(instructionsSection);
+  formulationInstructionsDiv.append(pTag());
+  
+  const formulaDiv = document.createElement('div');
+  instructions.forEach((instruction, index) => {
+    // Create formula section
+    const formaulationTable = instruction.querySelector(
+      '.section .section__content .ingredients-table .ingredients-table__wrapper .ingredients-table__contentWrapper > div:first-of-type'
+    );
+    
+    // Add formula heading
+    const formulaHeading = formaulationTable.querySelector('.heading > h3');
+    if (formulaHeading) formulaDiv.append(formulaHeading);
+    const subHeading = formaulationTable.querySelector('.heading > h4');
+    if (subHeading) formulaDiv.append(subHeading);
+    
+    // Add formula table
+    const formulaTable = formaulationTable.querySelector('.ingredients-table__table > table');
+    const formulaTableBlock = createFormulationTable(formulaTable, 'formula');
+    formulaDiv.append(formulaTableBlock);
+    // Add left umn metadata    
+    if (index > 0) formaulationTable.remove();
+  });
+  
+  const leftSection = [['Section Metadata']];
+  leftSection.push(['Style', 'column-left']);
+  const leftSectionTable = WebImporter.DOMUtils.createTable(leftSection, document);
+  formulaDiv.append(leftSectionTable);
+  formulaDiv.append(pTag());
+  // Add preparation section
+  const prepTable = instructions[0].querySelector('.ingredients-table__wrapper .ingredients-table__contentWrapper .ingredients-table__preparations');
+  if (prepTable) {
+    const prepHeading = prepTable.querySelector('.heading > h3');
+    formulaDiv.append(prepHeading);
+
+    // Add ordered lists
+    const ols = prepTable.querySelectorAll('.rte-block > ol');
+    const guidelineText = prepTable.querySelector('.rte-block > h2');
+
+    ols.forEach((ol, count) => {
+      const rightTable = [['Table(List)']];
+      const lis = ol.querySelectorAll('li');
+
+      lis.forEach((li, index) => {
+        rightTable.push([`${index + 1}. ${li.textContent}`]);
+      });
+
+      const rightTableBlock = WebImporter.DOMUtils.createTable(rightTable, document);
+      ol.replaceWith(rightTableBlock);    
+    });
+    formulaDiv.append(prepTable);
+  } else {
+    const formulaImg = instructions[0].querySelector('.ingredients-table__image');
+    if (formulaImg) {
+      formulaDiv.append(formulaImg);
+    }
+  }
+  // Add right column metadata
+  const rightSection = [['Section Metadata']];
+  rightSection.push(['Style', 'column-right']);
+  const rightSectionTable = WebImporter.DOMUtils.createTable(rightSection, document);
+  formulaDiv.append(rightSectionTable);
+  formulaDiv.append(pTag());
+  // Combine and replace
+  formulationInstructionsDiv.append(formulaDiv);
+  instructions[0].replaceWith(formulationInstructionsDiv);
 }

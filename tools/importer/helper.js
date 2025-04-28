@@ -472,7 +472,13 @@ export function createIngredientBlock(document, main, formulation = false) {
   if (!resultProdCards) {
     const cells = [['related ingredient']];
     const heading = relatedIngredients.querySelector('.heading > h2').textContent;
-    cells.push(['Product Name', heading.trim()]);    
+    const productURL = relatedIngredients.querySelector('.result-card__buttons secondary-cta-link').href;
+    if (productURL) {
+      const productName = productURL.split('name=').pop();
+      cells.push(['Product Name', productName]);
+    } else {
+      cells.push(['Product Name', heading.trim()]);
+    }
     const table = WebImporter.DOMUtils.createTable(cells, document);
     const ptag = document.createElement('p');
     ptag.textContent = '---';
@@ -494,7 +500,13 @@ export function createIngredientBlock(document, main, formulation = false) {
     resultProdCards.forEach((resultProdCard, index) => {
       const cells = [['related ingredient']];
       const heading = resultProdCard.querySelector('.product-name').textContent;
-      cells.push(['Product Name', heading.trim()]);          
+      const productURL = resultProdCard.querySelector('.result-card__buttons .secondary-cta-link').href;
+      if (productURL) {
+        const productName = productURL.split('name=').pop();
+        cells.push(['Product Name', productName]);
+      } else {
+        cells.push(['Product Name', heading.trim()]);
+      }               
       
       const table = WebImporter.DOMUtils.createTable(cells, document);
       const ptag = document.createElement('p');
@@ -748,29 +760,31 @@ export function createTableBlock(document, main) {
 }
 
 function testURL(url) {
-  const r = new RegExp('^(?:[a-z+]+:)?//', 'i');
-  let newURL = '';
+  const hasProtocol = /^(?:[a-z+]+:)?\/\//i.test(url);
   
-  if (r.test(url)) {
-    newURL = convertPDPURLs(url);
+  if (hasProtocol) {
+    // First check if it's a PDP URL that needs conversion
+    const pdpURL = convertPDPURLs(url);
+    if (pdpURL) return pdpURL;
+    
+    // Handle email links
+    if (url.includes('@')) return url;
+    
+    // Handle localhost and ingredion.com URLs
     if (url.includes('localhost:3001')) {
-      newURL = url.replace('http://localhost:3001', previewURL);
-      newURL = newURL.split('.html').at(0);
-    } else if (url.includes('@')) {
-      newURL = url;
+      return url.replace('http://localhost:3001', previewURL).split('.html')[0];
     }
-    else if (url.includes('ingredion.com')) {
-      newURL = url.replace('https://www.ingredion.com', previewURL);
-      newURL = newURL.split('.html').at(0);
-    } else {
-      newURL = url;
-    }    
-  } else {
-    newURL = previewURL + url;
-    newURL = newURL.split('.html').at(0);
+    
+    if (url.includes('ingredion.com')) {
+      return url.replace('https://www.ingredion.com', previewURL).split('.html')[0];
+    }
+    
+    // Default case for other absolute URLs
+    return url;
   } 
-
-  return newURL;
+  
+  // Handle relative URLs
+  return `${previewURL}${url}`.split('.html')[0];
 }
 
 export function convertHrefs(element) {
@@ -889,16 +903,16 @@ export function alignCenter (document) {
 }
 
 function convertPDPURLs(url) {
-  if (url.includes('/ingredient/')) {
-    const newPDPURL = PDPMap.get(url);
-    if (newPDPURL) {
-      return `${previewURL}${newPDPURL}`;
-    }
-    else {
-      return url;
-    }
+  // Convert localhost URLs to production URLs
+  let newURL = url.includes('localhost:3001') 
+    ? url.replace('http://localhost:3001', 'https://www.ingredion.com') 
+    : url;
+  
+  // Check if URL is an ingredient URL
+  if (newURL.includes('/ingredient/') || newURL.includes('/ingredients/')) {
+    const newPDPURL = PDPMap.get(newURL);
+    return newPDPURL ? `${previewURL}${newPDPURL}` : false;
   }
-  else {
-    return url;
-  }
+  
+  return false;
 }

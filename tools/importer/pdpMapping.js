@@ -1497,9 +1497,10 @@ export const PDPMap = new Map([
 ['https://www.ingredion.com/na/en-us/ingredient/casco-19-corn-protein-feed-131010.html','/na/en-us/ingredient?name=casco-19-corn-protein-feed-131010'],
 ['https://www.ingredion.com/na/en-us/ingredient/saladizer-0325-ec-70001620.html','/na/en-us/ingredient?name=saladizer-0325-ec-70001620'],
 ['https://www.ingredion.com/na/en-us/ingredient/fibertex-cf-100-70001295.html','/na/en-us/ingredient?name=fibertex-cf-100-70001295'],
-['https://www.ingredion.com/na/en-us/ingredient/fibertex-cf-500-70001296.html','/na/en-us/ingredient?name=fibertex-cf-500-70001296']
+['https://www.ingredion.com/na/en-us/ingredient/fibertex-cf-500-70001296.html','/na/en-us/ingredient?name=fibertex-cf-500-70001296'],
+['https://www.ingredion.com/ingredients/na/himaize-260-22000b00.html','/na/en-us/ingredient?name=himaize-260-22000b00'],
+['https://www.ingredion.com/ingredients/na/versafibe-1490-dietary-fiber-06400400.html','/na/en-us/ingredient?name=versafibe-1490-dietary-fiber-06400400'],
+['https://www.ingredion.com/na/novelose-3490-06400301.html','/na/en-us/ingredient?name=novelose-3490-06400301'],
+['https://www.ingredion.com/ingredients/na/versafibe-1490-dietary-fiber-06400400.html','/na/en-us/ingredient?name=versafibe-1490-dietary-fiber-06400400'],
+['https://www.ingredion.com/ingredients/na/novelose-3490-06400301.html', '/na/en-us/ingredient?name=novelose-3490-06400301']
 ]); 
-
-
-
-
