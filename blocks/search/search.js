@@ -342,7 +342,15 @@ async function displaySearchResults(
     {
       title: 'Events',
       count: eventsResults?.length || 0,
-      panel: () => createEventPanel(eventsResults),
+      panel: () => {
+        // Sort events by date (newest first)
+        const sortedEvents = [...eventsResults].sort((a, b) => {
+          const dateA = new Date(JSON.parse(a.eventDate));
+          const dateB = new Date(JSON.parse(b.eventDate));
+          return dateB - dateA;
+        });
+        return createEventPanel(sortedEvents);
+      },
       index: 3,
     },
   ];
@@ -456,48 +464,63 @@ async function fetchSearchResults(searchParams) {
   }
 }
 
-export default async function decorate(block) {
-  let totalResults = 0;
+export default function decorate(block) {
   block.classList.add('search', 'block');
 
-  const params = new URLSearchParams(window.location.search);
-  const query = params.get('q');
-  const initialTab = params.get('initialTab');
+  // show loader
+  const loading = div({ class: 'loading' }, div({ class: 'loader' }));
+  block.append(loading);
 
-  try {
-    const searchParams = new URLSearchParams({
-      initialTab: initialTab || '',
-      q: query || '',
-    });
+  // Initialize search asynchronously
+  setTimeout(async () => {
+    let totalResults = 0;
+    const params = new URLSearchParams(window.location.search);
+    const query = params.get('q');
+    const initialTab = params.get('initialTab');
 
-    // Use the consolidated API call
-    const {
-      ingredientResults,
-      techDocsResults,
-      contentResourcesResults,
-      eventsResults,
-      eventsIndex,
-    } = await fetchSearchResults(searchParams);
+    try {
+      const searchParams = new URLSearchParams({
+        initialTab: initialTab || '',
+        q: query || '',
+      });
 
-    // Calculate total results
-    const ingredientCount = ingredientResults.totalItemsCount;
-    const techDocsCount = techDocsResults.totalItemsCount;
-    const globalCount = contentResourcesResults?.length || 0;
-    const eventsCount = eventsIndex?.total || 0;
-    totalResults = ingredientCount + techDocsCount + globalCount + eventsCount;
+      // Use the consolidated API call
+      const {
+        ingredientResults,
+        techDocsResults,
+        contentResourcesResults,
+        eventsResults,
+        eventsIndex,
+      } = await fetchSearchResults(searchParams);
 
-    await displaySearchResults(
-      block,
-      ingredientResults,
-      techDocsResults,
-      contentResourcesResults,
-      eventsResults,
-      eventsIndex,
-      totalResults,
-    );
-  } catch (error) {
-    console.error('Error during search:', error);
-    const errorMsg = 'An error occurred while searching. Please try again later.';
-    block.innerHTML = `<div class="error-message">${errorMsg}</div>`;
-  }
+      // Calculate total results
+      const ingredientCount = ingredientResults.totalItemsCount;
+      const techDocsCount = techDocsResults.totalItemsCount;
+      const globalCount = contentResourcesResults?.length || 0;
+      const eventsCount = eventsResults?.length || 0;
+      totalResults = ingredientCount + techDocsCount + globalCount + eventsCount;
+
+      // Remove loading state
+      loading.remove();
+
+      // Display results
+      await displaySearchResults(
+        block,
+        ingredientResults,
+        techDocsResults,
+        contentResourcesResults,
+        eventsResults,
+        eventsIndex,
+        totalResults,
+      );
+    } catch (error) {
+      // Remove loading state and show error
+      loading.remove();
+      console.error('Error during search:', error);
+      const errorMsg = 'An error occurred while searching. Please try again later.';
+      block.innerHTML = `<div class="error-message">${errorMsg}</div>`;
+    }
+  }, 0);
+
+  return block;
 }
