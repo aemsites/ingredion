@@ -1,5 +1,5 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
-import { div, h3, h4, p, a, span } from '../../scripts/dom-helpers.js';
+import { div, h3, h4, p, a, strong, span } from '../../scripts/dom-helpers.js';
 import { buildBlock, decorateBlock, loadBlock, createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import { formatDate, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
@@ -237,32 +237,35 @@ async function createTechDocsPanel(techDocsResults) {
 /*
   Events Renderer
 */
-async function createEventPanel(prefetchedData) {
+async function createEventPanel(eventsData) {
   const $count = h3({ class: 'count' });
   const $pagination = div({ class: 'pagination' });
   const $perPageDropdown = div();
   const $articles = div({ class: 'articles' });
 
   const $articleCard = (article) => {
-    // get count of articles
-    const articleCount = prefetchedData.length;
-    // console.log('Article count:', articleCount);
-    // console.log('Processing article:', article);
-    // console.log('Article publishDate:', article.publishDate);
+    console.log('Processing article:', article);
+    console.log('Article publishDate:', article.eventDate);
     const formattedDate = article.publishDate ? new Date(parseInt(article.publishDate, 10) * 1000).toLocaleDateString() : '';
     return div({ class: 'card' },
-      p({ class: 'type' }, JSON.parse(article.eventType)),
-      a({ class: 'thumb', href: article.path },
-        createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
+      div({ class: 'image-wrapper'},
+        div({ class: 'thumb'},
+          p({ class: 'type' }, JSON.parse(article.eventType)),
+          createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
+        ),
       ),
       div({ class: 'info' },
-        p({ class: 'date' }, 'date:' + formattedDate),
+        p({ class: 'date' }, JSON.parse(article.eventDate)),
         h4(article.title),
+        article.eventType && JSON.parse(article.eventType).length ? p({ class: 'details' }, strong('Event Type: '), JSON.parse(article.eventType)) : null,
+        article.location && JSON.parse(article.location).length ? p({ class: 'details' }, strong('Location: '), JSON.parse(article.location)) : null,
+        article.boothNumber && JSON.parse(article.boothNumber).length ? p({ class: 'details' }, strong('Booth Number: '), JSON.parse(article.boothNumber)) : null,
         div({ class: 'description' }, JSON.parse(article.content)),
       ),
       div({ class: 'buttons'},
-        a({ class: 'button', href: JSON.parse(article.registration) }, 'Watch Now'),
-        a({ class: 'button secondary', href: article.registrationEventSite }, 'Go To Event Site'),
+        article.watchNow && JSON.parse(article.watchNow).length ? a({ class: 'button', href: JSON.parse(article.watchNow) }, 'Watch Now') : null,
+        article.registrationEventSite && JSON.parse(article.registrationEventSite).length ? a({ class: 'button', href: JSON.parse(article.registrationEventSite) }, 'Register') : null,
+        a({ class: 'button secondary', href: article.path }, 'Go To Event Site'),
       ),
     );
   };
@@ -284,7 +287,7 @@ async function createEventPanel(prefetchedData) {
 
   // events renderer
   await new ContentResourcesRenderer({
-    prefetchedData,
+    prefetchedData: eventsData,
     articlesPerPageOptions: ['6', '12', '18', '24', '30'],
     paginationMaxBtns: 5,
     articleDiv: $articles,
@@ -292,6 +295,7 @@ async function createEventPanel(prefetchedData) {
     paginationDiv: $pagination,
     perPageDropdown: $perPageDropdown,
     countDiv: $count,
+    skipSearchFilter: true,
   }).render();
   return $articlePage;
 }
@@ -337,15 +341,8 @@ async function displaySearchResults(
     },
     {
       title: 'Events',
-      count: eventsIndex?.total || 0,
-      panel: () => {
-        // Create a new object with just the data we want to show
-        const eventsData = {
-          data: eventsIndex?.data || [],
-          total: eventsIndex?.total || 0
-        };
-        return createEventPanel(eventsData);
-      },
+      count: eventsResults?.length || 0,
+      panel: () => createEventPanel(eventsResults),
       index: 3,
     },
   ];

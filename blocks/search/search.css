@@ -247,30 +247,6 @@
         cursor: pointer;
       }
 
-      /* Applied facets styles */
-
-      /* .facet-applied {
-        & __item {
-          & __label {
-            flex: 1;
-            font-size: 0.875rem;
-            color: #373738;
-          }
-
-          & __remove {
-            color: var(--green);
-            cursor: pointer;
-            padding: 0.25rem;
-            font-size: 1rem;
-
-            &::before {
-              content: "\e91c";
-              font-family: ingredion-icon;
-            }
-          }
-        }
-      } */
-
       .facet-applied__item {
         display: flex;
         align-items: center;
@@ -438,42 +414,6 @@
     .filter-search {
       position: relative;
       flex: 1;
-
-
-      /* input {
-        width: 100%;
-        outline: none;
-        border: 1px solid var(--border-color);
-        padding: 2px 36px 2px 12px;
-        font-size: .875rem;
-        color: #373738;
-        &:focus { border-color: var(--green) }
-      }
-
-      .icon-search {
-        position: absolute;
-        top: 4px;
-        right: 0;
-        width: 40px;
-        height: 38px;
-        font-family: OpenSans-Bold, Helvetica, sans-serif;
-        font-size: 1.5rem;
-        cursor: pointer;
-        background: transparent;
-        border: 0;
-
-        &::before {
-          content: "\e93c";
-          color: var(--green);
-          font-family: ingredion-icon;
-          speak: never;
-          font-style: normal;
-          font-weight: 400;
-          font-variant: normal;
-          text-transform: none;
-          -webkit-font-smoothing: antialiased;
-        }
-      } */
     }
 
     [class*="filter-"] {
@@ -629,11 +569,58 @@
             flex-direction: column;
           }
 
+          /* Events View Styles */
+          .events & {
+            .info {
+              padding-right: 80px;
+
+              .date {
+                font-family: OpenSans-Bold, Helvetica, sans-serif;
+                font-size: .75rem;
+                color: #373738;
+                margin: 0 0 .5rem;
+              }
+
+              .details {
+                margin: 10px 0;
+                font-size: 1rem;
+                
+                strong {
+                  font-family: OpenSans-Bold, Helvetica, sans-serif;
+                  font-weight: 700;
+                }
+              }
+
+              .description {
+                margin: 30px 0;
+                font-size: 1rem;
+              }
+            }
+
+            .image-wrapper {
+              .type {
+                font-size: 1rem;
+                font-family: MiloPro-Bold, Helvetica, sans-serif;
+                font-weight: 700;
+                color: var(--mustard);
+                margin: 0 0 10px;
+              }
+            }
+
+            .buttons {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              gap: 30px;
+            }
+          }
+
+
           .thumb {
             flex: none;
             width: 235px;
             height: 185px;
-            background: #dfdfdf;
 
             img {
               width: 100%;
@@ -653,6 +640,8 @@
             h4 {
               margin: 0
             }
+
+
 
             .button {
               margin: 1rem 0 0
@@ -699,13 +688,6 @@
             .info {
               margin: 0;
               padding: 2rem 1.5rem;
-
-              .type {
-                font-size: 20px;
-                font-family: MiloPro-Bold, Helvetica, sans-serif;
-                font-weight: 700;
-                color: var(--mustard);
-              }
 
               h4 {
                 font-size: var(--heading-font-size-l);

@@ -79,6 +79,7 @@ function createSelectDropdown({
  * @param {Element} options.filterYearsDropdown - The container element for the filter years dropdown.
  * @param {Element} options.filterTypesDropdown - The container element for the filter types dropdown.
  * @param {Element} options.filterByTagDropdown - The container element for the filter by specific tag dropdown.
+ * @param {boolean} [options.skipSearchFilter=false] - Whether to skip the search filter for the events panel.
  */
 export default class ContentResourcesRenderer {
   constructor({
@@ -97,6 +98,7 @@ export default class ContentResourcesRenderer {
     perPageDropdown,
     filterByTagDropdown,
     clearFilters,
+    skipSearchFilter = false,
   }) {
     this.jsonPath = jsonPath;
     this.prefetchedData = prefetchedData;
@@ -113,6 +115,7 @@ export default class ContentResourcesRenderer {
     this.perPageDropdown = perPageDropdown;
     this.filterByTagDropdown = filterByTagDropdown;
     this.clearFilters = clearFilters;
+    this.skipSearchFilter = skipSearchFilter;
     this.state = {
       allArticles: [],
       totalArticles: 0,
@@ -170,7 +173,8 @@ export default class ContentResourcesRenderer {
       articles = articles.filter((article) => {
         const title = (article.title || '').toLowerCase();
         const description = (article.description || '').toLowerCase();
-        return title.includes(query) || description.includes(query);
+        const content = (article.content || '').toLowerCase();
+        return title.includes(query) || description.includes(query) || content.includes(query);
       });
       console.log('After search filter:', articles.length);
     }
