@@ -675,9 +675,14 @@ export function createCarouselBlock(document, main) {
     
     const slides = carousel.querySelectorAll('.card-carousel__slider .card-carousel__card');
     slides.forEach((slide) => {
-      const slideImg = slide.querySelector('.card-carousel__card--wrapper .card-carousel__card--image > picture').outerHTML;
-      const slideHeading = slide.querySelector('.card-carousel__card--wrapper .card-carousel__card--text .heading > h3').outerHTML;
-      const slideText = slide.querySelector('.card-carousel__card--wrapper .card-carousel__card--text .rte-block').innerHTML;
+      const slideImgElement = slide.querySelector('.card-carousel__card--wrapper .card-carousel__card--image > picture');
+      const slideImg = slideImgElement ? slideImgElement.outerHTML : '';
+      
+      const slideHeadingElement = slide.querySelector('.card-carousel__card--wrapper .card-carousel__card--text .heading > h3');
+      const slideHeading = slideHeadingElement ? slideHeadingElement.outerHTML : '';
+      
+      const slideTextElement = slide.querySelector('.card-carousel__card--wrapper .card-carousel__card--text .rte-block');
+      const slideText = slideTextElement ? slideTextElement.innerHTML : '';
       
       cells.push([`${slideImg}`, `${slideHeading} ${slideText}`]);
     });
@@ -836,7 +841,7 @@ export function sanitizeMetaTags(tags) {
       faltTags.push(tag);
   });  
   let tempArray = faltTags.filter((item, index) => faltTags.indexOf(item) === index);
-  return [sanitizedTags, tempArray];
+  return [[...new Set(sanitizedTags)], [...new Set(tempArray)]];
 }
 
 export function createArticleList(document, main) {

@@ -52,6 +52,7 @@ export default {
         p = `${p}index`;
       }
       return decodeURIComponent(p)
+        .toLowerCase()
         .replace(/\.html$/, '')
         .replace(/[^a-zA-Z0-9/]/gm, '-');
     })(url);
