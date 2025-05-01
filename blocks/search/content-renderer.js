@@ -1,5 +1,5 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
-import { div, h3, h4, h5, ul, li, a, small, span, form, input, button } from '../../scripts/dom-helpers.js';
+import { div, h4, h5, ul, li, a, small, span, form, input, button } from '../../scripts/dom-helpers.js';
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 
 function getUrlParams(key) {
@@ -226,8 +226,6 @@ export default class ContentResourcesRenderer {
 
     this.state.filteredArticles = articles;
     this.state.filteredArticlesCount = articles.length;
-    console.log('Final filtered count:', articles.length, 'Total count:', this.state.totalArticlesCount);
-    
     this.renderArticles(articles.slice(currentPage * articlesPerPage, (currentPage + 1) * articlesPerPage));
     this.renderFilterTags();
     this.renderFilterYears();
@@ -707,7 +705,7 @@ export default class ContentResourcesRenderer {
       this.state.filteredArticlesCount = articles.length;
 
       // Load translations if needed
-      const [region, locale] = getRegionLocale();
+      const [, locale] = getRegionLocale();
       await loadTranslations(locale);
 
       this.parseUrl();

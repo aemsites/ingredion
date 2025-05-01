@@ -1,5 +1,5 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
-import { div, h3, h4, h5, ul, li, small, button, span } from '../../scripts/dom-helpers.js';
+import { div, h4, h5, ul, li, small, button, span } from '../../scripts/dom-helpers.js';
 import { translate } from '../../scripts/utils.js';
 import { decorateBlock, loadBlock } from '../../scripts/aem.js';
 
@@ -780,4 +780,3 @@ export default class ProductApiRenderer {
     }
   }
 }
- 

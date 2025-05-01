@@ -25,7 +25,6 @@ function filterIndex(results, query) {
   });
 }
 
-
 /*
   Content & Resources Renderer
 */
@@ -88,8 +87,6 @@ async function createContentResourcesPanel(contentResourcesResults) {
   }).render();
   return $articlePage;
 }
-
-
 
 /*
   Ingredient Renderer
@@ -165,8 +162,6 @@ async function createIngredientPanel(ingredientResults) {
   return $articlePage;
 }
 
-
-
 /*
   Technical & SDS Documents Renderer
 */
@@ -232,8 +227,6 @@ async function createTechDocsPanel(techDocsResults) {
   return $articlePage;
 }
 
-
-
 /*
   Events Renderer
 */
@@ -243,32 +236,34 @@ async function createEventPanel(eventsData) {
   const $perPageDropdown = div();
   const $articles = div({ class: 'articles' });
 
-  const $articleCard = (article) => {
-    console.log('Processing article:', article);
-    console.log('Article publishDate:', article.eventDate);
-    const formattedDate = article.publishDate ? new Date(parseInt(article.publishDate, 10) * 1000).toLocaleDateString() : '';
-    return div({ class: 'card' },
-      div({ class: 'image-wrapper'},
-        div({ class: 'thumb'},
-          p({ class: 'type' }, JSON.parse(article.eventType)),
-          createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
-        ),
+  // TODO: Fix date - meeting with Jessica on May 5th
+  const $articleCard = (article) => div({ class: 'card' },
+    div({ class: 'image-wrapper' },
+      div({ class: 'thumb' },
+        p({ class: 'type' }, JSON.parse(article.eventType)),
+        createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
       ),
-      div({ class: 'info' },
-        p({ class: 'date' }, JSON.parse(article.eventDate)),
-        h4(article.title),
-        article.eventType && JSON.parse(article.eventType).length ? p({ class: 'details' }, strong('Event Type: '), JSON.parse(article.eventType)) : null,
-        article.location && JSON.parse(article.location).length ? p({ class: 'details' }, strong('Location: '), JSON.parse(article.location)) : null,
-        article.boothNumber && JSON.parse(article.boothNumber).length ? p({ class: 'details' }, strong('Booth Number: '), JSON.parse(article.boothNumber)) : null,
-        div({ class: 'description' }, JSON.parse(article.content)),
-      ),
-      div({ class: 'buttons'},
-        article.watchNow && JSON.parse(article.watchNow).length ? a({ class: 'button', href: JSON.parse(article.watchNow) }, 'Watch Now') : null,
-        article.registrationEventSite && JSON.parse(article.registrationEventSite).length ? a({ class: 'button', href: JSON.parse(article.registrationEventSite) }, 'Register') : null,
-        a({ class: 'button secondary', href: article.path }, 'Go To Event Site'),
-      ),
-    );
-  };
+    ),
+    div({ class: 'info' },
+      p({ class: 'date' }, JSON.parse(article.eventDate)),
+      h4(article.title),
+      article.eventType && JSON.parse(article.eventType).length ? p({ class: 'details' }, strong('Event Type: '), JSON.parse(article.eventType)) : null,
+      article.location && JSON.parse(article.location).length ? p({ class: 'details' }, strong('Location: '), JSON.parse(article.location)) : null,
+      article.boothNumber && JSON.parse(article.boothNumber).length ? p({ class: 'details' }, strong('Booth Number: '), JSON.parse(article.boothNumber)) : null,
+      div({ class: 'description' }, JSON.parse(article.content)),
+    ),
+    div({ class: 'buttons' },
+      (() => {
+        if (article.watchNow && JSON.parse(article.watchNow).length) {
+          return a({ class: 'button', href: JSON.parse(article.watchNow) }, 'Watch Now');
+        } if (article.registrationEventSite && JSON.parse(article.registrationEventSite).length) {
+          return a({ class: 'button', href: JSON.parse(article.registrationEventSite) }, 'Register');
+        }
+        return null;
+      })(),
+      a({ class: 'button secondary', href: article.path }, 'Go To Event Site'),
+    ),
+  );
 
   const $articlePage = div({ class: 'article-list events' },
     div({ class: 'filter-results-wrapper' },
@@ -356,31 +351,36 @@ async function displaySearchResults(
   ];
 
   loadCSS('/blocks/related-ingredient/related-ingredient.css');
-  
+
   // Filter out sections with no results
   const sectionsWithResults = sections.filter((section) => section.count > 0);
 
   // Filter out sections with no results and create panels
   const visibleSections = await Promise.all(
     sectionsWithResults
-      .map(async section => ({
+      .map(async (section) => ({
         ...section,
-        title: `${section.title} (${section.count})`,
+        title: {
+          text: section.title,
+          count: section.count,
+        },
         panel: await section.panel(),
-      }))
+      })),
   );
 
   // Determine which tab should be active
   const activeTabIndex = Math.min(initialTab, visibleSections.length - 1);
 
   // Create tab sections
-  tabBlock.append(...visibleSections.map((section, idx) => 
-    div({ 'aria-selected': idx === activeTabIndex },
-      div({ 'data-valign': 'middle' }, p(section.title)),
-      div({ 'data-valign': 'middle', class: 'button-container' },
-        div({ class: 'panel-content', 'aria-hidden': idx !== activeTabIndex }, section.panel),
-      )
-    )
+  tabBlock.append(...visibleSections.map((section, idx) => div({ 'aria-selected': idx === activeTabIndex },
+    div({ 'data-valign': 'middle' }, p(
+      section.title.text,
+      span({ class: 'count' }, ` (${section.title.count})`),
+    )),
+    div({ 'data-valign': 'middle', class: 'button-container' },
+      div({ class: 'panel-content', 'aria-hidden': idx !== activeTabIndex }, section.panel),
+    ),
+  ),
   ));
 
   tabWrapper.append(tabBlock);
@@ -393,23 +393,23 @@ async function displaySearchResults(
   // Use the passed-in totalResults parameter
   if (totalResults > 0) {
     block.append(
-      div({ class: 'total-results' }, 
+      div({ class: 'total-results' },
         h3(
           `${totalResults} results for `,
           span({ class: 'query' }, `"${query}"`),
-        )
+        ),
       ),
-      resultsContainer
+      resultsContainer,
     );
   } else {
     block.append(
-      div({ class: 'total-results' }, 
+      div({ class: 'total-results' },
         h3(
           'No results for ',
           span({ class: 'query' }, `"${query}"`),
-        )
+        ),
       ),
-      div({ class: 'no-results-message' }, 'We have found no results')
+      div({ class: 'no-results-message' }, 'We have found no results'),
     );
   }
 }
@@ -423,7 +423,7 @@ async function fetchSearchResults(searchParams) {
 
   const fetchWithCache = async (url) => {
     if (!cache.has(url)) {
-      cache.set(url, fetch(url).then(res => res.json()));
+      cache.set(url, fetch(url).then((res) => res.json()));
     }
     return cache.get(url);
   };
@@ -438,12 +438,12 @@ async function fetchSearchResults(searchParams) {
       ingredientResults,
       techDocsResults,
       globalIndex,
-      eventsIndex
+      eventsIndex,
     ] = await Promise.all([
       fetchWithCache(ingredientUrl),
       fetchWithCache(techDocsUrl),
       fetchWithCache(globalIndexUrl),
-      fetchWithCache(newsEventsIndexUrl)
+      fetchWithCache(newsEventsIndexUrl),
     ]);
 
     // Filter the content resources and events based on the search query
