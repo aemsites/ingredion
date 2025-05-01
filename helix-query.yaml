@@ -5,8 +5,6 @@
 # 2. post body below to - https://admin.hlx.page/config/aemsites/sites/ingredion/content/query.yaml
 # content-type = text/yaml
 
-# updated 2025-04-29
-
 version: 1.4
 indices:
   global-na-en-us:
@@ -161,4 +159,4 @@ indices:
         values: attribute(el, "content")
       watchNow:
         select: head > meta[name="watch-now"]
-        values: attribute(el, "content")        
+        values: attribute(el, "content")

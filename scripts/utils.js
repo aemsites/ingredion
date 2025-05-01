@@ -132,6 +132,7 @@ export function translate(key) { return translations[key] || key; }
  * @returns {string} Formatted date string in "Month Day, Year" format.
  */
 export function formatDate(timestamp) {
+  if (!timestamp) return '';
   const date = new Date(parseInt(timestamp, 10) * 1000); // Convert seconds to milliseconds
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return date.toLocaleDateString('en-US', options);
