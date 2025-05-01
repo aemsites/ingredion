@@ -21,7 +21,8 @@ const sheet = new Map([
   ['be-whats-next' ,'be-whats-next'],
   ['events', 'news-events'],
   ['news', 'news'],
-  ['resource-library', 'formulation']
+  ['resource-library', 'formulation'],
+  ['snacking-inspiration', 'snacking-inspo']
 ])
 
 const previewURL = 'https://main--ingredion--aemsites.aem.page';
@@ -879,8 +880,7 @@ export function addKeywords(url) {
 }
 
 export function alignCenter (document) {
-  const sections = document.querySelectorAll('.section-title-description-wrapper');
-  if (!sections) return;
+  const sections = document.querySelectorAll('.section-title-description-wrapper');  
   sections.forEach((section) => {
     const heading = section.querySelector('.heading--center');
     if (!heading) return;
@@ -891,17 +891,34 @@ export function alignCenter (document) {
     section.append(sectionMetadataTable);
     section.append(pTag());
   });
+  const headings = document.querySelectorAll('.heading--center');
+  headings.forEach((heading) => {
+    const parent = heading.parentElement;
+    if (parent.classList.contains('section-title-description-wrapper')) return;
+    heading.prepend(pTag());
+    const sectionMetadata = [['Section Metadata']];
+    sectionMetadata.push(['Style', 'center']);
+    const sectionMetadataTable = WebImporter.DOMUtils.createTable(sectionMetadata, document);
+    heading.append(sectionMetadataTable);
+    heading.append(pTag());
+  });
   const rteBlocks = document.querySelectorAll('.rte-block');
   rteBlocks.forEach((rteBlock) => {
-    const centerAlignPTag = rteBlock.querySelectorAll('p');
-    centerAlignPTag.forEach((p) => {
-      if (p.style.textAlign === 'center') {
-        p.prepend(pTag());
+    // Find all center-aligned elements (p, h1, h2, h3)
+    const centerAlignElements = rteBlock.querySelectorAll('p, h1, h2, h3');
+    
+    centerAlignElements.forEach((element) => {
+      if (element.style.textAlign === 'center') {
+        // Add metadata for center alignment
+        const div = document.createElement('div');
+        div.append(pTag());
+        div.append(element.cloneNode(true));        
         const sectionMetadata = [['Section Metadata']];
         sectionMetadata.push(['Style', 'center']);
         const sectionMetadataTable = WebImporter.DOMUtils.createTable(sectionMetadata, document);
-        p.append(sectionMetadataTable);
-        p.append(pTag());
+        div.append(sectionMetadataTable);
+        div.append(pTag());
+        element.replaceWith(div);
       }
     });
   });

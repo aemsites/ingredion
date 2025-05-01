@@ -26,6 +26,7 @@ import {
   sanitizeMetaTags,
   addAuthorBio,
   addKeywords,
+  alignCenter,
   convertHrefs
 } from './helper.js';
 
@@ -64,6 +65,7 @@ export default {
     } else {
       getSocialShare(document, main);
       createHeroBlock(document, main);
+      alignCenter(document);
       createCalloutBlock(document, main);
       createCardsBlock(document, main);
       createVideoBlock(document, main);
