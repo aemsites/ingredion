@@ -5,11 +5,13 @@
 # 2. post body below to - https://admin.hlx.page/config/aemsites/sites/ingredion/content/query.yaml
 # content-type = text/yaml
 
-version: 1
+version: 1.4
 indices:
   global-na-en-us:
     include:
       - /na/en-us/**
+    exclude:
+      - /na/en-us/news-events/**
     target: /na/en-us/indexes/global-index.json
     properties:
       title:
@@ -19,13 +21,16 @@ indices:
         select: head > meta[name="description"]
         value: attribute(el, "content")
       image:
-          select: head > meta[property="og:image"]
-          value: attribute(el, 'content')
+        select: head > meta[property="og:image"]
+        value: attribute(el, 'content')
       publishDate:
         select: head > meta[name="published-date"]
         value: parseTimestamp(attribute(el, "content"), "ddd, DD MMM YYYY hh:mm:ss GMT")
       tags:
         select: head > meta[property="article:tag"]
+        values: attribute(el, "content")
+      type:
+        select: head > meta[name="type"]
         values: attribute(el, "content")
       keywords:
         select: head > meta[name="keywords"]
@@ -33,3 +38,125 @@ indices:
       content:
         select: main > div
         values: characters(textContent(el), 0, 200)
+      category:
+        select: head > meta[name="category"]
+        values: attribute(el, "content")
+
+  global-na-en-us-news-events:
+    include:
+      - /na/en-us/news-events/events/**
+    target: /na/en-us/indexes/news-events-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: attribute(el, "content")
+      description:
+        select: head > meta[name="description"]
+        value: attribute(el, "content")
+      image:
+        select: head > meta[property="og:image"]
+        value: attribute(el, 'content')
+      publishDate:
+        select: head > meta[name="published-date"]
+        value: parseTimestamp(attribute(el, "content"), "ddd, DD MMM YYYY hh:mm:ss GMT")
+      content:
+        select: main > div
+        values: textContent(el)
+      eventType:
+        select: head > meta[name="event-type"]
+        values: attribute(el, "content")
+      eventDate:
+        select: head > meta[name="event-date"]
+        values: attribute(el, "content")
+      location:
+        select: head > meta[name="location"]
+        values: attribute(el, "content")
+      boothNumber:
+        select: head > meta[name="booth-number"]
+        values: attribute(el, "content")
+      registration:
+        select: head > meta[name="registration"]
+        values: attribute(el, "content")
+      registrationEventSite:
+        select: head > meta[name="registration-event-site"]
+        values: attribute(el, "content")
+      watchNow:
+        select: head > meta[name="watch-now"]
+        values: attribute(el, "content")
+
+  global-na-es-mx:
+    include:
+      - /na/es-mx/**
+    exclude:
+      - /na/es-mx/news-events/**
+    target: /na/es-mx/indexes/global-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: attribute(el, "content")
+      description:
+        select: head > meta[name="description"]
+        value: attribute(el, "content")
+      image:
+        select: head > meta[property="og:image"]
+        value: attribute(el, 'content')
+      publishDate:
+        select: head > meta[name="published-date"]
+        value: parseTimestamp(attribute(el, "content"), "ddd, DD MMM YYYY hh:mm:ss GMT")
+      tags:
+        select: head > meta[property="article:tag"]
+        values: attribute(el, "content")
+      type:
+        select: head > meta[name="type"]
+        values: attribute(el, "content")
+      keywords:
+        select: head > meta[name="keywords"]
+        values: attribute(el, "content")
+      content:
+        select: main > div
+        values: characters(textContent(el), 0, 200)
+      category:
+        select: head > meta[name="category"]
+        values: attribute(el, "content")
+
+  global-na-es-mx-news-events:
+    include:
+      - /na/es-mx/news-events/events/**
+    target: /na/es-mx/indexes/news-events-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: attribute(el, "content")
+      description:
+        select: head > meta[name="description"]
+        value: attribute(el, "content")
+      image:
+        select: head > meta[property="og:image"]
+        value: attribute(el, 'content')
+      publishDate:
+        select: head > meta[name="published-date"]
+        value: parseTimestamp(attribute(el, "content"), "ddd, DD MMM YYYY hh:mm:ss GMT")
+      content:
+        select: main > div
+        values: textContent(el)
+      eventType:
+        select: head > meta[name="event-type"]
+        values: attribute(el, "content")
+      eventDate:
+        select: head > meta[name="event-date"]
+        values: attribute(el, "content")
+      location:
+        select: head > meta[name="location"]
+        values: attribute(el, "content")
+      boothNumber:
+        select: head > meta[name="booth-number"]
+        values: attribute(el, "content")
+      registration:
+        select: head > meta[name="registration"]
+        values: attribute(el, "content")
+      registrationEventSite:
+        select: head > meta[name="registration-event-site"]
+        values: attribute(el, "content")
+      watchNow:
+        select: head > meta[name="watch-now"]
+        values: attribute(el, "content")

@@ -276,34 +276,160 @@ export default async function decorate(block) {
     }
   });
 
-  const $searchBar = div(
-    { class: 'search-bar' },
-    form(
-      { class: 'search', id: 'searchForm' },
-      div(
-        { class: 'search-box' },
-        div(
-          { class: 'category select-dropdown' },
-          div({ class: 'selected' }, 'All'),
+  const $searchBar = div({ class: 'search-bar' },
+    form({ class: 'search', id: 'searchForm', action: `/${region}/${locale}/search` },
+      div({ class: 'search-box' },
+        (() => {
+          const initialTab = input({ type: 'hidden', name: 'initialTab', id: 'initialTab', placeholder: 'All' });
+          const selected = div({ class: 'selected' }, 'All');
+          const optionsList = ['All', 'Content & Resource', 'Ingredients', 'Technical Documents & SDS', 'Event'];
+          const options = div({ class: 'dropdown-options hidden' },
+            ...optionsList.map((text) => div({ class: 'dropdown-option' }, text)),
+          );
+          const dropdown = div({ class: 'category select-dropdown' }, initialTab, selected, options);
+
+          selected.addEventListener('click', (e) => {
+            e.stopPropagation();
+            options.classList.toggle('hidden');
+          });
+          options.addEventListener('click', (e) => {
+            const option = e.target.closest('.dropdown-option');
+            if (option) {
+              e.stopPropagation();
+              selected.textContent = option.textContent;
+              options.classList.add('hidden');
+
+              let tabValue = '';
+              if (option.textContent === 'All') {
+                tabValue = '';
+              } else if (option.textContent === 'Content & Resource') {
+                tabValue = '0';
+              } else if (option.textContent === 'Ingredients') {
+                tabValue = '1';
+              } else if (option.textContent === 'Technical Documents & SDS') {
+                tabValue = '2';
+              } else if (option.textContent === 'Event') {
+                tabValue = '3';
+              }
+              initialTab.value = tabValue;
+            }
+          });
+          document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+              options.classList.add('hidden');
+            }
+          });
+          return dropdown;
+        })(),
+        div({ class: 'form-typeahead form-typeahead--nav-search' },
+          input({
+            id: 'search',
+            placeholder: 'Search',
+            name: 'q',
+            'aria-label': 'Search Input',
+            value: '',
+            autocomplete: 'off',
+          }),
+          div({ class: 'form-dropdown form-input--type-ahead hidden' },
+            div({ class: 'typeahead-dropdown-options' }),
+          ),
+          button({ type: 'submit', class: 'icon-search', 'aria-label': 'Search Button' }),
         ),
-        input({ id: 'search', 'aria-label': 'Search Input' }),
-        button({
-          type: 'submit',
-          class: 'icon-search',
-          'aria-label': 'Search Button',
-        }),
-      ),
-      button(
-        {
-          type: 'submit',
-          form: 'searchForm',
-          class: 'button-search',
-          'aria-label': 'Search Button',
-        },
-        'Search',
       ),
     ),
   );
+
+  // Add typeahead functionality
+  const $searchInput = $searchBar.querySelector('#search');
+  const $dropdownOptions = $searchBar.querySelector('.typeahead-dropdown-options');
+  let typeaheadData = null;
+
+  function filterAndDisplayResults(query) {
+    if (!typeaheadData || !query) {
+      $dropdownOptions.innerHTML = '';
+      return;
+    }
+
+    const filteredResults = typeaheadData.filter(
+      (item) => item.name.toLowerCase().includes(query.toLowerCase()));
+
+    $dropdownOptions.innerHTML = filteredResults
+      .map((item) => `<div class="typeahead-dropdown-option">${item.name}</div>`)
+      .join('');
+
+    // Show/hide dropdown based on results
+    const parentDropdown = $dropdownOptions.closest('.form-dropdown');
+    if (filteredResults.length > 0) {
+      parentDropdown.classList.remove('hidden');
+    } else {
+      parentDropdown.classList.add('hidden');
+    }
+  }
+
+  // Debounce function to limit API calls
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  const debouncedFilter = debounce(filterAndDisplayResults, 300);
+
+  $searchInput.addEventListener('input', (e) => {
+    debouncedFilter(e.target.value.trim());
+  });
+
+  $searchInput.addEventListener('focus', async () => {
+    // Show search button
+    const searchButton = $searchBar.querySelector('button.button-search');
+    searchButton.classList.remove('hidden');
+    if (!typeaheadData) {
+      try {
+        const response = await fetch('https://www.ingredion.com/content/ingredion-com/na/en-us.ingredient-search-typeahead.json');
+        if (!response.ok) throw new Error('Network response was not ok');
+        typeaheadData = await response.json();
+        $searchInput.dataset.typeahead = JSON.stringify(typeaheadData);
+        // Initial filter if there's already a value
+        if ($searchInput.value) {
+          filterAndDisplayResults($searchInput.value.trim());
+        }
+      } catch (error) {
+        console.error('Error fetching typeahead data:', error);
+      }
+    }
+  });
+
+  // Prevent hiding search button when clicking it
+  const searchButton = $searchBar.querySelector('button.button-search');
+  searchButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
+
+  // Handle clicking outside to close dropdown and hide search button
+  document.addEventListener('click', (e) => {
+    if (!$searchInput.contains(e.target) && !searchButton.contains(e.target)) {
+      const dropdown = $dropdownOptions.closest('.form-dropdown');
+      dropdown.classList.add('hidden');
+      searchButton.classList.add('hidden');
+    }
+  });
+
+  // Handle option selection
+  $dropdownOptions.addEventListener('click', (e) => {
+    const option = e.target.closest('.typeahead-dropdown-option');
+    if (option) {
+      $searchInput.value = option.textContent;
+      $searchInput.dataset.selectedProduct = option.textContent;
+      const dropdown = $dropdownOptions.closest('.form-dropdown');
+      dropdown.classList.add('hidden');
+    }
+  });
 
   const $navCategory = nav({ class: 'category' }, ...$categoryNav);
 

@@ -9,7 +9,7 @@ body.modal-open {
   .modal dialog {
     overscroll-behavior: none;
     overflow: hidden;
-    position: relative;
+    position: fixed;
     width: calc(100vw - 48px);
     max-width: 42.0625rem;
     max-height: calc(100dvh - 48px);
@@ -44,12 +44,13 @@ body.modal-open {
   
   .modal .close-button {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 10px;
+    right: 10px;
     width: 44px;
     height: 44px;
     margin: 0;
     border: none;
+    outline: none;
     border-radius: 0;
     padding: 0;
     background-color: transparent;

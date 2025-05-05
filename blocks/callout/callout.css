@@ -158,35 +158,6 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      
-      > button {
-        cursor: pointer;
-        border: 0;
-        background: #fff;
-        box-shadow: 0 10px 15px 0 rgba(0 0 0 / 10%);
-        height: 80px;
-        width: 80px;
-        border-radius: 50%;
-        padding: 0;
-      }
-      
-      > button::before {
-        content: '';
-        display: block;
-        box-sizing: border-box;
-        position: absolute;
-        color: var(--green);
-        border-top: 10px solid transparent;
-        border-bottom: 10px solid transparent;
-        border-left: 14px solid var(--green);
-        top: 50%;
-        left: calc(50% + 3px);
-        transform: translate(-50%, -60%);
-      }
-      
-      > button:hover::before {
-        border-left-color: var(--dark-green);
-      }
     }
   }
 }
@@ -230,6 +201,21 @@
     text-decoration: none;
     border-color: var(--light-grey);
     color: var(--light-grey);
+  }
+}
+
+.default.text-only {
+  .button-container {
+    a {
+      border: 2px solid var(--green);
+      color: var(--green);
+      background: transparent;
+    }
+
+    a:hover {
+      border-color: var(--dark-green);
+      color: var(--dark-green);
+    }
   }
 }
 
@@ -353,4 +339,8 @@
 
 body.modal-open {
   overflow: hidden; /* Disable scrolling when video modal is open */
+}
+
+.search-content {
+  border: 2px solid #706f73;
 }

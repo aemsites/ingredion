@@ -10,6 +10,7 @@ const themeColors = [
   'purple',
   'dark-purple',
   'dark-blue',
+  'yellow',
 ];
 
 function embedVimeo(url, autoplay, background) {
@@ -111,10 +112,11 @@ export default function decorate(block) {
   const h2 = block.querySelector('h2');
   const h1 = block.querySelector('h1');
   const link = block.querySelector('a');
+  const pFirstOfType = block.querySelector('p:first-of-type');
 
   const header = h1 ?? h2 ?? h3;
 
-  const textWrapper = header.closest('div');
+  const textWrapper = header ? header.closest('div') : pFirstOfType.closest('div');
   textWrapper.classList.add('callout-content');
 
   const classListArray = Array.from(block.classList);
@@ -147,7 +149,7 @@ export default function decorate(block) {
       if (!autoplay) {
         picWrapper.insertAdjacentHTML(
           'beforeend',
-          '<div class="video-placeholder-play"><button type="button" title="Play"></button></div>',
+          '<div class="video-placeholder-play"><button type="button" class="button play" title="Play"></button></div>',
         );
         picWrapper.addEventListener('click', () => {
           loadVideoEmbed(block, link.href, true, false);

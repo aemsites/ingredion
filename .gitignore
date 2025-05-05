@@ -3,6 +3,7 @@ coverage/*
 logs/*
 node_modules/*
 ignore/*
+temp/*
 
 helix-importer-ui
 .DS_Store

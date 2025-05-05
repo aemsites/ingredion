@@ -9,6 +9,48 @@
   background: none;
 }
 
+.cards button.slide-prev,
+.cards button.slide-next {
+  position: relative;
+  background: #fff;
+  border-radius: 50%;
+  border: none;
+  width: 40px;
+  height: 2.5rem;
+  top: -10px;
+  z-index: 10;
+  box-shadow: 4px 10px 15px 0 rgba(0 0 0 / 10%);
+
+  &.slide-next {
+    &::after {
+      transform: translate(-50%, -50%) rotate(45deg);
+      left: calc(50% - 2px);
+    }
+  }
+
+  &::after {
+    display: block;
+    content: '';
+    border: 1.5px solid;
+    border-color: var(--green);
+    border-bottom: 0;
+    border-left: 0;
+    height: 6px;
+    width: 6px;
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 2px);
+    transform: translate(-50%, -50%) rotate(-135deg);
+  }
+
+  &.slide-prev:disabled::after,
+  &.slide-next:disabled::after,
+  &:hover::after {
+    opacity: .75;
+    border-color: var(--dark-grey);
+  }
+}
+
 @media (width >= 1080px) {
   .cards > ul {
     display: grid;
@@ -16,18 +58,22 @@
     gap: 40px 20px;
   }
 
-  .cards.two-column > ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
-    gap: 40px 20px;
-  }
+  
 }
 
 @media (width <= 1079px) {
+  .cards {
+    overflow-x: auto;
+  }
+
   .cards > ul {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(85%, 1fr));
     gap: 20px 40px;
+  }
+
+  .cards > ul > li {
+    flex-shrink: 0;
   }
 }
 
@@ -81,16 +127,38 @@
 }
 
 @media (width >= 1080px) {
+  .cards.slim {
+    display: flex;
+    justify-content: center;
+  }
+
   .cards.slim > ul {
+    width: auto;
+    display: flex;
     grid-template-columns: repeat(auto-fill, minmax(23%, 1fr));
-    gap: 20px;
+    gap: 10px;
   }
 }
 
 @media (width <= 1079px) {
+  .cards.slim {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
   .cards.slim > ul {
-    grid-template-columns: repeat(auto-fill, minmax(85%, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 50px;
+  }
+
+  .cards.slim > ul::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -114,12 +182,8 @@
 
 @media (width <= 1079px) {
   .cards.slim > ul > li {
-    margin: auto;
+    flex-shrink: 0;
   }
-
-  .cards.slim > ul > li:not(:first-of-type) {
-    display: none;
-  } 
 }
 
 .cards.slim .cards-card-body {
@@ -285,6 +349,14 @@ main > .section > .default-content-wrapper {
 }
 
 @media (width >= 1080px) {
+  .dots-nav,
+  button.slide-prev,
+  button.slide-next {
+    display: none;
+  }
+}
+
+@media (width >= 1080px) {
   .dots-nav {
     display: none;
   }
@@ -304,10 +376,10 @@ main > .section > .default-content-wrapper {
     background-color: #ccc;
     border-radius: 50%;
     cursor: pointer;
-  }
 
-  .dot.active {
-    background-color: #333;
+    &[active="true"] {
+      background-color: var(--green);
+    }
   }
 }
 
@@ -388,40 +460,6 @@ main > .section > .default-content-wrapper {
   transform: translate(-50%, -50%);
 }
 
-.cards.video .video-placeholder-play button {
-  position: relative;
-  display: block;
-  border: 0;
-  cursor: pointer;
-  background: #fff;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  outline: 2px solid;
-  padding: 0;
-  color: var(--dark-green);
-  border-color: var(--dark-green);
-  box-shadow: 0 10px 15px 0 rgba(0 0 0 / 10%);       
-}
-
-
-
-.cards.video .video-placeholder-play button::before {
-  content: '';
-  display: block;
-  box-sizing: border-box;
-  color: var(--dark-green);
-  position: absolute;
-  width: 0;
-  height: 24px;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
-  border-left: 18px solid;
-  top: 50%;
-  left: calc(50% + 2px);
-  transform: translate(-50%, -50%);
-}
-
 .cards.video .video-modal {
   position: fixed;
   top: 0;
@@ -430,7 +468,6 @@ main > .section > .default-content-wrapper {
   width: 100vw;
   z-index: 99;
 }
-
 
 .cards.video .video-modal-content {
   height: 100%;
@@ -498,3 +535,12 @@ main > .section > .default-content-wrapper {
   text-align: left;
   color: var(--dark-green);
 }
+
+@media (width >= 1080px) {
+  .cards.two-column > ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
+    gap: 40px 20px;
+  }
+}
+
