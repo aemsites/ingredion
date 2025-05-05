@@ -363,12 +363,14 @@ export default class ArticleRenderer {
 
     // Build tag counts from all articles
     this.state.allArticles.forEach((article) => {
-      article.tags.split(',').forEach((tag) => {
-        const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
-        if (cleanedTag.startsWith(`${tagCategory} /`)) {
-          tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
-        }
-      });
+      if (article?.tags && typeof article.tags === 'string') {
+        article.tags.split(',').forEach((tag) => {
+          const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
+          if (cleanedTag.startsWith(`${tagCategory} /`)) {
+            tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
+          }
+        });
+      }
     });
 
     // Process tags to get just the second part after "Markets /"
@@ -388,21 +390,19 @@ export default class ArticleRenderer {
     tagOptions.push({ value: '', label: `All ${tagCategory}` });
 
     // Find the currently selected option and use its label for display
-    const selectedTag = this.state.tags.find((tag) => tagOptions.some((option) => option.value === tag),
-    );
+    const selectedTag = this.state.tags.find((tag) => tagOptions.some((option) => option.value === tag));
     const selectedOption = tagOptions.find((opt) => opt.value === selectedTag);
     const selectedDisplay = selectedOption ? selectedOption.label : '';
 
     const $dropdown = createSelectDropdown({
       options: tagOptions,
-      selectedValue: selectedDisplay, // Use the display label instead of the value
+      selectedValue: selectedDisplay,
       defaultText: tagCategory,
       onSelect: (value, option, dropdown) => {
         this.state.currentPage = 0;
 
         // Remove any existing tags from this category
-        this.state.tags = this.state.tags.filter((tag) => !tagOptions.some((option) => option.value === tag),
-        );
+        this.state.tags = this.state.tags.filter((tag) => !tagOptions.some((option) => option.value === tag));
 
         // Add the new tag if one was selected
         if (value) {
@@ -412,7 +412,7 @@ export default class ArticleRenderer {
         // Use the original format label for display
         const selectedOption = tagOptions.find((opt) => opt.value === value);
         dropdown.querySelector('.selected').textContent = selectedOption
-          ? selectedOption.label // Use the original format label
+          ? selectedOption.label
           : tagCategory;
 
         this.updatePage();
@@ -430,10 +430,12 @@ export default class ArticleRenderer {
 
     // Build tag counts from the filtered articles
     this.state.filteredArticles.forEach((article) => {
-      article.tags.split(',').forEach((tag) => {
-        const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
-        tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
-      });
+      if (article.tags) {
+        article.tags.split(',').forEach((tag) => {
+          const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
+          tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
+        });
+      }
     });
 
     // Group tags by heading
