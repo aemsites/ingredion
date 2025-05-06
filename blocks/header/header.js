@@ -42,11 +42,21 @@ function resetDropdownsMobile($header) {
     document.querySelectorAll('.icon-subtract').forEach((el) => {
       el.classList.remove('open');
     });
+
+    document.querySelectorAll('.utility').forEach((el) => {
+      el.style.display = 'block';
+    });
+
+    document.querySelectorAll('.btn-tech-doc-samples').forEach((el) => {
+      el.style.display = 'block';
+    });
   });
 }
 
 function setDropdownHeights($header) {
-  $header.querySelectorAll('.dropdown').forEach((dropdown) => {
+  const activeDropdowns = $header.querySelectorAll('li.active > .dropdown');
+  activeDropdowns.forEach((dropdown) => {
+    dropdown.style.height = '';
     dropdown.style.display = 'block';
     dropdown.style.visibility = 'hidden';
     dropdown.style.position = 'absolute';
@@ -336,6 +346,7 @@ export default async function decorate(block) {
           button({ type: 'submit', class: 'icon-search', 'aria-label': 'Search Button' }),
         ),
       ),
+      button({ type: 'submit', form: 'searchForm', class: 'button-search', 'aria-label': 'Search Button' }, 'Search'),
     ),
   );
 
@@ -456,6 +467,7 @@ export default async function decorate(block) {
       );
       await buildDropdownsMobile($header);
     } else {
+      document.body.classList.remove('menu-open');
       $header.append(
         nav(
           { class: 'utility' },

@@ -337,13 +337,15 @@ header {
                         content: '';
                         margin: 6px 0 0 6px;
                         transform: translateY(-50%);
+                        transition: transform .3s ease-in;
                         border-left: 6px solid transparent;
                         border-right: 6px solid transparent;
                         border-top: 8px solid var(--green);
                     }
 
                     .active &::after {
-                        transform: translateY(-50%) rotate(180deg)
+                        transform: translateY(-50%) rotate(-180deg);
+                        transition: transform .3s ease-in;
                     }
                 }
 
@@ -360,12 +362,16 @@ header {
                     max-width: 85rem;
 
                     .loaded & {
-                        display: none
+                        visibility: hidden;
+                        opacity: 0;
+                        transition: visibility .5s, opacity .5s linear;
                     }
 
                     .loaded .active & {
-                        display: block;
+                        visibility: visible;
                         left: 40px;
+                        opacity: 1;
+                        transition: visibility .5s, opacity .5s linear;
                     }
                 }
             }
@@ -486,7 +492,6 @@ header {
             }
 
             button.button-search {
-                /* display: none; */
                 width: 100%;
                 background: var(--green);
                 border: 0;
