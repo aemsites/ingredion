@@ -2,7 +2,7 @@
 import { initBackToTop } from './back-to-top.js';
 import { sampleRUM, } from './aem.js';
 import { getEnvironment } from './scripts.js';
-import { initMartech } from './martech.js';
+import { initMartech, addCookieBanner } from './martech.js';
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initBackToTop);
@@ -16,3 +16,4 @@ sampleRUM('cwv');
 // Full Martech stack
 
 initMartech(getEnvironment());
+addCookieBanner();
