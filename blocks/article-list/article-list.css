@@ -7,6 +7,7 @@
 
     .filter-search-sort {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       margin: 6rem 0 2.5rem;
       gap: 40px;
@@ -15,6 +16,10 @@
         position: relative;
         flex: 1;
 
+        @media (width <= 1080px) {
+          min-width: 100%;
+          margin-bottom: 20px;
+        }
 
         input {
           width: 100%;
@@ -57,10 +62,19 @@
         width: 180px;
         ul { width: inherit }
       }
+      
       .filter-years { width: 110px }
       .filter-by-tag { width: 260px }
 
+      @media (width <= 1080px) {
+        gap: 20px;
 
+        [class*="filter-"]:not(.filter-search) {
+          flex: 1 1 0;
+          min-width: 0;
+          width: calc(100vw * .33 - 30px);
+        }
+      }
     }
 
 

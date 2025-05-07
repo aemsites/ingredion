@@ -2,6 +2,7 @@
 import { div, h3, h4, p, a, strong } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, readBlockConfig } from '../../scripts/aem.js';
 import { formatDate } from '../../scripts/utils.js';
+import { parseEventDate } from '../../scripts/product-utils.js';
 import ArticleRenderer from './article-renderer.js';
 
 export default async function decorate(block) {
@@ -82,7 +83,6 @@ export default async function decorate(block) {
         // Events view
         const $filterYearsDropdown = div();
         const $filterTypesDropdown = div();
-        const $filterMarketsDropdown = div({ 'data-tag': 'Markets' }); // pass the tag
         const $clearFilters = a({ class: 'clear-all' }, 'Clear All');
     
         const $articleCard = (article) => div({ class: 'card events' },
@@ -93,7 +93,7 @@ export default async function decorate(block) {
             ),
           ),
           div({ class: 'info' },
-            p({ class: 'date' }, JSON.parse(article.eventDate)),
+            p({ class: 'date' }, parseEventDate(article.eventDate, true)),
             h4(article.title),
             article.eventType && JSON.parse(article.eventType).length ? p({ class: 'details' }, strong('Event Type: '), JSON.parse(article.eventType)) : null,
             article.location && JSON.parse(article.location).length ? p({ class: 'details' }, strong('Location: '), JSON.parse(article.location)) : null,
@@ -118,7 +118,6 @@ export default async function decorate(block) {
             $search,
             $filterYearsDropdown,
             $filterTypesDropdown,
-            $filterMarketsDropdown,
             $sortDropdown,
           ),
           div({ class: 'clear-all-wrapper' }, $clearFilters),
@@ -143,7 +142,6 @@ export default async function decorate(block) {
           clearFilters: $clearFilters,
           filterYearsDropdown: $filterYearsDropdown,
           filterTypesDropdown: $filterTypesDropdown,
-          filterByTagDropdown: $filterMarketsDropdown,
           searchDiv: $search,
           sortDropdown: $sortDropdown,
           paginationDiv: $pagination,
