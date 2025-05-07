@@ -17,7 +17,7 @@ function formatDate(date, isRange = false) {
   const month = MONTHS[date.getMonth()];
   const day = date.getDate();
   const year = date.getFullYear();
-  
+
   return `${month} ${day}${isRange ? '' : ','} ${year}`;
 }
 
@@ -29,11 +29,12 @@ function formatDate(date, isRange = false) {
  */
 export function parseEventDate(dateStr, format = false) {
   if (!dateStr) return null;
-  
+
   try {
     // Handle JSON string format
     const parsed = JSON.parse(dateStr);
     if (!parsed || !parsed[0]) return null;
+    // eslint-disable-next-line no-param-reassign,prefer-destructuring
     dateStr = parsed[0];
   } catch (e) {
     // If it's not a JSON string, use it as is
@@ -62,12 +63,11 @@ export function parseEventDate(dateStr, format = false) {
         endDate.setDate(parseInt(rangeMatch[2], 10));
         const startMonth = MONTHS[date.getMonth()];
         const endMonth = MONTHS[endDate.getMonth()];
-        
+
         if (startMonth === endMonth) {
           return `${startMonth} ${date.getDate()}-${endDate.getDate()}, ${year}`;
-        } else {
-          return `${formatDate(date, true)}-${formatDate(endDate)}`;
         }
+        return `${formatDate(date, true)}-${formatDate(endDate)}`;
       }
       return formatDate(date);
     }
@@ -100,12 +100,11 @@ export function parseEventDate(dateStr, format = false) {
       endDate.setDate(parseInt(ampersandMatch[2], 10));
       const startMonth = MONTHS[date.getMonth()];
       const endMonth = MONTHS[endDate.getMonth()];
-      
+
       if (startMonth === endMonth) {
         return `${startMonth} ${date.getDate()}-${endDate.getDate()}, ${year}`;
-      } else {
-        return `${formatDate(date, true)}-${formatDate(endDate)}`;
       }
+      return `${formatDate(date, true)}-${formatDate(endDate)}`;
     }
     return date;
   }
@@ -120,12 +119,11 @@ export function parseEventDate(dateStr, format = false) {
       endDate.setDate(parseInt(spacedDashMatch[2], 10));
       const startMonth = MONTHS[date.getMonth()];
       const endMonth = MONTHS[endDate.getMonth()];
-      
+
       if (startMonth === endMonth) {
         return `${startMonth} ${date.getDate()}-${endDate.getDate()}, ${year}`;
-      } else {
-        return `${formatDate(date, true)}-${formatDate(endDate)}`;
       }
+      return `${formatDate(date, true)}-${formatDate(endDate)}`;
     }
     return date;
   }

@@ -345,7 +345,22 @@ export default class ArticleRenderer {
     const types = {};
     this.state.allArticles.forEach((article) => {
       // Try eventType first (for events)
-      if (article.eventType) {
+      if (!article.eventType) {
+        if (article.type) {
+          try {
+            const type = JSON.parse(article.type)[0];
+            if (type && type !== 'undefined') {
+              types[type] = (types[type] || 0) + 1;
+            }
+          } catch (e) {
+            // Skip invalid JSON
+            console.warn('Invalid type format:', article.type);
+          }
+        }
+        // eslint-disable-next-line brace-style
+      }
+      // Fall back to type if eventType is not available
+      else {
         try {
           const type = JSON.parse(article.eventType)[0];
           if (type && type !== 'undefined') {
@@ -354,18 +369,6 @@ export default class ArticleRenderer {
         } catch (e) {
           // Skip invalid JSON
           console.warn('Invalid eventType format:', article.eventType);
-        }
-      }
-      // Fall back to type if eventType is not available
-      else if (article.type) {
-        try {
-          const type = JSON.parse(article.type)[0];
-          if (type && type !== 'undefined') {
-            types[type] = (types[type] || 0) + 1;
-          }
-        } catch (e) {
-          // Skip invalid JSON
-          console.warn('Invalid type format:', article.type);
         }
       }
     });
