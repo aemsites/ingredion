@@ -11,6 +11,7 @@ const themeColors = [
   'dark-purple',
   'dark-blue',
   'yellow',
+  'pastel-green',
 ];
 
 function embedVimeo(url, autoplay, background) {
