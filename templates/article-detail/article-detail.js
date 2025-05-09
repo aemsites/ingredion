@@ -106,7 +106,7 @@ export default async function decorate(doc) {
   // wrap sections in a container
   const $sections = Array.from($main.querySelectorAll('.section'));
   if ($sections.length > 0) {
-    $sections.forEach(section => section.remove());
+    $sections.forEach((section) => section.remove());
     const $container = div({ class: 'section-container' }, ...$sections);
     $main.insertBefore($container, $hero.nextSibling);
   }
