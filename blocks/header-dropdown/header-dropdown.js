@@ -89,9 +89,13 @@ function renderDesktop(block) {
 function renderMobile(block) {
   block.classList.remove('submenu');
   block.classList.add('mobile');
-  const dropdowns = block.querySelectorAll('div > div');
+  let dropdowns = block.querySelectorAll('div');
 
   dropdowns.forEach((dropdown) => {
+    if (dropdown.children.length === 0 && dropdown.textContent.trim() === '') {
+      dropdown.remove();
+    }
+
     dropdown.querySelectorAll('img, picture').forEach((el) => el.remove());
     dropdown.querySelectorAll('p').forEach((p) => {
       if (p.querySelector('a')) {
@@ -171,6 +175,27 @@ function renderMobile(block) {
       title.querySelector('.icon-add').classList.toggle('open', !isOpen);
       title.querySelector('.icon-subtract').classList.toggle('open', isOpen);
     });
+  });
+
+  dropdowns = block.querySelectorAll('.dropdown-content');
+  dropdowns.forEach((dropdown) => {
+    const title = dropdown.querySelector('.dropdown-title');
+    const buttonContainer = dropdown.querySelector('.button-container');
+
+    if (title && buttonContainer) {
+      const link = buttonContainer.querySelector('a');
+      if (link) {
+        link.textContent = `View All ${link.textContent}`;
+      }
+
+      [...dropdown.children].forEach((child) => {
+        if (child !== buttonContainer) {
+          child.remove();
+        }
+      });
+
+      buttonContainer.classList.remove('dropdown-content');
+    }
   });
 }
 

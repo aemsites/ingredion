@@ -16,7 +16,7 @@ const isMobile = window.matchMedia('(width < 1080px)');
 const [region, locale] = getRegionLocale();
 const $originalLogo = a(
   { class: 'logo', href: `/${region}/${locale}/`, 'aria-label': 'Home' },
-  img({ src: '/icons/ingredion.svg', width: 120, alt: 'Ingredion logo' }),
+  img({ src: '/img/ingredion.webp', width: 120, alt: 'Ingredion logo' }),
 );
 
 function resetDropdownsMobile($header) {
