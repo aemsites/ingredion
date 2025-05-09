@@ -167,9 +167,10 @@
 
   > div {
     background: var(--theme-clr-background);
-    height: 346px;
+    height: auto;
     align-items: center;
     text-align: center;
+    padding: 5rem .9375rem;
 
     > .callout-content {
       max-width: 37rem;
@@ -259,12 +260,13 @@
     margin: 0;
 
     > div {
-      height: 264px;
+      height: auto;
+      padding: 5rem 2.5rem;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      gap: 100px;
+      gap: 30px;
 
       > .callout-content {
         display: flex;
@@ -272,9 +274,9 @@
         justify-content: center;
         height: 100%;
         text-align: left;
-        margin: 0;
         margin-left: auto;
         padding: 0;
+        width: auto;
 
         h1, h2, h3 {
           margin: 0;
