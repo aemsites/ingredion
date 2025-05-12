@@ -111,7 +111,6 @@ export default async function decorate(block) {
   let queryParams = 'activePage=1&perPage=6';
   let typeaheadData = null;
   let $dropdownOptions;
-  let ingredientResults;
 
   // Helper function for ingredient search
   async function searchIngredients(searchValue) {
@@ -136,7 +135,8 @@ export default async function decorate(block) {
     }
 
     loadCSS('/blocks/related-ingredient/related-ingredient.css');
-    ingredientResults = await createIngredientPanel(data);
+    const ingredientResults = await createIngredientPanel(data);
+    block.append(ingredientResults);
   }
 
   function filterAndDisplayResults(query) {
@@ -322,7 +322,8 @@ export default async function decorate(block) {
       const data1 = await apiResponse1.json();
 
       loadCSS('/blocks/related-ingredient/related-ingredient.css');
-      ingredientResults = await createIngredientPanel(data1);
+      const ingredientResults = await createIngredientPanel(data1);
+      block.append(ingredientResults);
     });
 
     document.addEventListener('click', (e) => {
@@ -444,6 +445,5 @@ export default async function decorate(block) {
 
     $parent.append(heading, $searchBar);
     block.append($parent);
-    block.append(ingredientResults);
   }
 }
