@@ -107,12 +107,21 @@ function createDropdownOption(item) {
   }, item.label);
 }
 
-function attachIngredientResults(block, ingredientResults) {
+function attachIngredientResults(block, ingredientResults, totalItemsCount, searchValue) {
   const $section = block.closest('.section');
   if ($section) {
     if ($section.querySelector('.ingredient-finder-results')) {
       $section.querySelector('.ingredient-finder-results').remove();
     }
+    const $results = div({ class: 'results' }, `${totalItemsCount} results for: ${searchValue}`);
+    const $clearLink = a({ class: 'clear-link', href: '#' }, 'Clear');
+    $clearLink.addEventListener('click', () => {
+      const [region, locale] = getRegionLocale();
+      window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder`);
+      window.location.reload();
+    });
+    $results.append($clearLink);
+    $section.append($results);
     $section.append(ingredientResults);
   }
 }
@@ -146,7 +155,7 @@ export default async function decorate(block) {
     loadCSS('/blocks/related-ingredient/related-ingredient.css');
     const ingredientResults = await createIngredientPanel(data);
     ingredientResults.classList.add('search', 'ingredient-finder-results');
-    attachIngredientResults(block, ingredientResults);
+    attachIngredientResults(block, ingredientResults, data.totalItemsCount, searchValue);
   }
 
   function filterAndDisplayResults(query) {
@@ -334,7 +343,10 @@ export default async function decorate(block) {
       loadCSS('/blocks/related-ingredient/related-ingredient.css');
       const ingredientResults = await createIngredientPanel(data1);
       ingredientResults.classList.add('search', 'ingredient-finder-results');
-      attachIngredientResults(block, ingredientResults);
+      const application = queryParams.split('&applications=')[1].split('&')[0];
+      const subApplication = queryParams.split('&subApplications=')[1].split('&')[0];
+      const searchValue = `${application} - ${subApplication}`;
+      attachIngredientResults(block, ingredientResults, data1.totalItemsCount, searchValue);
     });
 
     document.addEventListener('click', (e) => {
