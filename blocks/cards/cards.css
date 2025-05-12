@@ -132,13 +132,11 @@
 
 @media (width >= 1080px) {
   .cards.slim {
-    display: flex;
     justify-content: center;
   }
 
   .cards.slim > ul {
     width: auto;
-    display: flex;
     grid-template-columns: repeat(auto-fill, minmax(23%, 1fr));
     gap: 10px;
   }
@@ -196,15 +194,56 @@
 
 .cards.slim .cards-card-body .secondary-cta {
   display: inline-block;
-  font-size: var(--body-font-size-s);
   line-height: 1.5rem;
   letter-spacing: 0.0313rem;
   position: relative;
   padding-right: 1.25rem;
 }
 
+.cards.slim p {
+  font-size: 16px;
+}
+
+.cards.slim a.button {
+  font-size: 1.2rem;
+  display: inline-block;
+  line-height: 1.5rem;
+  letter-spacing: .0313rem;
+  position: relative;
+  padding-right: 1.25rem;
+  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  color: #61a037;
+  min-width: auto;
+  text-align: left;
+}
+
+.cards.slim a.button:hover {
+  background-color: inherit;
+}
+
+.cards.slim .secondary-cta:hover a.button {
+  background-color: inherit;
+  color: var(--dark-green);
+  text-decoration: underline;
+}
+
+.cards.slim .secondary-cta .icon-green-arrow::before {
+  transform: rotate(-90deg);
+  font-size: .625rem;
+  position: absolute;
+  right: 0;
+  top: .375rem;
+  content: "\e926";
+  color: var(--green);
+}
+
+.cards.slim .secondary-cta:hover .icon-green-arrow::before {
+  color: var(--dark-green) !important;
+}
+
 .cards.slim .cards-card-body strong > a {
-  font-size: var(--heading-font-size-s);
+  font-size: 1.5rem;
+  line-height: 2rem;
   text-decoration: none;
   color: var(--text-color);
 }
@@ -212,6 +251,10 @@
 .cards.slim .cards-card-image img {
   aspect-ratio: 5 / 4;
   max-height: 200px;
+}
+
+.cards.slim p.heading {
+  margin: 0 0 1rem;
 }
 
 .cards.four-column {
