@@ -7,6 +7,7 @@ import {
   p,
   a,
   button,
+  span,
 } from '../../scripts/dom-helpers.js';
 import { getRegionLocale, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
@@ -118,7 +119,7 @@ function attachIngredientResults(block, ingredientResults, totalItemsCount, sear
     if ($results) {
       $results.remove();
     }
-    $results = div({ class: 'results' }, h2(`${totalItemsCount} results for: <span class="search-value">${searchValue}</span>`));
+    $results = div({ class: 'results' }, h2(`${totalItemsCount} results for: `), span({ class: 'search-value' }, searchValue));
     const $clearLink = a({ class: 'clear-link', href: '#' }, 'Clear');
     $clearLink.addEventListener('click', () => {
       const [region, locale] = getRegionLocale();
@@ -350,9 +351,9 @@ export default async function decorate(block) {
       ingredientResults.classList.add('search', 'ingredient-finder-results');
       const application = queryParams.split('&applications=')[1] ? queryParams.split('&applications=')[1].split('&')[0] : '';
       const subApplication = queryParams.split('&subApplications=')[1] ? queryParams.split('&subApplications=')[1].split('&')[0] : '';
-      const decodedApplication = decodeURIComponent(application);
-      const decodedSubApplication = decodeURIComponent(subApplication);
-      const searchValue = subApplication ? `${decodedApplication} - ${decodedSubApplication}` : decodedApplication;
+      const processedApplication = decodeURIComponent(application).replace(/[+\s]/g, ' ');
+      const processedSubApplication = decodeURIComponent(subApplication).replace(/[+\s]/g, ' ');
+      const searchValue = subApplication ? `${processedApplication} - ${processedSubApplication}` : processedApplication;
       attachIngredientResults(block, ingredientResults, data1.totalItemsCount, searchValue);
     });
 
