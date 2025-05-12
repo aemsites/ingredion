@@ -777,7 +777,7 @@ export default class ProductApiRenderer {
       this.state.totalArticles = this.results.totalItemsCount;
 
       const [, locale] = getRegionLocale();
-      loadTranslations(locale);
+      await loadTranslations(locale);
       this.updatePage();
     } catch (error) {
       console.error('Error during render:', error);

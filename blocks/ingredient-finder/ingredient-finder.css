@@ -133,6 +133,14 @@
     background-color: #efefef;
 }
 
+.clear-link {
+    display: block;
+    margin-top: 5px;
+    color: #f0635b;
+    font-family: MiloPro-Bold, Helvetica, sans-serif;
+    font-size: 1rem;
+}
+
 @media (width >= 67.5625rem) {
     .ingredient-finder-container {
         display: flex;
