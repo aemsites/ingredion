@@ -350,7 +350,9 @@ export default async function decorate(block) {
       ingredientResults.classList.add('search', 'ingredient-finder-results');
       const application = queryParams.split('&applications=')[1] ? queryParams.split('&applications=')[1].split('&')[0] : '';
       const subApplication = queryParams.split('&subApplications=')[1] ? queryParams.split('&subApplications=')[1].split('&')[0] : '';
-      const searchValue = subApplication ? `${application} - ${subApplication}` : application;
+      const decodedApplication = decodeURIComponent(application);
+      const decodedSubApplication = decodeURIComponent(subApplication);
+      const searchValue = subApplication ? `${decodedApplication} - ${decodedSubApplication}` : decodedApplication;
       attachIngredientResults(block, ingredientResults, data1.totalItemsCount, searchValue);
     });
 

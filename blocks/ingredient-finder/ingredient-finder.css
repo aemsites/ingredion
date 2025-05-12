@@ -136,14 +136,22 @@
 .clear-link {
     display: block;
     margin-top: 5px;
-    color: #f0635b;
+    color: #f0635b !important;
     font-family: MiloPro-Bold, Helvetica, sans-serif;
     font-size: 1rem;
 }
 
 .results {
-    margin: 0;
+    margin: 0 !important;
     padding: 40px 16px;
+}
+
+.search-value {
+    font-size: 1.375rem;
+    font-family: OpenSans, Helvetica, sans-serif;
+    color: #373738;
+    line-height: 2rem;
+    font-weight: 100;
 }
 
 @media (width >= 67.5625rem) {
