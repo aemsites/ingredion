@@ -11,13 +11,6 @@
     height: inherit;
     min-height: 300px;
 
-    /* used to determine height - attr removed after load */
-    [data-height] {
-        position: absolute;
-        left: -9999px;
-        visibility: hidden;
-    }
-
     ul {
         list-style: none;
         margin: 0;
@@ -30,7 +23,10 @@
                 display: block;
                 color: var(--text-color);
                 text-decoration: none;
-                &:hover { color: var(--green) }
+
+                &:hover {
+                    color: var(--green);
+                }
             }
         }
     }
@@ -44,9 +40,9 @@
 
         img {
             display: block;
-            width: 100%;
-            height: 100%;
             object-fit: cover;
+            height: 12.5rem;
+            width: 17.1875rem;
         }
     }
 }
@@ -54,12 +50,13 @@
 .header-dropdown.static {
     padding: 0 40px;
 
-    > div {
+    >div {
         display: flex;
         width: 100%;
         height: inherit;
+        justify-content: space-between;
 
-        > div {
+        >div {
             display: flex;
             flex-direction: column;
             flex: 1;
@@ -115,14 +112,23 @@
         .item {
             display: flex;
             width: 100%;
-            .loaded & { display: none }
-            .loaded &.active  { display: flex; }
 
-            > div {
+            .loaded & {
+                display: none;
+            }
+
+            .loaded &.active {
+                display: flex;
+            }
+
+            >div {
                 flex: 0 0 50%;
                 max-width: 50%;
                 padding: 20px 40px;
-                &:first-child { border-right: 1px solid var(--border-color)}
+
+                &:first-child {
+                    border-right: 1px solid var(--border-color);
+                }
 
                 .columns-2 & {
                     min-width: 490px;
@@ -130,7 +136,6 @@
                     border-right: 0;
                 }
             }
-
         }
     }
 }
@@ -146,7 +151,9 @@
         background: var(--light-grey);
         color: var(--green);
 
-        p { margin: 0 }
+        p {
+            margin: 0;
+        }
     }
 }
 
@@ -174,3 +181,132 @@
     }
 }
 
+.header-dropdown.mobile {
+    display: block;
+    width: 100%;
+    height: auto;
+    position: static;
+    flex-direction: column;
+    background: var(--white);
+    color: #4d4e4c;
+    letter-spacing: 0.25px;
+    line-height: 3.5rem;
+    border: none;
+    margin: 0 0.9375rem;
+    align-items: center;
+    font-family: OpenSans-Bold, Helvetica, sans-serif;
+}
+
+.header-dropdown.mobile .dropdown-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: OpenSans-Bold, Helvetica, sans-serif;
+    border-bottom: 1px solid #d8d9d9;
+    color: var(--text-color);
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0 .9375rem;
+    margin: 0;
+}
+
+.dropdown-title:has(+ .dropdown-content.open) {
+    border-bottom: none;
+}
+
+.header-dropdown.mobile .dropdown-content {
+    display: none;
+    color: var(--text-color);
+    font-family: OpenSans-Regular, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.25px;
+    line-height: 3.5rem;
+    margin: 0 1.875rem .9375rem;
+}
+
+.header-dropdown.mobile .dropdown-content.open {
+    display: block;
+}
+
+.header-dropdown.mobile .dropdown-content li {
+    color: var(--text-color);
+    font-family: OpenSans-Regular, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.25px;
+    line-height: 3.5rem;
+}
+
+.header-dropdown.mobile p.dropdown-content {
+    color: var(--text-color);
+    font-family: OpenSans-Regular, Helvetica, sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.25px;
+    line-height: 1.5rem;
+}
+
+.header-dropdown.mobile .dropdown-content .button-container a {
+    color: var(--text-color);
+    font-family: OpenSans-Bold, Helvetica, sans-serif;
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .25px;
+    background: var(--white);
+    text-align: left;
+    text-transform: none;
+}
+
+.header-dropdown.mobile .dropdown-content .button-container a::after {
+    content: none;
+}
+
+.header-dropdown.mobile .dropdown-content .button-container a:hover {
+    color: var(--green);
+}
+
+.header-dropdown.mobile a:hover,
+.header-dropdown .dropdown-title:hover {
+    color: var(--green);
+}
+
+.icon-add {
+    display: none;
+}
+
+.icon-add.open {
+    display: block;
+}
+
+.icon-subtract {
+    display: none;
+}
+
+.icon-subtract.open {
+    display: block;
+}
+
+.icon-add::before {
+    content: "\e901";
+    color: var(--green);
+    font-size: 1.125rem;
+}
+
+.icon-subtract::before {
+    content: "\e93f";
+    color: var(--green);
+    font-size: 1.125rem;
+}
+
+li.active .header-dropdown.mobile {
+    margin: 0;
+}
+
+.mobile-menu .row .default-content-wrapper {
+    display: none;
+}
+
+.mobile-menu .ingredient-select {
+    display: none;
+}
