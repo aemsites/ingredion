@@ -22,7 +22,8 @@ const sheet = new Map([
   ['events', 'news-events'],
   ['news', 'news'],
   ['resource-library', 'formulation'],
-  ['snacking-inspiration', 'snacking-inspo']
+  ['snacking-inspiration', 'snacking-inspo'],
+  ['snacking-knowledge', 'snacking-knowl']
 ])
 
 const previewURL = 'https://main--ingredion--aemsites.aem.page';
