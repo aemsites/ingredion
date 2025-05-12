@@ -79,7 +79,7 @@ async function createIngredientPanel(ingredientResults) {
 
   // Ingredient Renderer
   await new ProductApiRenderer({
-    apiEndpoint: API_PRODUCT.SEARCH_INGREDIENTS(),
+    apiEndpoint: API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(),
     results: ingredientResults,
     articlesPerPageOptions: ['6', '12', '18', '24', '30'],
     paginationMaxBtns: 5,
@@ -139,7 +139,6 @@ export default async function decorate(block) {
       const response = await fetch(`${url}?${searchParams.toString()}`);
       if (!response.ok) throw new Error('Network response was not ok');
       data = await response.json();
-      console.log('Search results:', data);
     } catch (error) {
       console.error('Error searching ingredients:', error);
     }

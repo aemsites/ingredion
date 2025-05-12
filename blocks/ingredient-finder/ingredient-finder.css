@@ -1,4 +1,4 @@
-@import url('../search/search.css');
+@import '../search/search.css';
 
 .ingredient-quick-search-bar {
     position: relative;
@@ -139,5 +139,6 @@
         max-width: 76.5rem;
         border-bottom: 1px solid #d8d9d9;
         padding-bottom: 2.5rem;
+        flex-wrap: wrap;
     }
 }
