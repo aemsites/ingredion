@@ -3,7 +3,7 @@ import { div, h3, h4, p, a, strong, span } from '../../scripts/dom-helpers.js';
 import { buildBlock, decorateBlock, loadBlock, createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import { formatDate, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
-import { viewAllDocsModal } from '../../scripts/product-utils.js';
+import { viewAllDocsModal, parseEventDate } from '../../scripts/product-utils.js';
 import { API_HOST, API_PRODUCT } from '../../scripts/product-api.js';
 import ContentResourcesRenderer from './content-renderer.js';
 import ProductApiRenderer from './product-api-renderer.js';
@@ -245,7 +245,7 @@ async function createEventPanel(eventsData) {
       ),
     ),
     div({ class: 'info' },
-      p({ class: 'date' }, JSON.parse(article.eventDate)),
+      p({ class: 'date' }, parseEventDate(article.eventDate, true)),
       h4(article.title),
       article.eventType && JSON.parse(article.eventType).length ? p({ class: 'details' }, strong('Event Type: '), JSON.parse(article.eventType)) : null,
       article.location && JSON.parse(article.location).length ? p({ class: 'details' }, strong('Location: '), JSON.parse(article.location)) : null,
@@ -338,10 +338,10 @@ async function displaySearchResults(
       title: 'Events',
       count: eventsResults?.length || 0,
       panel: () => {
-        // Sort events by date (newest first)
+        // Sort events by date (newest first) using parseEventDate
         const sortedEvents = [...eventsResults].sort((a, b) => {
-          const dateA = new Date(JSON.parse(a.eventDate));
-          const dateB = new Date(JSON.parse(b.eventDate));
+          const dateA = parseEventDate(a.eventDate);
+          const dateB = parseEventDate(b.eventDate);
           return dateB - dateA;
         });
         return createEventPanel(sortedEvents);

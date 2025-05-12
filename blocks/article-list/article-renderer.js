@@ -1,6 +1,7 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
 import { div, h3, h4, h5, ul, li, a, small, span, form, input, button } from '../../scripts/dom-helpers.js';
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
+import { parseEventDate } from '../../scripts/product-utils.js';
 
 function getUrlParams(key) {
   const params = new URLSearchParams(window.location.search);
@@ -155,7 +156,7 @@ export default class ArticleRenderer {
 
     // Filter articles by tags
     if (tags.length > 0) {
-      articles = articles.filter((article) => tags.every((tag) => article.tags.toLowerCase().replace(/\s+/g, '-').includes(tag)));
+      articles = articles.filter((article) => tags.every((tag) => article.tags?.toLowerCase().replace(/\s+/g, '-').includes(tag)));
     }
 
     // Filter articles by search query
@@ -166,15 +167,36 @@ export default class ArticleRenderer {
 
     // Filter articles by year
     if (year) {
-      articles = articles.filter((article) => new Date(article.publishDate * 1000).getFullYear() === parseInt(year, 10));
+      articles = articles.filter((article) => {
+        const date = article.eventDate ? parseEventDate(article.eventDate) : new Date(article.publishDate * 1000);
+        return date && date.getFullYear() === parseInt(year, 10);
+      });
     }
 
     // Filter articles by type
     if (type) {
       articles = articles.filter((article) => {
-        if (!article.type) return false;
-        const articleType = JSON.parse(article.type)[0];
-        return articleType === type;
+        // Try eventType first (for events)
+        if (article.eventType) {
+          try {
+            const articleType = JSON.parse(article.eventType)[0];
+            return articleType === type;
+          } catch (e) {
+            console.warn('Invalid eventType format:', article.eventType);
+            return false;
+          }
+        }
+        // Fall back to type if eventType is not available
+        if (article.type) {
+          try {
+            const articleType = JSON.parse(article.type)[0];
+            return articleType === type;
+          } catch (e) {
+            console.warn('Invalid type format:', article.type);
+            return false;
+          }
+        }
+        return false;
       });
     }
 
@@ -187,10 +209,18 @@ export default class ArticleRenderer {
         articles = articles.sort((A, B) => B.title.localeCompare(A.title));
         break;
       case 'oldest':
-        articles = articles.sort((A, B) => parseInt(A.publishDate, 10) - parseInt(B.publishDate, 10));
+        articles = articles.sort((A, B) => {
+          const dateA = A.eventDate ? parseEventDate(A.eventDate) : new Date(A.publishDate * 1000);
+          const dateB = B.eventDate ? parseEventDate(B.eventDate) : new Date(B.publishDate * 1000);
+          return (dateA || 0) - (dateB || 0);
+        });
         break;
       case 'newest': default:
-        articles = articles.sort((A, B) => parseInt(B.publishDate, 10) - parseInt(A.publishDate, 10));
+        articles = articles.sort((A, B) => {
+          const dateA = A.eventDate ? parseEventDate(A.eventDate) : new Date(A.publishDate * 1000);
+          const dateB = B.eventDate ? parseEventDate(B.eventDate) : new Date(B.publishDate * 1000);
+          return (dateB || 0) - (dateA || 0);
+        });
         break;
     }
 
@@ -207,7 +237,7 @@ export default class ArticleRenderer {
     this.renderPagination();
     this.renderPerPageDropdown();
     this.renderClearFilters();
-    this.updateUrl(); // sync state
+    this.updateUrl();
   }
 
   updateUrl() {
@@ -273,8 +303,11 @@ export default class ArticleRenderer {
 
     const years = {};
     this.state.allArticles.forEach((article) => {
-      const year = new Date(article.publishDate * 1000).getFullYear();
-      years[year] = (years[year] || 0) + 1;
+      const date = article.eventDate ? parseEventDate(article.eventDate) : new Date(article.publishDate * 1000);
+      if (date) {
+        const year = date.getFullYear();
+        years[year] = (years[year] || 0) + 1;
+      }
     });
 
     const yearOptions = [
@@ -311,15 +344,31 @@ export default class ArticleRenderer {
 
     const types = {};
     this.state.allArticles.forEach((article) => {
-      if (article.type) {
+      // Try eventType first (for events)
+      if (!article.eventType) {
+        if (article.type) {
+          try {
+            const type = JSON.parse(article.type)[0];
+            if (type && type !== 'undefined') {
+              types[type] = (types[type] || 0) + 1;
+            }
+          } catch (e) {
+            // Skip invalid JSON
+            console.warn('Invalid type format:', article.type);
+          }
+        }
+        // eslint-disable-next-line brace-style
+      }
+      // Fall back to type if eventType is not available
+      else {
         try {
-          const type = JSON.parse(article.type)[0];
-          if (type && type !== 'undefined') { // Only count defined types
+          const type = JSON.parse(article.eventType)[0];
+          if (type && type !== 'undefined') {
             types[type] = (types[type] || 0) + 1;
           }
         } catch (e) {
           // Skip invalid JSON
-          console.warn('Invalid type format:', article.type);
+          console.warn('Invalid eventType format:', article.eventType);
         }
       }
     });
@@ -363,12 +412,14 @@ export default class ArticleRenderer {
 
     // Build tag counts from all articles
     this.state.allArticles.forEach((article) => {
-      article.tags.split(',').forEach((tag) => {
-        const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
-        if (cleanedTag.startsWith(`${tagCategory} /`)) {
-          tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
-        }
-      });
+      if (article?.tags && typeof article.tags === 'string') {
+        article.tags.split(',').forEach((tag) => {
+          const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
+          if (cleanedTag.startsWith(`${tagCategory} /`)) {
+            tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
+          }
+        });
+      }
     });
 
     // Process tags to get just the second part after "Markets /"
@@ -388,21 +439,19 @@ export default class ArticleRenderer {
     tagOptions.push({ value: '', label: `All ${tagCategory}` });
 
     // Find the currently selected option and use its label for display
-    const selectedTag = this.state.tags.find((tag) => tagOptions.some((option) => option.value === tag),
-    );
+    const selectedTag = this.state.tags.find((tag) => tagOptions.some((option) => option.value === tag));
     const selectedOption = tagOptions.find((opt) => opt.value === selectedTag);
     const selectedDisplay = selectedOption ? selectedOption.label : '';
 
     const $dropdown = createSelectDropdown({
       options: tagOptions,
-      selectedValue: selectedDisplay, // Use the display label instead of the value
+      selectedValue: selectedDisplay,
       defaultText: tagCategory,
       onSelect: (value, option, dropdown) => {
         this.state.currentPage = 0;
 
         // Remove any existing tags from this category
-        this.state.tags = this.state.tags.filter((tag) => !tagOptions.some((option) => option.value === tag),
-        );
+        this.state.tags = this.state.tags.filter((tag) => !tagOptions.some((option) => option.value === tag));
 
         // Add the new tag if one was selected
         if (value) {
@@ -412,7 +461,7 @@ export default class ArticleRenderer {
         // Use the original format label for display
         const selectedOption = tagOptions.find((opt) => opt.value === value);
         dropdown.querySelector('.selected').textContent = selectedOption
-          ? selectedOption.label // Use the original format label
+          ? selectedOption.label
           : tagCategory;
 
         this.updatePage();
@@ -430,10 +479,12 @@ export default class ArticleRenderer {
 
     // Build tag counts from the filtered articles
     this.state.filteredArticles.forEach((article) => {
-      article.tags.split(',').forEach((tag) => {
-        const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
-        tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
-      });
+      if (article.tags) {
+        article.tags.split(',').forEach((tag) => {
+          const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
+          tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
+        });
+      }
     });
 
     // Group tags by heading

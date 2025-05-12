@@ -5,6 +5,132 @@ import { translate } from './utils.js';
 import { createModal } from '../blocks/modal/modal.js';
 import { loadCSS } from './aem.js';
 
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+/**
+ * Format a date into a readable string
+ * @param {Date} date - The date to format
+ * @param {boolean} isRange - Whether this is part of a date range
+ * @returns {string} The formatted date string
+ */
+function formatDate(date, isRange = false) {
+  const month = MONTHS[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${month} ${day}${isRange ? '' : ','} ${year}`;
+}
+
+/**
+ * Parse event date from various string formats and optionally format it
+ * @param {string} dateStr - The date string to parse
+ * @param {boolean} [format=false] - Whether to return a formatted string instead of Date object
+ * @returns {Date|string|null} The parsed date, formatted string, or null if unparseable
+ */
+export function parseEventDate(dateStr, format = false) {
+  if (!dateStr) return null;
+
+  try {
+    // Handle JSON string format
+    const parsed = JSON.parse(dateStr);
+    if (!parsed || !parsed[0]) return null;
+    // eslint-disable-next-line no-param-reassign,prefer-destructuring
+    dateStr = parsed[0];
+  } catch (e) {
+    // If it's not a JSON string, use it as is
+  }
+
+  // Handle ISO date format (2025-04-28T20:25:57.917Z)
+  if (dateStr.includes('T')) {
+    const date = new Date(dateStr);
+    return format ? formatDate(date) : date;
+  }
+
+  // Extract year from the date string
+  const yearMatch = dateStr.match(/\d{4}/);
+  if (!yearMatch) return null;
+  const year = parseInt(yearMatch[0], 10);
+
+  // Handle date ranges (e.g., "October 13-14, 2021" or "May 10-12, 2022")
+  const rangeMatch = dateStr.match(/^([A-Za-z]+\s+\d+)(?:-(\d+))?,\s+\d{4}/);
+  if (rangeMatch) {
+    const date = new Date(rangeMatch[0]);
+    date.setFullYear(year);
+    if (format) {
+      if (rangeMatch[2]) {
+        // If we have a range end date, format it as a range
+        const endDate = new Date(date);
+        endDate.setDate(parseInt(rangeMatch[2], 10));
+        const startMonth = MONTHS[date.getMonth()];
+        const endMonth = MONTHS[endDate.getMonth()];
+
+        if (startMonth === endMonth) {
+          return `${startMonth} ${date.getDate()}-${endDate.getDate()}, ${year}`;
+        }
+        return `${formatDate(date, true)}-${formatDate(endDate)}`;
+      }
+      return formatDate(date);
+    }
+    return date;
+  }
+
+  // Handle single dates (e.g., "February 9, 2023")
+  const singleDateMatch = dateStr.match(/^[A-Za-z]+\s+\d+,\s+\d{4}/);
+  if (singleDateMatch) {
+    const date = new Date(singleDateMatch[0]);
+    date.setFullYear(year);
+    return format ? formatDate(date) : date;
+  }
+
+  // Handle dates with "Start time" suffix
+  const startTimeMatch = dateStr.match(/^([A-Za-z]+\s+\d+,\s+\d{4})\s+Start time/);
+  if (startTimeMatch) {
+    const date = new Date(startTimeMatch[1]);
+    date.setFullYear(year);
+    return format ? formatDate(date) : date;
+  }
+
+  // Handle dates with ampersand (e.g., "September 8 & 9, 2022")
+  const ampersandMatch = dateStr.match(/^([A-Za-z]+\s+\d+)\s*&\s*(\d+),\s+\d{4}/);
+  if (ampersandMatch) {
+    const date = new Date(ampersandMatch[0]);
+    date.setFullYear(year);
+    if (format) {
+      const endDate = new Date(date);
+      endDate.setDate(parseInt(ampersandMatch[2], 10));
+      const startMonth = MONTHS[date.getMonth()];
+      const endMonth = MONTHS[endDate.getMonth()];
+
+      if (startMonth === endMonth) {
+        return `${startMonth} ${date.getDate()}-${endDate.getDate()}, ${year}`;
+      }
+      return `${formatDate(date, true)}-${formatDate(endDate)}`;
+    }
+    return date;
+  }
+
+  // Handle dates with extra spaces around dash (e.g., "July 19 - 23, 2021")
+  const spacedDashMatch = dateStr.match(/^([A-Za-z]+\s+\d+)\s*-\s*(\d+),\s+\d{4}/);
+  if (spacedDashMatch) {
+    const date = new Date(spacedDashMatch[0]);
+    date.setFullYear(year);
+    if (format) {
+      const endDate = new Date(date);
+      endDate.setDate(parseInt(spacedDashMatch[2], 10));
+      const startMonth = MONTHS[date.getMonth()];
+      const endMonth = MONTHS[endDate.getMonth()];
+
+      if (startMonth === endMonth) {
+        return `${startMonth} ${date.getDate()}-${endDate.getDate()}, ${year}`;
+      }
+      return `${formatDate(date, true)}-${formatDate(endDate)}`;
+    }
+    return date;
+  }
+
+  return null;
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export async function viewAllDocsModal(product) {
   loadCSS('/styles/documents-table.css');

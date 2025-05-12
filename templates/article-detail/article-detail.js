@@ -103,17 +103,11 @@ export default async function decorate(doc) {
 
   teaserTitleHeader.insertAdjacentElement('afterend', categoryTags);
 
-  let nextElement = $content.nextElementSibling;
-  while (nextElement) {
-    const temp = nextElement.nextElementSibling;
-    if (nextElement.classList.contains('default-content-wrapper')) {
-      while (nextElement.firstChild) {
-        $content.appendChild(nextElement.firstChild);
-      }
-      nextElement.remove();
-    } else {
-      $content.appendChild(nextElement);
-    }
-    nextElement = temp;
+  // wrap sections in a container
+  const $sections = Array.from($main.querySelectorAll('.section'));
+  if ($sections.length > 0) {
+    $sections.forEach((section) => section.remove());
+    const $container = div({ class: 'section-container' }, ...$sections);
+    $main.insertBefore($container, $hero.nextSibling);
   }
 }
