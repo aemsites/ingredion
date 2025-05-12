@@ -1,6 +1,7 @@
 import {
   div,
   input,
+  h2,
   h3,
   h4,
   p,
@@ -113,7 +114,11 @@ function attachIngredientResults(block, ingredientResults, totalItemsCount, sear
     if ($section.querySelector('.ingredient-finder-results')) {
       $section.querySelector('.ingredient-finder-results').remove();
     }
-    const $results = div({ class: 'results' }, `${totalItemsCount} results for: ${searchValue}`);
+    let $results = $section.querySelector('.results');
+    if ($results) {
+      $results.remove();
+    }
+    $results = div({ class: 'results' }, h2(`${totalItemsCount} results for: ${searchValue}`));
     const $clearLink = a({ class: 'clear-link', href: '#' }, 'Clear');
     $clearLink.addEventListener('click', () => {
       const [region, locale] = getRegionLocale();
@@ -343,9 +348,9 @@ export default async function decorate(block) {
       loadCSS('/blocks/related-ingredient/related-ingredient.css');
       const ingredientResults = await createIngredientPanel(data1);
       ingredientResults.classList.add('search', 'ingredient-finder-results');
-      const application = queryParams.split('&applications=')[1].split('&')[0];
-      const subApplication = queryParams.split('&subApplications=')[1].split('&')[0];
-      const searchValue = `${application} - ${subApplication}`;
+      const application = queryParams.split('&applications=')[1] ? queryParams.split('&applications=')[1].split('&')[0] : '';
+      const subApplication = queryParams.split('&subApplications=')[1] ? queryParams.split('&subApplications=')[1].split('&')[0] : '';
+      const searchValue = subApplication ? `${application} - ${subApplication}` : application;
       attachIngredientResults(block, ingredientResults, data1.totalItemsCount, searchValue);
     });
 

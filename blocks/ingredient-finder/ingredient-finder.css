@@ -1,4 +1,4 @@
-@import '../search/search.css';
+@import url('../search/search.css');
 
 .ingredient-quick-search-bar {
     position: relative;
@@ -139,6 +139,11 @@
     color: #f0635b;
     font-family: MiloPro-Bold, Helvetica, sans-serif;
     font-size: 1rem;
+}
+
+.results {
+    margin: 0;
+    padding: 40px 16px;
 }
 
 @media (width >= 67.5625rem) {
