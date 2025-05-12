@@ -146,6 +146,7 @@ export default async function decorate(block) {
 
     loadCSS('/blocks/related-ingredient/related-ingredient.css');
     const ingredientResults = await createIngredientPanel(data);
+    ingredientResults.classList.add('ingredient-finder-results');
     attachIngredientResults(block, ingredientResults);
   }
 
@@ -333,6 +334,7 @@ export default async function decorate(block) {
 
       loadCSS('/blocks/related-ingredient/related-ingredient.css');
       const ingredientResults = await createIngredientPanel(data1);
+      ingredientResults.classList.add('ingredient-finder-results');
       attachIngredientResults(block, ingredientResults);
     });
 
