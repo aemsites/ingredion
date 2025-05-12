@@ -31,16 +31,20 @@ async function createIngredientPanel(ingredientResults) {
 
     const viewAllDocsLink = a({ class: 'view-all' }, 'View All Documents');
     viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(article));
-    const relatedIngredientBlock = div({ class: 'related-ingredient' },
-      div({ class: 'content' },
+    const relatedIngredientBlock = div(
+      { class: 'related-ingredient' },
+      div(
+        { class: 'content' },
         h4({ class: 'product-name' }, article.heading),
         description,
-        div({ class: 'cta-links' },
+        div(
+          { class: 'cta-links' },
           viewAllDocsLink,
           a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(article.productId) }, 'Download All Documents'),
         ),
       ),
-      div({ class: 'buttons' },
+      div(
+        { class: 'buttons' },
         addSampleBtn,
         a({ class: 'button secondary', href: `/na/en-us/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
       ),
@@ -48,18 +52,24 @@ async function createIngredientPanel(ingredientResults) {
     return relatedIngredientBlock;
   };
 
-  const $articlePage = div({ class: 'article-list' },
-    div({ class: 'filter-results-wrapper' },
-      div({ class: 'filter' },
+  const $articlePage = div(
+    { class: 'article-list' },
+    div(
+      { class: 'filter-results-wrapper' },
+      div(
+        { class: 'filter' },
         $filtersList,
       ),
-      div({ class: 'results' },
-        div({ class: 'count-sort-wrapper' },
+      div(
+        { class: 'results' },
+        div(
+          { class: 'count-sort-wrapper' },
           $count,
           $sortDropdown,
         ),
         $articles,
-        div({ class: 'controls' },
+        div(
+          { class: 'controls' },
           $pagination,
           $perPageDropdown,
         ),
