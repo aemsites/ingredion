@@ -260,10 +260,9 @@ header {
         padding: 0 40px;
 
         .logo {
-            margin: 6px 0 0 12px;
-
             img {
-                width: 90px
+                width: 7rem;
+                height: 4.5rem;
             }
         }
     }
