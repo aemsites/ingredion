@@ -67,7 +67,7 @@ export default {
     convertHrefs(main);
     createHeroBlock(document, main);
     alignCenter(document);
-    getSocialShare(document, main);    
+    //getSocialShare(document, main);    
     createCalloutBlock(document, main);
     createCardsBlock(document, main);
     createVideoBlock(document, main);

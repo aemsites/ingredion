@@ -559,15 +559,15 @@ export function createContactUs(main, document) {
 }
 
 export function getSocialShare(document) {
-  const socialShare = document.querySelector('.social-share');
-  const socialMetaProp = [];
+  const socialShare = document.querySelector('.social-share'); 
   if (!socialShare) return;
-  const facebook = socialShare.querySelector('.icon-Facebook');
+  const socialMetaProp = [];
+  const facebook = socialShare.querySelector('.icon-Facebook, .social-share__icon-Facebook');
   if (facebook) {
     socialMetaProp.push('facebook');
   }
   
-  const twitter = socialShare.querySelector('.icon-Twitter');
+  const twitter = socialShare.querySelector('.icon-Twitter, .social-share__icon-Twitter');
   if (twitter) {
     socialMetaProp.push('X');
   }
@@ -776,6 +776,11 @@ function testURL(url) {
     // Handle email links
     if (url.includes('@')) return url;
     
+    // Handle PDF files
+    if (url.includes('.pdf')) {
+      return url;
+    }
+    
     // Handle localhost and ingredion.com URLs
     if (url.includes('localhost:3001')) {
       return url.replace('http://localhost:3001', previewURL).split('.html')[0];
@@ -831,13 +836,15 @@ export function sanitizeMetaTags(tags) {
   const tagsArray = tags.split(',');
   const sanitizedTags = [];
   let faltTags = [];
-  tagsArray.forEach(tag => {   
+  tagsArray.forEach(tag => {
     if (tag.includes('Ingredion :')) {
       let temp = tag.replace('Ingredion :', '');
       temp = temp.split('/');
       temp.forEach(item => faltTags.push(item.trim()));      
     } else if (tag.includes('Ingredion-com :')) {   
-      sanitizedTags.push(tag.replace('Ingredion-com :', ''));
+      let temp = tag.replace('Ingredion-com :', '');
+      temp = temp.split('/');
+      sanitizedTags.push(`${temp[0]}/${temp[temp.length - 1]}`);        
     } else
       faltTags.push(tag);
   });  
