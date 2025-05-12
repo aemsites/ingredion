@@ -118,7 +118,7 @@ function attachIngredientResults(block, ingredientResults, totalItemsCount, sear
     if ($results) {
       $results.remove();
     }
-    $results = div({ class: 'results' }, h2(`${totalItemsCount} results for: ${searchValue}`));
+    $results = div({ class: 'results' }, h2(`${totalItemsCount} results for: <span class="search-value">${searchValue}</span>`));
     const $clearLink = a({ class: 'clear-link', href: '#' }, 'Clear');
     $clearLink.addEventListener('click', () => {
       const [region, locale] = getRegionLocale();

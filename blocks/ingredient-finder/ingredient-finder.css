@@ -144,6 +144,10 @@
 .results {
     margin: 0 !important;
     padding: 40px 16px;
+
+    h2 {
+        font-size: 1.5rem;
+    }
 }
 
 .search-value {
