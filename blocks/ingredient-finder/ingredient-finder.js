@@ -107,6 +107,16 @@ function createDropdownOption(item) {
   }, item.label);
 }
 
+function attachIngredientResults(block, ingredientResults) {
+  const $section = block.closest('.section');
+  if ($section) {
+    if ($section.querySelector('.ingredient-finder-results')) {
+      $section.querySelector('.ingredient-finder-results').remove();
+    }
+    $section.append(ingredientResults);
+  }
+}
+
 export default async function decorate(block) {
   let queryParams = 'activePage=1&perPage=6';
   let typeaheadData = null;
@@ -136,7 +146,7 @@ export default async function decorate(block) {
 
     loadCSS('/blocks/related-ingredient/related-ingredient.css');
     const ingredientResults = await createIngredientPanel(data);
-    block.append(ingredientResults);
+    attachIngredientResults(block, ingredientResults);
   }
 
   function filterAndDisplayResults(query) {
@@ -323,7 +333,7 @@ export default async function decorate(block) {
 
       loadCSS('/blocks/related-ingredient/related-ingredient.css');
       const ingredientResults = await createIngredientPanel(data1);
-      block.append(ingredientResults);
+      attachIngredientResults(block, ingredientResults);
     });
 
     document.addEventListener('click', (e) => {
