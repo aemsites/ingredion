@@ -745,18 +745,38 @@ export function addAuthorBio(document, main) {
   }) 
 }
 
-export function createForm(document, main) {
+export function createForm(document, main, url) {  
   const cells = [['Form']];
   let formURL = '';
-  let formContainer = document.querySelector('.contactUsForm');
+  let formContainer = document.querySelector('.contactUsForm .section__content');
   let submissionURL = '';
+  let problemOptions = null; 
+  
   if (formContainer) {
-    formURL = 'https://main--ingredion--aemsites.aem.live/na/en-us/forms/contact-supplier-form.json';
+    // Set default values
+    formURL = 'https://main--ingredion--aemsites.aem.live/forms/general-form.json';
     submissionURL = 'https://go.ingredion.com/l/504221/2025-03-03/2b8msvs';
-    cells.push([`Form URL`, `${formURL}`]);
-    cells.push([`Submission Endpoint`, `${submissionURL}`]);
+    
+    if (url.includes('contact-experts')) {
+      problemOptions = 'https://main--ingredion--aemsites.aem.live/forms/global-form-options.json?sheet=experts-problem-options';
+    } else if (url.includes('contact-supplier')) {
+      problemOptions = 'https://main--ingredion--aemsites.aem.live/forms/global-form-options.json?sheet=supplier-problem-options';
+    } else {
+      formURL = 'https://main--ingredion--aemsites.aem.live/na/en-us/forms/contact-supplier-form.json';
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-03-03/2b8msvs';
+    }
+    
+    cells.push(['Form URL', formURL]);
+    cells.push(['Submission Endpoint', submissionURL]);
+    
+    if (problemOptions) {
+      cells.push(['Problem Options', problemOptions]);
+    }
     const formTable = WebImporter.DOMUtils.createTable(cells, document);
-    formContainer.replaceWith(formTable);
+    const div = document.createElement('div');
+    div.append(formTable);
+    div.append(pTag());
+    formContainer.replaceWith(div);
   } 
 }
 

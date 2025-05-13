@@ -75,7 +75,7 @@ export default {
     createIngredientBlock(document, main);
     createContactUs(main, document);
     createCarouselBlock(document, main);
-    createForm(document, main);
+    createForm(document, main, path);
     createTableBlock(document, main);
     //createAnchorBlock(document, main);
     createCTAIconBlock(document, main);

@@ -27,7 +27,8 @@ import {
   addAuthorBio,
   addKeywords,
   alignCenter,
-  convertHrefs
+  convertHrefs,
+  createArticleList
 } from './helper.js';
 
 import { newsMap } from './mapping.js';
@@ -68,11 +69,12 @@ export default {
       alignCenter(document);
       createCalloutBlock(document, main);
       createCardsBlock(document, main);
+      createArticleList(document, main);
       createVideoBlock(document, main);
       createCarouselBlock(document, main);
       createTableBlock(document, main);      
       createIngredientBlock(document, main);
-      createForm(document, main);
+      createForm(document, main, path);
       addAuthorBio(document, main);
     }
 

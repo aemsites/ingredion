@@ -43,7 +43,7 @@ export default {
     createTableBlock(document, main);
     createAnchorBlock(document, main);
     createIngredientBlock(document, main);
-    createForm(document, main);
+    createForm(document, main, path);
     createMetadata(main, document, url, html);
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [

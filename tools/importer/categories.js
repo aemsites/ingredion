@@ -23,6 +23,7 @@ import { createColorBlock,
   convertHrefs,
   createAnchorBlock,
   sanitizeMetaTags,
+  createForm,
 } from './helper.js';
 
 import { newsMap } from './mapping.js';
@@ -54,6 +55,7 @@ export default {
     createCardsBlock(document, main);
     createVideoBlock(document, main);
     createTableBlock(document, main);
+    createForm(document, main, path);
     createMetadata(main, document, url, html);
 
     // attempt to remove non-content elements
