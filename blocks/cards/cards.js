@@ -215,27 +215,27 @@ export default async function decorate(block) {
           wrapperLink.appendChild(bodyContainer);
         }
       }
-
-      const btnContainers = li.querySelectorAll('.button-container');
-      if (btnContainers) {
-        btnContainers.forEach((btnContainer, index) => {
-          if (btnContainers.length === 1 || index > 0) {
-            const a = btnContainer.querySelector('a');
-            const span = document.createElement('span');
-            span.className = 'icon-green-arrow';
-            a.append(span);
-            const imageAnchor = li.querySelector('.cards-card-image a');
-            if (!imageAnchor) return;
+      ul.append(li);
+    }
+    const btnContainers = li.querySelectorAll('.button-container');
+    if (btnContainers) {
+      btnContainers.forEach((btnContainer, index) => {
+        if (btnContainers.length === 1 || index > 0) {
+          const a = btnContainer.querySelector('a');
+          const span = document.createElement('span');
+          span.className = 'icon-green-arrow';
+          a.append(span);
+          const imageAnchor = li.querySelector('.cards-card-image a');
+          if (imageAnchor) {
             imageAnchor.href = a.href;
             imageAnchor.setAttribute('aria-label', a.href);
             btnContainer.classList.add('secondary-cta');
-          } else {
-            btnContainer.classList.add('heading');
           }
-          btnContainer.classList.remove('button-container');
-        });
-      }
-      ul.append(li);
+        } else {
+          btnContainer.classList.add('heading');
+        }
+        btnContainer.classList.remove('button-container');
+      });
     }
   });
   ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
