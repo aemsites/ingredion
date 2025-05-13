@@ -7,12 +7,18 @@ let notificationTimeout;
 
 function removeIngredientFromCart() {
   const cartCookies = getCookie('cartCookies');
-  const cookies = cartCookies.split('cookie ');
-  const lastCookie = cookies[cookies.length - 1];
-  const lastCookieUrl = lastCookie.split('=')[1];
-  if (lastCookieUrl === window.location.href) {
-    const updatedCookies = cookies.slice(0, -1);
-    document.cookie = `cartCookies=${updatedCookies.join(' cookie ').trim()}; path=/`;
+  if (cartCookies) {
+    const items = cartCookies.split('cookie ').filter(Boolean);
+    const currentUrl = window.location.href;
+    const updatedItems = items.filter((item) => {
+      const [, url] = item.split(',url=');
+      return url.trim() !== currentUrl.trim();
+    });
+    if (updatedItems.length > 0) {
+      document.cookie = `cartCookies=cookie ${updatedItems.join(' cookie ')}; path=/`;
+    } else {
+      document.cookie = 'cartCookies=; path=/';
+    }
   }
 
   const cartCount = document.querySelector('.icon-cart > .count');
