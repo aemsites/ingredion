@@ -466,62 +466,78 @@ export function createVideoBlock(document, main) {
 }
 
 export function createIngredientBlock(document, main, formulation = false) {
-  
   const relatedIngredients = document.querySelector('.relatedIngredients');
   if (!relatedIngredients) return;
+
   const mainHeading = relatedIngredients.querySelector('.section-title-description-wrapper .heading > h2');
+  const description = relatedIngredients.querySelector('.section-title-description-wrapper .rte-block');
   const resultProdCards = document.querySelectorAll('.result-prod-card');
+
   if (!resultProdCards) {
     const cells = [['related ingredient']];
     const heading = relatedIngredients.querySelector('.heading > h2').textContent;
     const productURL = relatedIngredients.querySelector('.result-card__buttons secondary-cta-link').href;
+    
     if (productURL) {
       const productName = productURL.split('name=').pop();
       cells.push(['Product Name', productName]);
     } else {
       cells.push(['Product Name', heading.trim()]);
     }
+    
     const table = WebImporter.DOMUtils.createTable(cells, document);
     const ptag = document.createElement('p');
     ptag.textContent = '---';
     const div = document.createElement('div');
+    
     div.appendChild(ptag);
     if (mainHeading) {
       div.appendChild(mainHeading);
     }
+    if (description) {
+      div.appendChild(description);
+    }
     div.appendChild(table);
+    
     if (formulation) {
       const section = [['Section Metadata']];
       section.push(['Style', 'full-page']);
       const fullPage = WebImporter.DOMUtils.createTable(section, document);
       div.appendChild(fullPage);
     }
-    relatedIngredients.replaceWith(div);
     
+    relatedIngredients.replaceWith(div);
   } else {
     resultProdCards.forEach((resultProdCard, index) => {
       const cells = [['related ingredient']];
       const heading = resultProdCard.querySelector('.product-name').textContent;
       const productURL = resultProdCard.querySelector('.result-card__buttons .secondary-cta-link').href;
+      
       if (productURL) {
         const productName = productURL.split('name=').pop();
         cells.push(['Product Name', productName]);
       } else {
         cells.push(['Product Name', heading.trim()]);
-      }               
+      }
       
       const table = WebImporter.DOMUtils.createTable(cells, document);
       const ptag = document.createElement('p');
       ptag.textContent = '---';
       const div = document.createElement('div');
+      
       if (index === 0) {
         div.appendChild(ptag);
         if (mainHeading) {
           div.appendChild(mainHeading);
         }
-      } 
+        if (description) {
+          div.appendChild(description);
+        }
+      }
+      
       div.appendChild(table);
-      if (index === resultProdCards.length - 1){
+      
+      if (index === resultProdCards.length - 1) {
         if (formulation) {
           const section = [['Section Metadata']];
           section.push(['Style', 'full-page']);
@@ -530,7 +546,8 @@ export function createIngredientBlock(document, main, formulation = false) {
         }
         div.appendChild(ptag);
       }
-      resultProdCard.replaceWith(div);            
+      
+      resultProdCard.replaceWith(div);
     });
   }
 }
