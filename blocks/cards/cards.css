@@ -7,6 +7,32 @@
 .cards .button {
   padding: 0;
   background: none;
+  text-align: left;
+  color: var(--green);
+  text-decoration: underline;
+  font-size: var(--body-font-size-m);
+
+  &:hover {
+    text-decoration: underline;
+    background-color: transparent;
+  }
+
+  > span.icon-green-arrow::before{
+    content: "\e926";
+    color: var(--green);
+    visibility: visible;
+    display: inline-block;
+    transform: rotate(-90deg);
+    font-size: .6rem;
+    margin-right: .9375rem;
+    margin-left: .5rem;
+    height: .5rem;
+  }
+}
+
+.cards .button:hover,
+.cards .button:hover > span.icon-green-arrow::before {
+  color: var(--dark-green);
 }
 
 .cards button.slide-prev,
@@ -533,17 +559,6 @@ main > .section > .default-content-wrapper {
   font-variant: normal;
   text-transform: none;
   line-height: 1;
-}
-
-.cards.video .button {
-  text-align: left;
-  color: var(--green);
-  text-decoration: underline;
-
-  &:hover {
-    color: var(--dark-green);
-    background-color: transparent;
-  }
 }
 
 @media (width >= 1080px) {
