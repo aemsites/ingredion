@@ -589,6 +589,11 @@ export function getSocialShare(document) {
   if (twitter) {
     socialMetaProp.push('X');
   }
+
+  const linkedin = socialShare.querySelector('.icon-LinkedIn, .social-share__icon-LinkedIn');
+  if (linkedin) {
+    socialMetaProp.push('linkedin');
+  }
   
   if (socialMetaProp.length === 0) return;
   return socialMetaProp.join(', ');
