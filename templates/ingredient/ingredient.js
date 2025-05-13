@@ -206,8 +206,7 @@ export default async function decorate(doc) {
             ),
 
             // Technical Documents Table
-            div({ class: 'table-wrapper mobile-view' },
-
+            productDocs.technicalDocuments?.length > 0 ? div({ class: 'table-wrapper mobile-view' },
               h2(product.heading),
               h3({ id: 'technical-documents' }, translate('technical-documents')),
               table(
@@ -221,10 +220,10 @@ export default async function decorate(doc) {
                 ),
                 ),
               ),
-            ),
+            ) : null,
 
             // SDS Documents Table
-            div({ class: 'table-wrapper mobile-view' },
+            productDocs.sdsDocuments?.length > 0 ? div({ class: 'table-wrapper mobile-view' },
               h3({ id: 'sds-documents' }, translate('sds-documents')),
               table(
                 tr(
@@ -237,7 +236,7 @@ export default async function decorate(doc) {
                 ),
                 ),
               ),
-            ),
+            ) : null,
           ),
         ),
       );

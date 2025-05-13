@@ -145,7 +145,7 @@ export async function viewAllDocsModal(product) {
       // Mobile view
       return div({ class: 'related-ingredient-modal' },
         // Technical Documents Table
-        div({ class: 'table-wrapper mobile-view' },
+        productDocs.technicalDocuments?.length > 0 ? div({ class: 'table-wrapper mobile-view' },
           h4(product.heading),
           h3({ id: 'technical-documents' }, translate('technical-documents')),
           table(
@@ -158,10 +158,10 @@ export async function viewAllDocsModal(product) {
               td(a({ class: 'doc', href: API_HOST + techDoc.path, target: '_blank' }, 'VIEW')),
             )),
           ),
-        ),
+        ) : null,
 
         // SDS Documents Table
-        div({ class: 'table-wrapper mobile-view' },
+        productDocs.sdsDocuments?.length > 0 ? div({ class: 'table-wrapper mobile-view' },
           h3({ id: 'sds-documents' }, translate('sds-documents')),
           table(
             tr(
@@ -173,14 +173,14 @@ export async function viewAllDocsModal(product) {
               td(a({ class: 'doc', href: API_HOST + sdsDoc.path, target: '_blank' }, 'VIEW')),
             )),
           ),
-        ),
+        ) : null,
       );
     }
 
     // Desktop view
     const $modalContent = div({ class: 'related-ingredient-modal' },
       // Technical Documents Table
-      div({ class: 'table-wrapper' },
+      productDocs.technicalDocuments?.length > 0 ? div({ class: 'table-wrapper' },
         h4(product.heading),
         h3({ id: 'technical-documents' }, translate('technical-documents')),
         table(
@@ -198,10 +198,10 @@ export async function viewAllDocsModal(product) {
           )),
         ),
         div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'technical' }, 'Download Documents')),
-      ),
+      ) : null,
 
       // SDS Documents Table
-      div({ class: 'table-wrapper' },
+      productDocs.sdsDocuments?.length > 0 ? div({ class: 'table-wrapper' },
         h3({ id: 'sds-documents' }, translate('sds-documents')),
         table(
           tr(
@@ -218,7 +218,7 @@ export async function viewAllDocsModal(product) {
           )),
         ),
         div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'sds' }, 'Download Documents')),
-      ),
+      ) : null,
     );
 
     // Add Select All functionality for both tables
