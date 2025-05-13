@@ -79,8 +79,8 @@
 .purple { --theme-clr-background: var(--purple); --theme-clr-text: #fff }
 .dark-purple { --theme-clr-background: var(--dark-purple); --theme-clr-text: #fff }
 .dark-blue { --theme-clr-background: var(--dark-blue); --theme-clr-text: #fff }
-.yellow { --theme-clr-background: var(--yellow); --theme-clr-text: var(--black) }
-.pastel-green { --theme-clr-background: var(--pastel-green); --theme-clr-text: var(--black) }
+.yellow { --theme-clr-background: var(--yellow); --theme-clr-text: var(--dark-grey) }
+.pastel-green { --theme-clr-background: var(--pastel-green); --theme-clr-text: var(--dark-grey) }
 
 /* fallback fonts */
 @font-face {
