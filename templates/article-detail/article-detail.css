@@ -85,7 +85,11 @@
               letter-spacing: .015625rem;
             }
   
-            .social-share { margin: 40px 0 55px }
+            .social-share {
+              display: flex;
+              margin-top: 2.5rem;
+              margin-bottom: 3.5rem;
+            }
   
             .line-break {
               box-sizing: border-box;
