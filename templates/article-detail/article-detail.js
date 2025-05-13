@@ -46,6 +46,13 @@ export default async function decorate(doc) {
           'aria-label': 'Facebook',
         }, img({ src: '/icons/facebook.svg', alt: 'Facebook' }));
       }
+      if (platformLink === 'linkedin') {
+        return a({
+          class: 'icon icon-linkedin',
+          href: `https://www.linkedin.com/cws/share?url=${window.location.href}`,
+          'aria-label': 'LinkedIn',
+        }, img({ src: '/icons/linkedin.svg', alt: 'LinkedIn' }));
+      }
       if (platformLink === 'x') {
         return a({
           class: 'icon icon-x',
@@ -64,13 +71,6 @@ export default async function decorate(doc) {
     p({ class: 'description' }, teaserDescription),
     p(sup(author)),
     div({ class: 'social-share' },
-      // linkedIn always shown
-      a({
-        class: 'icon icon-linkedin',
-        href: `https://www.linkedin.com/cws/share?url=${window.location.href}`,
-        'aria-label': 'LinkedIn',
-      }, img({ src: '/icons/linkedin.svg', alt: 'LinkedIn' })),
-      // other share icons
       ...socialShareLinks,
     ),
     div({ class: 'line-break' }),
