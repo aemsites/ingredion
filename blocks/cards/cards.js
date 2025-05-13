@@ -215,8 +215,9 @@ export default async function decorate(block) {
           wrapperLink.appendChild(bodyContainer);
         }
       }
-
-      const btnContainers = li.querySelectorAll('.button-container');
+      ul.append(li);
+    }
+    const btnContainers = li.querySelectorAll('.button-container');
       if (btnContainers) {
         btnContainers.forEach((btnContainer, index) => {
           if (btnContainers.length === 1 || index > 0) {
@@ -225,18 +226,17 @@ export default async function decorate(block) {
             span.className = 'icon-green-arrow';
             a.append(span);
             const imageAnchor = li.querySelector('.cards-card-image a');
-            if (!imageAnchor) return;
-            imageAnchor.href = a.href;
-            imageAnchor.setAttribute('aria-label', a.href);
-            btnContainer.classList.add('secondary-cta');
+            if (imageAnchor) {
+              imageAnchor.href = a.href;
+              imageAnchor.setAttribute('aria-label', a.href);
+              btnContainer.classList.add('secondary-cta');
+            }
           } else {
             btnContainer.classList.add('heading');
           }
           btnContainer.classList.remove('button-container');
         });
       }
-      ul.append(li);
-    }
   });
   ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
   block.textContent = '';
