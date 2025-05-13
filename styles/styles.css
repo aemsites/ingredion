@@ -33,6 +33,7 @@
   --border-color-light: #d8d9d9;
   --white: #fff;
   --black: #000;
+  --pastel-green: #68E0A1;
 
   /* form styles */
   --form-field-border-color: #d8d9d9;
@@ -79,6 +80,7 @@
 .dark-purple { --theme-clr-background: var(--dark-purple); --theme-clr-text: #fff }
 .dark-blue { --theme-clr-background: var(--dark-blue); --theme-clr-text: #fff }
 .yellow { --theme-clr-background: var(--yellow); --theme-clr-text: var(--black) }
+.pastel-green { --theme-clr-background: var(--pastel-green); --theme-clr-text: var(--black) }
 
 /* fallback fonts */
 @font-face {
