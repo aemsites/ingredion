@@ -19,9 +19,10 @@ footer {
   .footer-utility {
     border-top: 1px solid var(--border-color);
 
-    ul {
+    ul:first-of-type {
       display: flex;
-      padding: .625rem .9375rem .625rem 0;
+      padding: 1.5rem 0;
+      gap: 1rem;
 
       li {
         list-style: none;
