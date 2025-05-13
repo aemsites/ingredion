@@ -9,13 +9,11 @@ function removeIngredientFromCart() {
   const cartCookies = getCookie('cartCookies');
   if (cartCookies) {
     const items = cartCookies.split('cookie ').filter(Boolean);
-    const currentUrl = window.location.href;
-    const updatedItems = items.filter((item) => {
-      const [, url] = item.split(',url=');
-      return url.trim() !== currentUrl.trim();
-    });
-    if (updatedItems.length > 0) {
-      document.cookie = `cartCookies=cookie ${updatedItems.join(' cookie ')}; path=/`;
+    // Remove the last item from the array
+    items.pop();
+
+    if (items.length > 0) {
+      document.cookie = `cartCookies=cookie ${items.join(' cookie ')}; path=/`;
     } else {
       document.cookie = 'cartCookies=; path=/';
     }
