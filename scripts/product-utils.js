@@ -1,7 +1,7 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, h4, h3, a, table, tr, th, td, label, input } from './dom-helpers.js';
 import { API_PRODUCT, API_HOST } from './product-api.js';
-import { translate } from './utils.js';
+import { translate, getRegionLocale } from './utils.js';
 import { createModal } from '../blocks/modal/modal.js';
 import { loadCSS } from './aem.js';
 
@@ -135,8 +135,11 @@ export function parseEventDate(dateStr, format = false) {
 export async function viewAllDocsModal(product) {
   loadCSS('/styles/documents-table.css');
 
+  const [region, locale] = getRegionLocale();
+
   // Get product documents after we have the product ID
-  const productDocsResponse = await fetch(API_PRODUCT.ALL_DOCUMENTS(product.productId));
+  const productDocsResponse = await fetch(
+    API_PRODUCT.ALL_DOCUMENTS(region, locale, product.productId));
   const productDocs = await productDocsResponse.json();
 
   // Function to render modal content based on viewport size
@@ -241,7 +244,7 @@ export async function viewAllDocsModal(product) {
 
       if (!selectedIds) return;
 
-      const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(product.productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
+      const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(region, product.productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
 
       // Use a temp link for reliability across browsers
       const tempLink = a({ href: downloadUrl, download: `${docType}-documents.zip`, style: 'display: none' });
