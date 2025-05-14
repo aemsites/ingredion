@@ -174,7 +174,6 @@ export default class ContentResourcesRenderer {
         const content = (article.content || '').toLowerCase();
         return title.includes(query) || description.includes(query) || content.includes(query);
       });
-      console.log('After search filter:', articles.length);
     }
 
     // Filter articles by year
@@ -188,7 +187,6 @@ export default class ContentResourcesRenderer {
           return false;
         }
       });
-      console.log('After year filter:', articles.length);
     }
 
     // Filter articles by type
@@ -203,7 +201,6 @@ export default class ContentResourcesRenderer {
           return false;
         }
       });
-      console.log('After type filter:', articles.length);
     }
 
     // Sort articles

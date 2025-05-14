@@ -1,12 +1,14 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
 import { div, h3, h4, p, a, strong, span } from '../../scripts/dom-helpers.js';
 import { buildBlock, decorateBlock, loadBlock, createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
-import { formatDate, translate } from '../../scripts/utils.js';
+import { formatDate, getRegionLocale, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 import { viewAllDocsModal, parseEventDate } from '../../scripts/product-utils.js';
 import { API_HOST, API_PRODUCT } from '../../scripts/product-api.js';
 import ContentResourcesRenderer from './content-renderer.js';
 import ProductApiRenderer from './product-api-renderer.js';
+
+const [region, locale] = getRegionLocale();
 
 function filterIndex(results, query) {
   if (!query) return [];
@@ -114,12 +116,12 @@ async function createIngredientPanel(ingredientResults) {
         description,
         div({ class: 'cta-links' },
           viewAllDocsLink,
-          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(article.productId) }, 'Download All Documents'),
+          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(region, locale, article.productId) }, 'Download All Documents'),
         ),
       ),
       div({ class: 'buttons' },
         addSampleBtn,
-        a({ class: 'button secondary', href: `/na/en-us/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
+        a({ class: 'button secondary', href: `/${region}/${locale}/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
       ),
     );
     return relatedIngredientBlock;
@@ -146,7 +148,7 @@ async function createIngredientPanel(ingredientResults) {
 
   // Ingredient Renderer
   await new ProductApiRenderer({
-    apiEndpoint: API_PRODUCT.SEARCH_INGREDIENTS(),
+    apiEndpoint: API_PRODUCT.SEARCH_INGREDIENTS(region, locale),
     results: ingredientResults,
     articlesPerPageOptions: ['6', '12', '18', '24', '30'],
     paginationMaxBtns: 5,
@@ -210,7 +212,7 @@ async function createTechDocsPanel(techDocsResults) {
 
   // Technical & SDS Documents Renderer
   await new ProductApiRenderer({
-    apiEndpoint: API_PRODUCT.SEARCH_DOCUMENTS(),
+    apiEndpoint: API_PRODUCT.SEARCH_DOCUMENTS(region, locale),
     results: techDocsResults,
     articlesPerPageOptions: ['6', '12', '18', '24', '30'],
     paginationMaxBtns: 5,
@@ -415,8 +417,8 @@ async function displaySearchResults(
 }
 
 async function fetchSearchResults(searchParams) {
-  const globalIndexUrl = '/na/en-us/indexes/global-index.json';
-  const newsEventsIndexUrl = '/na/en-us/indexes/news-events-index.json';
+  const globalIndexUrl = `/${region}/${locale}/indexes/global-index.json`;
+  const newsEventsIndexUrl = `/${region}/${locale}/indexes/news-events-index.json`;
 
   // Create a cache object to store promises
   const cache = new Map();
@@ -430,8 +432,8 @@ async function fetchSearchResults(searchParams) {
 
   try {
     // Construct the ingredient and tech docs URLs with all search params
-    const ingredientUrl = `${API_PRODUCT.SEARCH_INGREDIENTS()}?${searchParams.toString()}`;
-    const techDocsUrl = `${API_PRODUCT.SEARCH_DOCUMENTS()}?${searchParams.toString()}`;
+    const ingredientUrl = `${API_PRODUCT.SEARCH_INGREDIENTS(region, locale)}?${searchParams.toString()}`;
+    const techDocsUrl = `${API_PRODUCT.SEARCH_DOCUMENTS(region, locale)}?${searchParams.toString()}`;
 
     // Make all requests in parallel and cache the index requests
     const [
