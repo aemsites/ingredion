@@ -1,6 +1,6 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
 import { div, h4, h5, ul, li, small, button, span } from '../../scripts/dom-helpers.js';
-import { translate } from '../../scripts/utils.js';
+import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 import { decorateBlock, loadBlock } from '../../scripts/aem.js';
 
 // API service for making fetch calls
@@ -525,6 +525,9 @@ export default class ProductApiRenderer {
         const url = new URL(window.location);
         url.searchParams.delete('documentType');
         url.searchParams.delete('documentCategory');
+        url.searchParams.delete('applications');
+        url.searchParams.delete('productType');
+        url.searchParams.delete('subApplications');
         url.searchParams.set('activePage', '1');
 
         this.results.appliedFacets = [];
@@ -773,7 +776,8 @@ export default class ProductApiRenderer {
       this.state.allArticles = data;
       this.state.totalArticles = this.results.totalItemsCount;
 
-      // render page after data and translations are loaded
+      const [, locale] = getRegionLocale();
+      await loadTranslations(locale);
       this.updatePage();
     } catch (error) {
       console.error('Error during render:', error);

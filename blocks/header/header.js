@@ -11,6 +11,7 @@ import {
   a,
 } from '../../scripts/dom-helpers.js';
 import { getCookie, getRegionLocale, throttle } from '../../scripts/utils.js';
+import { API_PRODUCT } from '../../scripts/product-api.js';
 
 const isMobile = window.matchMedia('(width < 1080px)');
 const [region, locale] = getRegionLocale();
@@ -402,7 +403,7 @@ export default async function decorate(block) {
     searchButton.classList.remove('hidden');
     if (!typeaheadData) {
       try {
-        const response = await fetch('https://www.ingredion.com/content/ingredion-com/na/en-us.ingredient-search-typeahead.json');
+        const response = await fetch(API_PRODUCT.INGREDIENT_SEARCH_TYPEAHEAD());
         if (!response.ok) throw new Error('Network response was not ok');
         typeaheadData = await response.json();
         $searchInput.dataset.typeahead = JSON.stringify(typeaheadData);

@@ -154,7 +154,6 @@ export default class ContentResourcesRenderer {
    */
   updatePage() {
     const { currentPage, searchQuery, tags, sort, articlesPerPage, allArticles, year, type } = this.state;
-    console.log('Initial articles count:', allArticles.length);
     let articles = [...allArticles];
 
     // Filter articles by tags
@@ -164,7 +163,6 @@ export default class ContentResourcesRenderer {
         const articleTags = article.tags || '';
         return tags.every((tag) => articleTags.toLowerCase().replace(/\s+/g, '-').includes(tag));
       });
-      console.log('After tags filter:', articles.length);
     }
 
     // Filter articles by search query
