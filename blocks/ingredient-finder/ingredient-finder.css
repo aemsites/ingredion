@@ -1,0 +1,172 @@
+@import url('../search/search.css');
+
+.ingredient-quick-search-bar {
+    position: relative;
+    flex: 2;
+    max-width: 50rem;
+
+    .form-typeahead {
+        width: 100%;
+
+        input#search {
+            height: 3rem;
+            width: 100%;
+            outline: none;
+            padding: .78rem .625rem;
+            font-size: .875rem;
+            color: #373738;
+            border-radius: 2px;
+            border: 1px solid var(--border-color);
+
+            &:focus-within {
+                border: 1px solid var(--green);
+                outline: 0;
+                box-shadow: 2px 8px 20px 0 rgba(0 0 0 / 10%);
+            }
+        }
+
+        button.icon-search {
+            position: absolute;
+            right: .625rem;
+            top: 1.5rem;
+            font-size: 1.5rem;
+            border: none;
+            background-color: transparent;
+            padding: 0;
+            cursor: pointer;
+
+            &.disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+
+            &::before {
+                content: "\e93c";
+                color: var(--green);
+                font-family: ingredion-icon, monospace;
+                speak: never;
+                font-style: normal;
+                font-weight: 400;
+                font-variant: normal;
+                text-transform: none;
+                line-height: 1;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            @media (width < 1080px) {
+                right: 1.625rem;
+                top: 1.5rem;
+            }
+        }
+    }
+}
+
+.application.select-dropdown, .sub-application.select-dropdown {
+    padding-top: .7812rem;
+
+    .selected {
+        padding: .7812rem .625rem !important;
+        color: #b2b4b3;
+
+        &.has-value {
+            color: #373738;
+        }
+
+        &.disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    &.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+
+        .selected {
+            cursor: not-allowed;
+        }
+    }
+}
+
+.ingredient-finder-container {
+    margin: 0 auto !important;
+}
+
+.ingredient-finder-wrapper {
+    flex-basis: 50%;
+    padding: 2.5rem;
+    margin: 0 !important;
+}
+
+.ingredient-finder-form-categories {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #d8d9d9;
+    border-radius: 2px;
+    flex-basis: 50%;
+    margin: 0;
+    padding: 2.5rem;
+}
+
+.ingredient-finder-form-categories .button, .ingredient-quick-search-bar .button-search {
+    width: 100%;
+
+    &.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+}
+
+.form-typeahead-ingredient-search {
+    padding: .7812rem 0;
+
+    &::placeholder {
+        color: #757575;
+    }
+}
+
+.ingredient-quick-search {
+    border: 1px solid #d8d9d9;
+    border-radius: 2px;
+    padding: 2.5rem;
+    background-color: #efefef;
+}
+
+.clear-link {
+    display: block;
+    margin-top: 5px;
+    color: #f0635b !important;
+    font-family: MiloPro-Bold, Helvetica, sans-serif;
+    font-size: 1rem;
+}
+
+.results {
+    margin: 0 !important;
+    padding: 40px 16px;
+
+    h2 {
+        font-size: 1.5rem;
+        display: inline;
+        margin-right: 5px;
+    }
+}
+
+.search-value {
+    font-size: 1.375rem;
+    font-family: OpenSans, Helvetica, sans-serif;
+    color: #373738;
+    line-height: 2rem;
+    font-weight: 100;
+    display: inline;
+}
+
+@media (width >= 67.5625rem) {
+    .ingredient-finder-container {
+        display: flex;
+        max-width: 76.5rem;
+        border-bottom: 1px solid #d8d9d9;
+        padding-bottom: 2.5rem;
+        flex-wrap: wrap;
+    }
+}
