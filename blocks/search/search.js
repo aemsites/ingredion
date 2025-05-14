@@ -121,7 +121,7 @@ async function createIngredientPanel(ingredientResults) {
       ),
       div({ class: 'buttons' },
         addSampleBtn,
-        a({ class: 'button secondary', href: `/na/en-us/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
+        a({ class: 'button secondary', href: `/${region}/${locale}/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
       ),
     );
     return relatedIngredientBlock;
@@ -417,8 +417,8 @@ async function displaySearchResults(
 }
 
 async function fetchSearchResults(searchParams) {
-  const globalIndexUrl = '/na/en-us/indexes/global-index.json';
-  const newsEventsIndexUrl = '/na/en-us/indexes/news-events-index.json';
+  const globalIndexUrl = `/${region}/${locale}/indexes/global-index.json`;
+  const newsEventsIndexUrl = `/${region}/${locale}/indexes/news-events-index.json`;
 
   // Create a cache object to store promises
   const cache = new Map();
