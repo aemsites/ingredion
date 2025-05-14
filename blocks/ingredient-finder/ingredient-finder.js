@@ -124,7 +124,6 @@ function attachIngredientResults(block, ingredientResults, totalItemsCount, sear
     $results = div({ class: 'results' }, h2(`${totalItemsCount} results for: `), span({ class: 'search-value' }, searchValue));
     const $clearLink = a({ class: 'clear-link', href: '#' }, 'Clear');
     $clearLink.addEventListener('click', () => {
-      // const [region, locale] = getRegionLocale();
       window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder`);
       window.location.reload();
     });
@@ -149,7 +148,6 @@ export default async function decorate(block) {
       q: searchValue,
     });
     // update the url with the new query params
-    // const [region, locale] = getRegionLocale();
     window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${searchParams}`);
     let data;
     try {
@@ -293,7 +291,6 @@ export default async function decorate(block) {
         const appKey = option.getAttribute('data-key');
         const appLabel = option.getAttribute('data-encoded-label');
         queryParams += `&applicationID=${appKey}&applications=${appLabel}`;
-        // const [region, locale] = getRegionLocale();
         window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
 
         // Update sub-application options and enable the dropdown
@@ -334,7 +331,6 @@ export default async function decorate(block) {
         const subKey = option.getAttribute('data-key');
         const subLabel = option.getAttribute('data-encoded-label');
         queryParams += `&subApplicationID=${subKey}&subApplications=${subLabel}`;
-        // const [region, locale] = getRegionLocale();
         window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
         updateSearchButtonState(selected, selected1, $searchButton);
       }
