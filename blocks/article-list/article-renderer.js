@@ -104,7 +104,7 @@ export default class ArticleRenderer {
     this.articleCard = articleCard;
     this.articlesPerPageOptions = String(articlesPerPageOptions).split(',').map(Number);
     this.paginationDiv = paginationDiv;
-    this.paginationMaxBtns = paginationMaxBtns;
+    this.paginationMaxBtns = Number(paginationMaxBtns);
     this.filterTagsList = filterTagsList;
     this.filterYearsDropdown = filterYearsDropdown;
     this.filterTypesDropdown = filterTypesDropdown;
