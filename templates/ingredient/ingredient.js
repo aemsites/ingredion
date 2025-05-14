@@ -4,6 +4,8 @@ import { API_HOST, API_PRODUCT, getUrlParams } from '../../scripts/product-api.j
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 
+const [region, locale] = getRegionLocale();
+
 // Update fixed header
 function updateFixedHeader($productHeader) {
   // clean up any existing fixed headers and observers
@@ -89,18 +91,18 @@ function updateFixedHeader($productHeader) {
 
 export default async function decorate(doc) {
   const { productName } = getUrlParams();
-  const [region, locale] = getRegionLocale();
   await loadTranslations(locale);
 
   const $main = doc.querySelector('main');
 
   // get product details
-  const fetchProductDetails = await fetch(API_PRODUCT.PRODUCT_DETAILS(productName));
+  const fetchProductDetails = await fetch(API_PRODUCT.PRODUCT_DETAILS(region, locale, productName));
   const productDetails = await fetchProductDetails.json();
   const product = productDetails.results[0];
 
   // get product documents
-  const fetchProductDocs = await fetch(API_PRODUCT.ALL_DOCUMENTS(product.productId));
+  const fetchProductDocs = await fetch(
+    API_PRODUCT.ALL_DOCUMENTS(region, locale, product.productId));
   const productDocs = await fetchProductDocs.json();
 
   // update the title tag with the product name
@@ -263,7 +265,7 @@ export default async function decorate(doc) {
           div({ class: 'type' }, strong('Product Type: '), product.productType),
           div({ class: 'cta-links' },
             a({ class: 'view-all', href: '#technical-documents' }, 'View All Documents'),
-            a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(productName, product.productId) }, 'Download All Documents'),
+            a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, product.productName, product.productId) }, 'Download All Documents'),
           ),
           div({ class: 'cta-buttons' },
             a({ class: 'button add-sample-btn' }, 'Add Sample'),
@@ -356,7 +358,7 @@ export default async function decorate(doc) {
 
         if (!selectedIds) return;
 
-        const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(product.productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
+        const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(region, product.productName)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
 
         // Use a temp link for reliability across browsers
         const tempLink = a({ href: downloadUrl, download: `${docType}-documents.zip`, style: 'display: none' });

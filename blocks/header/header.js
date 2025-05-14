@@ -403,7 +403,7 @@ export default async function decorate(block) {
     searchButton.classList.remove('hidden');
     if (!typeaheadData) {
       try {
-        const response = await fetch(API_PRODUCT.INGREDIENT_SEARCH_TYPEAHEAD());
+        const response = await fetch(API_PRODUCT.INGREDIENT_SEARCH_TYPEAHEAD(region, locale));
         if (!response.ok) throw new Error('Network response was not ok');
         typeaheadData = await response.json();
         $searchInput.dataset.typeahead = JSON.stringify(typeaheadData);
