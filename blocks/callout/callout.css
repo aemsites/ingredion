@@ -5,6 +5,10 @@
   width: 100%;
 }
 
+.section .callout-wrapper.full-width {
+  max-width: 100%;
+}
+
 .callout {
   > div {
     display: flex;
@@ -262,6 +266,21 @@
         p, ul, li {
           max-width: 381px;
         }
+      }
+    }
+  }
+
+  .callout.full-width {
+    max-width: 100%;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+
+    .callout-content {
+      max-width: none;
+
+      h3, p, ul, li {
+        max-width: none;
       }
     }
   }
