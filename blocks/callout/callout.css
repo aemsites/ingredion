@@ -301,6 +301,7 @@
         p {
           margin-top: 16px;
         }
+        
         &:last-child {
           order: 0;
         }
