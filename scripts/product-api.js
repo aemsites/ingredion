@@ -14,9 +14,9 @@ export const getUrlParams = () => {
 };
 
 export const API_PRODUCT = {
-  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}/content/ingredion-com/${region}/${locale}/jcr:content/header.search.json`,
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}/content/ingredion-com/${region}/${locale}/jcr:content/header.search.json?initialTab=`,
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`,
-  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `${API_HOST}/content/ingredion-com/${region}/${locale}.ingredient-search-typeahead.json`,
+  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `${API_HOST}/content/ingredion-com/${region}/${locale}.ingredient-search-typeahead.json?initialTab=`,
   PRODUCT_DETAILS: (region, locale, productName) => `${API_HOST}/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json?initialTab=&q=${productName}`,
   ALL_DOCUMENTS: (region, locale, productId) => `${API_HOST}/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.view.json?productId=${productId}`,
   DOWNLOAD_DOCUMENTS: (region, productName) => `${API_HOST}/content/ingredion-com/ingredients/${region}/${productName}/jcr:content.download.zip`,
