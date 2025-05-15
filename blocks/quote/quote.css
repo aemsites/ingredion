@@ -90,6 +90,10 @@
   margin: 5rem .9375rem;
 }
 
+.section.quote-container .quote-wrapper:has(.full-width) {
+  max-width: none
+}
+
 @media (width >= 67.5625rem) {
   .quoteblock-wrapper {
     padding: 8.375rem 2.5rem;
