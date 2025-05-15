@@ -188,6 +188,10 @@
       h3 {
         font-size: 2rem;
       }
+
+      &:last-child {
+        order: -1;
+      }
     }
 
     .button-container {
@@ -297,12 +301,13 @@
         p {
           margin-top: 16px;
         }
+        &:last-child {
+          order: 0;
+        }
       }
 
       .button-container {
-        margin: 0;
-        margin-right: auto;
-        margin-top: 26px;
+        margin: auto;
 
         a {
           min-width: 15.625rem;
