@@ -10,8 +10,8 @@ export default function decorate(block) {
       false,
       [
         { media: '(min-width: 1080px)', width: '2000' },
-        { media: '(min-width: 768px)', width: '750' },
-        { width: '300' },
+        { media: '(min-width: 768px)', width: '1500' },
+        { width: '1000' },
       ],
     );
     pic.replaceWith(optimizedPicture);
