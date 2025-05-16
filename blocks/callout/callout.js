@@ -120,6 +120,10 @@ export default function decorate(block) {
   // This element will be used as the text content for the callout when no header is present
   const textElement = block.querySelector('p:first-of-type, ul');
 
+  if (block.classList.contains('full-width')) {
+    block.parentElement.classList.add('full-width');
+  }
+
   const header = h1 ?? h2 ?? h3;
 
   const textWrapper = header ? header.closest('div') : textElement.closest('div');
