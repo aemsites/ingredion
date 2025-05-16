@@ -46,6 +46,10 @@ export function createHeroBlock(document, main) {
     const cells = hero.classList.contains('hero--text-left') ? [['Hero(align-left)']] : [['Hero']];
     
     const image = hero.querySelector('.hero__image > picture').outerHTML;
+    const mobileimage = hero.querySelector('.hero__image > picture > source');    
+    const srcset = (mobileimage && mobileimage.media === '(max-width: 768px)') ? mobileimage.srcset : '';
+    const mobileimg = document.createElement('img');
+    mobileimg.src = srcset;    
     const heading = hero.querySelector('.hero__text .heading > h1') ? hero.querySelector('.hero__text .heading > h1').outerHTML : '';
     const subHeading = hero.querySelector('.hero__text .body-text') ? hero.querySelector('.hero__text .body-text').outerHTML : '';
     
@@ -57,6 +61,7 @@ export function createHeroBlock(document, main) {
     
     cells.push([image]);
     cells.push([`${heading} ${subHeading} ${cta}`]);
+    cells.push(['Mobile Image',[mobileimg]]);
     
     const heroTable = WebImporter.DOMUtils.createTable(cells, document);
     hero.replaceWith(heroTable);
@@ -77,12 +82,14 @@ export function createCalloutBlock(document, main) {
   let heading = '';
   let rteText = '';
   let ctalink = '';
-  
+
   callOutBlocks.forEach((callOut) => {
     convertHrefs(callOut);
     let imageLeft;
-    
-    [...callOut.children].forEach((child, index) => {
+    const isFullWidth = callOut.closest('.section--full-width');
+    const fullWidth = isFullWidth ? ',full-width' : '';
+    const fullwidth2 = isFullWidth ? '(full-width)' : '';
+    [...callOut.children].forEach((child, index) => {     
       if (child.classList.contains('colorblock-img-text__image')) {
         const image = child.querySelector('picture > img');
         calloutImg = document.createElement('img');
@@ -109,7 +116,7 @@ export function createCalloutBlock(document, main) {
       child.remove();
     });
 
-    const cells = backgroundColor === '' ? [['Callout']] : [[`Callout (${backgroundColor})`]];
+    const cells = backgroundColor === '' ? [[`Callout${fullwidth2}`]] : [[`Callout (${backgroundColor}${fullWidth})`]];
     if (imageLeft) {
       cells.push([calloutImg, `<h3>${heading}</h3> ${rteText} ${ctalink}`]);
     } else {
@@ -123,6 +130,9 @@ export function createCalloutBlock(document, main) {
   callOutBlocks = document.querySelectorAll('.colorblock-text-cta__wrapper');
   callOutBlocks.forEach((callOut) => {
     convertHrefs(callOut);
+    let getFullWidth = callOut.closest('.section--full-width');
+    let fullWidth = getFullWidth ? ',full-width' : '';
+    let fullwidth2 = getFullWidth ? '(full-width)' : '';
     const color = callOut.parentElement.style.backgroundColor;
     if (color) {
       backgroundColor = colorMapping.get(toHex(color).toLowerCase());
@@ -141,7 +151,7 @@ export function createCalloutBlock(document, main) {
       child.remove();
     });
     
-    const cells = backgroundColor === '' ? [['Callout']] : [[`Callout (${backgroundColor})`]];
+    const cells = backgroundColor === '' ? [[`Callout${fullwidth2}`]] : [[`Callout (${backgroundColor}${fullWidth})`]];
     cells.push([`<h3>${heading}</h3> ${rteText}`, `${ctalink}`]);
     
     const callOutBlock = WebImporter.DOMUtils.createTable(cells, document);
@@ -553,7 +563,7 @@ export function createIngredientBlock(document, main, formulation = false) {
 }
 
 export function createContactUs(main, document) {
-  const contactUs = document.querySelector('.contact-banner__wrapper');
+  const contactUs = document.querySelector('.contact-banner__wrapper'); 
   if (contactUs) {
     const heading = contactUs.querySelector('.heading > h3').textContent;
     let contactDetailsHeading = contactUs.querySelector('.contact-banner__primary .heading > h4') ?
@@ -602,11 +612,12 @@ export function getSocialShare(document) {
 export function createColorBlock(document) {
   const colorBlocks = document.querySelectorAll('.colorBlockQuote');
   colorBlocks.forEach((colorBlock) => {
+    const sectionFullWidth = colorBlock.querySelector('.section--full-width');
     const colorBlockQuote = colorBlock.querySelector('.colorblock-quote');
     if (!colorBlockQuote) return;
-    
+    const fullWidth = sectionFullWidth ? ', full-width' : '';
     const color = toHex(colorBlockQuote.style.backgroundColor);
-    const cells = colorMapping.has(color) ? [[`Quote(${colorMapping.get(color)}) `]] : [[`Quote(${color}) `]];
+    const cells = colorMapping.has(color) ? [[`Quote(${colorMapping.get(color)}${fullWidth})`]] : [[`Quote(${color}${fullWidth})`]];
     
     const heading = colorBlockQuote.querySelector('.heading > h1').textContent;
     cells.push([`<p>${heading}</p>`]);
