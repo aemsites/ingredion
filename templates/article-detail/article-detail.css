@@ -45,6 +45,10 @@
       .section {
         margin: 0;
         padding-top: 20px;
+
+        >*:not(:has(.header)) {
+          margin: 5rem auto 0;
+        }
   
         .default-content-wrapper {
           p.centered { text-align: center }

@@ -90,6 +90,10 @@
   margin: 5rem .9375rem;
 }
 
+.section.quote-container .quote-wrapper:has(.full-width) {
+  max-width: none
+}
+
 @media (width >= 67.5625rem) {
   .quoteblock-wrapper {
     padding: 8.375rem 2.5rem;
@@ -112,11 +116,8 @@
   .section.quote-container .quote-wrapper {
     box-sizing: border-box;
     max-width: 76.4375rem;
-    width: calc(100% - 80px);
     margin: 0 auto;
     border-radius: 4px;
     background-color: var(--theme-clr-background);
-    box-shadow: 4px 20px 40px 4px color(srgb 0 0 0 / 10%);
-    padding: 2.5rem 6.5625rem 12.5rem;
   }
 }
