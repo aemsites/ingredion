@@ -766,14 +766,16 @@ export function createForm(document, main, url) {
   if (formContainer) {
     // Set default values
     formURL = 'https://main--ingredion--aemsites.aem.live/forms/general-form.json';
-    submissionURL = 'https://go.ingredion.com/l/504221/2025-03-03/2b8msvs';
+    submissionURL = 'https://go.ingredion.com/l/504221/2020-11-05/wjcynv';
     
     if (url.includes('contact-experts')) {
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-03-03/2b8msvs';
       problemOptions = 'https://main--ingredion--aemsites.aem.live/forms/global-form-options.json?sheet=experts-problem-options';
     } else if (url.includes('contact-supplier')) {
+      submissionURL = 'https://go.ingredion.com/l/504221/2023-06-07/29vdv59';
       problemOptions = 'https://main--ingredion--aemsites.aem.live/forms/global-form-options.json?sheet=supplier-problem-options';
     } else {
-      formURL = 'https://main--ingredion--aemsites.aem.live/na/en-us/forms/contact-supplier-form.json';
+      formURL = 'https://main--ingredion--aemsites.aem.live/forms/general-form.json';
       submissionURL = 'https://go.ingredion.com/l/504221/2025-03-03/2b8msvs';
     }
     
