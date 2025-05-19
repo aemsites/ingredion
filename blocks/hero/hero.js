@@ -5,12 +5,10 @@ export default function decorate(block) {
   const desktopPic = picContainer.querySelector('picture');
   const desktopImg = desktopPic.querySelector('img');
   const alt = block.querySelector(':scope > div:nth-child(2)').textContent.trim().slice(0, 125);
-
-  // get mobilePic and its img/src
   const mobilePic = block.querySelectorAll('picture')[1];
-  const mobileImg = mobilePic ? mobilePic.querySelector('img') : null;
+  const mobileBreakpoint = window.matchMedia('(max-width: 768px)');
 
-  // Remove the mobile row from DOM if it exists
+  // remove mobile row from DOM
   Array.from(block.children).forEach((row) => {
     if (row.children.length >= 2) {
       const firstCell = row.children[0];
@@ -20,13 +18,12 @@ export default function decorate(block) {
     }
   });
 
-  const mobileBreakpoint = window.matchMedia('(max-width: 768px)');
-
   function onResize(e) {
     const currentPic = picContainer.querySelector('picture');
     let newPic;
-    if (e.matches && mobileImg) {
+    if (e.matches && mobilePic) {
       // mobile view with mobile image
+      const mobileImg = mobilePic.querySelector('img');
       newPic = createOptimizedPicture(mobileImg.src, mobileImg.alt || alt, false, [{ width: '800' }]);
     } else if (e.matches) {
       // desktop view with desktop image
