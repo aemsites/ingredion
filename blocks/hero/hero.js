@@ -25,9 +25,6 @@ export default function decorate(block) {
       // mobile view with mobile image
       const mobileImg = mobilePic.querySelector('img');
       newPic = createOptimizedPicture(mobileImg.src, mobileImg.alt || alt, false, [{ width: '800' }]);
-    } else if (e.matches) {
-      // desktop view with desktop image
-      newPic = createOptimizedPicture(desktopImg.src, desktopImg.alt || alt, false, [{ width: '800' }]);
     } else {
       // desktop image for both
       newPic = createOptimizedPicture(desktopImg.src, desktopImg.alt || alt, false, [
