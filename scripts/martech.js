@@ -17,7 +17,10 @@ async function initLaunch(env) {
  */
 export async function initMartech(env) {
   await initLaunch(env);
-  loadScript('/scripts/gtm-init.js', { defer: true });
+  loadScript('/scripts/gtm-init.js', { defer: true });  
+  await loadScript('/scripts/salsesforce-chat-widget.js', { defer: true });
+
+  await initChatWidget();
 }
 
 export async function addCookieBanner() {
@@ -28,4 +31,22 @@ export async function addCookieBanner() {
   <div id="consent_blackbar"></div>
 </div>`;
   document.querySelector('main').append(cookieBanner);
+}
+
+export async function initChatWidget() {
+  const addWidget = document.createElement('div');
+  addWidget.classList.add('embeddedServiceHelpButton');
+  addWidget.innerHTML = `
+    <div class="embeddedServiceHelpButton">
+      <div class="helpButton">
+        <button class="helpButtonEnabled uiButton" href="javascript:void(0)">
+          <span class="embeddedServiceIcon" aria-hidden="true" data-icon="" style="display: inline-block;"></span>
+          <span class="helpButtonLabel" id="helpButtonSpan" aria-live="polite" aria-atomic="true">
+            <span class="assistiveText">Live chat:</span>
+            <span class="message">Chat with an expert</span>
+          </span>
+        </button>
+      </div>
+    </div>`;
+  document.querySelector('main').append(addWidget);
 }
