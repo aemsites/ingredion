@@ -999,3 +999,16 @@ function convertPDPURLs(url) {
   
   return false;
 }
+
+export function addTagsKeywords(values) {
+  const list = values.split(', Keywords: ');
+  const tagsList = [];  
+  const keywordsList = [];
+  if(list[0]){
+    tagsList.push(list[0]);
+  }
+  if(list[1]) {
+    keywordsList.push(list[1]);
+  }
+  return [[...new Set(tagsList)], [...new Set(keywordsList)]];
+}
