@@ -247,7 +247,7 @@ function addHeroObserver(doc) {
 }
 
 function initializePhoneValidation(document) {
-  const form = document.querySelector('.modal dialog form') || document.querySelector('form');
+  const form = document.querySelector('.modal dialog form') || document.querySelector('#form-block');
   if (!form) return;
   const input = document.querySelector('.Phone > input');
   const countryDropdown = document.querySelector('.Country .form-dropdown > input');

@@ -1,5 +1,5 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, p, h4, picture, img } from '../../scripts/dom-helpers.js';
+import { div, p, h1, picture, img } from '../../scripts/dom-helpers.js';
 import { unwrapNestedDivs } from '../../scripts/scripts.js';
 
 const authorSpreadsheetPath = '/author/author-info.json';
@@ -19,11 +19,14 @@ export default async function decorate(block) {
   if (authorInformation) {
     const authorImageContainer = div(
       { class: 'author-bio-image' },
-      picture(img({ src: authorInformation.image })),
+      picture(img({
+        src: authorInformation.image,
+        alt: `${authorInformation.name}`,
+      })),
     );
     const authorTextContainer = div(
       { class: 'author-bio-text' },
-      div({ class: 'heading', tabIndex: 0 }, h4(authorInformation.name)),
+      div({ class: 'heading', tabIndex: 0 }, h1(authorInformation.name)),
       p({ class: 'body-text', taxIndex: 0 }, authorInformation.description),
     );
 

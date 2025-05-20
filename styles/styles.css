@@ -168,6 +168,7 @@ ul,
 pre,
 blockquote {
   margin: 0.8em 0 .25em;
+  font-size: 1rem;
 }
 
 ol,
@@ -198,7 +199,6 @@ button {
 /* links */
 a:any-link {
   color: var(--green);
-  text-decoration: none;
   word-break: break-word;
 }
 
