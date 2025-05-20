@@ -16,22 +16,26 @@
   text-transform: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale
+  -moz-osx-font-smoothing: grayscale;
+  font-display: swap;
 }
 
 @font-face {
   font-family: OpenSans-Bold;
   src: url('../fonts/OpenSans-Bold.ttf') format('truetype');
+  font-display: swap;
 }
 
 @font-face {
   font-family: OpenSans-Regular;
   src: url('../fonts/OpenSans-Regular.ttf') format('truetype');
+  font-display: swap;
 }
 
 @font-face {
   font-family: ingredion-icon;
   src: url('../fonts/ingredion-icon.ttf') format('truetype');
+  font-display: block;
 }
 
 @font-face {

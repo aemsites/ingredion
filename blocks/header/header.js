@@ -22,9 +22,9 @@ const $originalLogo = a(
     'Ingredion logo',
     true,
     [
-      { media: '(min-width: 1080px)', width: '120' },
-      { media: '(min-width: 600px)', width: '100' },
-      { width: '80' },
+      { media: '(min-width: 1080px)', width: '120', height: '40' },
+      { media: '(min-width: 600px)', width: '100', height: '33' },
+      { width: '80', height: '27' },
     ],
   ),
 );
