@@ -263,10 +263,8 @@ header {
 
         .logo {
             img {
-                width: auto;
-                height: auto;
-                max-width: 100%;
-                aspect-ratio: auto;
+                width: 7rem;
+                height: 4.5rem;
             }
         }
     }
@@ -424,9 +422,7 @@ header {
 
             .logo {
                 img {
-                    max-width: 4.6875rem;
-                    width: auto;
-                    height: auto;
+                    width: 4.6875rem;
                 }
             }
 
