@@ -4,7 +4,6 @@ import {
   div,
   nav,
   span,
-  img,
   form,
   input,
   button,
@@ -12,12 +11,22 @@ import {
 } from '../../scripts/dom-helpers.js';
 import { getCookie, getRegionLocale, throttle } from '../../scripts/utils.js';
 import { API_PRODUCT } from '../../scripts/product-api.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 const isMobile = window.matchMedia('(width < 1080px)');
 const [region, locale] = getRegionLocale();
 const $originalLogo = a(
   { class: 'logo', href: `/${region}/${locale}/`, 'aria-label': 'Home' },
-  img({ src: '/img/ingredion.webp', width: 120, alt: 'Ingredion logo' }),
+  createOptimizedPicture(
+    '/img/ingredion.webp',
+    'Ingredion logo',
+    true,
+    [
+      { media: '(min-width: 1080px)', width: '120' },
+      { media: '(min-width: 600px)', width: '100' },
+      { width: '80' },
+    ],
+  ),
 );
 
 function resetDropdownsMobile($header) {
@@ -165,7 +174,7 @@ async function buildDropdownsMobile($header) {
     resetDropdownsMobile($header);
 
     const btnContainer = document.querySelector('.btn-container');
-    btnContainer.replaceChildren($originalLogo);
+    btnContainer.replaceChildren($originalLogo.cloneNode(true));
   });
 
   async function attachDropdown(link) {
