@@ -14,8 +14,6 @@ import {
   getMetadata,
 } from './aem.js';
 
-import { toggleError } from '../blocks/form/form.js';
-
 /**
  * Recursively removes nested <div> elements from a given element.
  */
@@ -283,7 +281,7 @@ function initializePhoneValidation(document) {
     }
   });
 
-  input.addEventListener('input', (e) => {
+  input.addEventListener('input', async (e) => {
     const isValid = iti.isValidNumber();
     let errorMessage;
     if (!isValid && input.value === '') {
@@ -293,6 +291,7 @@ function initializePhoneValidation(document) {
     } else {
       input.setAttribute('full-phone-number', iti.getNumber());
     }
+    const { toggleError } = await import('../blocks/form/form.js');
     toggleError(input.parentElement, !isValid, errorMessage);
   });
 }

@@ -168,6 +168,9 @@ ul,
 pre,
 blockquote {
   margin: 0.8em 0 .25em;
+}
+
+p {
   font-size: 1rem;
 }
 

@@ -78,6 +78,7 @@ header {
             margin: 0 0 0 30px;
             transition: all 100ms;
             cursor: pointer;
+            font-size: 0.66rem;
 
             &:hover {
                 color: var(--green)
@@ -158,6 +159,7 @@ header {
                 a {
                     color: var(--text-color);
                     transition: all 100ms;
+                    text-decoration: none;
 
                     &:hover {
                         color: var(--green)
@@ -276,6 +278,7 @@ header {
         font-family: MiloPro-Bold, Helvetica, sans-serif;
         letter-spacing: .042rem;
         transition: all 200ms;
+        text-decoration: none;
 
         &:hover {
             background: var(--purple);
