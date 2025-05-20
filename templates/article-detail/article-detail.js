@@ -19,7 +19,7 @@ export default async function decorate(doc) {
   // Create hero section
   const $hero = div({ class: 'hero' });
   const $picture = $main.querySelector('picture');
-  
+
   if ($picture) {
     const pic = $picture.querySelector('img');
     const picOpt = createOptimizedPicture(pic.src, pic.alt, true, picBreakpoints);
@@ -33,30 +33,31 @@ export default async function decorate(doc) {
   const platformConfig = {
     facebook: {
       url: 'https://www.facebook.com/sharer/sharer.php',
-      icon: '/icons/facebook.svg'
+      icon: '/icons/facebook.svg',
     },
     linkedin: {
       url: 'https://www.linkedin.com/cws/share',
-      icon: '/icons/linkedin.svg'
+      icon: '/icons/linkedin.svg',
     },
     x: {
       url: 'https://x.com/intent/tweet',
-      icon: '/icons/x.svg'
-    }
+      icon: '/icons/x.svg',
+    },
   };
 
   const socialShareLinks = socialShare.split(',')
     .map((platform) => {
       const platformKey = platform.trim().toLowerCase();
       const config = platformConfig[platformKey];
-      
+
       if (!config) return null;
 
       return a({
         class: `icon icon-${platformKey}`,
         href: `${config.url}?url=${window.location.href}`,
-        'aria-label': platformKey.charAt(0).toUpperCase() + platformKey.slice(1)
-      }, img({ src: config.icon, alt: platformKey.charAt(0).toUpperCase() + platformKey.slice(1) }));
+        'aria-label': platformKey.charAt(0).toUpperCase() + platformKey.slice(1),
+      },
+      img({ src: config.icon, alt: platformKey.charAt(0).toUpperCase() + platformKey.slice(1) }));
     })
     .filter(Boolean);
 
@@ -66,10 +67,10 @@ export default async function decorate(doc) {
   // Handle sections
   const $sections = Array.from($main.querySelectorAll('.section'));
   if ($sections.length) {
-    $sections.forEach(section => section.remove());
+    $sections.forEach((section) => section.remove());
     const $container = div({ class: 'section-container' },
       $breadcrumbs,
-      ...$sections
+      ...$sections,
     );
     $main.insertBefore($container, $hero.nextSibling);
   }
@@ -81,7 +82,7 @@ export default async function decorate(doc) {
   }
 
   // Center align paragraphs with ###
-  $content.querySelectorAll('p').forEach(paragraph => {
+  $content.querySelectorAll('p').forEach((paragraph) => {
     if (paragraph.textContent.trim() === '###') {
       paragraph.classList.add('centered');
     }

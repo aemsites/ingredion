@@ -18,7 +18,7 @@
     .title {
         font-size: 2rem;
         line-height: 3rem;
-        letter-spacing: -.03125rem;
+        letter-spacing: -.031rem;
         font-family: MiloPro-Bold, Helvetica, sans-serif;
         margin: 0 0 1rem;
         color: #373738;
@@ -28,7 +28,7 @@
         font-size: .75rem;
         line-height: 1.2;
         font-family: OpenSans-Bold, Helvetica, sans-serif;
-        letter-spacing: .015625rem;
+        letter-spacing: .015rem;
         color: var(--text-color);
     }
 
