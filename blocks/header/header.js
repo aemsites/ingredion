@@ -174,7 +174,7 @@ async function buildDropdownsMobile($header) {
     resetDropdownsMobile($header);
 
     const btnContainer = document.querySelector('.btn-container');
-    btnContainer.replaceChildren($originalLogo.cloneNode(true));
+    btnContainer.replaceChildren($originalLogo);
   });
 
   async function attachDropdown(link) {
