@@ -172,7 +172,8 @@ export default class ContentResourcesRenderer {
         const title = (article.title || '').toLowerCase();
         const description = (article.description || '').toLowerCase();
         const content = (article.content || '').toLowerCase();
-        return title.includes(query) || description.includes(query) || content.includes(query);
+        const keywords = (article.keywords || '').toLowerCase();
+        return title.includes(query) || description.includes(query) || content.includes(query) || keywords.includes(query);
       });
     }
 

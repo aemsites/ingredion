@@ -170,6 +170,10 @@ blockquote {
   margin: 0.8em 0 .25em;
 }
 
+p {
+  font-size: 1rem;
+}
+
 ol,
 ul {
   margin-left: 1em;
@@ -198,7 +202,6 @@ button {
 /* links */
 a:any-link {
   color: var(--green);
-  text-decoration: none;
   word-break: break-word;
 }
 

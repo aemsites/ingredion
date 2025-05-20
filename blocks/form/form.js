@@ -426,6 +426,7 @@ export async function createForm(formURL, submitUrl, problemOptionsUrl) {
   const form = document.createElement('form');
   form.method = 'GET';
   form.action = submitUrl;
+  form.id = 'form-block';
 
   const [, locale] = getRegionLocale();
   await (async () => {

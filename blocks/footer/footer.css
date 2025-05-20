@@ -41,6 +41,7 @@ footer {
         a {
           color: var(--text-color);
           word-break: auto-phrase;
+          text-decoration: none;
           &:hover { text-decoration: none }
         }
       }
