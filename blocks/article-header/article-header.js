@@ -7,7 +7,7 @@ export default function decorate(block) {
     const cssClass = rowTitle.textContent.toLowerCase().replace(/\s+/g, '-');
     if (content.textContent.trim()) {
       if (cssClass === 'title') {
-        newBlock.append(h2(content.firstElementChild || content));
+        newBlock.append(h2(content.firstElementChild.textContent || content.textContent));
       } else {
         newBlock.append(div({ class: cssClass }, content.firstElementChild || content));
       }
