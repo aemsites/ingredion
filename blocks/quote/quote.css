@@ -4,6 +4,7 @@
 
 .quoteblock-wrapper p {
   margin: 0;
+  font-size: 1.5rem;
 }
 
 .quoteblock-wrapper .heading {
@@ -28,6 +29,7 @@
 
 .quoteblock-wrapper h1 > p {
   margin: 40px 0;
+  font-size: 2.5rem;
 }
 
 .quoteblock-wrapper .heading h1, .quoteblock-wrapper .heading h3 {
