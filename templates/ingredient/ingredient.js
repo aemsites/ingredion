@@ -6,6 +6,12 @@ import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 
 const [region, locale] = getRegionLocale();
 
+// Checks if a path looks like a valid image file (e.g., ends with /filename.ext)
+function isValidImagePath(path) {
+  // check if image path is valid
+  return /\/[^/]+\.[a-zA-Z0-9]+$/.test(path);
+}
+
 // Update fixed header
 function updateFixedHeader($productHeader) {
   // clean up any existing fixed headers and observers
@@ -89,6 +95,13 @@ function updateFixedHeader($productHeader) {
   };
 }
 
+function showProductError($main) {
+  const $error = div({ class: 'default-content-wrapper' },
+    div({ class: 'error-message' }, 'Issue retrieving product information'),
+  );
+  $main.querySelector('.section').appendChild($error);
+}
+
 export default async function decorate(doc) {
   const { productName } = getUrlParams();
   await loadTranslations(locale);
@@ -96,9 +109,30 @@ export default async function decorate(doc) {
   const $main = doc.querySelector('main');
 
   // get product details
-  const fetchProductDetails = await fetch(API_PRODUCT.PRODUCT_DETAILS(region, locale, productName));
-  const productDetails = await fetchProductDetails.json();
-  const product = productDetails.results[0];
+  let product = null;
+  let productDetails = null;
+  try {
+    // eslint-disable-next-line max-len
+    const fetchProductDetails = await fetch(API_PRODUCT.PRODUCT_DETAILS(region, locale, productName));
+    if (fetchProductDetails.status === 204) {
+      showProductError($main);
+      return;
+    }
+    if (fetchProductDetails.ok) {
+      productDetails = await fetchProductDetails.json();
+      product = productDetails.results?.[0];
+      if (!product) {
+        showProductError($main);
+        return;
+      }
+    } else {
+      showProductError($main);
+      return;
+    }
+  } catch (e) {
+    showProductError($main);
+    return;
+  }
 
   // get product documents
   const fetchProductDocs = await fetch(
@@ -113,45 +147,56 @@ export default async function decorate(doc) {
 
   let gallery = '';
   if (product.resourceLinks) {
-    // If videos exist, load Vimeo script
-    if (product.resourceLinks.some((link) => link.teaserVideo)) {
-      await new Promise((resolve) => {
-        if (window.Vimeo) {
-          resolve();
-        } else {
-          const vimeoScript = script({ src: 'https://player.vimeo.com/api/player.js' });
-          vimeoScript.onload = resolve;
-          document.head.appendChild(vimeoScript);
-        }
-      });
-    }
-
-    gallery = div({ class: 'gallery' },
-      div({ class: 'slides-wrapper' },
-        div({ class: 'slides' },
-          ...product.resourceLinks.map((link, index) => {
-            if (link.teaserVideo) {
-              // Video
-              const videoId = link.teaserVideo.split('/').pop();
-              return div({ class: `video slide ${index === 0 ? 'active' : ''}` },
-                div({ class: 'vimeo-player', 'data-vimeo-id': videoId }),
-                div({ class: 'play-btn' }),
-                img({ src: API_HOST + link.teaserVideoThumbnail, alt: 'video thumbnail' }),
-              );
-            }
-            // Image
-            return div({ class: `image slide ${index === 0 ? 'active' : ''}` },
-              img({ src: API_HOST + link.resourceLink, alt: 'product image' }),
-            );
-          }),
-        ),
-        div({ class: 'slide-nav' },
-          ...product.resourceLinks.map((link, index) => div({ class: `thumb ${index === 0 ? 'active' : ''}` },
-            img({ src: API_HOST + (link.teaserVideoThumbnail || link.resourceLink), alt: 'thumb image' }),
-          )),
-        ),
-      ),
+    // Filter out resource links that are not valid paths
+    // eslint-disable-next-line max-len
+    const validResourceLinks = product.resourceLinks.filter((link) => link.resourceLink && isValidImagePath(link.resourceLink),
     );
+    // Only build the gallery if there are valid image paths
+    if (validResourceLinks.length > 0) {
+      // If videos exist, load Vimeo script
+      if (product.resourceLinks.some((link) => link.teaserVideo)) {
+        await new Promise((resolve) => {
+          if (window.Vimeo) {
+            resolve();
+          } else {
+            const vimeoScript = script({ src: 'https://player.vimeo.com/api/player.js' });
+            vimeoScript.onload = resolve;
+            document.head.appendChild(vimeoScript);
+          }
+        });
+      }
+
+      // Build the gallery using only valid image/video links
+      gallery = div({ class: 'gallery' },
+        div({ class: 'slides-wrapper' },
+          div({ class: 'slides' },
+            ...validResourceLinks.map((link, index) => {
+              if (link.teaserVideo) {
+                // Video slide
+                const videoId = link.teaserVideo.split('/').pop();
+                return div({ class: `video slide ${index === 0 ? 'active' : ''}` },
+                  div({ class: 'vimeo-player', 'data-vimeo-id': videoId }),
+                  div({ class: 'play-btn' }),
+                  img({ src: API_HOST + link.teaserVideoThumbnail, alt: 'video thumbnail' }),
+                );
+              }
+              // Image slide
+              return div({ class: `image slide ${index === 0 ? 'active' : ''}` },
+                img({ src: API_HOST + link.resourceLink, alt: 'product image' }),
+              );
+            }),
+          ),
+          div({ class: 'slide-nav' },
+            ...validResourceLinks.map((link, index) => div({ class: `thumb ${index === 0 ? 'active' : ''}` },
+              img({ src: API_HOST + (link.teaserVideoThumbnail || link.resourceLink), alt: 'thumb image' }),
+            )),
+          ),
+        ),
+      );
+    } else {
+      // No valid images: do not render the gallery
+      gallery = '';
+    }
   }
 
   // render page content (mobile or desktop)
