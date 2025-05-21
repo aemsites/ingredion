@@ -492,8 +492,11 @@ export function createVideoBlock(document, main) {
     const cells = [['Video']];
     let videoURL = videoBlock.getAttribute('data-video-url');
     const picture = videoBlock.querySelector('.video-banner__wrapper > picture').outerHTML;
-    
+    if (videoURL.endsWith('/')) {
+      videoURL = videoURL.slice(0, -1);
+    }
     let videoID = videoURL.split('/').at(-1);
+    
     videoID = videoID.split('?').at(0);
     
     if (videoURL.includes('youtube')) {
@@ -686,14 +689,18 @@ export function createAnchorBlock(document, main) {
   if (!contentTabs) return;
   
   const cells = [['Anchor']];
-  const tabs = contentTabs.querySelectorAll('.contentTab .content-tabs__section');
+  let tabs = document.querySelectorAll('.contentTab .content-tabs__section');
+  if (tabs.length === 0) {
+    tabs = document.querySelectorAll('.contentTab .content-tabs__section');
+  }
+  
   const contentTabsNavWrapper = contentTabs.querySelector('.content-tabs__navigationWrapper');
   if (!contentTabsNavWrapper) return;
   tabs.forEach((tab) => {
     const anchor = document.createElement('a');
     anchor.textContent = tab.getAttribute('link-label');
     
-    const tabContent = tab.querySelector('h2');
+    const tabContent = tab.querySelector('h2');console.log('h2'+tabContent);
     if (tabContent) {
       let text = tabContent.textContent.replace(/\&nbsp;/g, '');
       text = text.trim();
@@ -876,7 +883,13 @@ function testURL(url) {
     
     // Handle PDF files
     if (url.includes('.pdf')) {
-      return url;
+      if (url.startsWith('/')) {
+        return `https://www.ingredion.com${url}`;
+      } else if (url.includes('localhost:3001')) {
+        return url.replace('http://localhost:3001', 'https://www.ingredion.com');
+      } else {
+        return url;
+      }
     }
     
     // Handle localhost and ingredion.com URLs
