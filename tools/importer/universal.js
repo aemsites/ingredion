@@ -145,7 +145,7 @@ const createMetadata = (main, document, url, html) => {
   };
   if (teaser.title) meta['teaser-title'] = teaser.title;
   if (teaser.description) meta['teaser-description'] = teaser.description;
-  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
+  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.replaceAll('_','-').toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
     const sanitizedTags = addTagsKeywords(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
     if (sanitizedTags[0].length > 0) meta['tags'] = sanitizedTags[0].join(', ');
