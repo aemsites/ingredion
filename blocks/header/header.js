@@ -9,7 +9,7 @@ import {
   button,
   a,
 } from '../../scripts/dom-helpers.js';
-import { getCookie, getRegionLocale, throttle } from '../../scripts/utils.js';
+import { getCookie, getRegionLocale, loadTranslations, translate, throttle } from '../../scripts/utils.js';
 import { API_PRODUCT } from '../../scripts/product-api.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
@@ -243,6 +243,8 @@ async function buildDropdownsMobile($header) {
 }
 
 export default async function decorate(block) {
+  await loadTranslations(locale);
+  const searchText = translate('search').toLowerCase();
   block.remove();
   const navPath = `/${region}/${locale}/header/header`;
   const navFrag = await loadFragment(navPath, false);
@@ -297,7 +299,7 @@ export default async function decorate(block) {
   });
 
   const $searchBar = div({ class: 'search-bar' },
-    form({ class: 'search', id: 'searchForm', action: `/${region}/${locale}/search` },
+    form({ class: 'search', id: 'searchForm', action: `/${region}/${locale}/${searchText}` },
       div({ class: 'search-box' },
         (() => {
           const initialTab = input({ type: 'hidden', name: 'initialTab', id: 'initialTab', placeholder: 'All' });
