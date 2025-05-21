@@ -118,8 +118,10 @@ const createMetadata = (main, document, url, html) => {
     meta.Title = title.textContent.replace(/[\n\t]/gm, '');
   }
   const template = document.querySelector('.blog-header');
+  const isArticle = false;
   if (template) {
     meta.template = 'article-detail';
+    isArticle = true;
   }
   // description
   const desc = document.querySelector("[property='og:description']");
@@ -138,9 +140,10 @@ const createMetadata = (main, document, url, html) => {
   const category = url.split('/')[3];
   if (category) meta.category = category;  
   // Get teaser metadata
+  
   const teaser = {
-    title: getMetadataProp(document, '.heading:first-of-type > h2'),
-    description: getMetadataProp(document, '.rte-block--large-body-text')
+    title: getMetadataProp(document, '.heading:first-of-type > h2', isArticle),
+    description: getMetadataProp(document, '.rte-block--large-body-text', isArticle)
   };
   if (teaser.title) meta['Title'] = teaser.title;
   if (teaser.description) meta['description'] = teaser.description;

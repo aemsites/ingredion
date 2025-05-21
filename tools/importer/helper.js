@@ -801,12 +801,21 @@ export function createForm(document, main, url) {
     submissionURL = 'https://go.ingredion.com/l/504221/2020-11-05/wjcynv';
     
     if (url.includes('contact-experts')) {
-      submissionURL = 'https://go.ingredion.com/l/504221/2025-03-03/2b8msvs';
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-04-25/2bb5r4c';
       problemOptions = 'https://main--ingredion--aemsites.aem.live/forms/global-form-options.json?sheet=experts-problem-options';
     } else if (url.includes('contact-supplier')) {
-      submissionURL = 'https://go.ingredion.com/l/504221/2023-06-07/29vdv59';
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-05-20/2bbthwg';
       problemOptions = 'https://main--ingredion--aemsites.aem.live/forms/global-form-options.json?sheet=supplier-problem-options';
-    } else {
+    } else if (url.includes('sample-cart')) {
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-04-25/2bb5r48';
+    } else if (url.includes('catalyst-program')) {
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-05-20/2bbthwk';
+    } else if (url.includes('customized-services-solutions')) {
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-04-25/2bb5r4c';
+    } else if (url.includes('everyday-life-contact')) {
+      submissionURL = 'https://www.ingredion.com/bin/ingredion/sendEmail';
+    }
+    else {
       formURL = 'https://main--ingredion--aemsites.aem.live/forms/general-form.json';
       submissionURL = 'https://go.ingredion.com/l/504221/2025-03-03/2b8msvs';
     }
