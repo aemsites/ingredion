@@ -127,7 +127,7 @@ const createMetadata = (main, document, url, html) => {
     if (type && type !== undefined) meta['type'] = type;
   const socialShare = getSocialShare(document);
   //meta['keywords'] = '';
-  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.replace('_','-').toLowerCase() === url.toLowerCase());
+  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.replaceAll('_','-').toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
     const sanitizedTags = addTagsKeywords(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
     if (sanitizedTags[0].length > 0) meta['tags'] = sanitizedTags[0].join(', ');

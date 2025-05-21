@@ -146,13 +146,14 @@ const createMetadata = (main, document, url, html) => {
   if (teaserDescription) {
     meta['teaser-description'] = teaserDescription;
   }
-  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.replace('_','-').toLowerCase() === url.toLowerCase());
+  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.replaceAll('_','-').toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
     const sanitizedTags = addTagsKeywords(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
     if (sanitizedTags[0].length > 0) meta['tags'] = sanitizedTags[0].join(', ');
-    if (sanitizedTags[1].length > 0) meta['categories'] = sanitizedTags[1].join(', ');
+    if (sanitizedTags[1].length > 0) meta['keywords'] = sanitizedTags[1].join(', ');
   } else {
     meta['tags'] = '';
+    meta['keywords'] = '';
   }
   meta.category = 'solving-a-challenge';
   // Extract date and category
@@ -173,7 +174,7 @@ const createMetadata = (main, document, url, html) => {
     meta['social-share'] = socialShare;
   }
 
-  meta.keywords = addKeywords(url);
+  //meta.keywords = addKeywords(url);
 
   // Determine template type
   let template = document.querySelector('.blog-header');
