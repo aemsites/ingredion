@@ -18,7 +18,8 @@ import {
   getSocialShare, 
   createCardsBlock, 
   sanitizeMetaTags, 
-  addKeywords,  
+  addKeywords,
+  addTagsKeywords
 } from './helper.js';
 import { newsMap } from './mapping.js';
 
@@ -112,13 +113,14 @@ const createMetadata = (main, document, url, html) => {
   if (dateCategory) {
     meta['published-date'] = dateCategory.split('|')[0].trim();    
   }
-  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
+  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.replace('_','-').toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
-    const sanitizedTags = sanitizeMetaTags(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
+    const sanitizedTags = addTagsKeywords(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
     if (sanitizedTags[0].length > 0) meta['tags'] = sanitizedTags[0].join(', ');
-    if (sanitizedTags[1].length > 0) meta['categories'] = sanitizedTags[1].join(', ');
+    if (sanitizedTags[1].length > 0) meta['keywords'] = sanitizedTags[1].join(', ');
   } else {
     meta['tags'] = '';
+    meta['keywords'] = '';
   }
   meta.category = 'news-article';
   const type = getMetadataProp(document, '.category-label');
@@ -126,7 +128,7 @@ const createMetadata = (main, document, url, html) => {
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
   else meta['social-share'] = '';
-  meta['keywords'] = addKeywords(url);
+  //meta['keywords'] = addKeywords(url);
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
   main.append(block);
   return meta;

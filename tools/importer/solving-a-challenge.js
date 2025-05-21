@@ -28,7 +28,8 @@ import {
   addKeywords,
   alignCenter,
   convertHrefs,
-  createArticleList
+  createArticleList,
+  addTagsKeywords
 } from './helper.js';
 
 import { newsMap } from './mapping.js';
@@ -145,9 +146,9 @@ const createMetadata = (main, document, url, html) => {
   if (teaserDescription) {
     meta['teaser-description'] = teaserDescription;
   }
-  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
+  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.replace('_','-').toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
-    const sanitizedTags = sanitizeMetaTags(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
+    const sanitizedTags = addTagsKeywords(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
     if (sanitizedTags[0].length > 0) meta['tags'] = sanitizedTags[0].join(', ');
     if (sanitizedTags[1].length > 0) meta['categories'] = sanitizedTags[1].join(', ');
   } else {

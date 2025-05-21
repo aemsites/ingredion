@@ -138,7 +138,7 @@ const createMetadata = (main, document, url, html) => {
     meta['published-date'] = date;
     meta['categories'] = category;
   }
-  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
+  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.replace('_','-').toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
     const sanitizedTags = addTagsKeywords(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
     if (sanitizedTags[0].length > 0) meta['tags'] = sanitizedTags[0].join(', ');

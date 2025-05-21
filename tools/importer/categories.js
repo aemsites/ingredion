@@ -24,6 +24,7 @@ import { createColorBlock,
   createAnchorBlock,
   sanitizeMetaTags,
   createForm,
+  addTagsKeywords,
 } from './helper.js';
 
 import { newsMap } from './mapping.js';
@@ -42,6 +43,17 @@ export default {
     // eslint-disable-next-line no-unused-vars
     document, url, html, params,
   }) => {
+    const path = ((u) => {
+      let p = new URL(u).pathname;
+      if (p.endsWith('/')) {
+        p = `${p}index`;
+      }
+      return decodeURIComponent(p)
+        .toLowerCase()
+        .replace(/\.html$/, '')
+        .replace(/[^a-zA-Z0-9/]/gm, '-');
+    })(url);
+
     // define the main element: the one that will be transformed to Markdown
     const main = document.body;
     //convertHrefs(document);
@@ -56,7 +68,7 @@ export default {
     createVideoBlock(document, main);
     createTableBlock(document, main);
     createForm(document, main, path);
-    createMetadata(main, document, url, html);
+    createMetadata(main, document, path, html);
 
     // attempt to remove non-content elements
     WebImporter.DOMUtils.remove(main, [
@@ -73,18 +85,6 @@ export default {
     WebImporter.rules.transformBackgroundImages(main, document);
     WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
     WebImporter.rules.convertIcons(main, document);
-
-
-    const path = ((u) => {
-      let p = new URL(u).pathname;
-      if (p.endsWith('/')) {
-        p = `${p}index`;
-      }
-      return decodeURIComponent(p)
-        .toLowerCase()
-        .replace(/\.html$/, '')
-        .replace(/[^a-zA-Z0-9/]/gm, '-');
-    })(url);
 
     return [{
       element: main,
@@ -130,15 +130,16 @@ const createMetadata = (main, document, url, html) => {
    const type = getMetadataProp(document, '.category-label');
     if (type && type !== undefined) meta['type'] = type;
   const socialShare = getSocialShare(document);
-  meta['keywords'] = '';
+  //meta['keywords'] = '';
   meta.category = 'categories-page';
-  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
+  const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.replace('_','-').toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
-    const sanitizedTags = sanitizeMetaTags(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
+    const sanitizedTags = addTagsKeywords(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
     if (sanitizedTags[0].length > 0) meta['tags'] = sanitizedTags[0].join(', ');
-    if (sanitizedTags[1].length > 0) meta['categories'] = sanitizedTags[1].join(', ');
+    if (sanitizedTags[1].length > 0) meta['keywords'] = sanitizedTags[1].join(', ');
   } else {
     meta['tags'] = '';
+    meta['keywords'] = '';
   }
   if (socialShare) meta['social-share'] = socialShare;
   const block = WebImporter.Blocks.getMetadataBlock(document, meta);
