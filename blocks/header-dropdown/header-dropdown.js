@@ -87,6 +87,10 @@ function renderDesktop(block) {
 }
 
 function renderMobile(block) {
+  let hasSubmenu = false;
+  if (block.classList.contains('submenu')) {
+    hasSubmenu = true;
+  }
   block.classList.remove('submenu');
   block.classList.add('mobile');
   let dropdowns = block.querySelectorAll('div');
@@ -115,7 +119,6 @@ function renderMobile(block) {
         p.remove();
       }
     });
-
     dropdown.querySelectorAll('div').forEach((dropdownDiv) => {
       const hasVisibleText = dropdownDiv.textContent.trim().length > 0;
       const hasOtherContent = [...dropdownDiv.children].length > 0;
@@ -129,6 +132,7 @@ function renderMobile(block) {
       if (!title && p.textContent.trim().length > 0) {
         title = p;
 
+        if (hasSubmenu) {
         const parent = p.parentElement;
         const grandparent = parent.parentElement;
 
@@ -139,6 +143,7 @@ function renderMobile(block) {
           grandparent.insertBefore(p, parent);
           parent.remove();
         }
+      }
       }
     });
 

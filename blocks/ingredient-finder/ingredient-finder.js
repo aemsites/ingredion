@@ -444,7 +444,6 @@ export default async function decorate(block) {
           if (!response.ok) throw new Error('Network response was not ok');
           typeaheadData = await response.json();
           $searchInput.dataset.typeahead = JSON.stringify(typeaheadData);
-          // Initial filter if there's already a value
           if ($searchInput.value) {
             filterAndDisplayResults($searchInput.value.trim());
           }

@@ -82,12 +82,78 @@ function setDropdownHeights($header) {
   });
 }
 
+async function buildIngredientFinderQuickDropdown(link) {
+  const ingredientFinder = await loadFragment(
+    "/drafts/akupreyeva/ingredient-finder-quick"
+  );
+  if (!ingredientFinder) return;
+
+  const divs = link.parentElement.querySelectorAll(".dropdown .ingredient-select div div");
+  const ingredientFinderDiv = divs?.[1];
+
+  if (ingredientFinderDiv) {
+    const wrapper = ingredientFinder.querySelector('.ingredient-quick-search');
+    ingredientFinderDiv.prepend(wrapper);
+
+    const buttons = ingredientFinderDiv.querySelectorAll('.button-container a');
+    if (buttons[2]) {
+      buttons[2].classList.add('secondary');
+    }
+    if (buttons[3]) {
+      buttons[3].classList.add('download-all');
+    }
+  }
+}
+
+
+async function buildIngredientFinderCategoryDropdown(link) {
+  const ingredientCategory = await loadFragment('/drafts/akupreyeva/ingredient-finder-category');
+  if (!ingredientCategory) {
+    return;
+  }
+
+  const ingredientCategoryDiv = link.parentElement
+    .querySelector('.dropdown')
+    ?.querySelector('.header-dropdown')
+    ?.querySelector('div')
+    ?.querySelector('div');
+
+  if (ingredientCategoryDiv) {
+    const wrapper = ingredientCategory.querySelector('.ingredient-finder-wrapper');
+    ingredientCategoryDiv.append(wrapper);
+    link.parentElement.querySelector('.dropdown .header-dropdown')
+      .classList.add('ingredient-category');
+
+    const dropdowns = wrapper.querySelectorAll(
+      '.application.select-dropdown, .sub-application.select-dropdown'
+    );
+
+    dropdowns.forEach(dropdown => {
+      const selectedDiv = dropdown.querySelector('.selected');
+      if (selectedDiv && selectedDiv.textContent) {
+        selectedDiv.textContent = 'Select ' + selectedDiv.textContent.trim();
+      }
+    });
+
+    const buttonContainer = wrapper.querySelector('.button-container');
+    const anchor = buttonContainer?.querySelector('a');
+    if (anchor) {
+      anchor.textContent = 'Search';
+    }
+  }
+}
+
 async function buildDropdownsDesktop($header) {
   const links = [...$header.querySelectorAll('a[href*="/dropdowns"]')];
   let activeDropdown = null;
 
   async function attachDropdown(link) {
     const subNavPath = link.getAttribute('href');
+    if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
+      buildIngredientFinderQuickDropdown(link);
+      buildIngredientFinderCategoryDropdown(link);
+    }
+
     link.removeAttribute('href');
     link.setAttribute('data-dropdown', 'true');
 
@@ -170,6 +236,11 @@ async function buildDropdownsMobile($header) {
 
   async function attachDropdown(link) {
     const subNavPath = link.getAttribute('href');
+    if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
+      buildIngredientFinderQuickDropdown(link);
+      buildIngredientFinderCategoryDropdown(link);
+    }
+
     link.removeAttribute('href');
     link.setAttribute('data-dropdown', 'true');
 
