@@ -139,11 +139,11 @@ const createMetadata = (main, document, url, html) => {
   if (category) meta.category = category;  
   // Get teaser metadata
   const teaser = {
-    title: getMetadataProp(document, '.heading > h2', false),
-    description: getMetadataProp(document, '.rte-block--large-body-text', false)
+    title: getMetadataProp(document, '.heading:first-of-type > h2'),
+    description: getMetadataProp(document, '.rte-block--large-body-text')
   };
-  if (teaser.title) meta['teaser-title'] = teaser.title;
-  if (teaser.description) meta['teaser-description'] = teaser.description;
+  if (teaser.title) meta['Title'] = teaser.title;
+  if (teaser.description) meta['description'] = teaser.description;
   const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
     const sanitizedTags = sanitizeMetaTags(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
@@ -157,12 +157,12 @@ const createMetadata = (main, document, url, html) => {
   if (dateCategory) {
     const [date, category = ''] = dateCategory.split('|').map(s => s.trim());
     meta['published-date'] = date;
-    meta['categories'] = category;
+    meta['categories'] = category;    
   }
   meta['keywords'] = addKeywords(url);
   // Get type and social metadata
   const type = getMetadataProp(document, '.category-label');
-  if (type) meta.type = type;
+  meta.type = (type == null || type == undefined) ? '' : type;
 
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;

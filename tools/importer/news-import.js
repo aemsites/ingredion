@@ -19,6 +19,8 @@ import {
   createCardsBlock, 
   sanitizeMetaTags, 
   addKeywords,  
+  createHeroBlock,
+  convertHrefs,
 } from './helper.js';
 import { newsMap } from './mapping.js';
 
@@ -49,7 +51,8 @@ export default {
     })(url);
 
     const main = document.body;
-    
+    convertHrefs(main);
+    createHeroBlock(document, main);
     createColorBlock(document, main);
     createCardsBlock(document, main);
     createIngredientBlock(document, main);
@@ -105,12 +108,14 @@ const createMetadata = (main, document, url, html) => {
   // page name
   meta['Page Name'] = getPageName(document);
   const teaserTitle = getMetadataProp(document, '.heading > h2');
-  if (teaserTitle) meta['teaser-title'] = teaserTitle;
+  if (teaserTitle) meta['Title'] = teaserTitle;
   const teaserDescription = getMetadataProp(document, '.rte-block--large-body-text');
-  if (teaserDescription) meta['teaser-description'] = teaserDescription;
+  if (teaserDescription) meta['description'] = teaserDescription;
   const dateCategory = getMetadataProp(document, '.date-category-tags');
   if (dateCategory) {
-    meta['published-date'] = dateCategory.split('|')[0].trim();    
+    const [date, category = ''] = dateCategory.split('|').map(s => s.trim());
+    meta['published-date'] = date;
+    meta['categories'] = category;    
   }
   const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
@@ -122,7 +127,7 @@ const createMetadata = (main, document, url, html) => {
   }
   meta.category = 'news-article';
   const type = getMetadataProp(document, '.category-label');
-  if (type) meta['type'] = type;
+  meta['type'] = type;
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;
   else meta['social-share'] = '';
@@ -132,14 +137,13 @@ const createMetadata = (main, document, url, html) => {
   return meta;
 };
 
-export function getMetadataProp(document, queryString) {
-  let metaDataField;
+export function getMetadataProp(document, queryString, remove = true) {
   const metadata = document.querySelector(queryString);
-  if (metadata) {
-    metaDataField = metadata.textContent ? metadata.textContent : metadata.content;
-    metadata.remove();
-  }
-  return metaDataField;
+  if (!metadata) return;
+  
+  const value = metadata.textContent ? metadata.textContent.replace(/[\n\t]/gm, '') : metadata.content;
+  if (remove) metadata.remove();
+  return value;
 }
 
 

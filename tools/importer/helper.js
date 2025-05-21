@@ -40,7 +40,6 @@ export function createHeroBlock(document, main) {
     hero.insertAdjacentElement('afterend', breadcrumbs);
     const anchorBlock = createAnchorBlock(document, main);
     if (anchorBlock) {
-      console.log('anchorBlock found');
       hero.insertAdjacentElement('afterend', anchorBlock);
     }
     const cells = hero.classList.contains('hero--text-left') ? [['Hero(align-left)']] : [['Hero']];
@@ -68,6 +67,40 @@ export function createHeroBlock(document, main) {
   } else if (!blogHeader) {
     const breadcrumbs = WebImporter.DOMUtils.createTable([['Breadcrumbs']], document);    
     main.prepend(breadcrumbs);
+  } else if (blogHeader) {
+    const blogHeaderDiv = document.querySelector('.blog-header__content-wrapper');
+    if (!blogHeaderDiv) return;
+
+    const elements = {
+      heading: blogHeaderDiv.querySelector('.heading > h2'),
+      dateCategory: blogHeaderDiv.querySelector('.date-category-tags'),
+      description: blogHeaderDiv.querySelector('.rte-block--large-body-text'),
+      author: blogHeaderDiv.querySelector('.rte-block--large-body-text > p > sup'),
+      type: blogHeaderDiv.querySelector('.blog-header__category-label .category-label')
+    };
+    // Clean up description by removing sup tags
+    if (elements.description) {
+      const pTags = elements.description.querySelectorAll('p');
+      elements.description.innerHTML = Array.from(pTags)
+        .map(p => {
+          const pClone = p.cloneNode(true);
+          pClone.querySelectorAll('sup').forEach(sup => sup.remove());
+          return pClone.outerHTML;
+        })
+        .join('');
+    }
+    
+    const cells = [
+      ['Article Header'],
+      ['Type', elements.type?.outerHTML],
+      ['Title', elements.heading?.textContent],
+      ['Date Tags', elements.dateCategory?.innerHTML],
+      ['Description', elements.description?.innerHTML],
+      ['Author', (elements.author == null || elements.author == undefined) ? '' : elements.author.innerText]
+    ];
+
+    const articleHeader = WebImporter.DOMUtils.createTable(cells, document);
+    elements.heading.replaceWith(articleHeader);
   }
 }
 
@@ -735,7 +768,6 @@ export function addAuthorBio(document, main) {
   const imageWithDesc = document.querySelectorAll('.imageWithDescription .image-desc .image-desc__wrapper');
   
   if (!authorBio && !imageWithDesc) {
-    console.log('No author bio found');
     return;
   }
 
@@ -822,10 +854,11 @@ export function createTableBlock(document, main) {
 }
 
 function testURL(url) {
-  const hasProtocol = /^(?:[a-z+]+:)?\/\//i.test(url);
+  const hasProtocol = /^(?:[a-z+]+:)?\/\//i.test(url) || url.startsWith('/');
   
   if (hasProtocol) {
     // First check if it's a PDP URL that needs conversion
+    
     const pdpURL = convertPDPURLs(url);
     if (pdpURL) return pdpURL;
     
@@ -917,6 +950,7 @@ export function createArticleList(document, main) {
   const sheetName = sheet.get(pathBase.split('/').pop());
   if (!sheetName) return;
   const perPageOptions = document.createElement('div');
+  const cardVariant = document.querySelector('.element');
   perPageOptions.innerHTML = `<div>6</div><div>12</div><div>18</div><div>24</div><div>30</div>`;
   const cells = [
     ['Article List'],
@@ -936,7 +970,7 @@ export function addKeywords(url) {
   const caseInsensitiveUrl = Array.from(urlCategoryMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl === undefined || caseInsensitiveUrl === null) return '';
   else if (undefined !== caseInsensitiveUrl && null !== caseInsensitiveUrl) {
-    const sanitizedTags = sanitizeMetaTags(urlCategoryMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
+    const sanitizedTags = sanitizeMetaTags(urlCategoryMap.get(caseInsensitiveUrl));
     if (sanitizedTags[0].length > 0) return sanitizedTags[0].join(', ');
     if (sanitizedTags[1].length > 0) return sanitizedTags[1].join(', ');
   }
@@ -992,7 +1026,7 @@ function convertPDPURLs(url) {
   let newURL = url.includes('localhost:3001') 
     ? url.replace('http://localhost:3001', 'https://www.ingredion.com') 
     : url;
-  
+ 
   // Check if URL is an ingredient URL
   if (newURL.includes('/ingredient/') || newURL.includes('/ingredients/')) {
     const newPDPURL = PDPMap.get(newURL);

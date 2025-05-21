@@ -1502,5 +1502,5 @@ export const PDPMap = new Map([
 ['https://www.ingredion.com/ingredients/na/versafibe-1490-dietary-fiber-06400400.html','/na/en-us/ingredient?name=versafibe-1490-dietary-fiber-06400400'],
 ['https://www.ingredion.com/na/novelose-3490-06400301.html','/na/en-us/ingredient?name=novelose-3490-06400301'],
 ['https://www.ingredion.com/ingredients/na/versafibe-1490-dietary-fiber-06400400.html','/na/en-us/ingredient?name=versafibe-1490-dietary-fiber-06400400'],
-['https://www.ingredion.com/ingredients/na/novelose-3490-06400301.html', '/na/en-us/ingredient?name=novelose-3490-06400301']
+['https://www.ingredion.com/ingredients/na/novelose-3490-06400301.html', '/na/en-us/ingredient?name=novelose-3490-06400301'],
 ]); 
