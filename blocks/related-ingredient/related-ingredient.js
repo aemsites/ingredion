@@ -33,7 +33,7 @@ async function renderRelatedIngredient(productDisplayName) {
 
     const relatedIngredientBlock = div({ class: 'related-ingredient' },
       div({ class: 'content' },
-        h4({ class: 'product-name' }, productDisplayName),
+        h4({ class: 'product-name' }, product.heading),
         description,
         div({ class: 'cta-links' },
           viewAllDocsLink,
