@@ -112,7 +112,7 @@ export default function decorate(block) {
   const h3 = block.querySelector('h3');
   const h2 = block.querySelector('h2');
   const h1 = block.querySelector('h1');
-  const link = block.querySelector('a');
+  const link = block.querySelector('a.button');
 
   // This line selects the first paragraph or unordered list element within the block
   // It uses a CSS selector with the :first-of-type pseudo-class to get the first paragraph

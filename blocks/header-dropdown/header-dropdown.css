@@ -166,6 +166,7 @@
         color: var(--green);
         background: transparent;
         padding: 0;
+        text-decoration: none;
 
         /* arrow */
         &::after {
