@@ -40,7 +40,6 @@ export function createHeroBlock(document, main) {
     hero.insertAdjacentElement('afterend', breadcrumbs);
     const anchorBlock = createAnchorBlock(document, main);
     if (anchorBlock) {
-      console.log('anchorBlock found');
       hero.insertAdjacentElement('afterend', anchorBlock);
     }
     const cells = hero.classList.contains('hero--text-left') ? [['Hero(align-left)']] : [['Hero']];
@@ -68,6 +67,40 @@ export function createHeroBlock(document, main) {
   } else if (!blogHeader) {
     const breadcrumbs = WebImporter.DOMUtils.createTable([['Breadcrumbs']], document);    
     main.prepend(breadcrumbs);
+  } else if (blogHeader) {
+    const blogHeaderDiv = document.querySelector('.blog-header__content-wrapper');
+    if (!blogHeaderDiv) return;
+
+    const elements = {
+      heading: blogHeaderDiv.querySelector('.heading > h2'),
+      dateCategory: blogHeaderDiv.querySelector('.date-category-tags'),
+      description: blogHeaderDiv.querySelector('.rte-block--large-body-text'),
+      author: blogHeaderDiv.querySelector('.rte-block--large-body-text > p > sup'),
+      type: blogHeaderDiv.querySelector('.blog-header__category-label .category-label')
+    };
+    // Clean up description by removing sup tags
+    if (elements.description) {
+      const pTags = elements.description.querySelectorAll('p');
+      elements.description.innerHTML = Array.from(pTags)
+        .map(p => {
+          const pClone = p.cloneNode(true);
+          pClone.querySelectorAll('sup').forEach(sup => sup.remove());
+          return pClone.outerHTML;
+        })
+        .join('');
+    }
+    
+    const cells = [
+      ['Article Header'],
+      ['Type', elements.type?.outerHTML],
+      ['Title', elements.heading?.textContent],
+      ['Date Tags', elements.dateCategory?.innerHTML],
+      ['Description', elements.description?.innerHTML],
+      ['Author', (elements.author == null || elements.author == undefined) ? '' : elements.author.innerText]
+    ];
+
+    const articleHeader = WebImporter.DOMUtils.createTable(cells, document);
+    elements.heading.replaceWith(articleHeader);
   }
 }
 
@@ -459,8 +492,11 @@ export function createVideoBlock(document, main) {
     const cells = [['Video']];
     let videoURL = videoBlock.getAttribute('data-video-url');
     const picture = videoBlock.querySelector('.video-banner__wrapper > picture').outerHTML;
-    
+    if (videoURL.endsWith('/')) {
+      videoURL = videoURL.slice(0, -1);
+    }
     let videoID = videoURL.split('/').at(-1);
+    
     videoID = videoID.split('?').at(0);
     
     if (videoURL.includes('youtube')) {
@@ -653,14 +689,18 @@ export function createAnchorBlock(document, main) {
   if (!contentTabs) return;
   
   const cells = [['Anchor']];
-  const tabs = contentTabs.querySelectorAll('.contentTab .content-tabs__section');
+  let tabs = document.querySelectorAll('.contentTab .content-tabs__section');
+  if (tabs.length === 0) {
+    tabs = document.querySelectorAll('.contentTab .content-tabs__section');
+  }
+  
   const contentTabsNavWrapper = contentTabs.querySelector('.content-tabs__navigationWrapper');
   if (!contentTabsNavWrapper) return;
   tabs.forEach((tab) => {
     const anchor = document.createElement('a');
     anchor.textContent = tab.getAttribute('link-label');
     
-    const tabContent = tab.querySelector('h2');
+    const tabContent = tab.querySelector('h2');console.log('h2'+tabContent);
     if (tabContent) {
       let text = tabContent.textContent.replace(/\&nbsp;/g, '');
       text = text.trim();
@@ -735,7 +775,6 @@ export function addAuthorBio(document, main) {
   const imageWithDesc = document.querySelectorAll('.imageWithDescription .image-desc .image-desc__wrapper');
   
   if (!authorBio && !imageWithDesc) {
-    console.log('No author bio found');
     return;
   }
 
@@ -766,14 +805,25 @@ export function createForm(document, main, url) {
   if (formContainer) {
     // Set default values
     formURL = 'https://main--ingredion--aemsites.aem.live/forms/general-form.json';
-    submissionURL = 'https://go.ingredion.com/l/504221/2025-03-03/2b8msvs';
+    submissionURL = 'https://go.ingredion.com/l/504221/2020-11-05/wjcynv';
     
     if (url.includes('contact-experts')) {
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-04-25/2bb5r4c';
       problemOptions = 'https://main--ingredion--aemsites.aem.live/forms/global-form-options.json?sheet=experts-problem-options';
     } else if (url.includes('contact-supplier')) {
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-05-20/2bbthwg';
       problemOptions = 'https://main--ingredion--aemsites.aem.live/forms/global-form-options.json?sheet=supplier-problem-options';
-    } else {
-      formURL = 'https://main--ingredion--aemsites.aem.live/na/en-us/forms/contact-supplier-form.json';
+    } else if (url.includes('sample-cart')) {
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-04-25/2bb5r48';
+    } else if (url.includes('catalyst-program')) {
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-05-20/2bbthwk';
+    } else if (url.includes('customized-services-solutions')) {
+      submissionURL = 'https://go.ingredion.com/l/504221/2025-04-25/2bb5r4c';
+    } else if (url.includes('everyday-life-contact')) {
+      submissionURL = 'https://www.ingredion.com/bin/ingredion/sendEmail';
+    }
+    else {
+      formURL = 'https://main--ingredion--aemsites.aem.live/forms/general-form.json';
       submissionURL = 'https://go.ingredion.com/l/504221/2025-03-03/2b8msvs';
     }
     
@@ -820,10 +870,11 @@ export function createTableBlock(document, main) {
 }
 
 function testURL(url) {
-  const hasProtocol = /^(?:[a-z+]+:)?\/\//i.test(url);
+  const hasProtocol = /^(?:[a-z+]+:)?\/\//i.test(url) || url.startsWith('/');
   
   if (hasProtocol) {
     // First check if it's a PDP URL that needs conversion
+    
     const pdpURL = convertPDPURLs(url);
     if (pdpURL) return pdpURL;
     
@@ -832,7 +883,13 @@ function testURL(url) {
     
     // Handle PDF files
     if (url.includes('.pdf')) {
-      return url;
+      if (url.startsWith('/')) {
+        return `https://www.ingredion.com${url}`;
+      } else if (url.includes('localhost:3001')) {
+        return url.replace('http://localhost:3001', 'https://www.ingredion.com');
+      } else {
+        return url;
+      }
     }
     
     // Handle localhost and ingredion.com URLs
@@ -915,6 +972,7 @@ export function createArticleList(document, main) {
   const sheetName = sheet.get(pathBase.split('/').pop());
   if (!sheetName) return;
   const perPageOptions = document.createElement('div');
+  const cardVariant = document.querySelector('.element');
   perPageOptions.innerHTML = `<div>6</div><div>12</div><div>18</div><div>24</div><div>30</div>`;
   const cells = [
     ['Article List'],
@@ -934,7 +992,7 @@ export function addKeywords(url) {
   const caseInsensitiveUrl = Array.from(urlCategoryMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl === undefined || caseInsensitiveUrl === null) return '';
   else if (undefined !== caseInsensitiveUrl && null !== caseInsensitiveUrl) {
-    const sanitizedTags = sanitizeMetaTags(urlCategoryMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
+    const sanitizedTags = sanitizeMetaTags(urlCategoryMap.get(caseInsensitiveUrl));
     if (sanitizedTags[0].length > 0) return sanitizedTags[0].join(', ');
     if (sanitizedTags[1].length > 0) return sanitizedTags[1].join(', ');
   }
@@ -990,7 +1048,7 @@ function convertPDPURLs(url) {
   let newURL = url.includes('localhost:3001') 
     ? url.replace('http://localhost:3001', 'https://www.ingredion.com') 
     : url;
-  
+ 
   // Check if URL is an ingredient URL
   if (newURL.includes('/ingredient/') || newURL.includes('/ingredients/')) {
     const newPDPURL = PDPMap.get(newURL);

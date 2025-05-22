@@ -119,8 +119,10 @@ const createMetadata = (main, document, url, html) => {
     meta.Title = title.textContent.replace(/[\n\t]/gm, '');
   }
   const template = document.querySelector('.blog-header');
+  const isArticle = false;
   if (template) {
     meta.template = 'article-detail';
+    isArticle = true;
   }
   // description
   const desc = document.querySelector("[property='og:description']");
@@ -139,12 +141,13 @@ const createMetadata = (main, document, url, html) => {
   const category = url.split('/')[3];
   if (category) meta.category = category;  
   // Get teaser metadata
+  
   const teaser = {
-    title: getMetadataProp(document, '.heading > h2', false),
-    description: getMetadataProp(document, '.rte-block--large-body-text', false)
+    title: getMetadataProp(document, '.heading:first-of-type > h2', isArticle),
+    description: getMetadataProp(document, '.rte-block--large-body-text', isArticle)
   };
-  if (teaser.title) meta['teaser-title'] = teaser.title;
-  if (teaser.description) meta['teaser-description'] = teaser.description;
+  if (teaser.title) meta['Title'] = teaser.title;
+  if (teaser.description) meta['description'] = teaser.description;
   const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.replaceAll('_','-').toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
     const sanitizedTags = addTagsKeywords(newsMap.get(caseInsensitiveUrl));console.log(sanitizedTags);
@@ -159,12 +162,12 @@ const createMetadata = (main, document, url, html) => {
   if (dateCategory) {
     const [date, category = ''] = dateCategory.split('|').map(s => s.trim());
     meta['published-date'] = date;
-    meta['categories'] = category;
+    meta['categories'] = category;    
   }
   // meta['keywords'] = addKeywords(url);
   // Get type and social metadata
   const type = getMetadataProp(document, '.category-label');
-  if (type) meta.type = type;
+  meta.type = (type == null || type == undefined) ? '' : type;
 
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;

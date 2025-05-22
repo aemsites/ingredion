@@ -269,6 +269,7 @@ export const PDPMap = new Map([
 ['https://www.ingredion.com/na/en-us/ingredient/fortifeed-flo-111121.html','/na/en-us/ingredient?name=fortifeed-flo-111121'],
 ['https://www.ingredion.com/na/en-us/ingredient/tic-pretested-gum-arabic-ft-powder-70000296.html','/na/en-us/ingredient?name=tic-pretested-gum-arabic-ft-powder-70000296'],
 ['https://www.ingredion.com/na/en-us/ingredient/dairyblend-natural-ic-21-38964900ca.html','/na/en-us/ingredient?name=dairyblend-natural-ic-21-38964900ca'],
+['https://www.ingredion.com/ingredients/na/dairyblend-natural-ic-21-38964900ca.html', '/na/en-us/ingredient?name=dairyblend-natural-ic-21-38964900ca'],
 ['https://www.ingredion.com/na/en-us/ingredient/novation-3600-34121304.html','/na/en-us/ingredient?name=novation-3600-34121304'],
 ['https://www.ingredion.com/na/en-us/ingredient/crisp-film-06460b06.html','/na/en-us/ingredient?name=crisp-film-06460b06'],
 ['https://www.ingredion.com/na/en-us/ingredient/purity-w-06840106.html','/na/en-us/ingredient?name=purity-w-06840106'],
