@@ -1,27 +1,28 @@
- 
+    import {loadScript} from './aem.js';    
+    await loadScript('./salesforce-init.js');
     var initESW = function(gslbBaseURL) {
         embedded_svc.settings.displayHelpButton = true; //Or false
         embedded_svc.settings.language = ''; //For example, enter 'en' or 'en-US'
 
-        //embedded_svc.settings.defaultMinimizedText = '...'; //(Defaults to Chat with an Expert)
-        //embedded_svc.settings.disabledMinimizedText = '...'; //(Defaults to Agent Offline)
-    
+      //embedded_svc.settings.defaultMinimizedText = '...'; //(Defaults to Chat with an Expert)
+      //embedded_svc.settings.disabledMinimizedText = '...'; //(Defaults to Agent Offline)
+  
 
-        //embedded_svc.settings.loadingText = ''; //(Defaults to Loading)
-        //embedded_svc.settings.storageDomain = 'yourdomain.com'; //(Sets the domain for your deployment so that visitors can navigate subdomains during a chat session)
+      //embedded_svc.settings.loadingText = ''; //(Defaults to Loading)
+      //embedded_svc.settings.storageDomain = 'yourdomain.com'; //(Sets the domain for your deployment so that visitors can navigate subdomains during a chat session)
 
-        // Settings for Chat
-        embedded_svc.settings.directToButtonRouting = function(prechatFormData) {
-            prechatFormData[8].value='Website - Live Chat';
-            prechatFormData[9].value='True';
-            prechatFormData[10].value='Website - Live Chat';
-        };
-        //embedded_svc.settings.prepopulatedPrechatFields = {}; //Sets the auto-population of pre-chat form fields
-        //embedded_svc.settings.fallbackRouting = []; //An array of button IDs, user IDs, or userId_buttonId
-          embedded_svc.settings.defaultMinimizedText = 'Chat with an expert'; //(Defaults to Chat with an Expert)
-        //embedded_svc.settings.offlineSupportMinimizedText = '...'; //(Defaults to Contact Us)
-            embedded_svc.settings.offlineSupportMinimizedText = 'Chat offline'; 
-             embedded_svc.addEventHandler("onHelpButtonClick", function(data) {
+      // Settings for Chat
+      embedded_svc.settings.directToButtonRouting = function(prechatFormData) {
+          prechatFormData[8].value='Website - Live Chat';
+          prechatFormData[9].value='True';
+          prechatFormData[10].value='Website - Live Chat';
+      };
+      //embedded_svc.settings.prepopulatedPrechatFields = {}; //Sets the auto-population of pre-chat form fields
+      //embedded_svc.settings.fallbackRouting = []; //An array of button IDs, user IDs, or userId_buttonId
+        embedded_svc.settings.defaultMinimizedText = 'Chat with an expert'; //(Defaults to Chat with an Expert)
+      //embedded_svc.settings.offlineSupportMinimizedText = '...'; //(Defaults to Contact Us)
+          embedded_svc.settings.offlineSupportMinimizedText = 'Chat offline'; 
+           embedded_svc.addEventHandler("onHelpButtonClick", function(data) {
    
     setTimeout(function(){ document.getElementsByClassName("embeddedServiceIcon")[0].removeAttribute("style"); 
    }, 3000);
@@ -76,34 +77,35 @@
 
 //
 
-        embedded_svc.settings.enabledFeatures = ['LiveAgent'];
-        embedded_svc.settings.entryFeature = 'LiveAgent';
-        
+      embedded_svc.settings.enabledFeatures = ['LiveAgent'];
+      embedded_svc.settings.entryFeature = 'LiveAgent';
+      
 
-        embedded_svc.init(
-            'https://ingredion.my.salesforce.com',
-            'https://www.myingredion.com/',
-            gslbBaseURL,
-            '00D30000000mNMR',
-            'NA_inside_Lead_Sales',
-            {
-                baseLiveAgentContentURL: 'https://c.la13-core1.sfdc-lywfpd.salesforceliveagent.com/content',
-                deploymentId: '5723x000000k9bm',
-                buttonId: '5733x000000TPdJ',
-                baseLiveAgentURL: 'https://d.la13-core1.sfdc-lywfpd.salesforceliveagent.com/chat',
-                eswLiveAgentDevName: 'EmbeddedServiceLiveAgent_Parent04I3x000000CaRCEA0_184f206b30a',
-                isOfflineSupportEnabled: true
-            }
-        );
-    };
+      embedded_svc.init(
+          'https://ingredion.my.salesforce.com',
+          'https://www.myingredion.com/',
+          gslbBaseURL,
+          '00D30000000mNMR',
+          'NA_inside_Lead_Sales',
+          {
+              baseLiveAgentContentURL: 'https://c.la13-core1.sfdc-lywfpd.salesforceliveagent.com/content',
+              deploymentId: '5723x000000k9bm',
+              buttonId: '5733x000000TPdJ',
+              baseLiveAgentURL: 'https://d.la13-core1.sfdc-lywfpd.salesforceliveagent.com/chat',
+              eswLiveAgentDevName: 'EmbeddedServiceLiveAgent_Parent04I3x000000CaRCEA0_184f206b30a',
+              isOfflineSupportEnabled: true
+          }
+      );
+  };
 
-    if (!window.embedded_svc) {
-        var s = document.createElement('script');
-        s.setAttribute('src', 'https://ingredion.my.salesforce.com/embeddedservice/5.0/esw.min.js');
-        s.onload = function() {
-            initESW(null);
-        };
-        document.body.appendChild(s);
-    } else {
-        initESW('https://service.force.com');
-    }
+  if (!window.embedded_svc) {
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://ingredion.my.salesforce.com/embeddedservice/5.0/esw.min.js');
+      s.onload = function() {
+          initESW(null);
+      };
+      document.body.appendChild(s);
+  } else {
+      initESW('https://service.force.com');
+  }
+})();
