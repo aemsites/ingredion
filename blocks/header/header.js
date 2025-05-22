@@ -97,17 +97,31 @@ async function buildDropdownsDesktop($header) {
 
   async function attachDropdown(link) {
     const subNavPath = link.getAttribute('href');
-    link.removeAttribute('href');
-    link.setAttribute('data-dropdown', 'true');
+    const attributes = {};
+    // Copy all attributes from the link
+    Array.from(link.attributes).forEach((attr) => {
+      attributes[attr.name] = attr.value;
+    });
+    // Remove href since we're converting to div
+    delete attributes.href;
+    // Create new div with all original attributes
+    const newDiv = div(attributes);
+    // Move all children to the new div
+    while (link.firstChild) {
+      newDiv.appendChild(link.firstChild);
+    }
+    // Replace the link with the div
+    link.parentElement.replaceChild(newDiv, link);
+    newDiv.setAttribute('data-dropdown', 'true');
 
     const subNavFrag = await loadFragment(subNavPath);
     if (!subNavFrag) {
-      link.remove();
+      newDiv.remove();
       return;
     }
     const $dropDown = div({ class: 'dropdown' });
     while (subNavFrag.firstElementChild) $dropDown.append(subNavFrag.firstElementChild);
-    link.parentElement.append($dropDown);
+    newDiv.parentElement.append($dropDown);
 
     const openDropdown = throttle(
       () => {
@@ -121,7 +135,7 @@ async function buildDropdownsDesktop($header) {
       140,
     );
 
-    link.addEventListener('pointerenter', openDropdown);
+    newDiv.addEventListener('pointerenter', openDropdown);
   }
 
   const dropdownPromise = links.map(attachDropdown);
@@ -129,7 +143,7 @@ async function buildDropdownsDesktop($header) {
   document.addEventListener(
     'click',
     (event) => {
-      if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('a[data-dropdown]')) {
+      if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('[data-dropdown]')) {
         activeDropdown.parentElement.classList.remove('active');
         activeDropdown = null;
       }
@@ -140,7 +154,7 @@ async function buildDropdownsDesktop($header) {
   document.addEventListener(
     'pointerleave',
     (event) => {
-      if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('a[data-dropdown]')) {
+      if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('[data-dropdown]')) {
         activeDropdown.parentElement.classList.remove('active');
         activeDropdown = null;
       }
@@ -179,21 +193,35 @@ async function buildDropdownsMobile($header) {
 
   async function attachDropdown(link) {
     const subNavPath = link.getAttribute('href');
-    link.removeAttribute('href');
-    link.setAttribute('data-dropdown', 'true');
+    const attributes = {};
+    // Copy all attributes from the link
+    Array.from(link.attributes).forEach((attr) => {
+      attributes[attr.name] = attr.value;
+    });
+    // Remove href since we're converting to div
+    delete attributes.href;
+    // Create new div with all original attributes
+    const newDiv = div(attributes);
+    // Move all children to the new div
+    while (link.firstChild) {
+      newDiv.appendChild(link.firstChild);
+    }
+    // Replace the link with the div
+    link.parentElement.replaceChild(newDiv, link);
+    newDiv.setAttribute('data-dropdown', 'true');
 
     const spanWrapper = span({});
-    while (link.firstChild) {
-      spanWrapper.appendChild(link.firstChild);
+    while (newDiv.firstChild) {
+      spanWrapper.appendChild(newDiv.firstChild);
     }
-    link.appendChild(spanWrapper);
+    newDiv.appendChild(spanWrapper);
 
     const viewAllButton = span({ class: 'view-all' }, 'VIEW ALL', span({ class: 'icon-green-arrow-up' }));
-    link.appendChild(viewAllButton);
+    newDiv.appendChild(viewAllButton);
 
     const subNavFrag = await loadFragment(subNavPath);
     if (!subNavFrag) {
-      link.remove();
+      newDiv.remove();
       return;
     }
 
@@ -202,7 +230,7 @@ async function buildDropdownsMobile($header) {
       $dropDown.append(subNavFrag.firstElementChild);
     }
 
-    link.parentElement.append($dropDown);
+    newDiv.parentElement.append($dropDown);
 
     const openDropdown = throttle(
       () => {
@@ -231,7 +259,7 @@ async function buildDropdownsMobile($header) {
       140,
     );
 
-    link.addEventListener('click', openDropdown);
+    newDiv.addEventListener('click', openDropdown);
   }
 
   const dropdownPromise = links.map(attachDropdown);

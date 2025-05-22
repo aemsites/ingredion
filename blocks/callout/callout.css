@@ -65,7 +65,7 @@
         list-style-type: disc;
       }
 
-      a {
+      a.button {
         color: var(--theme-clr-text);
         text-decoration: none;
         font-weight: bold;
@@ -319,6 +319,7 @@
           padding: .875rem;
           border: 2px solid var(--theme-clr-text);
           color: var(--theme-clr-text);
+          text-decoration: none;
         }
 
         a:hover {

@@ -35,8 +35,18 @@
   line-height: 3.5rem;
 }
 
+.hero.homepage h1 sup {
+  font-size: 47%;
+  top: -.7em;
+  padding-left: 2px;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
 .hero.homepage a {
   color: var(--dark-grey);
+  text-decoration: none;
 }
 
 .hero picture {
