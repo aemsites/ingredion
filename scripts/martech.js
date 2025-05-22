@@ -18,7 +18,7 @@ async function initLaunch(env) {
 export async function initMartech(env) {
   await initLaunch(env);
   loadScript('/scripts/gtm-init.js', { defer: true });  
-  await loadScript('/scripts/salsesforce-chat-widget.js', { defer: true });
+  await loadScript('/scripts/salesforce-chat-widget.js', { defer: true });
 
   await initChatWidget();
 }
