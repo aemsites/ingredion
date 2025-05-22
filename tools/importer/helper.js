@@ -14,7 +14,7 @@ const colorMapping = new Map([
   ['#b41f75', 'purple'],
   ['#6a0c5f', 'dark-purple'],
   ['#ffffff', ''],
-  ['#68e0a1', 'teal']
+  ['#68e0a1', 'pastel-green']
 ]);
 
 const sheet = new Map([
@@ -837,11 +837,11 @@ function testURL(url) {
     
     // Handle localhost and ingredion.com URLs
     if (url.includes('localhost:3001')) {
-      return url.replace('http://localhost:3001', previewURL).split('.html')[0];
+      return url.replace('http://localhost:3001', previewURL).split('.html')[0].toLowerCase();
     }
     
     if (url.includes('ingredion.com')) {
-      return url.replace('https://www.ingredion.com', previewURL).split('.html')[0];
+      return url.replace('https://www.ingredion.com', previewURL).split('.html')[0].toLowerCase();
     }
     
     // Default case for other absolute URLs
@@ -849,7 +849,7 @@ function testURL(url) {
   } 
   
   // Handle relative URLs
-  return `${previewURL}${url}`.split('.html')[0];
+  return `${previewURL}${url}`.split('.html')[0].toLowerCase();
 }
 
 export function convertHrefs(element) {
