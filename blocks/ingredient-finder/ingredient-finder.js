@@ -368,7 +368,7 @@ export default async function decorate(block) {
   
       if (block.closest('.header-dropdown')) {
         localStorage.setItem('query-params', queryParams);
-        window.location.href = `http://localhost:3000/na/en-us/ingredients/ingredient-finder?${queryParams}`;
+        window.location.href = `https://issue-282--ingredion--aemsites.aem.page/na/en-us/ingredients/ingredient-finder?${queryParams}`;
       }
 
       const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY();
