@@ -491,7 +491,7 @@ export function createVideoBlock(document, main) {
   videoBlocks.forEach((videoBlock) => {
     const cells = [['Video']];
     let videoURL = videoBlock.getAttribute('data-video-url');
-    const picture = videoBlock.querySelector('.video-banner__wrapper > picture').outerHTML;
+    const picture = videoBlock.querySelector('.video-banner__wrapper > picture');
     if (videoURL.endsWith('/')) {
       videoURL = videoURL.slice(0, -1);
     }
@@ -504,10 +504,10 @@ export function createVideoBlock(document, main) {
     } else if (videoURL.includes('vimeo')) {
       videoURL = `https://vimeo.com/${videoID}`;
     }
-    
-    cells.push([`${picture} ${videoURL}`]);
+    videoBlock.querySelector('.video-banner__wrapper > button').remove();
+    cells.push([`${picture.outerHTML} ${videoURL}`]);
     const videoTable = WebImporter.DOMUtils.createTable(cells, document);
-    videoBlock.replaceWith(videoTable);
+    picture.replaceWith(videoTable);
   });
 }
 
@@ -1013,11 +1013,16 @@ export function alignCenter (document) {
   const headings = document.querySelectorAll('.heading--center');
   headings.forEach((heading) => {
     const parent = heading.parentElement;
+    const nextSibling = heading.nextElementSibling;
+   
     if (parent.classList.contains('section-title-description-wrapper')) return;
     heading.prepend(pTag());
     const sectionMetadata = [['Section Metadata']];
     sectionMetadata.push(['Style', 'center']);
     const sectionMetadataTable = WebImporter.DOMUtils.createTable(sectionMetadata, document);
+    if (nextSibling && nextSibling.classList.contains('body-text--center')) {
+      heading.append(nextSibling);
+    }
     heading.append(sectionMetadataTable);
     heading.append(pTag());
   });
@@ -1027,7 +1032,7 @@ export function alignCenter (document) {
     const centerAlignElements = rteBlock.querySelectorAll('p, h1, h2, h3');
     
     centerAlignElements.forEach((element) => {
-      if (element.style.textAlign === 'center') {
+      if (element.style.textAlign === 'center' || element.classList.contains('body-text--center')) {
         // Add metadata for center alignment
         const div = document.createElement('div');
         div.append(pTag());

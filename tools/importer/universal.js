@@ -119,7 +119,7 @@ const createMetadata = (main, document, url, html) => {
     meta.Title = title.textContent.replace(/[\n\t]/gm, '');
   }
   const template = document.querySelector('.blog-header');
-  const isArticle = false;
+  let isArticle = false;
   if (template) {
     meta.template = 'article-detail';
     isArticle = true;
