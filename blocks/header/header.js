@@ -9,6 +9,7 @@ import {
   input,
   button,
   a,
+  p,
 } from '../../scripts/dom-helpers.js';
 import { getCookie, getRegionLocale, throttle } from '../../scripts/utils.js';
 import { API_PRODUCT } from '../../scripts/product-api.js';
@@ -88,20 +89,43 @@ async function buildIngredientFinderQuickDropdown(link) {
   );
   if (!ingredientFinder) return;
 
-  const divs = link.parentElement.querySelectorAll(".dropdown .ingredient-select div div");
-  const ingredientFinderDiv = divs?.[1];
+  const dropdown = link.parentElement.querySelector(".dropdown");
+  if (dropdown) {
+    console.log("ingredient quick dropdown is running");
+    const ingredientQuickFinderBlock = ingredientFinder.querySelector(
+      ".ingredient-finder.quick",
+    );
+    dropdown.prepend(ingredientQuickFinderBlock);
+    ingredientQuickFinderBlock.prepend(div(p("Ingredient quick select")));
 
-  if (ingredientFinderDiv) {
-    const wrapper = ingredientFinder.querySelector('.ingredient-quick-search');
-    ingredientFinderDiv.prepend(wrapper);
+    const searchContainer = ingredientQuickFinderBlock.querySelector(
+      ".ingredient-quick-search",
+    );
 
-    const buttons = ingredientFinderDiv.querySelectorAll('.button-container a');
-    if (buttons[2]) {
-      buttons[2].classList.add('secondary');
+    const viewDetailsBtn = a({ class: "button view-details" }, "View details");
+    const addSampleBtn = a(
+      { class: "button secondary add-sample" },
+      "Add sample",
+    );
+    const downloadAllBtn = a(
+      { class: "button download-all" },
+      "Download All Documents",
+    );
+
+    searchContainer.append(viewDetailsBtn);
+    searchContainer.append(addSampleBtn);
+    searchContainer.append(downloadAllBtn);
+
+    const wrapper = div();
+    searchContainer.parentNode.insertBefore(wrapper, searchContainer);
+
+    wrapper.appendChild(searchContainer);
+
+    const outerWrapper = div();
+    while (ingredientQuickFinderBlock.firstChild) {
+      outerWrapper.appendChild(ingredientQuickFinderBlock.firstChild);
     }
-    if (buttons[3]) {
-      buttons[3].classList.add('download-all');
-    }
+    ingredientQuickFinderBlock.appendChild(outerWrapper);
   }
 }
 
@@ -119,6 +143,8 @@ async function buildIngredientFinderCategoryDropdown(link) {
     ?.querySelector('div');
 
   if (ingredientCategoryDiv) {
+    console.log("ingredient category dropdown is running");
+
     const wrapper = ingredientCategory.querySelector('.ingredient-finder-wrapper');
     ingredientCategoryDiv.append(wrapper);
     link.parentElement.querySelector('.dropdown .header-dropdown')
@@ -149,11 +175,6 @@ async function buildDropdownsDesktop($header) {
 
   async function attachDropdown(link) {
     const subNavPath = link.getAttribute('href');
-    if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
-      buildIngredientFinderQuickDropdown(link);
-      buildIngredientFinderCategoryDropdown(link);
-    }
-
     link.removeAttribute('href');
     link.setAttribute('data-dropdown', 'true');
 
@@ -165,6 +186,11 @@ async function buildDropdownsDesktop($header) {
     const $dropDown = div({ class: 'dropdown' });
     while (subNavFrag.firstElementChild) $dropDown.append(subNavFrag.firstElementChild);
     link.parentElement.append($dropDown);
+
+    if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
+      buildIngredientFinderQuickDropdown(link);
+      buildIngredientFinderCategoryDropdown(link);
+    }
 
     const openDropdown = throttle(
       () => {
@@ -236,11 +262,6 @@ async function buildDropdownsMobile($header) {
 
   async function attachDropdown(link) {
     const subNavPath = link.getAttribute('href');
-    if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
-      buildIngredientFinderQuickDropdown(link);
-      buildIngredientFinderCategoryDropdown(link);
-    }
-
     link.removeAttribute('href');
     link.setAttribute('data-dropdown', 'true');
 
@@ -265,6 +286,11 @@ async function buildDropdownsMobile($header) {
     }
 
     link.parentElement.append($dropDown);
+
+    if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
+      buildIngredientFinderQuickDropdown(link);
+      buildIngredientFinderCategoryDropdown(link);
+    }
 
     const openDropdown = throttle(
       () => {

@@ -296,6 +296,8 @@ export default async function decorate(block) {
       searchIngredientsByCategory();
     }
 
+    
+
     selected.addEventListener('click', (e) => {
       e.stopPropagation();
       options.classList.toggle('hidden');
@@ -368,7 +370,7 @@ export default async function decorate(block) {
   
       if (block.closest('.header-dropdown')) {
         localStorage.setItem('query-params', queryParams);
-        window.location.href = `https://issue-282--ingredion--aemsites.aem.page/na/en-us/ingredients/ingredient-finder?${queryParams}`;
+        window.location.href = `${window.location.origin}/na/en-us/ingredients/ingredient-finder?${queryParams}`;
       }
 
       const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY();
@@ -497,8 +499,33 @@ export default async function decorate(block) {
       if (option) {
         $searchInput.value = option.textContent;
         $searchInput.dataset.selectedProduct = option.textContent;
+
         const dropdown = $dropdownOptions.closest('.form-dropdown');
         dropdown.classList.add('hidden');
+        if (block.closest('.dropdown')) {
+          const articles = JSON.parse($searchInput.dataset.typeahead);
+          const name = $searchInput.dataset.selectedProduct;
+          const article = articles.find((item) => item.name === name);
+          const productId = article.id;
+
+          const productName = article.path.split('/').filter(Boolean).pop()
+          const addSampleBtn = block.querySelector(".add-sample");
+          addSampleBtn.addEventListener("click", () =>
+            addIngredientToCart(productName, window.location.href),
+          );
+
+          const viewDetailsBtn = block.querySelector(".view-details");
+          viewDetailsBtn.setAttribute(
+            "href",
+            `/na/en-us/ingredient?name=${productName}`,
+          );
+
+          const downloadAllBtn = block.querySelector(".download-all");
+          downloadAllBtn.setAttribute(
+            "href",
+            API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(productId),
+          );
+        }
       }
     });
 
