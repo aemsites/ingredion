@@ -30,6 +30,15 @@
         font-family: OpenSans-Bold, Helvetica, sans-serif;
         letter-spacing: .015rem;
         color: var(--text-color);
+
+        a {
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        a:hover {
+            color: var(--green);
+        }
     }
 
     .author p {

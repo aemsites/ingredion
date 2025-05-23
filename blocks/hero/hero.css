@@ -16,6 +16,10 @@
   padding: 40px 0;
 }
 
+.hero.text-black h1 {
+  color: var(--text-color);
+}
+
 .hero.align-left > div {
   text-align: left;
 }
@@ -86,6 +90,7 @@
 
 .hero.block.align-left h1 + p {
   padding: 0;
+  color: var(--text-color);
 }
 
 .hero.hide-description.block h1 + p {
