@@ -462,7 +462,7 @@ export default async function decorate(block) {
       const searchValue = $searchInput.value.trim();
       if (!searchValue) return;
 
-      if (block.closest('.header-dropdown')) {
+      if (block.closest('.dropdown')) {
         localStorage.setItem('search-value', searchValue);
         const searchParams = new URLSearchParams({
           activePage: '1',
