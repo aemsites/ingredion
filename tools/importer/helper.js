@@ -1,5 +1,6 @@
 import { urlCategoryMap } from './keywords.js';
 import { PDPMap } from './pdpMapping.js';
+import { PDPProductMap } from './productMapping.js';
 const colorMapping = new Map([
   ['#0073d8', 'blue'],
   ['#273691', 'dark-blue'],
@@ -1049,16 +1050,25 @@ export function alignCenter (document) {
 }
 
 function convertPDPURLs(url) {
+  // Early return if URL is not an ingredient URL
+  if (!url.includes('/ingredient/') && !url.includes('/ingredients/')) {
+    return false;
+  }
+
   // Convert localhost URLs to production URLs
-  let newURL = url.includes('localhost:3001') 
+  const newURL = url.includes('localhost:3001') 
     ? url.replace('http://localhost:3001', 'https://www.ingredion.com') 
     : url;
- 
-  // Check if URL is an ingredient URL
-  if (newURL.includes('/ingredient/') || newURL.includes('/ingredients/')) {
-    const newPDPURL = PDPMap.get(newURL);
-    return newPDPURL ? `${previewURL}${newPDPURL}` : false;
-  }
-  
-  return false;
+
+  // Extract product name from URL
+  const productName = newURL.split('/').pop().replace('.html', '');
+
+  // Check PDPMap first, then PDPProductMap
+  const newPDPURL = PDPMap.has(newURL) 
+    ? PDPMap.get(newURL)
+    : PDPProductMap.has(productName) 
+      ? PDPProductMap.get(productName)
+      : null;
+
+  return newPDPURL ? `${previewURL}${newPDPURL}` : false;
 }
