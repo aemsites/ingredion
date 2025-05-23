@@ -34,12 +34,20 @@
       margin: 0 auto;
       border-radius: 4px;
       box-shadow: 4px 20px 40px 4px rgba(0 0 0 / 10%);
-      padding: 0 20px;
+      padding: 0 .9375rem 5rem;
+
+      .breadcrumbs {
+        padding: 1rem 0;
+      }
 
       @media (width > 1080px) {
         margin-top: 200px;
         width: calc(100% - 80px);
         padding: 2.2rem 6.5625rem 12.5rem;
+
+        .breadcrumbs {
+          padding: 0;
+        }
       }
 
       .section {
