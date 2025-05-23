@@ -16,14 +16,6 @@
   padding: 40px 0;
 }
 
-.hero.text-black h1 {
-  color: var(--text-color);
-}
-
-.hero.align-left > div {
-  text-align: left;
-}
-
 .hero h1 {
   max-width: 1200px;
   margin-top: 0;
@@ -31,6 +23,14 @@
   margin-right: auto;
   color: var(--theme-clr-background);
   font-size: 3.5rem;
+}
+
+.hero.text-black h1 {
+  color: var(--text-color);
+}
+
+.hero.align-left > div {
+  text-align: left;
 }
 
 .hero.homepage h1 {
