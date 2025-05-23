@@ -167,6 +167,7 @@ export default async function decorate(block) {
   async function searchIngredientsByCategory() {
       //queryParams = queryParams.replace(/&subApplicationID=[^&]*&subApplications=[^&]*/, '');
       queryParams = localStorage.getItem('query-params');
+      localStorage.removeItem('query-params');
       const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY();
       const apiResponse1 = await fetch(`${url}?${queryParams}`);
       const data1 = await apiResponse1.json();
@@ -295,8 +296,6 @@ export default async function decorate(block) {
     if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href)) {
       searchIngredientsByCategory();
     }
-
-    
 
     selected.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -443,6 +442,18 @@ export default async function decorate(block) {
     $dropdownOptions = $searchBar.querySelector('.typeahead-dropdown-options');
     const $iconSearchButton = $searchBar.querySelector('button.icon-search');
     const $mainSearchButton = $searchBar.querySelector('.button-search');
+    const currentUrl = new URL(window.location.href);
+
+    if (
+      currentUrl.pathname === '/na/en-us/ingredients/ingredient-finder' &&
+      currentUrl.searchParams.get('activePage') === '1' &&
+      currentUrl.searchParams.get('perPage') === '6' &&
+      currentUrl.searchParams.has('q') &&
+      currentUrl.searchParams.get('q') !== '' ) {
+        searchValue = localStorage.getItem('search-value');
+        localStorage.removeItem('search-value');
+        searchIngredientsByName(searchValue);
+    }
 
     // Add event listeners for both search buttons
     const handleSearch = async (e) => {
@@ -450,6 +461,16 @@ export default async function decorate(block) {
       e.stopPropagation();
       const searchValue = $searchInput.value.trim();
       if (!searchValue) return;
+
+      if (block.closest('.header-dropdown')) {
+        localStorage.setItem('search-value', searchValue);
+        const searchParams = new URLSearchParams({
+          activePage: '1',
+          perPage: '6',
+          q: searchValue,
+        })
+        window.location.href = `${window.location.origin}/na/en-us/ingredients/ingredient-finder?${searchParams}`;
+      }
       await searchIngredientsByName(searchValue);
     };
 
