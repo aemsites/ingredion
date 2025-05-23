@@ -16,11 +16,11 @@
     }
 
     h2 {
-        font-size: 2rem;
+        font-size: 2.5rem;
         line-height: 3rem;
         letter-spacing: -.031rem;
         font-family: MiloPro-Bold, Helvetica, sans-serif;
-        margin: 0 0 1rem;
+        margin: 3.5rem 0 1rem;
         color: #373738;
     }
 
@@ -41,10 +41,16 @@
         }
     }
 
-    .author p {
-        font-size: 75%;
-        line-height: 0;
-        position: relative;
-        vertical-align: baseline;
+    .description p {
+        margin: 1rem 0 1rem;
+    }
+
+    .author  {
+        margin: 0;
+
+        p {
+            margin: 0;
+            font-size: 1.06rem;
+        }
     }
 }
