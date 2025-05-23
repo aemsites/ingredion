@@ -238,7 +238,7 @@ function addHeroObserver(doc) {
           if (section) {
             section.style.scrollMarginTop = '80px';
             section.scrollIntoView({ block: 'start' });
-            history.pushState(null, '', href);
+            window.history.pushState(null, '', href);
           }
         }
       });
@@ -250,8 +250,7 @@ function addHeroObserver(doc) {
       entries.forEach((entry) => {
         const heading = entry.target.querySelector('h1[id], h2[id], h3[id]');
         if (!heading) return;
-        
-        const id = heading.id;
+        const { id } = heading;
         const ratio = entry.isIntersecting ? entry.intersectionRatio : 0;
         sectionVisibility.set(id, ratio);
       });
@@ -276,17 +275,15 @@ function addHeroObserver(doc) {
       }
     }, {
       threshold: [0, 0.1, 0.5],
-      rootMargin: '-20% 0px -20% 0px'
+      rootMargin: '-20% 0px -20% 0px',
     });
 
     // Start observing sections
     anchorLinks.forEach((link) => {
       const href = link.getAttribute('href');
       if (!href) return;
-      
       const heading = doc.querySelector(`${href}:is(h1, h2, h3)`);
       if (!heading) return;
-      
       const section = heading.closest('.section');
       if (section) {
         observer.observe(section);
