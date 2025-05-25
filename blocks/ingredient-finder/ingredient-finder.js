@@ -452,7 +452,7 @@ export default async function decorate(block) {
       currentUrl.searchParams.has('q') &&
       currentUrl.searchParams.get('q') !== '' &&
       localStorage.getItem('search-value') ) {
-        searchValue = localStorage.getItem('search-value');
+        const searchValue = localStorage.getItem('search-value');
         localStorage.removeItem('search-value');
         searchIngredientsByName(searchValue);
     }
