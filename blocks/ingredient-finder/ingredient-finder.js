@@ -293,7 +293,8 @@ export default async function decorate(block) {
       ),
     );
 
-    if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href)) {
+    if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href) && 
+    localStorage.getItem('query-params')) {
       searchIngredientsByCategory();
     }
 
@@ -449,7 +450,8 @@ export default async function decorate(block) {
       currentUrl.searchParams.get('activePage') === '1' &&
       currentUrl.searchParams.get('perPage') === '6' &&
       currentUrl.searchParams.has('q') &&
-      currentUrl.searchParams.get('q') !== '' ) {
+      currentUrl.searchParams.get('q') !== '' &&
+      localStorage.getItem('search-value') ) {
         searchValue = localStorage.getItem('search-value');
         localStorage.removeItem('search-value');
         searchIngredientsByName(searchValue);
