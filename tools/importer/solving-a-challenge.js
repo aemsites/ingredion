@@ -261,8 +261,42 @@ function createGalleryBlock(formulationHeader) {
   const galleryTextDiv = document.createElement('div');
 
   // Add headings
-  galleryTextDiv.append(galleryText.querySelector('h3'));
-  galleryTextDiv.append(galleryText.querySelector('h1'));
+  const h3 = galleryText.querySelector('h3');
+  const h1 = galleryText.querySelector('h1');
+  
+  if (h3 && h1) {
+    // Check which element appears first in the DOM
+    const h3Index = Array.from(galleryText.children).indexOf(h3);
+    const h1Index = Array.from(galleryText.children).indexOf(h1.parentElement || h1);
+    
+    if (h3Index < h1Index) {
+      // h3 appears before h1
+      const newH1 = document.createElement('h1');
+      newH1.textContent = h3.textContent;
+      galleryTextDiv.append(newH1);
+      
+      const newH3 = document.createElement('h3');
+      newH3.textContent = h1.textContent;
+      galleryTextDiv.append(newH3);
+    } else {
+      // h1 appears before h3
+      const newH1 = document.createElement('h1');
+      newH1.textContent = h1.textContent;
+      galleryTextDiv.append(newH1);
+      
+      const newH3 = document.createElement('h3');
+      newH3.textContent = h3.textContent;
+      galleryTextDiv.append(newH3);
+    }
+  } else if (h3) {
+    const newH1 = document.createElement('h1');
+    newH1.textContent = h3.textContent;
+    galleryTextDiv.append(newH1);
+  } else if (h1) {
+    const newH3 = document.createElement('h3');
+    newH3.textContent = h1.textContent;
+    galleryTextDiv.append(newH3);
+  }
 
   // Add ingredients section
   const ingredients = galleryText.querySelector('.formulation-header__ingredients');
