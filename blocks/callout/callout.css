@@ -255,16 +255,18 @@
         align-items: flex-start;
         width: 50%;
         height: 100%;
-        padding: 100px;
+        padding: clamp(40px, 8%, 100px);
+        box-sizing: border-box;
 
         h3 {
           font-size: 2rem;
-          max-width: 381px;
+          max-width: min(381px, 100%);
           margin-top: 16px;
         }
 
         p, ul, li {
-          max-width: 381px;
+          max-width: min(381px, 100%);
+          width: 100%;
         }
       }
     }
