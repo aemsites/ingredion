@@ -101,9 +101,9 @@ async function createIngredientPanel(ingredientResults) {
 
 function createDropdownOption(item) {
   const processedKey = (item.key && typeof item.key === 'string')
-    ? encodeURIComponent(item.key.replace(/\s+/g, '+'))
+    ? encodeURIComponent(item.key).replace(/%20/g, '+')
     : item.key || '';
-  const processedLabel = encodeURIComponent(item.label.replace(/\s+/g, '+'));
+  const processedLabel = encodeURIComponent(item.label).replace(/%20/g, '+');
   return div({
     class: 'dropdown-option',
     'data-key': processedKey,
