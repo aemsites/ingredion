@@ -252,20 +252,22 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: flex-start;
         width: 50%;
         height: 100%;
-        padding: clamp(40px, 8%, 100px);
+        padding: clamp(24px, 5%, 100px);
         box-sizing: border-box;
 
         h3 {
           font-size: 2rem;
-          max-width: min(381px, 100%);
-          margin-top: 16px;
+          max-width: 381px;
+          margin: 16px auto 0;
+          width: 100%;
         }
 
         p, ul, li {
-          max-width: min(381px, 100%);
+          max-width: 381px;
+          margin-left: auto;
+          margin-right: auto;
           width: 100%;
         }
       }
