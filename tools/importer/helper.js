@@ -860,7 +860,7 @@ export function createTableBlock(document, main) {
       const rowArray = [];
       const td = row.querySelectorAll('td');
       td.forEach((cell) => {
-        rowArray.push(cell.textContent);
+        rowArray.push(cell.innerHTML);
       });
       cells.push(rowArray);
     });
