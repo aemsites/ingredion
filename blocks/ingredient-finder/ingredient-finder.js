@@ -352,9 +352,13 @@ export default async function decorate(block) {
       // Create new URL with double-encoded parameters
       const newParams = new URLSearchParams();
       newParams.set('applicationID', applicationID);
-      newParams.set('subApplicationID', subApplicationID);
+      if (subApplicationID) {
+        newParams.set('subApplicationID', subApplicationID);
+      }
       newParams.set('applications', encodeURIComponent(applications).replace(/%20/g, '+'));
-      newParams.set('subApplications', encodeURIComponent(subApplications).replace(/%20/g, '+'));
+      if (subApplications) {
+        newParams.set('subApplications', encodeURIComponent(subApplications).replace(/%20/g, '+'));
+      }
 
       const apiResponse1 = await fetch(`${url}?${newParams}`);
       const data1 = await apiResponse1.json();
