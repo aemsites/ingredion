@@ -343,7 +343,9 @@ export default async function decorate(block) {
         return;
       }
       const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(region, locale);
-      const apiResponse1 = await fetch(`${url}?${queryParams}`);
+      // Ensure spaces are encoded as + and commas remain as %2C
+      const encodedQueryParams = queryParams.replace(/%20/g, '+');
+      const apiResponse1 = await fetch(`${url}?${encodedQueryParams}`);
       const data1 = await apiResponse1.json();
 
       loadCSS('/blocks/related-ingredient/related-ingredient.css');
