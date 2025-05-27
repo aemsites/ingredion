@@ -221,7 +221,6 @@ a.button,
   color: var(--dark-grey);
   border: 0;
   padding: 1rem;
-  text-transform: capitalize;
   text-decoration: none;
 
   &:hover {
@@ -235,7 +234,6 @@ a.button,
     color: var(--green);
     border: 2px solid var(--green);
     padding: .875rem;
-    text-transform: capitalize;
 
     &:hover {
       border-color: var(--dark-green);
