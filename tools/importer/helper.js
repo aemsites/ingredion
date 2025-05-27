@@ -101,7 +101,7 @@ export function createHeroBlock(document, main) {
     ];
 
     const articleHeader = WebImporter.DOMUtils.createTable(cells, document);
-    elements.heading.replaceWith(articleHeader);
+    blogHeaderDiv.prepend(articleHeader);
   }
 }
 

@@ -142,7 +142,7 @@ const createMetadata = (main, document, url, html) => {
   // Get teaser metadata
   
   const teaser = {
-    title: getMetadataProp(document, '.heading:first-of-type > h2', isArticle),
+    title: getMetadataProp(document, 'h2:first-of-type', isArticle),
     description: getMetadataProp(document, '.rte-block--large-body-text', isArticle)
   };
   if (teaser.title) meta['Title'] = teaser.title;
