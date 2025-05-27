@@ -145,7 +145,7 @@ const createMetadata = (main, document, url, html) => {
     title: getMetadataProp(document, 'h2:first-of-type', isArticle),
     description: getMetadataProp(document, '.rte-block--large-body-text', isArticle)
   };
-  if (teaser.title) meta['Title'] = teaser.title;
+  if (!title) meta['Title'] = teaser.title;
   if (teaser.description) meta['description'] = teaser.description;
   const caseInsensitiveUrl = Array.from(newsMap.keys()).find(key => key.toLowerCase() === url.toLowerCase());
   if (caseInsensitiveUrl) {
