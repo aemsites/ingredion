@@ -94,7 +94,7 @@
 
 .ingredient-finder-wrapper {
     flex-basis: 50%;
-    padding: 2.5rem;
+    padding: 1.5rem 0.5rem;
     margin: 0 !important;
 }
 
@@ -129,7 +129,7 @@
 .ingredient-quick-search {
     border: 1px solid #d8d9d9;
     border-radius: 2px;
-    padding: 2.5rem;
+    padding: 1.5rem;
     background-color: #efefef;
 }
 

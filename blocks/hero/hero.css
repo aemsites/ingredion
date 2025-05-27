@@ -39,7 +39,7 @@
   line-height: 3.5rem;
 }
 
-.hero.homepage h1 sup {
+.hero h1 sup {
   font-size: 47%;
   top: -.7em;
   padding-left: 2px;
@@ -88,9 +88,12 @@
   padding: 0 .9375rem;
 }
 
+.hero.block.text-black h1 + p {
+  color: var(--text-color);
+}
+
 .hero.block.align-left h1 + p {
   padding: 0;
-  color: var(--text-color);
 }
 
 .hero.hide-description.block h1 + p {

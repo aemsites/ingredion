@@ -101,9 +101,9 @@ async function createIngredientPanel(ingredientResults) {
 
 function createDropdownOption(item) {
   const processedKey = (item.key && typeof item.key === 'string')
-    ? encodeURIComponent(item.key.replace(/\s+/g, '+'))
+    ? encodeURIComponent(item.key).replace(/%20/g, '+')
     : item.key || '';
-  const processedLabel = encodeURIComponent(item.label.replace(/\s+/g, '+'));
+  const processedLabel = encodeURIComponent(item.label).replace(/%20/g, '+');
   return div({
     class: 'dropdown-option',
     'data-key': processedKey,
@@ -343,14 +343,27 @@ export default async function decorate(block) {
         return;
       }
       const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(region, locale);
-      const apiResponse1 = await fetch(`${url}?${queryParams}`);
+      // Parse existing query parameters
+      const params = new URLSearchParams(queryParams);
+      const applicationID = params.get('applicationID');
+      const subApplicationID = params.get('subApplicationID');
+      const applications = params.get('applications');
+      const subApplications = params.get('subApplications');
+      // Create new URL with double-encoded parameters
+      const newParams = new URLSearchParams();
+      newParams.set('applicationID', applicationID);
+      newParams.set('subApplicationID', subApplicationID);
+      newParams.set('applications', encodeURIComponent(applications).replace(/%20/g, '+'));
+      newParams.set('subApplications', encodeURIComponent(subApplications).replace(/%20/g, '+'));
+
+      const apiResponse1 = await fetch(`${url}?${newParams}`);
       const data1 = await apiResponse1.json();
 
       loadCSS('/blocks/related-ingredient/related-ingredient.css');
       const ingredientResults = await createIngredientPanel(data1);
       ingredientResults.classList.add('search', 'ingredient-finder-results');
-      const application = queryParams.split('&applications=')[1] ? queryParams.split('&applications=')[1].split('&')[0] : '';
-      const subApplication = queryParams.split('&subApplications=')[1] ? queryParams.split('&subApplications=')[1].split('&')[0] : '';
+      const application = applications || '';
+      const subApplication = subApplications || '';
       const processedApplication = decodeURIComponent(application).replace(/[+\s]/g, ' ');
       const processedSubApplication = decodeURIComponent(subApplication).replace(/[+\s]/g, ' ');
       const searchValue = subApplication ? `${processedApplication} - ${processedSubApplication}` : processedApplication;
