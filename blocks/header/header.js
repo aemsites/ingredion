@@ -98,6 +98,8 @@ async function buildIngredientFinderQuickDropdown(dropdown) {
   const ingredientFinder = await loadFragment(ingredientQuickSearchFragmentPath);
   if (!ingredientFinder) return;
 
+  console.log(ingredientFinder);
+
   if (dropdown) {
     const ingredientQuickFinderBlock = ingredientFinder.querySelector('.ingredient-finder.quick');
     dropdown.prepend(ingredientQuickFinderBlock);
@@ -174,6 +176,8 @@ async function buildIngredientFinderQuickDropdown(dropdown) {
 async function buildIngredientFinderCategoryDropdown(dropdown) {
   const ingredientCategory = await loadFragment(ingredientCategorySearchFragmentPath);
   if (!ingredientCategory) return;
+
+  console.log(ingredientCategory);
 
   const ingredientCategoryDiv = dropdown
     ?.querySelector('.header-dropdown')
