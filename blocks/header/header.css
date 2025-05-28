@@ -773,7 +773,7 @@ header {
 .dropdown .ingredient-finder.quick .ingredient-quick-search-bar .form-typeahead {
     margin-bottom: 0;
     width: 100%;
-    letter-spacing: .015625rem;
+    letter-spacing: .0156rem;
     font-family: OpenSans-Bold, Helvetica, sans-serif;
     line-height: 3.5rem;
     color: #4d4e4c;
@@ -788,18 +788,16 @@ header {
     border: 1px solid #d8d9d9;
     border-radius: 2px;
     background-color: #fff;
-    padding: .78125rem .625rem;
+    padding: .7813rem .625rem;
     font-size: .875rem;
     color: #373738;
 }
 
 .dropdown .ingredient-finder.quick .ingredient-quick-search-bar .form-typeahead button.icon-search {
-    font-size: 2rem;
     position: absolute;
     right: .625rem;
     top: .5rem;
     font-size: 1.5rem;
-    top: .75rem;
     border: none;
     background-color: transparent;
     padding: 0;
@@ -819,10 +817,9 @@ header {
     background: #6cb33e;
     text-align: center;
     line-height: 1.5rem;
-    padding: 1rem;
     color: #373738;
     font-family: MiloPro-Bold, Helvetica, sans-serif;
-    letter-spacing: .03125rem;
+    letter-spacing: .0313rem;
     padding: .5rem 1.75rem;
     text-transform: none;
 }
@@ -839,7 +836,7 @@ header {
     font-size: 1rem;
     text-align: center;
     line-height: 1.5rem;
-    letter-spacing: .03125rem;
+    letter-spacing: .0313rem;
 }
 
 .dropdown .ingredient-finder.quick a::after {
@@ -851,7 +848,7 @@ header {
     font-family: MiloPro-Bold, Helvetica, sans-serif;
     font-size: 1rem;
     line-height: 1.5rem;
-    letter-spacing: .03125rem;
+    letter-spacing: .0313rem;
     color: #6cb33e;
     position: relative;
     background: none;
@@ -861,22 +858,25 @@ header {
 .download-all::before {
     font-family: ingredion-icon;
     text-decoration: none !important;
-    position: absolute;
     left: 0;
     content: '\e94b';
     font-size: .9375rem;
+    position: static;
 }
 
-@media (min-width: 67.5625rem) {
+@media (width >= 67.5625rem) {
     .dropdown .ingredient-finder.quick .download-all {
         margin: 0;
         width: auto;
         align-self: center;
         margin-top: 0;
     }
-}
 
-@media (min-width: 67.5625rem) {
+    .download-all::before {
+        position: static;
+        padding-right: 0.3rem;
+    }
+
     .dropdown .ingredient-finder.quick .button {
         min-width: 11.25rem;
         margin: 0;
@@ -885,9 +885,7 @@ header {
         align-self: center;
         margin-top: 0;
     }
-}
-
-@media (min-width: 67.5625rem) {
+    
     .dropdown .ingredient-finder.quick .ingredient-quick-search {
         display: flex;
         justify-content: space-between;
@@ -896,18 +894,14 @@ header {
         margin: 0;
         padding: 0;
     }
-}
-
-@media (min-width: 67.5625rem) {
+    
     .dropdown .ingredient-finder.quick>div>div:first-child {
         margin-right: 1rem;
         white-space: nowrap;
         padding: 0;
         color: #373738;
     }
-}
 
-@media (min-width: 67.5625rem) {
     .dropdown .ingredient-finder.quick>div>div:nth-child(2) {
         display: flex;
         justify-content: space-between;
@@ -916,17 +910,13 @@ header {
         margin: 0;
         padding: 0;
     }
-}
 
-@media (min-width: 67.5625rem) {
     .dropdown .ingredient-finder.quick>div {
-        /*width: calc(100% + 136px);*/
         max-width: none;
         display: flex;
         justify-content: space-between;
         height: 5rem;
         background-color: #efefef;
-        /*margin: 0 -4.25rem;*/
         padding: 0 4.25rem;
     }
 }

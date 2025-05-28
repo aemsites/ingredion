@@ -8,8 +8,7 @@ function buildSubMenu(block) {
 
   const removeActiveItem = () => {
     [...$navItems.children].forEach((item) => item.classList.remove('active'));
-    [...$navList.children].forEach((listItem) => listItem.classList.remove('active'),
-    );
+    [...$navList.children].forEach((listItem) => listItem.classList.remove('active'));
   };
 
   const setActiveItem = (row, rowN) => {
@@ -133,20 +132,19 @@ function renderMobile(block) {
         title = p;
 
         if (hasSubmenu) {
-        const parent = p.parentElement;
-        const grandparent = parent.parentElement;
+          const parent = p.parentElement;
+          const grandparent = parent.parentElement;
 
-        const isWrapped = parent.tagName === 'DIV'
-          && parent.children.length === 1
-          && parent.contains(p);
-        if (isWrapped && grandparent) {
-          grandparent.insertBefore(p, parent);
-          parent.remove();
+          const isWrapped = parent.tagName === 'DIV'
+            && parent.children.length === 1
+            && parent.contains(p);
+          if (isWrapped && grandparent) {
+            grandparent.insertBefore(p, parent);
+            parent.remove();
+          }
         }
       }
-      }
     });
-
     if (!title) return;
 
     title.classList.add('dropdown-title');

@@ -79,7 +79,6 @@ async function createIngredientPanel(ingredientResults) {
     ),
   );
 
-  // Ingredient Renderer
   await new ProductApiRenderer({
     apiEndpoint: API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(),
     results: ingredientResults,
@@ -137,7 +136,6 @@ export default async function decorate(block) {
   let typeaheadData = null;
   let $dropdownOptions;
 
-  // Helper function for ingredient search
   async function searchIngredientsByName(searchValue) {
     if (!searchValue) return;
     const url = API_PRODUCT.SEARCH_INGREDIENTS_BY_NAME();
@@ -146,7 +144,6 @@ export default async function decorate(block) {
       perPage: '6',
       q: searchValue,
     });
-    // update the url with the new query params
     const [region, locale] = getRegionLocale();
     window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${searchParams}`);
     let data;
@@ -165,24 +162,22 @@ export default async function decorate(block) {
   }
 
   async function searchIngredientsByCategory() {
-      //queryParams = queryParams.replace(/&subApplicationID=[^&]*&subApplications=[^&]*/, '');
-      queryParams = localStorage.getItem('query-params');
-      localStorage.removeItem('query-params');
-      const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY();
-      const apiResponse1 = await fetch(`${url}?${queryParams}`);
-      const data1 = await apiResponse1.json();
+    queryParams = localStorage.getItem('query-params');
+    localStorage.removeItem('query-params');
+    const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY();
+    const apiResponse1 = await fetch(`${url}?${queryParams}`);
+    const data1 = await apiResponse1.json();
 
-      loadCSS('/blocks/related-ingredient/related-ingredient.css');
-      const ingredientResults = await createIngredientPanel(data1);
-      ingredientResults.classList.add('search', 'ingredient-finder-results');
-      const application = queryParams.split('&applications=')[1] ? queryParams.split('&applications=')[1].split('&')[0] : '';
-      const subApplication = queryParams.split('&subApplications=')[1] ? queryParams.split('&subApplications=')[1].split('&')[0] : '';
-      const processedApplication = decodeURIComponent(application).replace(/[+\s]/g, ' ');
-      const processedSubApplication = decodeURIComponent(subApplication).replace(/[+\s]/g, ' ');
-      const searchValue = subApplication ? `${processedApplication} - ${processedSubApplication}` : processedApplication;
-      attachIngredientResults(block, ingredientResults, data1.totalItemsCount, searchValue);
+    loadCSS('/blocks/related-ingredient/related-ingredient.css');
+    const ingredientResults = await createIngredientPanel(data1);
+    ingredientResults.classList.add('search', 'ingredient-finder-results');
+    const application = queryParams.split('&applications=')[1] ? queryParams.split('&applications=')[1].split('&')[0] : '';
+    const subApplication = queryParams.split('&subApplications=')[1] ? queryParams.split('&subApplications=')[1].split('&')[0] : '';
+    const processedApplication = decodeURIComponent(application).replace(/[+\s]/g, ' ');
+    const processedSubApplication = decodeURIComponent(subApplication).replace(/[+\s]/g, ' ');
+    const searchValue = subApplication ? `${processedApplication} - ${processedSubApplication}` : processedApplication;
+    attachIngredientResults(block, ingredientResults, data1.totalItemsCount, searchValue);
   }
-
 
   function filterAndDisplayResults(query) {
     if (!typeaheadData || !query) {
@@ -240,7 +235,6 @@ export default async function decorate(block) {
     const $parent = div({ class: 'ingredient-finder-form-categories' });
     const heading = h4('Ingredient search by category');
 
-    // Initialize main application dropdown
     const initialTab = input({
       type: 'hidden',
       name: 'initialTab',
@@ -249,7 +243,6 @@ export default async function decorate(block) {
     });
     const selected = div({ class: 'selected' }, 'Application');
 
-    // Fetch and process application data
     const apiResponse = await fetch(API_PRODUCT.POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY());
     const data = await apiResponse.json();
     const options = div(
@@ -263,7 +256,6 @@ export default async function decorate(block) {
       options,
     );
 
-    // Initialize sub-application dropdown
     const initialTab1 = input({
       type: 'hidden',
       name: 'initialTab',
@@ -293,8 +285,8 @@ export default async function decorate(block) {
       ),
     );
 
-    if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href) && 
-    localStorage.getItem('query-params')) {
+    if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href)
+      && localStorage.getItem('query-params')) {
       searchIngredientsByCategory();
     }
 
@@ -317,7 +309,6 @@ export default async function decorate(block) {
         const [region, locale] = getRegionLocale();
         window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
 
-        // Update sub-application options and enable the dropdown
         const selectedApp = data.applications.find((app) => app.label === option.textContent);
         if (selectedApp && selectedApp.children) {
           dropdownOptions1.innerHTML = '';
@@ -367,7 +358,7 @@ export default async function decorate(block) {
         e.preventDefault();
         return;
       }
-  
+
       if (block.closest('.header-dropdown')) {
         localStorage.setItem('query-params', queryParams);
         window.location.href = `${window.location.origin}/na/en-us/ingredients/ingredient-finder?${queryParams}`;
@@ -438,7 +429,6 @@ export default async function decorate(block) {
       ),
     );
 
-    // Add typeahead functionality
     const $searchInput = $searchBar.querySelector('#search');
     $dropdownOptions = $searchBar.querySelector('.typeahead-dropdown-options');
     const $iconSearchButton = $searchBar.querySelector('button.icon-search');
@@ -446,18 +436,18 @@ export default async function decorate(block) {
     const currentUrl = new URL(window.location.href);
 
     if (
-      currentUrl.pathname === '/na/en-us/ingredients/ingredient-finder' &&
-      currentUrl.searchParams.get('activePage') === '1' &&
-      currentUrl.searchParams.get('perPage') === '6' &&
-      currentUrl.searchParams.has('q') &&
-      currentUrl.searchParams.get('q') !== '' &&
-      localStorage.getItem('search-value') ) {
-        const searchValue = localStorage.getItem('search-value');
-        localStorage.removeItem('search-value');
-        searchIngredientsByName(searchValue);
+      currentUrl.pathname === '/na/en-us/ingredients/ingredient-finder'
+      && currentUrl.searchParams.get('activePage') === '1'
+      && currentUrl.searchParams.get('perPage') === '6'
+      && currentUrl.searchParams.has('q')
+      && currentUrl.searchParams.get('q') !== ''
+      && localStorage.getItem('search-value')
+    ) {
+      const searchValue = localStorage.getItem('search-value');
+      localStorage.removeItem('search-value');
+      searchIngredientsByName(searchValue);
     }
 
-    // Add event listeners for both search buttons
     const handleSearch = async (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -470,7 +460,7 @@ export default async function decorate(block) {
           activePage: '1',
           perPage: '6',
           q: searchValue,
-        })
+        });
         window.location.href = `${window.location.origin}/na/en-us/ingredients/ingredient-finder?${searchParams}`;
       }
       await searchIngredientsByName(searchValue);
@@ -486,11 +476,9 @@ export default async function decorate(block) {
       updateQuickSearchButtonState($searchInput, $iconSearchButton, $mainSearchButton);
     });
 
-    // Initial button state
     updateQuickSearchButtonState($searchInput, $iconSearchButton, $mainSearchButton);
 
     $searchInput.addEventListener('focus', async () => {
-      // Show search button
       $mainSearchButton.classList.remove('hidden');
       if (!typeaheadData) {
         try {
@@ -507,7 +495,6 @@ export default async function decorate(block) {
       }
     });
 
-    // Handle clicking outside to close dropdown and hide search button
     document.addEventListener('click', (e) => {
       if (!$searchInput.contains(e.target) && !$mainSearchButton.contains(e.target)) {
         const dropdown = $dropdownOptions.closest('.form-dropdown');
@@ -516,7 +503,6 @@ export default async function decorate(block) {
       }
     });
 
-    // Handle option selection
     $dropdownOptions.addEventListener('click', (e) => {
       const option = e.target.closest('.typeahead-dropdown-option');
       if (option) {
@@ -531,21 +517,18 @@ export default async function decorate(block) {
           const article = articles.find((item) => item.name === name);
           const productId = article.id;
 
-          const productName = article.path.split('/').filter(Boolean).pop()
-          const addSampleBtn = block.querySelector(".add-sample");
-          addSampleBtn.addEventListener("click", () =>
-            addIngredientToCart(productName, window.location.href),
-          );
-
-          const viewDetailsBtn = block.querySelector(".view-details");
+          const productName = article.path.split('/').filter(Boolean).pop();
+          const addSampleBtn = block.querySelector('.add-sample');
+          addSampleBtn.addEventListener('click', () => addIngredientToCart(productName, window.location.href));
+          const viewDetailsBtn = block.querySelector('.view-details');
           viewDetailsBtn.setAttribute(
-            "href",
+            'href',
             `/na/en-us/ingredient?name=${productName}`,
           );
 
-          const downloadAllBtn = block.querySelector(".download-all");
+          const downloadAllBtn = block.querySelector('.download-all');
           downloadAllBtn.setAttribute(
-            "href",
+            'href',
             API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(productId),
           );
         }
