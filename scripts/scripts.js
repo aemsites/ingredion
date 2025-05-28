@@ -206,7 +206,42 @@ async function loadEager(doc) {
 function addHeroObserver(doc) {
   const anchorBlock = doc.querySelector('.anchor-wrapper');
   const heroBlock = doc.querySelector('.hero-wrapper');
-  
+  // Function to update active section
+  function updateActiveSection() {
+    if (!anchorBlock) return;
+    const anchorLinks = anchorBlock.querySelectorAll('a');
+    // Get all sections
+    const sections = [];
+    anchorLinks.forEach((link) => {
+      const target = doc.querySelector(link.getAttribute('href'));
+      if (target) sections.push(target);
+    });
+
+    // Find the first section that's above the middle of the viewport
+    const viewportMiddle = window.innerHeight / 2;
+    let activeSection = null;
+
+    sections.forEach((section) => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= viewportMiddle
+        && (!activeSection
+        || section.getBoundingClientRect().top > activeSection.getBoundingClientRect().top)) {
+        activeSection = section;
+      }
+    });
+
+    // Update active state
+    if (activeSection && activeSection !== updateActiveSection.currentActive) {
+      updateActiveSection.currentActive = activeSection;
+      anchorLinks.forEach((link) => {
+        if (link.getAttribute('href') === `#${activeSection.id}`) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+  }
   // Handle the fixed navigation
   if (anchorBlock && heroBlock) {
     const observer = new IntersectionObserver((entries) => {
@@ -224,48 +259,11 @@ function addHeroObserver(doc) {
   // Handle the active section highlighting
   if (anchorBlock) {
     const anchorLinks = anchorBlock.querySelectorAll('a');
-    let currentActive = null;
-
-    // Function to update active section
-    function updateActiveSection() {
-      // Get all sections
-      const sections = [];
-      anchorLinks.forEach(link => {
-        const target = doc.querySelector(link.getAttribute('href'));
-        if (target) sections.push(target);
-      });
-
-      // Find the first section that's above the middle of the viewport
-      const viewportMiddle = window.innerHeight / 2;
-      let activeSection = null;
-
-      for (const section of sections) {
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= viewportMiddle) {
-          activeSection = section;
-        } else {
-          break;
-        }
-      }
-
-      // Update active state
-      if (activeSection && activeSection !== currentActive) {
-        currentActive = activeSection;
-        anchorLinks.forEach(link => {
-          if (link.getAttribute('href') === `#${activeSection.id}`) {
-            link.classList.add('active');
-          } else {
-            link.classList.remove('active');
-          }
-        });
-      }
-    }
-
     // Update active section on scroll
     window.addEventListener('scroll', updateActiveSection, { passive: true });
 
     // Update active section on click (after small delay for scroll animation)
-    anchorLinks.forEach(link => {
+    anchorLinks.forEach((link) => {
       link.addEventListener('click', () => {
         setTimeout(updateActiveSection, 100);
       });
@@ -383,4 +381,3 @@ async function loadPage() {
 }
 
 loadPage();
-
