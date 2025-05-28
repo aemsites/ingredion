@@ -1,3 +1,5 @@
+import { DEFAULT_PATHS, API_PATH_OVERRIDES } from './product-api.js';
+
 // valid regions and locales
 const VALID_REGIONS = ['na', 'sa', 'emea', 'apac'];
 const VALID_LOCALES = ['en-us', 'es-mx', 'pt-br', 'es-co', 'es-ar', 'en-uk', 'en-sg', 'ja-jp', 'sc-cn', 'en-au'];
@@ -147,3 +149,15 @@ export function getCookie(name) {
   }
   return null;
 }
+
+export const resolveApiPath = (apiKey, region, locale) => {
+  const key = `${region}-${locale}`;
+  const override = API_PATH_OVERRIDES[apiKey]?.[key];
+  if (override) return override;
+
+  const defaultBuilder = DEFAULT_PATHS[apiKey];
+  if (defaultBuilder) return defaultBuilder(region, locale);
+
+  console.warn(`No path defined for ${apiKey}`);
+  return '';
+};

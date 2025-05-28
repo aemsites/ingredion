@@ -1,10 +1,12 @@
 // This file contains all the product API endpoints
 
+import { resolveApiPath } from './utils.js';
+
 // prod
-export const API_HOST = 'https://www.ingredion.com';
+// export const API_HOST = 'https://www.ingredion.com';
 
 // stage - testing (todo: remove before go-live)
-// export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
+export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
 
 export const getUrlParams = () => {
   const params = new URLSearchParams(window.location.search);
@@ -13,7 +15,7 @@ export const getUrlParams = () => {
   };
 };
 
-export const API_PRODUCT = {
+export const DEFAULT_PATHS = {
   POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}/content/ingredion-com/${region}/${locale}/jcr:content/header.search.json?initialTab=`,
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`,
   INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `${API_HOST}/content/ingredion-com/${region}/${locale}.ingredient-search-typeahead.json?initialTab=`,
@@ -25,4 +27,18 @@ export const API_PRODUCT = {
   SEARCH_INGREDIENTS: (region, locale) => `${API_HOST}/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
   SEARCH_DOCUMENTS: (region, locale) => `${API_HOST}/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.techDocs.json`,
   SEARCH_INGREDIENTS_BY_NAME: (region, locale) => `${API_HOST}/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`,
+};
+
+export const API_PATH_OVERRIDES = {
+  SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: {
+    'na-es-mx': '/content/ingredion-com/na/es-mx/ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
+  },
+  PRODUCT_DETAILS: {
+    'na-es-mx': '/content/ingredion-com/na/es-mx/busqueda/jcr:content/searchResults.ingredients.json',
+  },
+};
+
+export const API_PRODUCT = {
+  SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}${resolveApiPath('SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY', region, locale)}`,
+  PRODUCT_DETAILS: (region, locale, productName) => `${API_HOST}${resolveApiPath('PRODUCT_DETAILS', region, locale)}?initialTab=&q=${productName}`,
 };
