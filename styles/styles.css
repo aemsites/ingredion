@@ -170,6 +170,10 @@ blockquote {
   margin: 0.8em 0 .25em;
 }
 
+p {
+  font-size: 1rem;
+}
+
 ol,
 ul {
   margin-left: 1em;
@@ -198,7 +202,6 @@ button {
 /* links */
 a:any-link {
   color: var(--green);
-  text-decoration: none;
   word-break: break-word;
 }
 
@@ -218,7 +221,7 @@ a.button,
   color: var(--dark-grey);
   border: 0;
   padding: 1rem;
-  text-transform: capitalize;
+  text-decoration: none;
 
   &:hover {
     background: var(--purple);
@@ -231,7 +234,6 @@ a.button,
     color: var(--green);
     border: 2px solid var(--green);
     padding: .875rem;
-    text-transform: capitalize;
 
     &:hover {
       border-color: var(--dark-green);
@@ -367,6 +369,8 @@ main {
   /* sections */
   .section.center {
     text-align: center;
+    max-width: 50.1875rem;
+    margin: auto;
   }
 
   > .section {

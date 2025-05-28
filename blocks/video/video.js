@@ -144,7 +144,7 @@ export default async function decorate(block) {
     if (!autoplay) {
       wrapper.insertAdjacentHTML(
         'beforeend',
-        '<button class="play-button"><span class="icon-play-button"></span></button?',
+        '<button class="play-button" aria-label="Play video"><span class="icon-play-button"></span></button>',
       );
       wrapper.addEventListener('click', () => {
         loadVideoEmbed(block, link, true, false);

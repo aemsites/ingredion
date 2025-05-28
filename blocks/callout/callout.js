@@ -112,13 +112,17 @@ export default function decorate(block) {
   const h3 = block.querySelector('h3');
   const h2 = block.querySelector('h2');
   const h1 = block.querySelector('h1');
-  const link = block.querySelector('a');
+  const link = block.querySelector('a.button');
 
   // This line selects the first paragraph or unordered list element within the block
   // It uses a CSS selector with the :first-of-type pseudo-class to get the first paragraph
   // or alternatively selects a ul element if it exists instead
   // This element will be used as the text content for the callout when no header is present
   const textElement = block.querySelector('p:first-of-type, ul');
+
+  if (block.classList.contains('full-width')) {
+    block.parentElement.classList.add('full-width');
+  }
 
   const header = h1 ?? h2 ?? h3;
 

@@ -16,6 +16,8 @@ import { API_PRODUCT } from '../../scripts/product-api.js';
 import ProductApiRenderer from '../search/product-api-renderer.js';
 import { loadCSS } from '../../scripts/aem.js';
 
+const [region, locale] = getRegionLocale();
+
 async function createIngredientPanel(ingredientResults) {
   const $sortDropdown = div();
   const $count = h3({ class: 'count' });
@@ -42,13 +44,13 @@ async function createIngredientPanel(ingredientResults) {
         div(
           { class: 'cta-links' },
           viewAllDocsLink,
-          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(article.productId) }, 'Download All Documents'),
+          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(region, locale, article.productId) }, 'Download All Documents'),
         ),
       ),
       div(
         { class: 'buttons' },
         addSampleBtn,
-        a({ class: 'button secondary', href: `/na/en-us/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
+        a({ class: 'button secondary', href: `/${region}/${locale}/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
       ),
     );
     return relatedIngredientBlock;
@@ -80,7 +82,7 @@ async function createIngredientPanel(ingredientResults) {
   );
 
   await new ProductApiRenderer({
-    apiEndpoint: API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(),
+    apiEndpoint: API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(region, locale),
     results: ingredientResults,
     articlesPerPageOptions: ['6', '12', '18', '24', '30'],
     paginationMaxBtns: 5,
@@ -98,9 +100,9 @@ async function createIngredientPanel(ingredientResults) {
 
 function createDropdownOption(item) {
   const processedKey = (item.key && typeof item.key === 'string')
-    ? encodeURIComponent(item.key.replace(/\s+/g, '+'))
+    ? encodeURIComponent(item.key).replace(/%20/g, '+')
     : item.key || '';
-  const processedLabel = encodeURIComponent(item.label.replace(/\s+/g, '+'));
+  const processedLabel = encodeURIComponent(item.label).replace(/%20/g, '+');
   return div({
     class: 'dropdown-option',
     'data-key': processedKey,
@@ -121,7 +123,6 @@ function attachIngredientResults(block, ingredientResults, totalItemsCount, sear
     $results = div({ class: 'results' }, h2(`${totalItemsCount} results for: `), span({ class: 'search-value' }, searchValue));
     const $clearLink = a({ class: 'clear-link', href: '#' }, 'Clear');
     $clearLink.addEventListener('click', () => {
-      const [region, locale] = getRegionLocale();
       window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder`);
       window.location.reload();
     });
@@ -138,13 +139,13 @@ export default async function decorate(block) {
 
   async function searchIngredientsByName(searchValue) {
     if (!searchValue) return;
-    const url = API_PRODUCT.SEARCH_INGREDIENTS_BY_NAME();
+    const url = API_PRODUCT.SEARCH_INGREDIENTS_BY_NAME(region, locale);
     const searchParams = new URLSearchParams({
       activePage: '1',
       perPage: '6',
       q: searchValue,
     });
-    const [region, locale] = getRegionLocale();
+    // update the url with the new query params
     window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${searchParams}`);
     let data;
     try {
@@ -243,7 +244,10 @@ export default async function decorate(block) {
     });
     const selected = div({ class: 'selected' }, 'Application');
 
-    const apiResponse = await fetch(API_PRODUCT.POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY());
+    // Fetch and process application data
+    const apiResponse = await fetch(
+      API_PRODUCT.POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY(region, locale),
+    );
     const data = await apiResponse.json();
     const options = div(
       { class: 'dropdown-options hidden' },
@@ -306,7 +310,6 @@ export default async function decorate(block) {
         const appKey = option.getAttribute('data-key');
         const appLabel = option.getAttribute('data-encoded-label');
         queryParams += `&applicationID=${appKey}&applications=${appLabel}`;
-        const [region, locale] = getRegionLocale();
         window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
 
         const selectedApp = data.applications.find((app) => app.label === option.textContent);
@@ -346,7 +349,6 @@ export default async function decorate(block) {
         const subKey = option.getAttribute('data-key');
         const subLabel = option.getAttribute('data-encoded-label');
         queryParams += `&subApplicationID=${subKey}&subApplications=${subLabel}`;
-        const [region, locale] = getRegionLocale();
         window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
         updateSearchButtonState(selected, selected1, $searchButton);
       }
@@ -364,15 +366,32 @@ export default async function decorate(block) {
         window.location.href = `${window.location.origin}/na/en-us/ingredients/ingredient-finder?${queryParams}`;
       }
 
-      const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY();
-      const apiResponse1 = await fetch(`${url}?${queryParams}`);
+      const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(region, locale);
+      // Parse existing query parameters
+      const params = new URLSearchParams(queryParams);
+      const applicationID = params.get('applicationID');
+      const subApplicationID = params.get('subApplicationID');
+      const applications = params.get('applications');
+      const subApplications = params.get('subApplications');
+      // Create new URL with double-encoded parameters
+      const newParams = new URLSearchParams();
+      newParams.set('applicationID', applicationID);
+      if (subApplicationID) {
+        newParams.set('subApplicationID', subApplicationID);
+      }
+      newParams.set('applications', encodeURIComponent(applications).replace(/%20/g, '+'));
+      if (subApplications) {
+        newParams.set('subApplications', encodeURIComponent(subApplications).replace(/%20/g, '+'));
+      }
+
+      const apiResponse1 = await fetch(`${url}?${newParams}`);
       const data1 = await apiResponse1.json();
 
       loadCSS('/blocks/related-ingredient/related-ingredient.css');
       const ingredientResults = await createIngredientPanel(data1);
       ingredientResults.classList.add('search', 'ingredient-finder-results');
-      const application = queryParams.split('&applications=')[1] ? queryParams.split('&applications=')[1].split('&')[0] : '';
-      const subApplication = queryParams.split('&subApplications=')[1] ? queryParams.split('&subApplications=')[1].split('&')[0] : '';
+      const application = applications || '';
+      const subApplication = subApplications || '';
       const processedApplication = decodeURIComponent(application).replace(/[+\s]/g, ' ');
       const processedSubApplication = decodeURIComponent(subApplication).replace(/[+\s]/g, ' ');
       const searchValue = subApplication ? `${processedApplication} - ${processedSubApplication}` : processedApplication;
@@ -482,7 +501,7 @@ export default async function decorate(block) {
       $mainSearchButton.classList.remove('hidden');
       if (!typeaheadData) {
         try {
-          const response = await fetch(API_PRODUCT.INGREDIENT_SEARCH_TYPEAHEAD());
+          const response = await fetch(API_PRODUCT.INGREDIENT_SEARCH_TYPEAHEAD(region, locale));
           if (!response.ok) throw new Error('Network response was not ok');
           typeaheadData = await response.json();
           $searchInput.dataset.typeahead = JSON.stringify(typeaheadData);

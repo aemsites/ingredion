@@ -4,21 +4,30 @@ import {
   div,
   nav,
   span,
-  img,
   form,
   input,
   button,
   a,
   p,
 } from '../../scripts/dom-helpers.js';
-import { getCookie, getRegionLocale, throttle } from '../../scripts/utils.js';
+import { getCookie, getRegionLocale, loadTranslations, translate, throttle } from '../../scripts/utils.js';
 import { API_PRODUCT } from '../../scripts/product-api.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 const isMobile = window.matchMedia('(width < 1080px)');
 const [region, locale] = getRegionLocale();
 const $originalLogo = a(
   { class: 'logo', href: `/${region}/${locale}/`, 'aria-label': 'Home' },
-  img({ src: '/img/ingredion.webp', width: 120, alt: 'Ingredion logo' }),
+  createOptimizedPicture(
+    '/img/ingredion.webp',
+    'Ingredion logo',
+    true,
+    [
+      { media: '(min-width: 1080px)', width: '120', height: '40' },
+      { media: '(min-width: 600px)', width: '100', height: '33' },
+      { width: '80', height: '27' },
+    ],
+  ),
 );
 const ingredientQuickSearchFragmentPath = '/na/en-us/fragments/ingredient-finder-quick';
 const ingredientCategorySearchFragmentPath = '/na/en-us/fragments/ingredient-finder-category';
@@ -212,17 +221,31 @@ async function buildDropdownsDesktop($header) {
 
   async function attachDropdown(link) {
     const subNavPath = link.getAttribute('href');
-    link.removeAttribute('href');
-    link.setAttribute('data-dropdown', 'true');
+    const attributes = {};
+    // Copy all attributes from the link
+    Array.from(link.attributes).forEach((attr) => {
+      attributes[attr.name] = attr.value;
+    });
+    // Remove href since we're converting to div
+    delete attributes.href;
+    // Create new div with all original attributes
+    const newDiv = div(attributes);
+    // Move all children to the new div
+    while (link.firstChild) {
+      newDiv.appendChild(link.firstChild);
+    }
+    // Replace the link with the div
+    link.parentElement.replaceChild(newDiv, link);
+    newDiv.setAttribute('data-dropdown', 'true');
 
     const subNavFrag = await loadFragment(subNavPath);
     if (!subNavFrag) {
-      link.remove();
+      newDiv.remove();
       return;
     }
     const $dropDown = div({ class: 'dropdown' });
     while (subNavFrag.firstElementChild) $dropDown.append(subNavFrag.firstElementChild);
-    link.parentElement.append($dropDown);
+    newDiv.parentElement.append($dropDown);
 
     if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
       await buildIngredientFinderCategoryDropdown(link);
@@ -241,7 +264,7 @@ async function buildDropdownsDesktop($header) {
       140,
     );
 
-    link.addEventListener('pointerenter', openDropdown);
+    newDiv.addEventListener('pointerenter', openDropdown);
   }
 
   const dropdownPromise = links.map(attachDropdown);
@@ -249,7 +272,7 @@ async function buildDropdownsDesktop($header) {
   document.addEventListener(
     'click',
     (event) => {
-      if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('a[data-dropdown]')) {
+      if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('[data-dropdown]')) {
         activeDropdown.parentElement.classList.remove('active');
         activeDropdown = null;
       }
@@ -260,7 +283,7 @@ async function buildDropdownsDesktop($header) {
   document.addEventListener(
     'pointerleave',
     (event) => {
-      if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('a[data-dropdown]')) {
+      if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('[data-dropdown]')) {
         activeDropdown.parentElement.classList.remove('active');
         activeDropdown = null;
       }
@@ -299,21 +322,35 @@ async function buildDropdownsMobile($header) {
 
   async function attachDropdown(link) {
     const subNavPath = link.getAttribute('href');
-    link.removeAttribute('href');
-    link.setAttribute('data-dropdown', 'true');
+    const attributes = {};
+    // Copy all attributes from the link
+    Array.from(link.attributes).forEach((attr) => {
+      attributes[attr.name] = attr.value;
+    });
+    // Remove href since we're converting to div
+    delete attributes.href;
+    // Create new div with all original attributes
+    const newDiv = div(attributes);
+    // Move all children to the new div
+    while (link.firstChild) {
+      newDiv.appendChild(link.firstChild);
+    }
+    // Replace the link with the div
+    link.parentElement.replaceChild(newDiv, link);
+    newDiv.setAttribute('data-dropdown', 'true');
 
     const spanWrapper = span({});
-    while (link.firstChild) {
-      spanWrapper.appendChild(link.firstChild);
+    while (newDiv.firstChild) {
+      spanWrapper.appendChild(newDiv.firstChild);
     }
-    link.appendChild(spanWrapper);
+    newDiv.appendChild(spanWrapper);
 
     const viewAllButton = span({ class: 'view-all' }, 'VIEW ALL', span({ class: 'icon-green-arrow-up' }));
-    link.appendChild(viewAllButton);
+    newDiv.appendChild(viewAllButton);
 
     const subNavFrag = await loadFragment(subNavPath);
     if (!subNavFrag) {
-      link.remove();
+      newDiv.remove();
       return;
     }
 
@@ -322,7 +359,7 @@ async function buildDropdownsMobile($header) {
       $dropDown.append(subNavFrag.firstElementChild);
     }
 
-    link.parentElement.append($dropDown);
+    newDiv.parentElement.append($dropDown);
 
     if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
       await buildIngredientFinderCategoryDropdown(link);
@@ -356,7 +393,7 @@ async function buildDropdownsMobile($header) {
       140,
     );
 
-    link.addEventListener('click', openDropdown);
+    newDiv.addEventListener('click', openDropdown);
   }
 
   const dropdownPromise = links.map(attachDropdown);
@@ -368,6 +405,8 @@ async function buildDropdownsMobile($header) {
 }
 
 export default async function decorate(block) {
+  await loadTranslations(locale);
+  const searchText = translate('search').toLowerCase();
   block.remove();
   const navPath = `/${region}/${locale}/header/header`;
   const navFrag = await loadFragment(navPath, false);
@@ -422,7 +461,7 @@ export default async function decorate(block) {
   });
 
   const $searchBar = div({ class: 'search-bar' },
-    form({ class: 'search', id: 'searchForm', action: `/${region}/${locale}/search` },
+    form({ class: 'search', id: 'searchForm', action: `/${region}/${locale}/${searchText}` },
       div({ class: 'search-box' },
         (() => {
           const initialTab = input({ type: 'hidden', name: 'initialTab', id: 'initialTab', placeholder: 'All' });
@@ -537,7 +576,7 @@ export default async function decorate(block) {
     searchButton.classList.remove('hidden');
     if (!typeaheadData) {
       try {
-        const response = await fetch(API_PRODUCT.INGREDIENT_SEARCH_TYPEAHEAD());
+        const response = await fetch(API_PRODUCT.INGREDIENT_SEARCH_TYPEAHEAD(region, locale));
         if (!response.ok) throw new Error('Network response was not ok');
         typeaheadData = await response.json();
         $searchInput.dataset.typeahead = JSON.stringify(typeaheadData);

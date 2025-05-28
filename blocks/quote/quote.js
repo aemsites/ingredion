@@ -13,10 +13,10 @@ export default async function decorate(block) {
 
   block.insertBefore(quoteWrapper, block.firstElementChild);
 
-  const mainHeading = document.querySelector('.quoteblock-wrapper .heading.heading-center h1');
-  const firstSubheading = document.querySelector('.quoteblock-wrapper .heading.heading-center h3');
-  const secondSubheading = document.querySelector('.quoteblock-wrapper .label-text.label-text-center');
-  const paragraphs = document.querySelectorAll('.quoteblock-wrapper ~ p');
+  const mainHeading = block.querySelector('.quoteblock-wrapper .heading.heading-center h1');
+  const firstSubheading = block.querySelector('.quoteblock-wrapper .heading.heading-center h3');
+  const secondSubheading = block.querySelector('.quoteblock-wrapper .label-text.label-text-center');
+  const paragraphs = block.querySelectorAll('.quoteblock-wrapper ~ p');
 
   if (paragraphs.length >= 1) {
     mainHeading.appendChild(paragraphs[0]);

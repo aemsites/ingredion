@@ -21,8 +21,8 @@ footer {
 
     ul:first-of-type {
       display: flex;
-      padding: 1.5rem 0;
-      gap: 1rem;
+      flex-direction: column;
+      align-items: center;
 
       li {
         list-style: none;
@@ -33,7 +33,6 @@ footer {
         font-family: var(--body-bold-font-family);
         letter-spacing: .0156rem;
         color: var(--text-color);
-        padding: .3125rem 0;
 
         @media (width >= 768px) {
           font-size: .75rem !important;
@@ -42,25 +41,43 @@ footer {
         a {
           color: var(--text-color);
           word-break: auto-phrase;
+          text-decoration: none;
           &:hover { text-decoration: none }
         }
       }
     }
   }
 
-  .social-share {
-    p {
-      display: flex;
-      flex-wrap: wrap;
-      max-width: 13rem;
-      margin: auto;
+  .social-share > div {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
 
-      /* icon on mobile */
-      .button { background: transparent }
-    }
+  .social-share .button-container {
+    width: 2rem;
+    margin: 1rem .5rem;
+  }
+
+  .social-share .button-container > a {
+    min-width: 0;
+    padding: 0;
+    background: transparent;
   }
 
   @media (width >= 1080px) {
+    .footer-utility {
+      ul:first-of-type {
+        padding: 1.5rem 0 0;
+        flex-direction: row;
+
+        li a:hover {
+          color: var(--green);
+        }
+      }
+    }
+
+    .footer .desktop {
     ul:first-of-type {
       display: flex;
       justify-content: left;
@@ -111,6 +128,7 @@ footer {
     ul ul:first-of-type li a:hover {
       color: var(--green);
     }
+  }
 
   }
 }

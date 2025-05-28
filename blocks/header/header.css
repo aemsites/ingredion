@@ -10,12 +10,13 @@ header {
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 100vw;
+    width: 100%;
     background: #fff;
     box-shadow: 0 0 20px 0 rgba(0 0 0 / 10%);
 
     /* em used as sup for TM */
     a,
+    div,
     p {
         em:first-child {
             font-size: .6em;
@@ -39,6 +40,7 @@ header {
         color: var(--green);
         background: transparent;
         border: 0;
+        text-decoration: none;
 
         .count {
             text-align: center;
@@ -78,6 +80,7 @@ header {
             margin: 0 0 0 30px;
             transition: all 100ms;
             cursor: pointer;
+            font-size: 0.66rem;
 
             &:hover {
                 color: var(--green)
@@ -158,6 +161,7 @@ header {
                 a {
                     color: var(--text-color);
                     transition: all 100ms;
+                    text-decoration: none;
 
                     &:hover {
                         color: var(--green)
@@ -276,6 +280,7 @@ header {
         font-family: MiloPro-Bold, Helvetica, sans-serif;
         letter-spacing: .042rem;
         transition: all 200ms;
+        text-decoration: none;
 
         &:hover {
             background: var(--purple);
@@ -320,7 +325,7 @@ header {
                     margin-right: 30px;
                 }
 
-                >a {
+                >a, div[data-dropdown="true"] {
                     display: flex;
                     align-items: center;
                     height: inherit;
@@ -575,7 +580,7 @@ header {
                             }
                         }
 
-                        >a {
+                        >a, >div[data-dropdown="true"] {
                             display: flex;
                             justify-content: space-between;
                             width: 100%;
@@ -619,11 +624,11 @@ header {
                         }
                     }
 
-                    >li.active>a::after {
+                    >li.active>a::after, >li.active>div[data-dropdown="true"]::after {
                         display: none;
                     }
 
-                    >li>a::after {
+                    >li>a::after, >li>div[data-dropdown="true"]::after {
                         display: none;
                     }
 
