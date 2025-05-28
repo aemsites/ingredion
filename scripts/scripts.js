@@ -206,6 +206,8 @@ async function loadEager(doc) {
 function addHeroObserver(doc) {
   const anchorBlock = doc.querySelector('.anchor-wrapper');
   const heroBlock = doc.querySelector('.hero-wrapper');
+  
+  // Handle the fixed navigation
   if (anchorBlock && heroBlock) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -218,29 +220,59 @@ function addHeroObserver(doc) {
     });
     observer.observe(heroBlock);
   }
+
+  // Handle the active section highlighting
   if (anchorBlock) {
     const anchorLinks = anchorBlock.querySelectorAll('a');
-    const arrayLinks = [];
-    anchorLinks.forEach((link) => {
-      arrayLinks.push(link.getAttribute('href'));
-    });
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const index = arrayLinks.indexOf(`#${entry.target.id}`);
-        if (entry.isIntersecting) {
-          anchorLinks.forEach((link) => {
-            link.classList.remove('active');
-          });
-          anchorLinks[index].classList.add('active');
+    let currentActive = null;
+
+    // Function to update active section
+    function updateActiveSection() {
+      // Get all sections
+      const sections = [];
+      anchorLinks.forEach(link => {
+        const target = doc.querySelector(link.getAttribute('href'));
+        if (target) sections.push(target);
+      });
+
+      // Find the first section that's above the middle of the viewport
+      const viewportMiddle = window.innerHeight / 2;
+      let activeSection = null;
+
+      for (const section of sections) {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= viewportMiddle) {
+          activeSection = section;
+        } else {
+          break;
         }
+      }
+
+      // Update active state
+      if (activeSection && activeSection !== currentActive) {
+        currentActive = activeSection;
+        anchorLinks.forEach(link => {
+          if (link.getAttribute('href') === `#${activeSection.id}`) {
+            link.classList.add('active');
+          } else {
+            link.classList.remove('active');
+          }
+        });
+      }
+    }
+
+    // Update active section on scroll
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+
+    // Update active section on click (after small delay for scroll animation)
+    anchorLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        setTimeout(updateActiveSection, 100);
       });
     });
-    anchorLinks.forEach((link) => {
-      const target = doc.querySelector(link.getAttribute('href'));
-      if (target) {
-        observer.observe(target);
-      }
-    });
+
+    // Initial update
+    updateActiveSection();
   }
 }
 
@@ -351,3 +383,4 @@ async function loadPage() {
 }
 
 loadPage();
+
