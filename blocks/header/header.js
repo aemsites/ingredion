@@ -94,11 +94,10 @@ function setDropdownHeights($header) {
   });
 }
 
-async function buildIngredientFinderQuickDropdown(link) {
+async function buildIngredientFinderQuickDropdown(dropdown) {
   const ingredientFinder = await loadFragment(ingredientQuickSearchFragmentPath);
   if (!ingredientFinder) return;
 
-  const dropdown = link.parentElement.querySelector('.dropdown');
   if (dropdown) {
     const ingredientQuickFinderBlock = ingredientFinder.querySelector('.ingredient-finder.quick');
     dropdown.prepend(ingredientQuickFinderBlock);
@@ -172,23 +171,22 @@ async function buildIngredientFinderQuickDropdown(link) {
   }
 }
 
-async function buildIngredientFinderCategoryDropdown(link) {
+async function buildIngredientFinderCategoryDropdown(dropdown) {
   const ingredientCategory = await loadFragment(ingredientCategorySearchFragmentPath);
   if (!ingredientCategory) return;
 
-  const ingredientCategoryDiv = link.parentElement
-    .querySelector('.dropdown')
+  const ingredientCategoryDiv = dropdown
     ?.querySelector('.header-dropdown')
     ?.querySelectorAll('div')[1];
 
   if (ingredientCategoryDiv) {
     const wrapper = ingredientCategory.querySelector('.ingredient-finder-wrapper');
     ingredientCategoryDiv.append(wrapper);
-    link.parentElement.querySelector('.dropdown .header-dropdown').classList.add('ingredient');
+    dropdown.querySelector('.header-dropdown').classList.add('ingredient');
 
-    const dropdowns = wrapper.querySelectorAll('.application.select-dropdown, .sub-application.select-dropdown');
-    dropdowns.forEach((dropdown) => {
-      const selectedDiv = dropdown.querySelector('.selected');
+    const categoryDropdowns = wrapper.querySelectorAll('.application.select-dropdown, .sub-application.select-dropdown');
+    categoryDropdowns.forEach((categoryDropdown) => {
+      const selectedDiv = categoryDropdown.querySelector('.selected');
       if (selectedDiv && selectedDiv.textContent) {
         selectedDiv.textContent = `Select ${selectedDiv.textContent.trim()}`;
       }
