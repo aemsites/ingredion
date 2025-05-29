@@ -143,7 +143,10 @@ async function buildIngredientFinderQuickDropdown(dropdown) {
 
       if (ingredientQuickFinderBlockDiv) {
         while (ingredientQuickFinderBlockDiv.firstChild) {
-          ingredientQuickFinderBlock.insertBefore(ingredientQuickFinderBlockDiv.firstChild, ingredientQuickFinderBlockDiv);
+          ingredientQuickFinderBlock.insertBefore(
+            ingredientQuickFinderBlockDiv.firstChild,
+            ingredientQuickFinderBlockDiv,
+          );
         }
         ingredientQuickFinderBlockDiv.remove();
       }
