@@ -530,9 +530,7 @@ export default async function decorate(block) {
 
         const dropdown = $dropdownOptions.closest('.form-dropdown');
         dropdown.classList.add('hidden');
-        console.log(block);
         if (block.closest('.dropdown')) {
-          console.log('rendering quick ingredient finder');
           const articles = JSON.parse($searchInput.dataset.typeahead);
           const name = $searchInput.dataset.selectedProduct;
           const article = articles.find((item) => item.name === name);
