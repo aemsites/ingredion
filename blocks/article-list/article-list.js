@@ -10,6 +10,7 @@ export default async function decorate(block) {
     'article-data': jsonPath,
     'articles-per-page-options': articlesPerPageOptions,
     'pagination-max-buttons': paginationMaxBtns,
+    'filters': documentFilters,
   } = readBlockConfig(block);
 
   const $search = div();
@@ -77,6 +78,7 @@ export default async function decorate(block) {
       paginationDiv: $pagination,
       perPageDropdown: $perPageDropdown,
       countDiv: $count,
+      documentFilters,
     }).render();
   } else if (block.classList.contains('events')) {
     // Events view
@@ -195,6 +197,7 @@ export default async function decorate(block) {
       paginationDiv: $pagination,
       perPageDropdown: $perPageDropdown,
       countDiv: $count,
+      documentFilters,
     }).render();
   }
 
