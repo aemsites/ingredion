@@ -892,14 +892,17 @@ function testURL(url) {
         return url;
       }
     }
-    
+    let queryParams = '';
+    if (url.includes('?')) {
+      queryParams = `?${url.split('?')[1]}`;      
+    }
     // Handle localhost and ingredion.com URLs
     if (url.includes('localhost:3001')) {
-      return url.replace('http://localhost:3001', previewURL).split('.html')[0];
+      return url.replace('http://localhost:3001', previewURL).split('.html')[0] + queryParams;
     }
     
     if (url.includes('ingredion.com')) {
-      return url.replace('https://www.ingredion.com', previewURL).split('.html')[0];
+      return url.replace('https://www.ingredion.com', previewURL).split('.html')[0] + queryParams;
     }
     
     // Default case for other absolute URLs
