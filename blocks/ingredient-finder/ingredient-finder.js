@@ -480,7 +480,7 @@ export default async function decorate(block) {
           perPage: '6',
           q: searchValue,
         });
-        window.location.href = `${window.location.origin}/na/en-us/ingredients/ingredient-finder?${searchParams}`;
+        window.location.href = `${window.location.origin}/${region}/${locale}/ingredients/ingredient-finder?${searchParams}`;
       }
       await searchIngredientsByName(searchValue);
     };
@@ -531,6 +531,7 @@ export default async function decorate(block) {
         const dropdown = $dropdownOptions.closest('.form-dropdown');
         dropdown.classList.add('hidden');
         if (block.closest('.dropdown')) {
+          console.log('rendering quick ingredient finder');
           const articles = JSON.parse($searchInput.dataset.typeahead);
           const name = $searchInput.dataset.selectedProduct;
           const article = articles.find((item) => item.name === name);
