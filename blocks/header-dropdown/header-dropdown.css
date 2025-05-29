@@ -373,6 +373,11 @@ li.active .header-dropdown.mobile {
     content: none;
 }
 
+.header-dropdown .ingredient-finder.category .ingredient-finder-form-categories .button-container a:hover {
+    background: #b41f75;
+    color: #fff;
+}
+
 @media (width >= 67.5625rem) {
     .header-dropdown.static.ingredient {
         padding: 0 4.25rem;
@@ -521,12 +526,17 @@ li.active .header-dropdown.mobile {
     background-color: #fff;
     padding: .7813rem .625rem;
     font-size: .875rem;
-    color: #373738;
+    color: #b2b4b3;
     position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-family: OpenSans-Bold, Helvetica, sans-serif;
+}
+
+.header-dropdown.mobile .ingredient-finder.category .application.application.select-dropdown .selected.has-value,
+.header-dropdown.mobile .ingredient-finder.category .sub-application.select-dropdown .selected.has-value {
+    color: #373738;
 }
 
 .header-dropdown.mobile .ingredient-finder.category {
