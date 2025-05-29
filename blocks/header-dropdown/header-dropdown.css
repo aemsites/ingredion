@@ -364,6 +364,11 @@ li.active .header-dropdown.mobile {
     margin: 0;
 }
 
+.header-dropdown .ingredient-finder.quick {
+    background: var(--white);
+    height: auto;
+}
+
 .header-dropdown.ingredient .ingredient-finder .button-container a::after {
     content: none;
 }
@@ -552,7 +557,7 @@ li.active .header-dropdown.mobile {
     
     .ingredient-quick-search-bar .form-typeahead button.icon-search {
         right: .625rem;
-        top: 1rem;
+        top: 0.5rem;
         color: #6cb33e;
     }
 

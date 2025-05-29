@@ -140,10 +140,16 @@ async function buildIngredientFinderQuickDropdown(dropdown) {
         .querySelector('.header-dropdown-container')?.querySelector('.header-dropdown > div');
 
       const ingredientQuickFinderBlockDiv = ingredientQuickFinderBlock.querySelector('div');
-      container.prepend(ingredientQuickFinderBlockDiv);
-      ingredientQuickFinderBlock.remove();
 
-      const dropdownTitle = ingredientQuickFinderBlockDiv.querySelector('p');
+      if (ingredientQuickFinderBlockDiv) {
+        while (ingredientQuickFinderBlockDiv.firstChild) {
+          ingredientQuickFinderBlock.insertBefore(ingredientQuickFinderBlockDiv.firstChild, ingredientQuickFinderBlockDiv);
+        }
+        ingredientQuickFinderBlockDiv.remove();
+      }
+      container.prepend(ingredientQuickFinderBlock);
+
+      const dropdownTitle = ingredientQuickFinderBlock.querySelector('p');
       dropdownTitle.classList.add('dropdown-title');
       searchContainer.classList.add('dropdown-content');
 
