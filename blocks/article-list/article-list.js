@@ -10,7 +10,7 @@ export default async function decorate(block) {
     'article-data': jsonPath,
     'articles-per-page-options': articlesPerPageOptions,
     'pagination-max-buttons': paginationMaxBtns,
-    'filters': documentFilters,
+    filters: documentFilters,
   } = readBlockConfig(block);
 
   const $search = div();
