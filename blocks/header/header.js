@@ -98,8 +98,6 @@ async function buildIngredientFinderQuickDropdown(dropdown) {
   const ingredientFinder = await loadFragment(ingredientQuickSearchFragmentPath);
   if (!ingredientFinder) return;
 
-  console.log(ingredientFinder);
-
   if (dropdown) {
     const ingredientQuickFinderBlock = ingredientFinder.querySelector('.ingredient-finder.quick');
     dropdown.prepend(ingredientQuickFinderBlock);
@@ -177,8 +175,6 @@ async function buildIngredientFinderCategoryDropdown(dropdown) {
   const ingredientCategory = await loadFragment(ingredientCategorySearchFragmentPath);
   if (!ingredientCategory) return;
 
-  console.log(ingredientCategory);
-
   const ingredientCategoryDiv = dropdown
     ?.querySelector('.header-dropdown')
     ?.querySelectorAll('div')[1];
@@ -250,8 +246,8 @@ async function buildDropdownsDesktop($header) {
     newDiv.parentElement.append($dropDown);
 
     if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
-      await buildIngredientFinderCategoryDropdown(link);
-      await buildIngredientFinderQuickDropdown(link);
+      await buildIngredientFinderCategoryDropdown($dropDown);
+      await buildIngredientFinderQuickDropdown($dropDown);
     }
 
     const openDropdown = throttle(
@@ -364,8 +360,8 @@ async function buildDropdownsMobile($header) {
     newDiv.parentElement.append($dropDown);
 
     if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
-      await buildIngredientFinderCategoryDropdown(link);
-      await buildIngredientFinderQuickDropdown(link);
+      await buildIngredientFinderCategoryDropdown($dropDown);
+      await buildIngredientFinderQuickDropdown($dropDown);
     }
 
     const openDropdown = throttle(
