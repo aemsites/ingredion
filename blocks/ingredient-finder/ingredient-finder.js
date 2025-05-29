@@ -455,7 +455,7 @@ export default async function decorate(block) {
     const currentUrl = new URL(window.location.href);
 
     if (
-      currentUrl.pathname === `${region}/${locale}/ingredients/ingredient-finder`
+      currentUrl.pathname === `/${region}/${locale}/ingredients/ingredient-finder`
       && currentUrl.searchParams.get('activePage') === '1'
       && currentUrl.searchParams.get('perPage') === '6'
       && currentUrl.searchParams.has('q')
@@ -542,13 +542,13 @@ export default async function decorate(block) {
           const viewDetailsBtn = block.querySelector('.view-details');
           viewDetailsBtn.setAttribute(
             'href',
-            `/na/en-us/ingredient?name=${productName}`,
+            `/${region}/${locale}/ingredient?name=${productName}`,
           );
 
           const downloadAllBtn = block.querySelector('.download-all');
           downloadAllBtn.setAttribute(
             'href',
-            API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(productId),
+            API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(region, locale, productId),
           );
         }
       }
