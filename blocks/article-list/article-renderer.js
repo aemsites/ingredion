@@ -98,6 +98,7 @@ export default class ArticleRenderer {
     perPageDropdown,
     filterByTagDropdown,
     clearFilters,
+    documentFilters,
   }) {
     this.jsonPath = jsonPath;
     this.articleDiv = articleDiv;
@@ -114,6 +115,7 @@ export default class ArticleRenderer {
     this.perPageDropdown = perPageDropdown;
     this.filterByTagDropdown = filterByTagDropdown;
     this.clearFilters = clearFilters;
+    this.documentFilters = documentFilters;
     this.state = {
       allArticles: [],
       totalArticles: 0,
@@ -560,6 +562,12 @@ export default class ArticleRenderer {
         $filters.style.display = isCurrentlyOpen ? 'block' : 'none';
       });
 
+      if (this.documentFilters) {
+        const uniqueOptions = new Set(this.documentFilters.split(',').map((filter) => filter.split('/')[0].trim()));
+        if (uniqueOptions.has(heading.trim())) {
+          $groupHeading.style.display = 'none';
+        }
+      }
       groupedTags[heading]
         .sort((A, B) => A.original.localeCompare(B.original)) // Alphabetical sort by original tag name
         .forEach(({ tag, original, count }) => {
@@ -804,10 +812,18 @@ export default class ArticleRenderer {
       // handle articles response
       if (!articlesResponse.ok) throw new Error('Failed to fetch articles');
       const { data } = await articlesResponse.json();
-      this.state.allArticles = data;
 
+      if (this.documentFilters) {
+        const filters = this.documentFilters.split(',').map((f) => f.trim());
+        this.state.allArticles = data.filter((article) => {
+          const articleTags = article.tags.split(',').map((tag) => tag.replace(/["[\]]+/g, '').trim());
+          return filters.every((filter) => articleTags.includes(filter));
+        });
+      } else {
+        this.state.allArticles = data;
+      }
       // render page after data and translations are loaded
-      await this.updatePage();
+      this.updatePage();
     } catch (error) {
       console.error('Error during render:', error);
     }

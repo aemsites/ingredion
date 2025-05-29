@@ -134,7 +134,10 @@
             display: flex;
             align-items: center;
 
-            a { color: var(--text-color) }
+            a { 
+              color: var(--text-color);
+              text-decoration: none;
+            }
 
             &::before {
               content: '';
