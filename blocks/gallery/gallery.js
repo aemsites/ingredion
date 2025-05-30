@@ -62,6 +62,7 @@ export default function decorate(block) {
       thumbnails.append(image);
     });
   }
+  
 
   const galleryModal = document.createElement('div');
   updateModal(galleryModal, blockImage);
