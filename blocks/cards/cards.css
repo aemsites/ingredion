@@ -422,26 +422,26 @@ main > .section > .default-content-wrapper {
 }
 
 @media (width >= 1080px) {
-  .dots-nav,
-  button.slide-prev,
-  button.slide-next {
+  .cards .dots-nav,
+  .cards button.slide-prev,
+  .cards button.slide-next {
     display: none;
   }
 }
 
 @media (width >= 1080px) {
-  .dots-nav {
+  .cards .dots-nav {
     display: none;
   }
 }
 
 @media (width <= 1079px) {
-  .dots-nav {
+  .cards .dots-nav {
     text-align: center;
     margin-top: 10px;
   }
 
-  .dot {
+  .cards .dots-nav .dot {
     display: inline-block;
     width: 10px;
     height: 10px;
