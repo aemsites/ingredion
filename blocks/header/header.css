@@ -84,16 +84,17 @@ header {
 
                 h5 {
                     font-size: 1rem;
-                    letter-spacing: .01875rem;
+                    letter-spacing: .0187rem;
                     color: #373738;
                     font-family: var(--body-bold-font-family);
                 }
+                
                 a {
                     font-weight: normal;
                     color: #373738;
                     font-size: 1rem;
                     line-height: 2rem;
-                    letter-spacing: .01875rem;
+                    letter-spacing: .0187rem;
                 }
             }
         }
