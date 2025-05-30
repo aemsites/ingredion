@@ -140,7 +140,9 @@ export default function decorate(block) {
   }
 
   if (themeColor === 'green') {
-    block.querySelectorAll('a').forEach(a => a.style.color = 'var(--white)');
+    block.querySelectorAll('a').forEach((a) => {
+      a.style.color = 'var(--white)';
+    });
   }
 
   if (pic) {
