@@ -48,16 +48,16 @@ export default function decorate(block) {
   const galleryImages = firstPic.closest('div');
   galleryImages.classList.add('gallery-images-container');
 
+  let blockImage;
+
   if (allPics.length > 1) {
-    const blockImage = setPreview(firstPic);
+    blockImage = setPreview(firstPic);
     galleryImages.prepend(blockImage);
-  }
 
-  const thumbnails = document.createElement('div');
-  thumbnails.classList.add('gallery-thumbnails');
-
-  if (allPics.length > 1) {
+    const thumbnails = document.createElement('div');
+    thumbnails.classList.add('gallery-thumbnails');
     galleryImages.append(thumbnails);
+
     allPics.forEach((image) => {
       thumbnails.append(image);
     });
