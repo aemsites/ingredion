@@ -42,6 +42,7 @@ function buildSubMenu(block) {
         // build section list
         const $section = li({ 'data-item': rowN }, col.textContent);
         $section.addEventListener('click', () => setActiveItem($section, rowN));
+        $section.addEventListener('mouseover', () => setActiveItem($section, rowN));
         // set first item as active
         if (rowN === 0) $section.classList.add('active');
         $navList.append($section);
