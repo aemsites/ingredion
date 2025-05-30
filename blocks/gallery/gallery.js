@@ -55,14 +55,14 @@ export default function decorate(block) {
 
   const thumbnails = document.createElement('div');
   thumbnails.classList.add('gallery-thumbnails');
-  
+
   if (allPics.length > 1) {
     galleryImages.append(thumbnails);
     allPics.forEach((image) => {
       thumbnails.append(image);
     });
   }
-  
+
   const galleryModal = document.createElement('div');
   updateModal(galleryModal, blockImage);
 
