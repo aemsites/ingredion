@@ -80,7 +80,7 @@
 @media (width >= 1080px) {
   .cards > ul {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
     gap: 40px 20px;
   }
 
@@ -163,7 +163,7 @@
 
   .cards.slim > ul {
     width: auto;
-    grid-template-columns: repeat(auto-fill, minmax(23%, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(23%, 1fr));
     gap: 10px;
   }
 }
