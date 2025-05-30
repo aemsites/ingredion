@@ -8,7 +8,7 @@
 .header-dropdown {
     display: flex;
     width: 100%;
-    height: inherit;
+    height: 31rem;
     min-height: 300px;
 
     ul {
@@ -16,17 +16,27 @@
         margin: 0;
 
         li {
-            line-height: 2.1rem;
             font-size: .95rem;
 
             a {
                 display: block;
                 color: var(--text-color);
                 text-decoration: none;
+                line-height: 2.5rem;
+                margin: 0.6rem 2px;
 
                 &:hover {
                     color: var(--green);
                 }
+            }
+        }
+
+        @media (width >=1080px) {
+            overflow-y: scroll;
+            scrollbar-width: none;
+
+            li a {
+                line-height: 1.5rem;
             }
         }
     }
@@ -60,7 +70,7 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            padding: 30px 20px 60px;
+            padding: 30px 20px 0;
         }
     }
 }
