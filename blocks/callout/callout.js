@@ -131,11 +131,18 @@ export default function decorate(block) {
 
   const classListArray = Array.from(block.classList);
 
-  const hasThemeColor = themeColors.some((color) => classListArray.includes(color));
+  const themeColor = themeColors.find((color) => classListArray.includes(color));
+  const hasThemeColor = !!themeColor;
   if (!hasThemeColor) {
     block.classList.add('default');
   } else if (link) {
     link.classList.add('transparent'); // apply transparent button style
+  }
+
+  if (themeColor === 'green') {
+    block.querySelectorAll('a').forEach((a) => {
+      a.style.color = 'var(--white)';
+    });
   }
 
   if (pic) {
