@@ -63,7 +63,6 @@ export default function decorate(block) {
     });
   }
   
-
   const galleryModal = document.createElement('div');
   updateModal(galleryModal, blockImage);
 
