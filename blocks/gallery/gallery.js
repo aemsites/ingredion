@@ -49,12 +49,13 @@ export default function decorate(block) {
   galleryImages.classList.add('gallery-images-container');
 
   let blockImage;
+  let thumbnails;
 
   if (allPics.length > 1) {
     blockImage = setPreview(firstPic);
     galleryImages.prepend(blockImage);
 
-    const thumbnails = document.createElement('div');
+    thumbnails = document.createElement('div');
     thumbnails.classList.add('gallery-thumbnails');
     galleryImages.append(thumbnails);
 
