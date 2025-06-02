@@ -99,11 +99,15 @@ header {
             }
         }
 
+        >p,
+        li a {
+            font-size: 10px;
+        }
+
         /* region - selector */
         >p {
             margin: 0 0 0 30px;
             transition: all 100ms;
-            font-size: 0.66rem;
 
             &:hover {
                 color: var(--green)
