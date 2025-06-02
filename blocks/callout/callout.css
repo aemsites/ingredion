@@ -284,6 +284,18 @@
     }
   }
 
+  .default {
+    > div {
+      > .callout-content {
+        order: 1;
+      }
+  
+      > .callout-image {
+        order: 0;
+      }
+    }
+  }
+
   .text-only {
     margin: 0;
 
