@@ -75,15 +75,42 @@ header {
         align-items: center;
         font-size: .66rem;
 
+        .header-dropdown-container,
+        .header-dropdown-wrapper  {
+            box-shadow: none;
+
+            .header-dropdown {
+                height: auto;
+
+                h5 {
+                    font-size: 1rem;
+                    letter-spacing: .0187rem;
+                    color: #373738;
+                    font-family: var(--body-bold-font-family);
+                }
+                
+                a {
+                    font-weight: normal;
+                    color: #373738;
+                    font-size: 1rem;
+                    line-height: 2rem;
+                    letter-spacing: .0187rem;
+                }
+            }
+        }
+
         /* region - selector */
         >p {
             margin: 0 0 0 30px;
             transition: all 100ms;
-            cursor: pointer;
             font-size: 0.66rem;
 
             &:hover {
                 color: var(--green)
+            }
+
+            &:first-child {
+                cursor: pointer;
             }
 
             /* globe icon */
@@ -103,12 +130,13 @@ header {
                 position: absolute;
                 z-index: 1;
                 background: #fff;
-                width: 100vw;
+                width: 100%;
                 top: 32px;
                 left: 0;
                 right: 0;
                 color: var(--text-color);
                 box-shadow: 0 10px 10px rgba(0 0 0 / 10%);
+                padding: 1.5rem 2.5rem 0;
 
                 .loaded & {
                     display: none;
@@ -122,7 +150,7 @@ header {
                     background: #fff;
                     align-items: start;
                     justify-content: left;
-                    padding: 30px 0 80px calc(16vw + 20px);
+                    padding: 0 5rem 5rem;
 
                     h4 {
                         text-align: left !important;
@@ -132,7 +160,6 @@ header {
                 }
 
                 .header-dropdown.static.columns-4 {
-                    padding: 0 16vw;
                     white-space: nowrap;
 
                     >div {
@@ -303,14 +330,13 @@ header {
             align-items: center;
             height: inherit;
             margin: 0 30px 0 0;
-
+            font-family: var(--body-bold-font-family);
+            
             &:last-child {
                 margin-right: 0
             }
 
             >li {
-                font-family: OpenSans, Helvetica, sans-serif;
-                font-weight: bold;
                 font-size: 1rem;
                 letter-spacing: .03em;
                 color: #4d4e4c;
@@ -384,6 +410,7 @@ header {
             &:nth-child(2)>li,
             &:nth-child(3)>li {
                 font-weight: normal;
+                font-family: var(--body-font-family);
 
                 .loaded &>.dropdown {
                     left: auto

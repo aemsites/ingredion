@@ -3,30 +3,58 @@
 .header-dropdown-container,
 .header-dropdown-wrapper {
     height: inherit;
+
+    @media (width >=1080px) {
+        box-shadow: inset 0 0 20px 0 rgb(0 0 0 / 10%);
+     }
 }
 
 .header-dropdown {
     display: flex;
     width: 100%;
-    height: inherit;
+    height: 31rem;
     min-height: 300px;
+
+    p {
+        font-family: var(--body-font-family);
+        font-size: 14px;
+
+        strong {
+            font-family: var(--body-bold-font-family);
+            font-size: 16px;
+        }
+        
+    }
 
     ul {
         list-style: none;
         margin: 0;
 
         li {
-            line-height: 2.1rem;
             font-size: .95rem;
 
             a {
                 display: block;
                 color: var(--text-color);
                 text-decoration: none;
+                line-height: 2.5rem;
+                margin: 0.6rem 2px;
+                font-family: var(--body-font-family);
+                font-size: 14px;
+                font-weight: bold;
 
                 &:hover {
                     color: var(--green);
                 }
+            }
+        }
+
+        @media (width >=1080px) {
+            overflow-y: scroll;
+            scrollbar-width: none;
+
+            li a {
+                line-height: 1.5rem;
             }
         }
     }
@@ -42,7 +70,7 @@
             display: block;
             object-fit: cover;
             height: 12.5rem;
-            width: 17.1875rem;
+            width: 100%;
         }
     }
 }
@@ -60,7 +88,7 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            padding: 30px 20px 60px;
+            padding: 30px 20px 0;
         }
     }
 }
@@ -80,9 +108,12 @@
 
         li {
             position: relative;
-            padding: 12px 0 12px 60px;
+            padding: 15px 0 15px 60px;
             font-weight: bold;
             cursor: pointer;
+            font-family: var(--body-bold-font-family);
+            font-size: 1rem;
+                
 
             &.active {
                 background: var(--light-grey);
@@ -124,7 +155,7 @@
             >div {
                 flex: 0 0 50%;
                 max-width: 50%;
-                padding: 20px 40px;
+                padding: 2rem 2.5rem;
 
                 &:first-child {
                     border-right: 1px solid var(--border-color);
