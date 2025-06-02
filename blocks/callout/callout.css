@@ -211,13 +211,13 @@
   }
 }
 
-.callout .button-container {
-  a:hover {
-    text-decoration: none;
-    border-color: var(--light-grey);
-    color: var(--light-grey);
-  }
-}
+.callout > div > .callout-content {
+          a.button:hover {
+            text-decoration: none;
+            border-color: var(--light-grey);
+            color: var(--light-grey);
+          }
+      }
 
 .default.text-only {
   .button-container {
