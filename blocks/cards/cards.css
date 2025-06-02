@@ -17,16 +17,21 @@
     background-color: transparent;
   }
 
-  > span.icon-green-arrow::before{
-    content: "\e926";
-    color: var(--green);
-    visibility: visible;
+  span.icon-green-arrow {
     display: inline-block;
-    transform: rotate(-90deg);
-    font-size: .6rem;
-    margin-right: .9375rem;
+    width: 10px;
     margin-left: .5rem;
-    height: .5rem;
+
+    &::before{
+      content: "\e926";
+      color: var(--green);
+      visibility: visible;
+      display: inline-block;
+      transform: rotate(-90deg);
+      font-size: .6rem;
+      margin-right: .9375rem;
+      height: .5rem;
+    }
   }
 }
 
