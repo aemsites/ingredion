@@ -92,6 +92,16 @@
     > .callout-content {
       padding: 0;
       padding-bottom: 40px;
+      order: 0;
+
+      h3 {
+        font-size: 2.5rem;
+        line-height: 3rem;
+      }
+    }
+
+    > .callout-image {
+      order: 1;
     }
 
     .button-container {
@@ -274,6 +284,20 @@
     }
   }
 
+  .default {
+    margin: 0;
+    
+    > div {
+      > .callout-content {
+        order: 1;
+      }
+  
+      > .callout-image {
+        order: 0;
+      }
+    }
+  }
+
   .text-only {
     margin: 0;
 
@@ -348,10 +372,6 @@
         max-width: none;
       }
     }
-  }
-
-  .default {
-    margin: 0;
   }
 }
 
