@@ -285,6 +285,8 @@
   }
 
   .default {
+    margin: 0;
+    
     > div {
       > .callout-content {
         order: 1;
@@ -370,10 +372,6 @@
         max-width: none;
       }
     }
-  }
-
-  .default {
-    margin: 0;
   }
 }
 
