@@ -8,8 +8,7 @@ function buildSubMenu(block) {
 
   const removeActiveItem = () => {
     [...$navItems.children].forEach((item) => item.classList.remove('active'));
-    [...$navList.children].forEach((listItem) => listItem.classList.remove('active'),
-    );
+    [...$navList.children].forEach((listItem) => listItem.classList.remove('active'));
   };
 
   const setActiveItem = (row, rowN) => {
@@ -88,6 +87,10 @@ function renderDesktop(block) {
 }
 
 function renderMobile(block) {
+  let hasSubmenu = false;
+  if (block.classList.contains('submenu')) {
+    hasSubmenu = true;
+  }
   block.classList.remove('submenu');
   block.classList.add('mobile');
   let dropdowns = block.querySelectorAll('div');
@@ -116,7 +119,6 @@ function renderMobile(block) {
         p.remove();
       }
     });
-
     dropdown.querySelectorAll('div').forEach((dropdownDiv) => {
       const hasVisibleText = dropdownDiv.textContent.trim().length > 0;
       const hasOtherContent = [...dropdownDiv.children].length > 0;
@@ -130,19 +132,20 @@ function renderMobile(block) {
       if (!title && p.textContent.trim().length > 0) {
         title = p;
 
-        const parent = p.parentElement;
-        const grandparent = parent.parentElement;
+        if (hasSubmenu) {
+          const parent = p.parentElement;
+          const grandparent = parent.parentElement;
 
-        const isWrapped = parent.tagName === 'DIV'
-          && parent.children.length === 1
-          && parent.contains(p);
-        if (isWrapped && grandparent) {
-          grandparent.insertBefore(p, parent);
-          parent.remove();
+          const isWrapped = parent.tagName === 'DIV'
+            && parent.children.length === 1
+            && parent.contains(p);
+          if (isWrapped && grandparent) {
+            grandparent.insertBefore(p, parent);
+            parent.remove();
+          }
         }
       }
     });
-
     if (!title) return;
 
     title.classList.add('dropdown-title');
