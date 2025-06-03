@@ -126,6 +126,8 @@ async function buildIngredientFinderQuickDropdown(dropdown) {
       downloadAllBtn.classList.toggle('disabled', !hasSearchInput);
     });
 
+    quickSearchInput.placeholder = 'Product name, keyword or PIN';
+
     const wrapper = div();
     searchContainer.parentNode.insertBefore(wrapper, searchContainer);
     wrapper.appendChild(searchContainer);
