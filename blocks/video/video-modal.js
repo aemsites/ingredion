@@ -1,3 +1,4 @@
+/* eslint-disable function-paren-newline, object-curly-newline */
 import { div, a } from '../../scripts/dom-helpers.js';
 import { decorateBlock, loadBlock, loadCSS } from '../../scripts/aem.js';
 
@@ -12,7 +13,7 @@ export async function openVideoModal(videoUrl) {
   const videoBlock = div({ class: 'video block autoplay', 'data-block-name': 'video' },
     div(
       a({ href: videoUrl }, videoUrl),
-    )
+    ),
   );
 
   const main = document.querySelector('main') || document.body;
