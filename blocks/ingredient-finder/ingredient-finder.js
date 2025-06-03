@@ -233,6 +233,9 @@ export default async function decorate(block) {
   }
 
   if (block.classList.contains('category')) {
+    const searchParams = new URLSearchParams(window.location.search);
+    let applications = searchParams.get('applications');
+    let subApplications = searchParams.get('subApplications');
     const $parent = div({ class: 'ingredient-finder-form-categories' });
     const heading = h4('Ingredient search by category');
 
@@ -243,6 +246,10 @@ export default async function decorate(block) {
       placeholder: 'Application',
     });
     const selected = div({ class: 'selected' }, 'Application');
+    if (applications) {
+      selected.textContent = applications;
+      selected.classList.add('has-value');
+    }
 
     // Fetch and process application data
     const apiResponse = await fetch(
@@ -267,6 +274,10 @@ export default async function decorate(block) {
       placeholder: 'Sub Application',
     });
     const selected1 = div({ class: 'selected disabled' }, 'Sub Application');
+    if (subApplications) {
+      selected1.textContent = subApplications;
+      selected1.classList.add('has-value');
+    }
     const dropdownOptions1 = div({ class: 'dropdown-options hidden' });
     const $subApplication = div(
       { class: 'sub-application select-dropdown disabled' },
@@ -371,8 +382,8 @@ export default async function decorate(block) {
       const params = new URLSearchParams(queryParams);
       const applicationID = params.get('applicationID');
       const subApplicationID = params.get('subApplicationID');
-      const applications = params.get('applications');
-      const subApplications = params.get('subApplications');
+      applications = params.get('applications');
+      subApplications = params.get('subApplications');
       // Create new URL with double-encoded parameters
       const newParams = new URLSearchParams();
       newParams.set('applicationID', applicationID);
