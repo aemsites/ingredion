@@ -30,6 +30,28 @@ export function unwrapNestedDivs(element) {
   });
 }
 
+/** allow for link attributes to be added by authors
+ * example usage = Text [class:button,target:_blank,title:Title goes here]
+ * @param main
+ */
+export function decorateLinks(main) {
+  main.querySelectorAll('a').forEach((a) => {
+    // match text inside [] and split by '|'
+    const match = a.textContent.match(/(.*)\[([^\]]*)]/);
+    if (match) {
+      // eslint-disable-next-line no-unused-vars
+      const [_, linkText, attrs] = match;
+      a.textContent = linkText.trim();
+      attrs.split(',').forEach((attr) => {
+        let [key, ...value] = attr.trim().split(':');
+        key = key.trim().toLowerCase();
+        value = value.join().trim();
+        if (key) a.setAttribute(key, value);
+      });
+    }
+  });
+}
+
 /**
  * Extracts a class name from a string like "Some text [class:some-class]"
  * and returns it with the cleaned text.
