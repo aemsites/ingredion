@@ -408,6 +408,7 @@ export default async function decorate(block) {
     $parent.append(heading, $application, $subApplication, $searchButton);
     block.append($parent);
   } else if (block.classList.contains('quick')) {
+    const searchQuery = new URLSearchParams(window.location.search).get('q');
     const $parent = div({ class: 'ingredient-quick-search' });
     const heading = h4('Ingredient quick search');
     const $searchBar = div(
@@ -419,7 +420,7 @@ export default async function decorate(block) {
           placeholder: 'Search for ingredients by keyword',
           name: 'q',
           'aria-label': 'Search Input',
-          value: '',
+          value: searchQuery || '',
           autocomplete: 'off',
         }),
         div(
