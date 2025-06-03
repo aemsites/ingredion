@@ -265,6 +265,10 @@
   color: var(--dark-green) !important;
 }
 
+.cards.four-column > ul > li > a {
+  text-decoration: none;
+}
+
 .cards.slim .cards-card-body strong > a {
   font-size: 1.5rem;
   line-height: 2rem;
