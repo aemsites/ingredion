@@ -244,7 +244,7 @@ export async function viewAllDocsModal(product) {
 
       if (!selectedIds) return;
 
-      const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(region, product.productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
+      const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(region, locale, product.productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
 
       // Use a temp link for reliability across browsers
       const tempLink = a({ href: downloadUrl, download: `${docType}-documents.zip`, style: 'display: none' });
