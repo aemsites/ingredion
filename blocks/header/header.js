@@ -635,7 +635,7 @@ export default async function decorate(block) {
           $btnCart.cloneNode(true),
           $btnBurger,
         ),
-        $searchBar.cloneNode(true),
+        $searchBar,
         div(
           { class: 'mobile-menu' },
           $navCategory.cloneNode(true),
@@ -658,7 +658,7 @@ export default async function decorate(block) {
         div(
           { class: 'logo-search-btn-wrap' },
           div({ class: 'btn-container' }, $originalLogo.cloneNode(true)),
-          $searchBar.cloneNode(true),
+          $searchBar,
           $btnTechDocSamples.cloneNode(true),
         ),
         $navCategory.cloneNode(true),
