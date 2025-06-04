@@ -8,6 +8,7 @@ import {
   input,
   button,
   a,
+  p,
 } from '../../scripts/dom-helpers.js';
 import { getCookie, getRegionLocale, loadTranslations, translate, throttle } from '../../scripts/utils.js';
 import { API_PRODUCT } from '../../scripts/product-api.js';
@@ -28,6 +29,8 @@ const $originalLogo = a(
     ],
   ),
 );
+const ingredientQuickSearchFragmentPath = '/na/en-us/fragments/ingredient-finder-quick';
+const ingredientCategorySearchFragmentPath = '/na/en-us/fragments/ingredient-finder-category';
 
 function resetDropdownsMobile($header) {
   $header.querySelectorAll('.category .dropdown').forEach((dropdown) => {
@@ -91,6 +94,134 @@ function setDropdownHeights($header) {
   });
 }
 
+async function buildIngredientFinderQuickDropdown(dropdown) {
+  const ingredientFinder = await loadFragment(ingredientQuickSearchFragmentPath);
+  if (!ingredientFinder) return;
+
+  if (dropdown) {
+    const ingredientQuickFinderBlock = ingredientFinder.querySelector('.ingredient-finder.quick');
+    dropdown.prepend(ingredientQuickFinderBlock);
+    ingredientQuickFinderBlock.prepend(div(p('Ingredient quick select')));
+
+    const searchContainer = ingredientQuickFinderBlock.querySelector('.ingredient-quick-search');
+    const viewDetailsBtn = a({ class: 'button view-details disabled' }, 'View details');
+    const addSampleBtn = a(
+      { class: 'button secondary add-sample disabled' },
+      'Add sample',
+    );
+    const downloadAllBtn = a(
+      { class: 'button download-all disabled' },
+      'Download All Documents',
+    );
+
+    searchContainer.append(viewDetailsBtn);
+    searchContainer.append(addSampleBtn);
+    searchContainer.append(downloadAllBtn);
+
+    const quickSearchInput = searchContainer.querySelector('#search');
+    quickSearchInput.addEventListener('input', () => {
+      const hasSearchInput = quickSearchInput.value.trim().length > 0;
+      viewDetailsBtn.classList.toggle('disabled', !hasSearchInput);
+      addSampleBtn.classList.toggle('disabled', !hasSearchInput);
+      downloadAllBtn.classList.toggle('disabled', !hasSearchInput);
+    });
+
+    const wrapper = div();
+    searchContainer.parentNode.insertBefore(wrapper, searchContainer);
+    wrapper.appendChild(searchContainer);
+    const outerWrapper = div();
+    while (ingredientQuickFinderBlock.firstChild) {
+      outerWrapper.appendChild(ingredientQuickFinderBlock.firstChild);
+    }
+    ingredientQuickFinderBlock.appendChild(outerWrapper);
+
+    if (isMobile.matches) {
+      const container = ingredientQuickFinderBlock.parentNode
+        .querySelector('.header-dropdown-container')?.querySelector('.header-dropdown > div');
+
+      const ingredientQuickFinderBlockDiv = ingredientQuickFinderBlock.querySelector('div');
+
+      if (ingredientQuickFinderBlockDiv) {
+        while (ingredientQuickFinderBlockDiv.firstChild) {
+          ingredientQuickFinderBlock.insertBefore(
+            ingredientQuickFinderBlockDiv.firstChild,
+            ingredientQuickFinderBlockDiv,
+          );
+        }
+        ingredientQuickFinderBlockDiv.remove();
+      }
+      container.prepend(ingredientQuickFinderBlock);
+
+      const dropdownTitle = ingredientQuickFinderBlock.querySelector('p');
+      dropdownTitle.classList.add('dropdown-title');
+      searchContainer.classList.add('dropdown-content');
+
+      if (!dropdownTitle.querySelector('.icon-add') && !dropdownTitle.querySelector('.icon-subtract')) {
+        dropdownTitle.appendChild(span({ class: 'icon-add open' }));
+        dropdownTitle.appendChild(span({ class: 'icon-subtract' }));
+      }
+
+      let isOpen = false;
+      dropdownTitle.addEventListener('click', () => {
+        isOpen = !isOpen;
+        searchContainer.classList.toggle('open', isOpen);
+        dropdownTitle.querySelector('.icon-add').classList.toggle('open', !isOpen);
+        dropdownTitle.querySelector('.icon-subtract').classList.toggle('open', isOpen);
+      });
+
+      const titleWrapper = dropdownTitle.parentNode;
+      titleWrapper.parentNode.insertBefore(dropdownTitle, titleWrapper);
+      titleWrapper.remove();
+
+      const searchContainerWrapper = searchContainer.parentNode;
+      searchContainerWrapper.parentNode.insertBefore(searchContainer, searchContainerWrapper);
+      searchContainerWrapper.remove();
+    }
+  }
+}
+
+async function buildIngredientFinderCategoryDropdown(dropdown) {
+  const ingredientCategory = await loadFragment(ingredientCategorySearchFragmentPath);
+  if (!ingredientCategory) return;
+
+  const ingredientCategoryDiv = dropdown
+    ?.querySelector('.header-dropdown')
+    ?.querySelectorAll('div')[1];
+
+  if (ingredientCategoryDiv) {
+    const wrapper = ingredientCategory.querySelector('.ingredient-finder-wrapper');
+    ingredientCategoryDiv.append(wrapper);
+    dropdown.querySelector('.header-dropdown').classList.add('ingredient');
+
+    const categoryDropdowns = wrapper.querySelectorAll('.application.select-dropdown, .sub-application.select-dropdown');
+    categoryDropdowns.forEach((categoryDropdown) => {
+      const selectedDiv = categoryDropdown.querySelector('.selected');
+      if (selectedDiv && selectedDiv.textContent) {
+        selectedDiv.textContent = `Select ${selectedDiv.textContent.trim()}`;
+      }
+    });
+
+    const buttonContainer = wrapper.querySelector('.button-container');
+    const anchor = buttonContainer?.querySelector('a');
+    if (anchor) {
+      anchor.textContent = 'Search';
+    }
+
+    if (isMobile.matches) {
+      wrapper.classList.add('dropdown-content');
+      const dropdownTitle = ingredientCategoryDiv.querySelector('.dropdown-title');
+
+      let isOpen = false;
+      dropdownTitle.addEventListener('click', () => {
+        isOpen = !isOpen;
+        wrapper.classList.toggle('open', isOpen);
+        dropdownTitle.querySelector('.icon-add').classList.toggle('open', !isOpen);
+        dropdownTitle.querySelector('.icon-subtract').classList.toggle('open', isOpen);
+      });
+    }
+  }
+}
+
 async function buildDropdownsDesktop($header) {
   const links = [...$header.querySelectorAll('a[href*="/dropdowns"]')];
   let activeDropdown = null;
@@ -122,6 +253,11 @@ async function buildDropdownsDesktop($header) {
     const $dropDown = div({ class: 'dropdown' });
     while (subNavFrag.firstElementChild) $dropDown.append(subNavFrag.firstElementChild);
     newDiv.parentElement.append($dropDown);
+
+    if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
+      await buildIngredientFinderCategoryDropdown($dropDown);
+      await buildIngredientFinderQuickDropdown($dropDown);
+    }
 
     const openDropdown = throttle(
       () => {
@@ -231,6 +367,11 @@ async function buildDropdownsMobile($header) {
     }
 
     newDiv.parentElement.append($dropDown);
+
+    if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
+      await buildIngredientFinderCategoryDropdown($dropDown);
+      await buildIngredientFinderQuickDropdown($dropDown);
+    }
 
     const openDropdown = throttle(
       () => {
@@ -494,7 +635,7 @@ export default async function decorate(block) {
           $btnCart.cloneNode(true),
           $btnBurger,
         ),
-        $searchBar.cloneNode(true),
+        $searchBar,
         div(
           { class: 'mobile-menu' },
           $navCategory.cloneNode(true),
@@ -517,7 +658,7 @@ export default async function decorate(block) {
         div(
           { class: 'logo-search-btn-wrap' },
           div({ class: 'btn-container' }, $originalLogo.cloneNode(true)),
-          $searchBar.cloneNode(true),
+          $searchBar,
           $btnTechDocSamples.cloneNode(true),
         ),
         $navCategory.cloneNode(true),

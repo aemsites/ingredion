@@ -17,16 +17,21 @@
     background-color: transparent;
   }
 
-  > span.icon-green-arrow::before{
-    content: "\e926";
-    color: var(--green);
-    visibility: visible;
+  span.icon-green-arrow {
     display: inline-block;
-    transform: rotate(-90deg);
-    font-size: .6rem;
-    margin-right: .9375rem;
+    width: 10px;
     margin-left: .5rem;
-    height: .5rem;
+
+    &::before{
+      content: "\e926";
+      color: var(--green);
+      visibility: visible;
+      display: inline-block;
+      transform: rotate(-90deg);
+      font-size: .6rem;
+      margin-right: .9375rem;
+      height: .5rem;
+    }
   }
 }
 
@@ -80,7 +85,7 @@
 @media (width >= 1080px) {
   .cards > ul {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
     gap: 40px 20px;
   }
 
@@ -162,7 +167,7 @@
 
   .cards.slim > ul {
     width: auto;
-    grid-template-columns: repeat(auto-fill, minmax(23%, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(23%, 1fr));
     gap: 10px;
   }
 }
@@ -263,6 +268,10 @@
 
 .cards.slim .secondary-cta:hover .icon-green-arrow::before {
   color: var(--dark-green) !important;
+}
+
+.cards.four-column > ul > li > a {
+  text-decoration: none;
 }
 
 .cards.slim .cards-card-body strong > a {

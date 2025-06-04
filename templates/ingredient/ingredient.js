@@ -307,7 +307,7 @@ export default async function decorate(doc) {
       $productHeader = div({ class: 'product-header' },
         div({ class: 'content' },
           h1(product.heading),
-          div({ class: 'type' }, strong('Product Type: '), product.productType),
+          product.productType ? div({ class: 'type' }, strong('Product Type: '), product.productType) : null,
           div({ class: 'cta-links' },
             a({ class: 'view-all', href: '#technical-documents' }, 'View All Documents'),
             a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, product.productName, product.productId) }, 'Download All Documents'),
