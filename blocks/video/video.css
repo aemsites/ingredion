@@ -1,3 +1,5 @@
+/* eslint-disable no-descending-specificity */ 
+
 .video-placeholder {
   position: relative;
   height: auto;
@@ -72,10 +74,16 @@
 }
 
 .video .video-modal iframe {
-  width: auto;
-  height: auto;
+  width: 100%;
   border: none;
+  aspect-ratio: 16 / 9;
 }
+
+.video.tall .video-modal iframe {
+  aspect-ratio: 1;
+  max-height: 80%;
+}
+
 
 .video .video-modal {
   position: fixed;
@@ -109,7 +117,7 @@ body.modal-open {
   z-index: 2;
   padding: 0;
   position: static;
-  margin-bottom: 0.625rem;
+  margin-bottom: 20px;
 }
 
 @media (width >= 67.5625rem) {
@@ -134,19 +142,6 @@ body.modal-open {
     width: 100%;
     max-width: 66.875rem;
   }
-
-  .video .video-modal iframe,
-  .video-modal video {
-    width: 100%;
-    max-width: 63.3125rem;
-  }
-}
-
-@media (width >= 48rem) {
-  .video .video-modal iframe {
-    width: 90%;
-    height: 80%;
-  }
 }
 
 .video-overlay {
@@ -155,7 +150,7 @@ body.modal-open {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0 0 0 / 80%);
   z-index: 9999;
   display: flex;
   align-items: center;
