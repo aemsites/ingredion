@@ -198,7 +198,7 @@ async function buildIngredientFinderCategoryDropdown(dropdown) {
     const categoryDropdowns = wrapper.querySelectorAll('.application.select-dropdown, .sub-application.select-dropdown');
     categoryDropdowns.forEach((categoryDropdown) => {
       const selectedDiv = categoryDropdown.querySelector('.selected');
-      if (selectedDiv && selectedDiv.textContent) {
+      if (selectedDiv && !selectedDiv.classList.contains('has-value')) {
         selectedDiv.textContent = `Select ${selectedDiv.textContent.trim()}`;
       }
     });

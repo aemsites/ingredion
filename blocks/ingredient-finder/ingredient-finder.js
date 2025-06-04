@@ -212,8 +212,8 @@ export default async function decorate(block) {
   }
 
   function updateSearchButtonState(selected, selected1, $searchButton) {
-    const hasApplication = selected.textContent !== 'Application';
-    const hasSubApplication = selected1.textContent !== 'Sub Application';
+    const hasApplication = !selected.textContent.includes('Application');
+    const hasSubApplication = !selected1.textContent.includes('Sub Application');
     const $searchLink = $searchButton.querySelector('a');
     if (hasApplication || hasSubApplication) {
       $searchLink.classList.remove('disabled');
@@ -276,6 +276,7 @@ export default async function decorate(block) {
     const selected1 = div({ class: 'selected disabled' }, 'Sub Application');
     if (subApplications) {
       selected1.textContent = subApplications;
+      selected1.classList.remove('disabled');
       selected1.classList.add('has-value');
     }
     const dropdownOptions1 = div({ class: 'dropdown-options hidden' });
