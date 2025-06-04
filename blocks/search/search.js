@@ -55,15 +55,15 @@ async function createContentResourcesPanel(contentResourcesResults) {
         button({ class: 'play-button', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' }))
       );
       // Open modal on click of thumb or play button
-      const openVideoModal = (e) => {
+      const openVideoModalHandler = (e) => {
         e.preventDefault();
         openVideoModal(article['video-url']);
       };
-      thumb.addEventListener('click', openVideoModal);
+      thumb.addEventListener('click', openVideoModalHandler);
 
       watchVideoBtn = a({ class: 'button secondary watch-video-btn', href: article.path }, 'Watch Video');
 
-      watchVideoBtn.addEventListener('click', openVideoModal);
+      watchVideoBtn.addEventListener('click', openVideoModalHandler);
     }
     
     return div({ class: 'card' },
