@@ -115,24 +115,6 @@
 }
 
 
-  
-  .icon-close-blk::before {
-    content: "\e91c";
-    color: #fff;
-  }
-
-  .placeholder {
-    position: relative;
-    
-    .video-placeholder-play {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-  }
-}
-
 .text-only {
   margin: 0 15px;
 
