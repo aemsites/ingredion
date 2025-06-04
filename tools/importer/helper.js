@@ -485,6 +485,23 @@ export function createCardsBlock(document, main) {
     div.appendChild(pTag());
     cardsBlock.replaceWith(div);
   });
+  cardsBlocks = document.querySelectorAll('.fourIconsWithCTA .icon-listing-cta .section .section__content');
+  cardsBlocks.forEach((cardsBlock) => {
+    const cells = [['Cards(four-column)']];
+    const cards = cardsBlock.querySelectorAll('.icon-card-text');
+    cards.forEach((card) => {
+      const cardImg = card.querySelector('.icon-card-text__wrapper > picture > img')?.outerHTML || '';
+      const cardHeading = card.querySelector('.icon-card-text__wrapper .heading > h4')?.textContent || '';
+      const cardText = card.querySelector('.icon-card-text__wrapper .rte-block')?.innerHTML || '';
+      if (cardText) cardText.replace('&nbsp;', '');     
+      cells.push([`${cardImg} <h4>${cardHeading}</h4> ${cardText}`]);
+    });
+    const cardsTable = WebImporter.DOMUtils.createTable(cells, document);
+    const div = document.createElement('div');
+    div.appendChild(cardsTable);
+    div.appendChild(pTag());
+    cardsBlock.replaceWith(div);
+  });
 }
 
 export function createVideoBlock(document, main) {
@@ -519,7 +536,9 @@ export function createIngredientBlock(document, main, formulation = false) {
   const mainHeading = relatedIngredients.querySelector('.section-title-description-wrapper .heading > h2');
   const description = relatedIngredients.querySelector('.section-title-description-wrapper .rte-block');
   const resultProdCards = document.querySelectorAll('.result-prod-card');
-
+  const sectionMetadata = [['Section Metadata']];
+  sectionMetadata.push(['Style', 'center']);
+  const sectionMetadataTable = WebImporter.DOMUtils.createTable(sectionMetadata, document);
   if (!resultProdCards) {
     const cells = [['related ingredient']];
     const heading = relatedIngredients.querySelector('.heading > h2').textContent;
@@ -543,6 +562,10 @@ export function createIngredientBlock(document, main, formulation = false) {
     }
     if (description) {
       div.appendChild(description);
+    }
+    if (mainHeading || description) {
+      div.appendChild(sectionMetadataTable);
+      div.appendChild(pTag());
     }
     div.appendChild(table);
     
@@ -580,6 +603,10 @@ export function createIngredientBlock(document, main, formulation = false) {
         if (description) {
           div.appendChild(description);
         }
+        if (mainHeading || description) {
+          div.appendChild(sectionMetadataTable);
+          div.appendChild(pTag());
+        }
       }
       
       div.appendChild(table);
@@ -591,7 +618,7 @@ export function createIngredientBlock(document, main, formulation = false) {
           const fullPage = WebImporter.DOMUtils.createTable(section, document);
           div.appendChild(fullPage);
         }
-        div.appendChild(ptag);
+        div.appendChild(pTag());
       }
       
       resultProdCard.replaceWith(div);
@@ -923,9 +950,9 @@ export function convertHrefs(element) {
 export function createCTAIconBlock(document, main) {
   const ctaIconBlocks = document.querySelectorAll('.section__content--columns-6, .section__content--columns-4');
   if (!ctaIconBlocks) return;  
-  ctaIconBlocks.forEach((ctaIconBlock) => {    
+  ctaIconBlocks.forEach((ctaIconBlock) => {
     const cells = [['CTA Icons']];
-    const ctaIcons = ctaIconBlock.querySelectorAll('.icon-card');
+    let ctaIcons = ctaIconBlock.querySelectorAll('.icon-card');
     let ctaIconString = '';
     ctaIcons.forEach((ctaIcon, index) => {
       let ctaIconURL = ctaIcon.href;
@@ -941,7 +968,7 @@ export function createCTAIconBlock(document, main) {
         ctaIconString = '';
       }
       else if (index === ctaIcons.length - 1) cells.push([ctaIconString]);
-    });
+    });  
     const ctaIconTable = WebImporter.DOMUtils.createTable(cells, document);
     ctaIconBlock.replaceWith(ctaIconTable);
   });

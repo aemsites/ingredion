@@ -33,7 +33,7 @@ import {
   alignCenter,
   convertHrefs
 } from './helper.js';
-
+import { skipPages } from './skippages.js';
 import { newsMap } from './mapping.js';
 import { urlCategoryMap } from './keywords.js';
 
@@ -64,6 +64,10 @@ export default {
     })(url);
     
     const main = document.body;
+    if (skipPages.includes(path)) {
+      console.log('Skipping page:', url);
+      return;
+    }
     convertHrefs(main);
     createHeroBlock(document, main);
     alignCenter(document);

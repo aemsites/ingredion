@@ -28,7 +28,8 @@ import {
   addKeywords,
   alignCenter,
   convertHrefs,
-  createArticleList
+  createArticleList,
+  createCTAIconBlock
 } from './helper.js';
 
 import { newsMap } from './mapping.js';
@@ -72,7 +73,8 @@ export default {
       createArticleList(document, main);
       createVideoBlock(document, main);
       createCarouselBlock(document, main);
-      createTableBlock(document, main);      
+      createTableBlock(document, main); 
+      createCTAIconBlock(document, main);
       createIngredientBlock(document, main);
       createForm(document, main, path);
       addAuthorBio(document, main);
