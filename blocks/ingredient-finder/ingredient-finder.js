@@ -274,11 +274,6 @@ export default async function decorate(block) {
       placeholder: 'Sub Application',
     });
     const selected1 = div({ class: 'selected disabled' }, 'Sub Application');
-    if (subApplications) {
-      selected1.textContent = subApplications;
-      selected1.classList.remove('disabled');
-      selected1.classList.add('has-value');
-    }
     const dropdownOptions1 = div({ class: 'dropdown-options hidden' });
     const $subApplication = div(
       { class: 'sub-application select-dropdown disabled' },
@@ -286,6 +281,13 @@ export default async function decorate(block) {
       selected1,
       dropdownOptions1,
     );
+
+    if (subApplications) {
+      selected1.textContent = subApplications;
+      selected1.classList.remove('disabled');
+      selected1.classList.add('has-value');
+      $subApplication.classList.remove('disabled');
+    }
 
     const $searchButton = p(
       { class: 'button-container' },
@@ -300,6 +302,8 @@ export default async function decorate(block) {
         'Search ingredients',
       ),
     );
+
+    updateSearchButtonState(selected, selected1, $searchButton);
 
     if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href)
       && localStorage.getItem('query-params')) {
