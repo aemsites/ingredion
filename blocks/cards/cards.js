@@ -241,6 +241,12 @@ export default async function decorate(block) {
   ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
   block.textContent = '';
   block.append(ul);
+
+  // Add single-image class if only one card
+  if (ul.children.length === 1) {
+    ul.classList.add('single-image');
+  }
+
   if (block.classList.contains('slim')) {
     const dotsNav = document.createElement('div');
     dotsNav.className = 'dots-nav';
