@@ -8,6 +8,7 @@ import { API_HOST, API_PRODUCT } from '../../scripts/product-api.js';
 import ContentResourcesRenderer from './content-renderer.js';
 import ProductApiRenderer from './product-api-renderer.js';
 import { openVideoModal } from '../video/video-modal.js';
+
 loadCSS(`${window.hlx.codeBasePath}/blocks/video/video.css`);
 
 const [region, locale] = getRegionLocale();
@@ -43,7 +44,7 @@ async function createContentResourcesPanel(contentResourcesResults) {
 
   const $articleCard = (article) => {
     let thumb = a({ class: 'thumb', href: article.path },
-      createOptimizedPicture(article.image, article.title, true, [{ width: '235' }])
+      createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
     );
     let watchVideoBtn = '';
 
@@ -52,7 +53,7 @@ async function createContentResourcesPanel(contentResourcesResults) {
     if (isVideo && article['video-url']) {
       thumb = a({ class: 'thumb video', href: article.path },
         createOptimizedPicture(article['video-thumbnail'], article.title, true, [{ width: '235' }]),
-        button({ class: 'play-button', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' }))
+        button({ class: 'play-button', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' })),
       );
       // Open modal on click of thumb or play button
       const openVideoModalHandler = (e) => {
@@ -65,7 +66,7 @@ async function createContentResourcesPanel(contentResourcesResults) {
 
       watchVideoBtn.addEventListener('click', openVideoModalHandler);
     }
-    
+
     return div({ class: 'card' },
       thumb,
       div({ class: 'info' },

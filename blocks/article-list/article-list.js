@@ -158,17 +158,17 @@ export default async function decorate(block) {
 
     const $articleCard = (article) => {
       let thumb = a({ class: 'thumb', href: article.path },
-        createOptimizedPicture(article.image, article.title, true, [{ width: '235' }])
+        createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
       );
       let watchVideoBtn = '';
-  
+
       // If this is a video, override the click to open a modal on click
       const isVideo = article.tags && article.tags.includes('Resource Type / Video');
-      
+
       if (isVideo && article['video-url']) {
         thumb = a({ class: 'thumb video', href: article.path },
           createOptimizedPicture(article['video-thumbnail'], article.title, true, [{ width: '235' }]),
-          button({ class: 'play-button', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' }))
+          button({ class: 'play-button', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' })),
         );
         // Open modal on click of thumb or play button
         const openVideoModalHandler = (e) => {
@@ -176,12 +176,12 @@ export default async function decorate(block) {
           openVideoModal(article['video-url']);
         };
         thumb.addEventListener('click', openVideoModalHandler);
-  
+
         watchVideoBtn = a({ class: 'button secondary watch-video-btn', href: article.path }, 'Watch Video');
-  
+
         watchVideoBtn.addEventListener('click', openVideoModalHandler);
       }
-      
+
       return div({ class: 'card' },
         thumb,
         div({ class: 'info' },
@@ -197,7 +197,6 @@ export default async function decorate(block) {
         ),
       );
     };
-
 
     $articlePage = div({ class: 'article-list' },
       div({ class: 'filter-search-sort' },
