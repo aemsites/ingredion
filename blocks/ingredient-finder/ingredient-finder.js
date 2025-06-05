@@ -266,7 +266,6 @@ export default async function decorate(block) {
     if (applications) {
       selected.textContent = applications;
       selected.classList.add('has-value');
-      options.classList.remove('hidden');
     }
 
     const initialTab1 = input({
@@ -314,6 +313,21 @@ export default async function decorate(block) {
       await searchIngredientsByCategory();
 
       console.log(options);
+
+      const option = [...options.querySelectorAll('.dropdown-option')]
+        .find((opt) => opt.textContent.trim() === selected.textContent);
+
+      const selectedApp = data.applications.find((app) => app.label === option.textContent);
+      if (selectedApp && selectedApp.children) {
+        dropdownOptions1.innerHTML = '';
+        selectedApp.children.forEach((subItem) => {
+          const subOption = createDropdownOption(subItem);
+          dropdownOptions1.appendChild(subOption);
+        });
+        selected1.textContent = 'Sub Application';
+        selected1.classList.remove('disabled');
+        $subApplication.classList.remove('disabled');
+      }
     }
 
     selected.addEventListener('click', (e) => {
