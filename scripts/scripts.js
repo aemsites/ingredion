@@ -36,25 +36,28 @@ export function unwrapNestedDivs(element) {
  */
 export function decorateLinks(main) {
   main.querySelectorAll('a').forEach((link) => {
-    // Add aria-label to links with icons for Accessibility
-    if (link.querySelector('span.icon')) {
+    // Add aria-label to links with icons for accessibility
+    const iconSpan = link.querySelector('span.icon');
+    if (iconSpan) {
       const iconImg = link.querySelector('img');
-      if (iconImg && iconImg.getAttribute('data-icon-name')) {
+      if (iconImg) {
         const iconName = iconImg.getAttribute('data-icon-name');
-        link.setAttribute('aria-label', iconName);
+        if (iconName) {
+          link.setAttribute('aria-label', iconName);
+        }
       }
     }
 
-    // Match text inside [] and split by ','
+    // Match text inside [] and split by ',' into attributes
     const match = link.textContent.match(/(.*)\[([^\]]*)]/);
     if (match) {
-      const [_, linkText, attrs] = match;
+      const [, linkText, attrs] = match;
       link.textContent = linkText.trim();
       attrs.split(',').forEach((attr) => {
         let [key, ...value] = attr.trim().split(':');
         key = key.trim().toLowerCase();
         value = value.join(':').trim();
-        if (key && value) link.setAttribute(key, value);
+        if (key) link.setAttribute(key, value);
       });
     }
   });
