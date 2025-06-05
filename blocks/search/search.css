@@ -553,6 +553,7 @@
             margin: 40px 0;
             color: var(--text-color);
             transition: all 300ms ease-in-out;
+            text-decoration: none;
 
             @media ( width <= 1200px) {
               width: auto;
