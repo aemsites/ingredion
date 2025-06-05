@@ -314,29 +314,6 @@ export default async function decorate(block) {
       await searchIngredientsByCategory();
 
       console.log(options);
-      const option = [...options.querySelectorAll('.dropdown-option')]
-        .find((opt) => opt.textContent.trim() === selected.textContent);
-
-      selected.classList.add('has-value');
-      options.classList.add('hidden');
-      queryParams = localStorage.getItem('query-params');
-      const appKey = option.getAttribute('data-key');
-      const appLabel = option.getAttribute('data-encoded-label');
-      queryParams += `&applicationID=${appKey}&applications=${appLabel}`;
-      window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
-
-      const selectedApp = data.applications.find((app) => app.label === option.textContent);
-      if (selectedApp && selectedApp.children) {
-        dropdownOptions1.innerHTML = '';
-        selectedApp.children.forEach((subItem) => {
-          const subOption = createDropdownOption(subItem);
-          dropdownOptions1.appendChild(subOption);
-        });
-
-        selected1.textContent = 'Sub Application';
-        selected1.classList.remove('disabled');
-        $subApplication.classList.remove('disabled');
-      }
     }
 
     selected.addEventListener('click', (e) => {
