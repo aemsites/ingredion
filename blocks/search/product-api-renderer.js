@@ -26,6 +26,7 @@ async function updateUrlAndFetchResults(url, context, resetToFirstPage = true) {
 
     // Make API call with updated params
     const newResults = await fetchResults(url.searchParams, context.apiEndpoint);
+    console.log(newResults);
 
     // Update the results while preserving applied facets
     context.results = {
@@ -472,7 +473,6 @@ export default class ProductApiRenderer {
       filtersList.appendChild($appliedFilterHeading);
       const appliedFacets = div({ class: 'facet-applied' });
       console.log(this.results);
-      console.log(this.results.appliedFacets);
       this.results.appliedFacets.forEach((facet) => {
         const appliedItem = div({ class: 'facet-applied__item' });
         appliedItem.appendChild(div({ class: 'facet-applied__label' }, facet.label));
