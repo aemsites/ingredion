@@ -202,6 +202,14 @@ a:any-link {
   word-break: break-word;
 }
 
+sup, sub {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+  top: -.5em;
+}
+
 /* buttons */
 a.button,
 .button {
