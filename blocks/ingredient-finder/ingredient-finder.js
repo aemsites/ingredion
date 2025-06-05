@@ -308,7 +308,7 @@ export default async function decorate(block) {
     if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href)
       && localStorage.getItem('query-params')) {
       console.log('searchIngredientsByCategory is called');
-      searchIngredientsByCategory();
+      await searchIngredientsByCategory();
     }
 
     selected.addEventListener('click', (e) => {
