@@ -32,6 +32,10 @@ export const DEFAULT_PATHS = {
 export const API_PATH_OVERRIDES = {
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
+    'na-kerr': '/content/ingredion-com/na/kerr/ingredient-finder/jcr:content/par/ingredientfinder.search.json',
+    'sa-pt-br': '/content/ingredion-com/sa/pt-br/ingredientes/busque-o-ingrediente/jcr:content/par/ingredientfinder.search.json',
+    'sa-es-co': '/content/ingredion-com/sa/es-co/nuestros-ingredientes/busca-el-ingrediente/jcr:content/par/ingredientfinder.search.json',
+    'sa-es-ar': '/content/ingredion-com/sa/es-ar/nuestros-ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
   },
   PRODUCT_DETAILS: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
@@ -50,11 +54,19 @@ export const API_PATH_OVERRIDES = {
   }, 
   SEARCH_INGREDIENTS: { 
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
+    'sa-pt-br': '/content/ingredion-com/sa/pt-br/buscar/jcr:content/searchResults.ingredients.json',
   },
   SEARCH_DOCUMENTS: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.techDocs.json',
+    'sa-pt-br': '/content/ingredion-com/sa/pt-br/buscar/jcr:content/searchResults.techDocs.json',
   },
-  SEARCH_INGREDIENTS_BY_NAME: (region, locale) => `/content/ingredion-com/na/es-mx/ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json`,
+  SEARCH_INGREDIENTS_BY_NAME: {
+    'na-es-mx': '/content/ingredion-com/na/es-mx/ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
+    'na-kerr': '/content/ingredion-com/na/kerr/ingredient-finder/jcr:content/par/ingredientfinder.search.json',
+    'sa-pt-br': '/content/ingredion-com/sa/pt-br/ingredientes/busque-o-ingrediente/jcr:content/par/ingredientfinder.search.json',
+    'sa-es-co': '/content/ingredion-com/sa/es-co/nuestros-ingredientes/busca-el-ingrediente/jcr:content/par/ingredientfinder.search.json',
+    'sa-es-ar': '/content/ingredion-com/sa/es-ar/nuestros-ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
+  },
 };
 
 export const API_PRODUCT = {
