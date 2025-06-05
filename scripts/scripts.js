@@ -34,19 +34,27 @@ export function unwrapNestedDivs(element) {
  * example usage = Text [class:button,target:_blank,title:Title goes here]
  * @param main
  */
-export function decorateAriaLinks(main) {
-  main.querySelectorAll('a').forEach((a) => {
-    // match text inside [] and split by '|'
-    const match = a.textContent.match(/(.*)\[([^\]]*)]/);
+export function decorateLinks(main) {
+  main.querySelectorAll('a').forEach((link) => {
+    // Add aria-label to links with icons for Accessibility
+    if (link.querySelector('span.icon')) {
+      const iconImg = link.querySelector('img');
+      if (iconImg && iconImg.getAttribute('data-icon-name')) {
+        const iconName = iconImg.getAttribute('data-icon-name');
+        link.setAttribute('aria-label', iconName);
+      }
+    }
+
+    // Match text inside [] and split by ','
+    const match = link.textContent.match(/(.*)\[([^\]]*)]/);
     if (match) {
-      // eslint-disable-next-line no-unused-vars
       const [_, linkText, attrs] = match;
-      a.textContent = linkText.trim();
+      link.textContent = linkText.trim();
       attrs.split(',').forEach((attr) => {
         let [key, ...value] = attr.trim().split(':');
         key = key.trim().toLowerCase();
-        value = value.join().trim();
-        if (key) a.setAttribute(key, value);
+        value = value.join(':').trim();
+        if (key && value) link.setAttribute(key, value);
       });
     }
   });
@@ -123,16 +131,6 @@ function buildAutoBlocks(main) {
  * Decorate links
  * @param {Element} main The container element
  */
-function decorateLinks(main) {
-  main.querySelectorAll('a').forEach((link) => {
-    // add aria-label to links with icons for Accessibility
-    if (link.querySelector('span.icon')) {
-      const iconName = link.querySelector('img').getAttribute('data-icon-name');
-      link.setAttribute('aria-label', iconName);
-    }
-  });
-}
-
 /**
  * Decorates the main element.
  * @param {Element} main The main element
@@ -146,7 +144,6 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateLinks(main);
-  decorateAriaLinks(main);
 }
 
 /**
