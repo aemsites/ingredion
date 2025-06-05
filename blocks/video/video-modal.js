@@ -31,10 +31,4 @@ export async function openVideoModal(videoUrl, autoplay = false, background = fa
 
   decorateBlock(videoBlock);
   await loadBlock(videoBlock);
-
-  // document.body.classList.add('modal-open');
-  // videoBlock.querySelector('.video-modal-close').addEventListener('click', () => {
-  //   videoBlock.remove();
-  //   document.body.classList.remove('modal-open');
-  // });
 }
