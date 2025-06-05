@@ -285,10 +285,8 @@ export default async function decorate(block) {
 
     if (subApplications) {
       selected1.textContent = subApplications;
-      selected1.classList.remove('disabled');
       selected1.classList.add('has-value');
       $subApplication.classList.remove('disabled');
-      dropdownOptions1.classList.remove('hidden');
     }
 
     const $searchButton = p(
