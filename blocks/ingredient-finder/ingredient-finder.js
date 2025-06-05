@@ -246,10 +246,6 @@ export default async function decorate(block) {
       placeholder: 'Application',
     });
     const selected = div({ class: 'selected' }, 'Application');
-    if (applications) {
-      selected.textContent = applications;
-      selected.classList.add('has-value');
-    }
 
     // Fetch and process application data
     const apiResponse = await fetch(
@@ -266,6 +262,12 @@ export default async function decorate(block) {
       selected,
       options,
     );
+
+    if (applications) {
+      selected.textContent = applications;
+      selected.classList.add('has-value');
+      options.classList.remove('hidden');
+    }
 
     const initialTab1 = input({
       type: 'hidden',
@@ -287,6 +289,7 @@ export default async function decorate(block) {
       selected1.classList.remove('disabled');
       selected1.classList.add('has-value');
       $subApplication.classList.remove('disabled');
+      dropdownOptions1.classList.remove('hidden');
     }
 
     const $searchButton = p(
@@ -304,6 +307,37 @@ export default async function decorate(block) {
     );
 
     updateSearchButtonState(selected, selected1, $searchButton);
+
+    if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href)
+      && localStorage.getItem('query-params')) {
+      console.log('searchIngredientsByCategory is called');
+      await searchIngredientsByCategory();
+
+      console.log(options);
+      const option = [...options.querySelectorAll('.dropdown-option')]
+        .find((opt) => opt.textContent.trim() === selected.textContent);
+
+      selected.classList.add('has-value');
+      options.classList.add('hidden');
+      queryParams = localStorage.getItem('query-params');
+      const appKey = option.getAttribute('data-key');
+      const appLabel = option.getAttribute('data-encoded-label');
+      queryParams += `&applicationID=${appKey}&applications=${appLabel}`;
+      window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
+
+      const selectedApp = data.applications.find((app) => app.label === option.textContent);
+      if (selectedApp && selectedApp.children) {
+        dropdownOptions1.innerHTML = '';
+        selectedApp.children.forEach((subItem) => {
+          const subOption = createDropdownOption(subItem);
+          dropdownOptions1.appendChild(subOption);
+        });
+
+        selected1.textContent = 'Sub Application';
+        selected1.classList.remove('disabled');
+        $subApplication.classList.remove('disabled');
+      }
+    }
 
     selected.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -377,11 +411,6 @@ export default async function decorate(block) {
       if (block.closest('.header-dropdown')) {
         localStorage.setItem('query-params', queryParams);
         window.location.href = `${window.location.origin}/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`;
-      }
-
-      if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href) && localStorage.getItem('query-params')) {
-        console.log('searchIngredientsByCategory is called');
-        await searchIngredientsByCategory();
       }
 
       const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(region, locale);
