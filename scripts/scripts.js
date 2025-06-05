@@ -34,7 +34,7 @@ export function unwrapNestedDivs(element) {
  * example usage = Text [class:button,target:_blank,title:Title goes here]
  * @param main
  */
-export function decorateLinks(main) {
+export function decorateAriaLinks(main) {
   main.querySelectorAll('a').forEach((a) => {
     // match text inside [] and split by '|'
     const match = a.textContent.match(/(.*)\[([^\]]*)]/);
@@ -146,6 +146,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateLinks(main);
+  decorateAriaLinks(main);
 }
 
 /**
