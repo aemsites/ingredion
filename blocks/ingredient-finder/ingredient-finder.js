@@ -112,6 +112,7 @@ function createDropdownOption(item) {
 }
 
 function attachIngredientResults(block, ingredientResults, totalItemsCount, searchValue) {
+  const pagePath = window.location.pathname;
   const $section = block.closest('.section');
   if ($section) {
     if ($section.querySelector('.ingredient-finder-results')) {
@@ -124,7 +125,7 @@ function attachIngredientResults(block, ingredientResults, totalItemsCount, sear
     $results = div({ class: 'results' }, h2(`${totalItemsCount} results for: `), span({ class: 'search-value' }, searchValue));
     const $clearLink = a({ class: 'clear-link', href: '#' }, 'Clear');
     $clearLink.addEventListener('click', () => {
-      window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder`);
+      window.history.pushState({}, '', pagePath);
       window.location.reload();
     });
     $results.append($clearLink);
@@ -137,6 +138,7 @@ export default async function decorate(block) {
   let queryParams = 'activePage=1&perPage=6';
   let typeaheadData = null;
   let $dropdownOptions;
+  const pagePath = window.location.pathname;
 
   // Helper function for ingredient search
   async function searchIngredients(searchValue) {
@@ -148,7 +150,7 @@ export default async function decorate(block) {
       q: searchValue,
     });
     // update the url with the new query params
-    window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${searchParams}`);
+    window.history.pushState({}, '', pagePath);
     let data;
     try {
       const response = await fetch(`${url}?${searchParams.toString()}`);
@@ -291,7 +293,7 @@ export default async function decorate(block) {
         const appKey = option.getAttribute('data-key');
         const appLabel = option.getAttribute('data-encoded-label');
         queryParams += `&applicationID=${appKey}&applications=${appLabel}`;
-        window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
+        window.history.pushState({}, '', `${pagePath}?${queryParams}`);
 
         // Update sub-application options and enable the dropdown
         const selectedApp = data.applications.find((app) => app.label === option.textContent);
@@ -306,7 +308,7 @@ export default async function decorate(block) {
           $subApplication.classList.remove('disabled');
         }
         queryParams = queryParams.replace(/&subApplicationID=[^&]*&subApplications=[^&]*/, '');
-        window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
+        window.history.pushState({}, '', `${pagePath}?${queryParams}`);
         updateSearchButtonState(selected, selected1, $searchButton);
       }
     });
@@ -331,7 +333,7 @@ export default async function decorate(block) {
         const subKey = option.getAttribute('data-key');
         const subLabel = option.getAttribute('data-encoded-label');
         queryParams += `&subApplicationID=${subKey}&subApplications=${subLabel}`;
-        window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
+        window.history.pushState({}, '', `${pagePath}?${queryParams}`);
         updateSearchButtonState(selected, selected1, $searchButton);
       }
     });
