@@ -308,10 +308,7 @@ export default async function decorate(block) {
 
     if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href)
       && localStorage.getItem('query-params')) {
-      console.log('searchIngredientsByCategory is called');
       await searchIngredientsByCategory();
-
-      console.log(options);
 
       const option = [...options.querySelectorAll('.dropdown-option')]
         .find((opt) => opt.textContent.trim() === selected.textContent);
@@ -335,8 +332,6 @@ export default async function decorate(block) {
 
     options.addEventListener('click', (e) => {
       const option = e.target.closest('.dropdown-option');
-      console.log('options event listener');
-      console.log(option);
       if (option) {
         e.stopPropagation();
         selected.textContent = option.textContent;
@@ -399,7 +394,6 @@ export default async function decorate(block) {
 
       if (block.closest('.header-dropdown')) {
         localStorage.setItem('query-params', queryParams);
-        console.log(queryParams);
         window.location.href = `${window.location.origin}/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`;
       }
 
