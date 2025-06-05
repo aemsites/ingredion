@@ -263,12 +263,6 @@ export default async function decorate(block) {
       options,
     );
 
-    if (applications) {
-      selected.textContent = applications;
-      selected.classList.add('has-value');
-      selected.classList.remove('disabled');
-    }
-
     const initialTab1 = input({
       type: 'hidden',
       name: 'initialTab',
@@ -284,11 +278,17 @@ export default async function decorate(block) {
       dropdownOptions1,
     );
 
-    if (subApplications) {
-      selected1.textContent = subApplications;
+    if (applications) {
+      selected.textContent = applications;
+      selected.classList.add('has-value');
+      selected.classList.remove('disabled');
       selected1.classList.add('has-value');
       selected1.classList.remove('disabled');
       $subApplication.classList.remove('disabled');
+    }
+
+    if (subApplications) {
+      selected1.textContent = subApplications;
     }
 
     const $searchButton = p(
@@ -317,13 +317,15 @@ export default async function decorate(block) {
       const option = [...options.querySelectorAll('.dropdown-option')]
         .find((opt) => opt.textContent.trim() === selected.textContent);
 
-      const selectedApp = data.applications.find((app) => app.label === option.textContent);
-      if (selectedApp && selectedApp.children) {
-        dropdownOptions1.innerHTML = '';
-        selectedApp.children.forEach((subItem) => {
-          const subOption = createDropdownOption(subItem);
-          dropdownOptions1.appendChild(subOption);
-        });
+      if (option) {
+        const selectedApp = data.applications.find((app) => app.label === option.textContent);
+        if (selectedApp && selectedApp.children) {
+          dropdownOptions1.innerHTML = '';
+          selectedApp.children.forEach((subItem) => {
+            const subOption = createDropdownOption(subItem);
+            dropdownOptions1.appendChild(subOption);
+          });
+        }
       }
     }
 
