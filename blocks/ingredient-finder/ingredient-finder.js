@@ -164,7 +164,6 @@ export default async function decorate(block) {
 
   async function searchIngredientsByCategory() {
     queryParams = localStorage.getItem('query-params');
-    localStorage.removeItem('query-params');
     const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(region, locale);
     const apiResponse1 = await fetch(`${url}?${queryParams}`);
     const data1 = await apiResponse1.json();
