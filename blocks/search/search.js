@@ -53,7 +53,7 @@ async function createContentResourcesPanel(contentResourcesResults) {
     if (isVideo && article['video-url']) {
       thumb = a({ class: 'thumb video', href: article.path },
         createOptimizedPicture(article['video-thumbnail'], article.title, true, [{ width: '235' }]),
-        button({ class: 'play', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' })),
+        button({ class: 'play-button', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' })),
       );
       // Open modal on click of thumb or play button
       const openVideoModalHandler = (e) => {
