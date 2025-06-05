@@ -398,6 +398,7 @@ export default async function decorate(block) {
 
       if (block.closest('.header-dropdown')) {
         localStorage.setItem('query-params', queryParams);
+        console.log(queryParams);
         window.location.href = `${window.location.origin}/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`;
       }
 
