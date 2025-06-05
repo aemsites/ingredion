@@ -305,12 +305,6 @@ export default async function decorate(block) {
 
     updateSearchButtonState(selected, selected1, $searchButton);
 
-    if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href)
-      && localStorage.getItem('query-params')) {
-      console.log('searchIngredientsByCategory is called');
-      await searchIngredientsByCategory();
-    }
-
     selected.addEventListener('click', (e) => {
       e.stopPropagation();
       options.classList.toggle('hidden');
@@ -383,6 +377,11 @@ export default async function decorate(block) {
       if (block.closest('.header-dropdown')) {
         localStorage.setItem('query-params', queryParams);
         window.location.href = `${window.location.origin}/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`;
+      }
+
+      if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href) && localStorage.getItem('query-params')) {
+        console.log('searchIngredientsByCategory is called');
+        await searchIngredientsByCategory();
       }
 
       const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(region, locale);
