@@ -25,7 +25,18 @@ const sheet = new Map([
   ['resource-library', 'formulation'],
   ['snacking-inspiration', 'snacking-inspo'],
   ['snacking-knowledge', 'snacking-knowl']
-])
+]);
+
+const paddingMapping = new Map([
+  ['padding-b-small', 'margin-b-small'],
+  ['padding-t-small', 'margin-t-small'],
+  ['padding-b-medium', 'margin-b-medium'],
+  ['padding-t-medium', 'margin-t-medium'],
+  ['padding-b-large', 'margin-b-large'],
+  ['padding-t-large', 'margin-t-large'],
+  ['padding-b', 'margin-b'],
+  ['padding-t', 'margin-t']
+]);
 
 const previewURL = 'https://main--ingredion--aemsites.aem.page';
 const r = new RegExp('^(?:[a-z+]+:)?//', 'i');
@@ -43,7 +54,15 @@ export function createHeroBlock(document, main) {
     if (anchorBlock) {
       hero.insertAdjacentElement('afterend', anchorBlock);
     }
-    const cells = hero.classList.contains('hero--text-left') ? [['Hero(align-left)']] : [['Hero']];
+    const classList = hero.classList;
+    let blockOptions = [];
+    classList.forEach((className) => {
+      if (paddingMapping.has(className)) {
+        blockOptions.push(paddingMapping.get(className));               
+      }
+    });
+    if (hero.classList.contains('hero--text-left')) blockOptions.push('align-left');
+    const cells = blockOptions.length > 0 ? [[`Hero(${blockOptions.join(', ')})`]] : [['Hero']];
     
     const image = hero.querySelector('.hero__image > picture').outerHTML;
     const mobileimage = hero.querySelector('.hero__image > picture > source');    
@@ -116,13 +135,22 @@ export function createCalloutBlock(document, main) {
   let heading = '';
   let rteText = '';
   let ctalink = '';
-
+  
   callOutBlocks.forEach((callOut) => {
     convertHrefs(callOut);
+    const sectionContent = callOut.closest('.section__content');
+    const classList = sectionContent.classList;
+    let blockOptions = [];
+    classList.forEach((className) => {
+      if (paddingMapping.has(className)) {
+        blockOptions.push(paddingMapping.get(className));               
+      }
+    });
     let imageLeft;
     const isFullWidth = callOut.closest('.section--full-width');
-    const fullWidth = isFullWidth ? ',full-width' : '';
-    const fullwidth2 = isFullWidth ? '(full-width)' : '';
+    if (isFullWidth) {
+      blockOptions.push('full-width');
+    }
     [...callOut.children].forEach((child, index) => {     
       if (child.classList.contains('colorblock-img-text__image')) {
         const image = child.querySelector('picture > img');
@@ -133,7 +161,7 @@ export function createCalloutBlock(document, main) {
       } else if (child.classList.contains('colorblock-img-text__text')) {
         backgroundColor = colorMapping.get(toHex(child.style.backgroundColor).toLowerCase());
         heading = child.querySelector('.colorblock-img-text__text--wrapper .heading > h3').textContent;
-        
+        blockOptions.push(backgroundColor);
         rteText = child.querySelector('.colorblock-img-text__text--wrapper .rte-block');
         if (rteText) {
           rteText = rteText.innerHTML;
@@ -150,7 +178,7 @@ export function createCalloutBlock(document, main) {
       child.remove();
     });
 
-    const cells = backgroundColor === '' ? [[`Callout${fullwidth2}`]] : [[`Callout (${backgroundColor}${fullWidth})`]];
+    const cells = blockOptions.length > 0 ? [[`Callout(${blockOptions.join(', ')})`]] : [['Callout']];
     if (imageLeft) {
       cells.push([calloutImg, `<h3>${heading}</h3> ${rteText} ${ctalink}`]);
     } else {
@@ -164,12 +192,23 @@ export function createCalloutBlock(document, main) {
   callOutBlocks = document.querySelectorAll('.colorblock-text-cta__wrapper');
   callOutBlocks.forEach((callOut) => {
     convertHrefs(callOut);
+    const sectionContent = callOut.closest('.section__content');
+    const classList = sectionContent.classList;
+    let blockOptions = [];
+    classList.forEach((className) => {
+      if (paddingMapping.has(className)) {
+        blockOptions.push(paddingMapping.get(className));               
+      }
+    });
     let getFullWidth = callOut.closest('.section--full-width');
-    let fullWidth = getFullWidth ? ',full-width' : '';
-    let fullwidth2 = getFullWidth ? '(full-width)' : '';
+    if (getFullWidth) {
+      blockOptions.push('full-width');
+    }
+
     const color = callOut.parentElement.style.backgroundColor;
     if (color) {
       backgroundColor = colorMapping.get(toHex(color).toLowerCase());
+      blockOptions.push(backgroundColor);
     }
     
     [...callOut.children].forEach((child) => {
@@ -185,7 +224,7 @@ export function createCalloutBlock(document, main) {
       child.remove();
     });
     
-    const cells = backgroundColor === '' ? [[`Callout${fullwidth2}`]] : [[`Callout (${backgroundColor}${fullWidth})`]];
+    const cells = blockOptions.length > 0 ? [[`Callout(${blockOptions.join(', ')})`]] : [['Callout']];
     cells.push([`<h3>${heading}</h3> ${rteText}`, `${ctalink}`]);
     
     const callOutBlock = WebImporter.DOMUtils.createTable(cells, document);
@@ -195,6 +234,14 @@ export function createCalloutBlock(document, main) {
   callOutBlocks = document.querySelectorAll('.colorBlockVideoAndText .colorblock-img-text__wrapper');
   callOutBlocks.forEach((callOut) => {
     convertHrefs(callOut);
+    const sectionContent = callOut.closest('.section__content');
+    const classList = sectionContent.classList;
+    let blockOptions = [];
+    classList.forEach((className) => {
+      if (paddingMapping.has(className)) {
+        blockOptions.push(paddingMapping.get(className));               
+      }
+    });
     let videoUrl = '';
     
     [...callOut.children].forEach((child, index) => {
@@ -232,7 +279,7 @@ export function createCalloutBlock(document, main) {
       child.remove();
     });
 
-    const cells = backgroundColor === '' ? [['Callout(video)']] : [[`Callout (video, ${backgroundColor})`]];
+    const cells = backgroundColor === '' ? [[`Callout(video, ${blockOptions.join(', ')})`]] : [[`Callout (video, ${backgroundColor}, ${blockOptions.join(', ')})`]];
     cells.push([calloutImg, `<h3>${heading}</h3> ${rteText} ${ctalink} ${videoUrl}`]);
     
     const callOutBlock = WebImporter.DOMUtils.createTable(cells, document);
@@ -244,14 +291,20 @@ export function createCardsBlock(document, main) {
   let cardsBlocks = document.querySelectorAll('.section__content--columns-3');
   cardsBlocks.forEach((cardsBlock) => {
     convertHrefs(cardsBlock);
-    const cells = [];
+    const classList = cardsBlock.classList;
+    let blockOptions = [];
+    classList.forEach((className) => {
+      if (paddingMapping.has(className)) {
+        blockOptions.push(paddingMapping.get(className));               
+      }
+    });
+    
     const cards = cardsBlock.querySelectorAll('.content-card');
     let cardsList = [];
     if (cardsBlock.querySelector('.video-banner')) {
-      cells.push(['Cards(video)']);
-    } else {
-      cells.push(['Cards']);
-    }
+      blockOptions.push('video');
+    } 
+    const cells = blockOptions.length > 0 ? [[`Cards(${blockOptions.join(', ')})`]] : [['Cards']];
     cards.forEach((card, index) => {
       if (card.querySelector('.video-banner')) {
         
@@ -366,10 +419,21 @@ export function createCardsBlock(document, main) {
     const cells = [];
     const cards = cardsBlock.querySelectorAll('.content-card');
     let cardsList = [];
-    
+    let blockOptions = [];
+    const classList = cardsBlock.classList;
+    classList.forEach((className) => {
+      if (paddingMapping.has(className)) {
+        blockOptions.push(paddingMapping.get(className));               
+      }
+    });
     cards.forEach((card, index) => {
       if (card.querySelector('.video-banner')) {
-        if (index === 0) cells.push(['Cards(video,two-column)']);
+        if (index === 0) {
+          blockOptions.push('video');
+          blockOptions.push('two-column');
+          cells.push([`Cards(${blockOptions.join(', ')})`]);
+        }
+        
         const videoBanner = card.querySelector('.video-banner');
         let cardImg = videoBanner.querySelector('picture');
         
@@ -403,7 +467,10 @@ export function createCardsBlock(document, main) {
           
         cells.push([`${cardImg}`, `<h3>${cardHeading}</h3> ${cardText} ${cardLink}`]);
       } else {
-        if (index === 0) cells.push(['Cards(two-column)']);
+        if (index === 0) {
+          blockOptions.push('two-column');
+          cells.push([`Cards(${blockOptions.join(', ')})`]);
+        }
         let cardImg = card.querySelector('.content-card__image > a > picture') 
           ? card.querySelector('.content-card__image > a > picture') 
           : card.querySelector('.content-card__image > picture');
@@ -437,7 +504,16 @@ export function createCardsBlock(document, main) {
   cardsBlocks = document.querySelectorAll('.fourColumnTeaserGrid .section__content');
   cardsBlocks.forEach((cardsBlock) => {
     convertHrefs(cardsBlock);
-    const cells = [['Cards(four-column)']];
+    const classList = cardsBlock.classList;
+    let blockOptions = [];
+    blockOptions.push('four-column');
+    classList.forEach((className) => {
+      if (paddingMapping.has(className)) {
+        blockOptions.push(paddingMapping.get(className));               
+      }
+    });
+    console.log(blockOptions);
+    const cells = [[`Cards(${blockOptions.join(', ')})`]];
     const cards = cardsBlock.querySelectorAll('.link-card');
     let cardsList = [];
     
@@ -487,7 +563,15 @@ export function createCardsBlock(document, main) {
   });
   cardsBlocks = document.querySelectorAll('.fourIconsWithCTA .icon-listing-cta .section .section__content');
   cardsBlocks.forEach((cardsBlock) => {
-    const cells = [['Cards(four-column)']];
+    const classList = cardsBlock.classList;
+    let blockOptions = [];
+    blockOptions.push('four-column');
+    classList.forEach((className) => {
+      if (paddingMapping.has(className)) {
+        blockOptions.push(paddingMapping.get(className));               
+      }
+    });
+    const cells = [[`Cards(${blockOptions.join(', ')})`]];
     const cards = cardsBlock.querySelectorAll('.icon-card-text');
     cards.forEach((card) => {
       const cardImg = card.querySelector('.icon-card-text__wrapper > picture > img')?.outerHTML || '';
@@ -627,26 +711,30 @@ export function createIngredientBlock(document, main, formulation = false) {
 }
 
 export function createContactUs(main, document) {
-  const contactUs = document.querySelector('.contact-banner__wrapper'); 
-  if (contactUs) {
-    const heading = contactUs.querySelector('.heading > h3').textContent;
-    let contactDetailsHeading = contactUs.querySelector('.contact-banner__primary .heading > h4') ?
-      contactUs.querySelector('.contact-banner__primary .heading > h4').textContent : null;
-    let contactDetails = contactUs.querySelector('.rte-block').textContent;
-    
-    if (!contactDetailsHeading) {
-      contactDetailsHeading = contactUs.querySelector('.contact-banner__primary').textContent;
-      contactDetails = contactUs.querySelector('.contact-banner__secondary').textContent;
-    }
+  const contactUs = document.querySelectorAll('.contact-banner__wrapper .contact-banner__content'); 
+  if (contactUs.length > 0) {
+    contactUs.forEach((contactUs) => {
+    const heading = contactUs.querySelector('.contact-banner__primary').textContent;
+    let contactDetailsHeading = contactUs.querySelector('.contact-banner__secondary--contact .heading') ?
+      contactUs.querySelector('.contact-banner__secondary--contact .heading').textContent : null;
+    let contactDetails = contactUs.querySelectorAll('.contact-banner__secondary--contact .body-text');
+    let contactDetailsText = '';
+    contactDetails.forEach((contactDetail) => {
+      contactDetailsText += ' ' + contactDetail.textContent;
+    }); 
+   
 
-    const cells = [['contact us']];
+    const cells = [['contact-us']];
     cells.push([heading,]);
     cells.push([contactDetailsHeading,]);
-    cells.push([contactDetails,]);
+    cells.push([contactDetailsText,]);
     
     const contactUsBlock = WebImporter.DOMUtils.createTable(cells, document);
-    main.append(contactUsBlock);
-    contactUs.remove();
+    const div = document.createElement('div');
+    div.appendChild(contactUsBlock);
+    div.appendChild(pTag());
+    contactUs.replaceWith(div);
+    });
   }
 }
 
@@ -824,12 +912,19 @@ export function addAuthorBio(document, main) {
 }
 
 export function createForm(document, main, url) {  
-  const cells = [['Form']];
   let formURL = '';
   let formContainer = document.querySelector('.contactUsForm .section__content');
+  if (!formContainer) return;
   let submissionURL = '';
   let problemOptions = null; 
-  
+  const classList = formContainer.classList;
+  let blockOptions = [];
+  classList.forEach((className) => {
+    if (paddingMapping.has(className)) {
+      blockOptions.push(paddingMapping.get(className));               
+    }
+  });
+  const cells = [[`Form(${blockOptions.join(', ')})`]];
   if (formContainer) {
     // Set default values
     formURL = 'https://main--ingredion--aemsites.aem.live/forms/general-form.json';
@@ -949,9 +1044,16 @@ export function convertHrefs(element) {
 
 export function createCTAIconBlock(document, main) {
   const ctaIconBlocks = document.querySelectorAll('.section__content--columns-6, .section__content--columns-4');
-  if (!ctaIconBlocks) return;  
-  ctaIconBlocks.forEach((ctaIconBlock) => {
-    const cells = [['CTA Icons']];
+  if (!ctaIconBlocks) return;
+    ctaIconBlocks.forEach((ctaIconBlock) => {
+    const classList = ctaIconBlock.classList;
+    let blockOptions = [];
+    classList.forEach((className) => {
+      if (paddingMapping.has(className)) {
+        blockOptions.push(paddingMapping.get(className));               
+      }
+    });
+    const cells = blockOptions.length > 0 ? [[`CTA Icons(${blockOptions.join(', ')})`]] : [['CTA Icons']];
     let ctaIcons = ctaIconBlock.querySelectorAll('.icon-card');
     let ctaIconString = '';
     ctaIcons.forEach((ctaIcon, index) => {
@@ -1031,12 +1133,23 @@ export function addKeywords(url) {
 
 export function alignCenter (document) {
   const sections = document.querySelectorAll('.section-title-description-wrapper');  
-  sections.forEach((section) => {
+  sections.forEach((section) => {    
     const heading = section.querySelector('.heading--center');
     if (!heading) return;
+    const classList = section.classList;
+    let paddingValue = [];
+    classList.forEach((className) => {
+      if (paddingMapping.has(className)) {
+        paddingValue.push(paddingMapping.get(className));               
+      }
+    });
     section.prepend(pTag());
     const sectionMetadata = [['Section Metadata']];
-    sectionMetadata.push(['Style', 'center']);
+    if (paddingValue.length > 0) {
+      sectionMetadata.push(['Style', `center, ${paddingValue.join(', ')}`]);
+    } else {
+      sectionMetadata.push(['Style', 'center']);
+    }
     const sectionMetadataTable = WebImporter.DOMUtils.createTable(sectionMetadata, document);
     section.append(sectionMetadataTable);
     section.append(pTag());
@@ -1059,22 +1172,23 @@ export function alignCenter (document) {
   });
   const rteBlocks = document.querySelectorAll('.rte-block');
   rteBlocks.forEach((rteBlock) => {
-    // Find all center-aligned elements (p, h1, h2, h3)
+    // Find all center-aligned elements (p, h1, h2, h3)   
     const centerAlignElements = rteBlock.querySelectorAll('p, h1, h2, h3');
     
-    centerAlignElements.forEach((element) => {
-      if (element.style.textAlign === 'center' || element.classList.contains('body-text--center')) {
-        // Add metadata for center alignment
+    centerAlignElements.forEach((element) => {      
+      if (element.style.textAlign === 'center' || element.classList.contains('body-text--center')) {        // Add metadata for center alignment
+        const styleValue = 'center, ';
         const div = document.createElement('div');
         div.append(pTag());
         div.append(element.cloneNode(true));        
         const sectionMetadata = [['Section Metadata']];
-        sectionMetadata.push(['Style', 'center']);
+        sectionMetadata.push(['Style', styleValue]);
         const sectionMetadataTable = WebImporter.DOMUtils.createTable(sectionMetadata, document);
         div.append(sectionMetadataTable);
         div.append(pTag());
         element.replaceWith(div);
-      }
+      }      
+     
     });
   });
 }
