@@ -173,7 +173,7 @@ export default async function decorate(block) {
         // Open modal on click of thumb or play button
         const openVideoModalHandler = (e) => {
           e.preventDefault();
-          openVideoModal(article['video-url']);
+          openVideoModal(article['video-url'], true, false);
         };
         thumb.addEventListener('click', openVideoModalHandler);
 
