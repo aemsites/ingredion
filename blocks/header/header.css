@@ -95,6 +95,12 @@ header {
                     font-size: 1rem;
                     line-height: 2rem;
                     letter-spacing: .0187rem;
+                    cursor: pointer; 
+
+                    &:hover {
+                        color: var(--green);
+                        text-decoration: underline;
+                    }
                 }
             }
         }
@@ -141,6 +147,11 @@ header {
                 color: var(--text-color);
                 box-shadow: 0 10px 10px rgba(0 0 0 / 10%);
                 padding: 1.5rem 2.5rem 0;
+                display: none;
+
+                .active & {
+                    display: block;
+                }
 
                 .loaded & {
                     display: none;
@@ -155,6 +166,18 @@ header {
                     align-items: start;
                     justify-content: left;
                     padding: 0 5rem 5rem;
+
+                    &::before {
+                        content: "\e91c";
+                        color: #4d4f53;
+                        font-family: ingredion-icon;
+                        font-size: 1.5rem;
+                        right: 2.5rem;
+                        top: 1.875rem;
+                        display: block;
+                        cursor: pointer;
+                        position: absolute;
+                    }
 
                     h4 {
                         text-align: left !important;

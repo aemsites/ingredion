@@ -259,44 +259,56 @@ async function buildDropdownsDesktop($header) {
       await buildIngredientFinderQuickDropdown($dropDown);
     }
 
-    const openDropdown = throttle(
-      () => {
-        if (activeDropdown && activeDropdown !== $dropDown) {
-          activeDropdown.parentElement.classList.remove('active');
+    if (subNavPath === '/na/en-us/header/dropdowns/region-selector') {
+      const utility = document.querySelector('.utility');
+      const utilityFirstP = utility.querySelector('p');
+      utilityFirstP.addEventListener('click', () => {
+        const dropdown = utilityFirstP.querySelector('.dropdown');
+        if (activeDropdown === dropdown) {
+          // If this dropdown is already active, close it
+          if (activeDropdown && activeDropdown.parentElement) {
+            activeDropdown.parentElement.classList.remove('active');
+          }
+          activeDropdown = null;
+        } else {
+          // If another dropdown is active, close it first
+          if (activeDropdown && activeDropdown.parentElement) {
+            activeDropdown.parentElement.classList.remove('active');
+          }
+          // Open this dropdown
+          dropdown.parentElement.classList.add('active');
+          activeDropdown = dropdown;
         }
-        $dropDown.parentElement.classList.add('active');
-        activeDropdown = $dropDown;
-      },
-      100,
-      140,
-    );
+      });
+    } else {
+      const openDropdown = throttle(
+        () => {
+          if (activeDropdown && activeDropdown !== $dropDown) {
+            activeDropdown.parentElement.classList.remove('active');
+          }
+          $dropDown.parentElement.classList.add('active');
+          activeDropdown = $dropDown;
+        },
+        100,
+        140,
+      );
 
-    newDiv.addEventListener('pointerenter', openDropdown);
+      const closeDropdown = ({ relatedTarget }) => {
+        const isInDropdown = $dropDown.contains(relatedTarget);
+        const isInTrigger = newDiv.contains(relatedTarget);
+        if (!isInDropdown && !isInTrigger && activeDropdown && activeDropdown.parentElement) {
+          activeDropdown.parentElement.classList.remove('active');
+          activeDropdown = null;
+        }
+      };
+
+      newDiv.addEventListener('pointerenter', openDropdown);
+      newDiv.addEventListener('pointerleave', closeDropdown);
+      $dropDown.addEventListener('pointerleave', closeDropdown);
+    }
   }
 
   const dropdownPromise = links.map(attachDropdown);
-
-  document.addEventListener(
-    'click',
-    (event) => {
-      if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('[data-dropdown]')) {
-        activeDropdown.parentElement.classList.remove('active');
-        activeDropdown = null;
-      }
-    },
-    true,
-  );
-
-  document.addEventListener(
-    'pointerleave',
-    (event) => {
-      if (activeDropdown && !activeDropdown.contains(event.target) && !event.target.closest('[data-dropdown]')) {
-        activeDropdown.parentElement.classList.remove('active');
-        activeDropdown = null;
-      }
-    },
-    true,
-  );
 
   await Promise.all(dropdownPromise).then(() => {
     requestAnimationFrame(() => {
