@@ -39,18 +39,23 @@ export const API_PATH_OVERRIDES = {
   },
   PRODUCT_DETAILS: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
+    'sa-pt-br': '/content/ingredion-com/sa/pt-br/buscar/jcr:content/searchResults.ingredients.json',
   },
   ALL_DOCUMENTS: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.view.json',
+    'sa-pt-br': '/content/ingredion-com/sa/pt-br/buscar/jcr:content/searchResults.ingredients.json',
   },
   DOWNLOAD_DOCUMENTS: {
     'na-es-mx': '/content/ingredion-com/ingredients/es-mx',
+    'na-kerr': '/content/ingredion-com/ingredients/kerr',
   },
   DOWNLOAD_ALL_DOCUMENTS: {
     'na-es-mx': '/content/ingredion-com/ingredients/es-mx',
+    'na-kerr': '/content/ingredion-com/ingredients/kerr',
   },
   DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.download.zip',
+    'na-kerr': '/content/ingredion-com/na/kerr/buscar/jcr:content/searchResults.download.zip',
   }, 
   SEARCH_INGREDIENTS: { 
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
