@@ -307,6 +307,7 @@ export default async function decorate(block) {
 
     if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href)
       && localStorage.getItem('query-params')) {
+      console.log('searchIngredientsByCategory is called');
       searchIngredientsByCategory();
     }
 
@@ -317,6 +318,8 @@ export default async function decorate(block) {
 
     options.addEventListener('click', (e) => {
       const option = e.target.closest('.dropdown-option');
+      console.log('options event listener');
+      console.log(option);
       if (option) {
         e.stopPropagation();
         selected.textContent = option.textContent;
