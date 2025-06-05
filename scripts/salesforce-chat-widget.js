@@ -1,5 +1,7 @@
     import {loadScript} from './aem.js';    
-    await loadScript('./salesforce-init.js');
+
+(async () => {
+await loadScript('./salesforce-init.js');
     var initESW = function(gslbBaseURL) {
         embedded_svc.settings.displayHelpButton = true; //Or false
         embedded_svc.settings.language = ''; //For example, enter 'en' or 'en-US'
