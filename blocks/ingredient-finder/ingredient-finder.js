@@ -266,6 +266,7 @@ export default async function decorate(block) {
     if (applications) {
       selected.textContent = applications;
       selected.classList.add('has-value');
+      selected.classList.remove('disabled');
     }
 
     const initialTab1 = input({
@@ -286,6 +287,7 @@ export default async function decorate(block) {
     if (subApplications) {
       selected1.textContent = subApplications;
       selected1.classList.add('has-value');
+      selected1.classList.remove('disabled');
       $subApplication.classList.remove('disabled');
     }
 
