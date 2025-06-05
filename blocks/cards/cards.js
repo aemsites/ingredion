@@ -1,5 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { openVideoModal } from '../../blocks/video/video-modal.js';
+import { openVideoModal } from '../video/video-modal.js';
 
 const isDesktop = window.matchMedia('(width >= 1280px)');
 
