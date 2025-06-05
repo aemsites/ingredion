@@ -10,6 +10,7 @@ async function fetchResults(searchParams, apiEndpoint) {
       `${apiEndpoint}?${searchParams.toString()}`,
     );
     if (!response.ok) throw new Error('Failed to fetch');
+    console.log(response);
     return response.json();
   } catch (error) {
     console.error('Error fetching results:', error);
