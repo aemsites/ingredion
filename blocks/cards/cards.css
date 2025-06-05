@@ -540,67 +540,6 @@ main > .section > .default-content-wrapper {
   transform: translate(-50%, -50%);
 }
 
-.cards.video .video-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  z-index: 99;
-}
-
-.cards.video .video-modal-content {
-  height: 100%;
-  width: 100%;
-  margin: auto;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  max-width: 66.875rem;
-}
-
-.cards.video .video-modal .video-modal-wrapper {
-  width: 100vw;
-  height: 100%;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0 0 0 / 40%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cards.video .video-modal-content iframe,
-.cards.video .video-modal-content video {
-  width: 100%;
-  max-width: 63.3125rem;
-  height: 80%;
-}
-
-.cards.video .video-modal-close {
-  align-self: flex-end;
-  order: -1;
-  cursor: pointer;
-  border: 0;
-  background: 0 0;
-  z-index: 2;
-  top: 10%;
-  position: fixed;
-}
-
-.cards.video .video-modal-close.icon-close-blk::before {  
-  font-size: 1.75rem;
-}
-
-.cards.video .icon-close-blk::before {
-  content: "\e91c";
-  color: #4d4f53;
-}
-
 .cards.video [class*="icon-"],
 .cards.video [class^="icon-"] {
   font-family: var(--ingredion-icon-font-family) !important;

@@ -259,7 +259,7 @@ a.button,
     }
   }
 
-  &.play {
+  &.play, &.play:hover {
     cursor: pointer;
     border: 0;
     background: #fff;
