@@ -29,8 +29,8 @@ const $originalLogo = a(
     ],
   ),
 );
-const ingredientQuickSearchFragmentPath = '/na/en-us/fragments/ingredient-finder-quick';
-const ingredientCategorySearchFragmentPath = '/na/en-us/fragments/ingredient-finder-category';
+const ingredientQuickSearchFragmentPath = `/${region}/${locale}/fragments/ingredient-finder-quick`;
+const ingredientCategorySearchFragmentPath = `/${region}/${locale}/fragments/ingredient-finder-category`;
 
 function resetDropdownsMobile($header) {
   $header.querySelectorAll('.category .dropdown').forEach((dropdown) => {
@@ -254,16 +254,16 @@ async function buildDropdownsDesktop($header) {
     while (subNavFrag.firstElementChild) $dropDown.append(subNavFrag.firstElementChild);
     newDiv.parentElement.append($dropDown);
 
-    if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
+    if (subNavPath.includes('/header/dropdowns/our-ingredients')) {
       await buildIngredientFinderCategoryDropdown($dropDown);
       await buildIngredientFinderQuickDropdown($dropDown);
     }
 
-    if (subNavPath === '/na/en-us/header/dropdowns/region-selector') {
+    if (subNavPath.includes('/header/dropdowns/region-selector')) {
       const utility = document.querySelector('.utility');
       const utilityFirstP = utility.querySelector('p');
+      const dropdown = utilityFirstP.querySelector('.dropdown');
       utilityFirstP.addEventListener('click', () => {
-        const dropdown = utilityFirstP.querySelector('.dropdown');
         if (activeDropdown === dropdown) {
           // If this dropdown is already active, close it
           if (activeDropdown && activeDropdown.parentElement) {
@@ -278,6 +278,16 @@ async function buildDropdownsDesktop($header) {
           // Open this dropdown
           dropdown.parentElement.classList.add('active');
           activeDropdown = dropdown;
+        }
+      });
+      document.addEventListener('click', (e) => {
+        const isClickOnDropdown = dropdown.contains(e.target);
+        const isClickOnTrigger = utilityFirstP.contains(e.target);
+        if (!isClickOnDropdown && !isClickOnTrigger && activeDropdown === dropdown) {
+          if (activeDropdown && activeDropdown.parentElement) {
+            activeDropdown.parentElement.classList.remove('active');
+          }
+          activeDropdown = null;
         }
       });
     } else {
@@ -380,7 +390,7 @@ async function buildDropdownsMobile($header) {
 
     newDiv.parentElement.append($dropDown);
 
-    if (subNavPath === '/na/en-us/header/dropdowns/our-ingredients') {
+    if (subNavPath.includes('/header/dropdowns/our-ingredients')) {
       await buildIngredientFinderCategoryDropdown($dropDown);
       await buildIngredientFinderQuickDropdown($dropDown);
     }
