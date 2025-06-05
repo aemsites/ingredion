@@ -470,6 +470,7 @@ export default class ProductApiRenderer {
     if (this.results.appliedFacets?.length > 0) {
       filtersList.appendChild($appliedFilterHeading);
       const appliedFacets = div({ class: 'facet-applied' });
+      console.log(this.results);
       console.log(this.results.appliedFacets);
       this.results.appliedFacets.forEach((facet) => {
         const appliedItem = div({ class: 'facet-applied__item' });
