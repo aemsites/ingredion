@@ -19,10 +19,11 @@
 .hero h1 {
   max-width: 1200px;
   margin-top: 0;
-  margin-left: auto;
+  margin-left: 0;
   margin-right: auto;
   color: var(--theme-clr-background);
   font-size: 3.5rem;
+  letter-spacing: -.58px;
 }
 
 .hero.text-black h1 {
