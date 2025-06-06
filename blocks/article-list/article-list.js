@@ -158,17 +158,27 @@ export default async function decorate(block) {
 
     const $articleCard = (article) => {
       const cardClasses = ['card'];
-      let thumb = a({ class: 'thumb', href: article.path },
-        createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
-      );
       let watchVideoBtn = '';
       let featuredTag = '';
       let externalLink = '';
       let ctaButton = a({ class: 'button', href: article.path }, 'Learn More');
 
+      // if redirect is not empty, card is a featured card
+      const isFeatured = article.redirect && article.redirect.length > 0;
+      if (isFeatured) {
+        article.path = article.redirect;
+        externalLink = img({ class: 'external-link-icon', src: '/icons/external-link.svg', alt: 'External Link' });
+        featuredTag = p({ class: 'featured-tag' }, 'Featured Content');
+        ctaButton = a({ class: 'button featured', href: article.redirect }, 'Access Insights');
+        cardClasses.push('featured');
+      }
+
+      let thumb = a({ class: 'thumb', href: article.path },
+        createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
+      );
+
       // If this is a video, override the click to open a modal on click
       const isVideo = article.tags && article.tags.includes('Resource Type / Video');
-
       if (isVideo && article['video-url']) {
         thumb = a({ class: 'thumb video', href: article.path },
           createOptimizedPicture(article['video-thumbnail'], article.title, true, [{ width: '235' }]),
@@ -182,15 +192,6 @@ export default async function decorate(block) {
         thumb.addEventListener('click', openVideoModalHandler);
         watchVideoBtn = a({ class: 'button secondary watch-video-btn', href: article.path }, 'Watch Video');
         watchVideoBtn.addEventListener('click', openVideoModalHandler);
-      }
-
-      // if redirect is not empty, card is a featured card
-      const isFeatured = article.redirect && article.redirect.length > 0;
-      if (isFeatured) {
-        externalLink = img({ class: 'external-link-icon', src: '/icons/external-link.svg', alt: 'External Link' });
-        featuredTag = p({ class: 'featured-tag' }, 'Featured Content');
-        ctaButton = a({ class: 'button featured', href: article.redirect }, 'Access Insights');
-        cardClasses.push('featured');
       }
 
       return div({ class: cardClasses.join(' ') },
