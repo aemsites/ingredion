@@ -162,6 +162,7 @@
         min-width: 17.25rem;
         border: 2px solid var(--theme-clr-text);
         color: var(--theme-clr-text);
+        background: var(--theme-clr-background);
       }
     }
   }
@@ -294,6 +295,7 @@
           border: 2px solid var(--theme-clr-text);
           color: var(--theme-clr-text);
           text-decoration: none;
+          background: var(--theme-clr-background);
         }
 
         a:hover {
