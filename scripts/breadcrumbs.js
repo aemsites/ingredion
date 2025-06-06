@@ -5,8 +5,8 @@ import { loadCSS } from './aem.js';
 import { getRegionLocale } from './utils.js';
 
 const regionLocaleMap = {
-  'na' : 'North America',
-  'en-us' : 'United States - English'
+  na: 'North America',
+  'en-us': 'United States - English',
 };
 
 async function fetchIndex(homePath) {
@@ -26,7 +26,7 @@ export async function breadcrumbs() {
   const $breadcrumbs = nav({ class: 'breadcrumbs' });
   // todo: update breadcrumbs - just static HTML for now
   const [region, locale] = getRegionLocale();
-  
+
   const homePath = `/${region}/${locale}`;
   const data = await fetchIndex(homePath);
   let { pathname } = window.location;
@@ -55,7 +55,7 @@ export async function breadcrumbs() {
   pageHierarchy.push(regionLocaleMap[locale]);
   pathParts.forEach((part, index) => {
     currentPath += `/${part}`;
-    const { pageNames, pagePath } = getPageNamesByPath(currentPath);    
+    const { pageNames, pagePath } = getPageNamesByPath(currentPath);
     if (pageNames.length === 0) return;
 
     const lastBreadcrumb = breadcrumbItems[breadcrumbItems.length - 1];
@@ -81,7 +81,7 @@ export async function breadcrumbs() {
       liEl.appendChild(link);
       breadcrumbItems.push(liEl);
     });
-  });  
+  });
   localStorage.setItem('pageHierarchy', JSON.stringify(pageHierarchy));
   // TODO: add more cases where breadcrumbs are not displayed
   if (breadcrumbItems.length > 0) {
