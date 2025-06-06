@@ -72,7 +72,7 @@ export const API_PATH_OVERRIDES = {
   },
 };
 
-export const resolveApiPath = (apiKey, region, locale) => {
+const resolveApiPath = (apiKey, region, locale) => {
   const key = `${region}-${locale}`;
   const override = API_PATH_OVERRIDES[apiKey]?.[key];
   if (override) return override;

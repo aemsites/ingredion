@@ -17,6 +17,7 @@ import ProductApiRenderer from '../search/product-api-renderer.js';
 import { loadCSS } from '../../scripts/aem.js';
 
 const [region, locale] = getRegionLocale();
+const pagePath = window.location.pathname;
 
 async function createIngredientPanel(ingredientResults) {
   const $sortDropdown = div();
@@ -112,7 +113,6 @@ function createDropdownOption(item) {
 }
 
 function attachIngredientResults(block, ingredientResults, totalItemsCount, searchValue) {
-  const pagePath = window.location.pathname;
   const $section = block.closest('.section');
   if ($section) {
     if ($section.querySelector('.ingredient-finder-results')) {
@@ -138,7 +138,6 @@ export default async function decorate(block) {
   let queryParams = 'activePage=1&perPage=6';
   let typeaheadData = null;
   let $dropdownOptions;
-  const pagePath = window.location.pathname;
 
   // Helper function for ingredient search
   async function searchIngredients(searchValue) {
@@ -150,7 +149,7 @@ export default async function decorate(block) {
       q: searchValue,
     });
     // update the url with the new query params
-    window.history.pushState({}, '', pagePath);
+    window.history.pushState({}, '', `${pagePath}?${searchParams}`);
     let data;
     try {
       const response = await fetch(`${url}?${searchParams.toString()}`);
