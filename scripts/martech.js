@@ -25,7 +25,7 @@ async function initLaunch(env) {
 }
 
 function initDataLayer() {
-  const pageHierarchy = JSON.parse(localStorage.getItem('pageHierarchy'));
+  let pageHierarchy = JSON.parse(localStorage.getItem('pageHierarchy'));
   if (!pageHierarchy) {
     const [region, locale] = getRegionLocale();
     const regionLocaleMap = {
