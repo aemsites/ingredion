@@ -388,6 +388,10 @@ main {
     }
   }
 
+  .light-grey {
+    background: rgba(239 239 239 / 40%);
+  }
+
   .margin-b-small {
     margin-bottom: 3.125rem;
   }
@@ -410,6 +414,30 @@ main {
 
   .margin-t-large {
     margin-top: 12.5rem;
+  }
+
+  .padding-b-small {
+    padding-bottom: 3.125rem;
+  }
+
+  .padding-t-small {
+    padding-top: 3.125rem;
+  }
+
+  .padding-b-medium {
+    padding-bottom: 6.25rem;
+  }
+
+  .padding-t-medium {
+    padding-top: 6.25rem;
+  }
+
+  .padding-b-large {
+    padding-bottom: 12.5rem;
+  }
+
+  .padding-t-large {
+    padding-top: 12.5rem;
   }
 }
 
