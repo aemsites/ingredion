@@ -36,7 +36,6 @@ export function unwrapNestedDivs(element) {
  */
 export function decorateLinks(main) {
   main.querySelectorAll('a').forEach((link) => {
-    // Add aria-label to links with icons for accessibility
     const iconSpan = link.querySelector('span.icon');
     if (iconSpan) {
       const iconImg = link.querySelector('img');
@@ -48,7 +47,6 @@ export function decorateLinks(main) {
       }
     }
 
-    // Match text inside [] and split by ',' into attributes
     const match = link.textContent.match(/(.*)\[([^\]]*)]/);
     if (match) {
       const [, linkText, attrs] = match;
