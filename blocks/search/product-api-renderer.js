@@ -26,13 +26,15 @@ async function updateUrlAndFetchResults(url, context, resetToFirstPage = true) {
 
     // Make API call with updated params
     const newResults = await fetchResults(url.searchParams, context.apiEndpoint);
-    console.log(newResults);
+    console.log('new results: ' + newResults);
 
     // Update the results while preserving applied facets
     context.results = {
       ...newResults,
       appliedFacets: context.results.appliedFacets,
     };
+
+    console.log('results: ' + context.results)
 
     // Update state with new data
     context.state = {
