@@ -15,7 +15,7 @@ const colorMapping = new Map([
   ['#b41f75', 'purple'],
   ['#6a0c5f', 'dark-purple'],
   ['#ffffff', ''],
-  ['#68e0a1', 'teal']
+  ['#68e0a1', 'pastel-green']
 ]);
 
 const sheet = new Map([
