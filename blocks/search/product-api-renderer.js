@@ -348,7 +348,7 @@ export default class ProductApiRenderer {
 
       facetData.options.forEach((option) => {
         const isSelected = this.results.appliedFacets?.some(
-          (f) => f.group === facetKey && f.value === option.value,
+          (f) => f.group === facetKey && f.value === option.label,
         );
 
         const facet = div({ class: 'facet' });
@@ -358,7 +358,7 @@ export default class ProductApiRenderer {
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.checked = isSelected;
-        checkbox.value = option.value;
+        checkbox.value = option.label;
         checkbox.dataset.facetGroup = facetKey;
 
         label.appendChild(checkbox);
@@ -597,7 +597,7 @@ export default class ProductApiRenderer {
               .find((li) => li.textContent.includes(selectedOption.label));
             if (selectedLi) {
               selectedLi.classList.add('active');
-              this.state.sort = selectedOption.value;
+              this.state.sort = selectedOption.label;
               selectedLi.style.paddingRight = '30px';
             }
 
