@@ -75,15 +75,52 @@ header {
         align-items: center;
         font-size: .66rem;
 
+        .header-dropdown-container,
+        .header-dropdown-wrapper  {
+            box-shadow: none;
+
+            .header-dropdown {
+                height: auto;
+
+                h5 {
+                    font-size: 1rem;
+                    letter-spacing: .0187rem;
+                    color: #373738;
+                    font-family: var(--body-bold-font-family);
+                }
+                
+                a {
+                    font-weight: normal;
+                    color: #373738;
+                    font-size: 1rem;
+                    line-height: 2rem;
+                    letter-spacing: .0187rem;
+                    cursor: pointer; 
+
+                    &:hover {
+                        color: var(--green);
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+
+        >p,
+        li a {
+            font-size: 10px;
+        }
+
         /* region - selector */
         >p {
             margin: 0 0 0 30px;
             transition: all 100ms;
-            cursor: pointer;
-            font-size: 0.66rem;
 
             &:hover {
                 color: var(--green)
+            }
+
+            &:first-child {
+                cursor: pointer;
             }
 
             /* globe icon */
@@ -103,12 +140,18 @@ header {
                 position: absolute;
                 z-index: 1;
                 background: #fff;
-                width: 100vw;
+                width: 100%;
                 top: 32px;
                 left: 0;
                 right: 0;
                 color: var(--text-color);
                 box-shadow: 0 10px 10px rgba(0 0 0 / 10%);
+                padding: 1.5rem 2.5rem 0;
+                display: none;
+
+                .active & {
+                    display: block;
+                }
 
                 .loaded & {
                     display: none;
@@ -122,7 +165,19 @@ header {
                     background: #fff;
                     align-items: start;
                     justify-content: left;
-                    padding: 30px 0 80px calc(16vw + 20px);
+                    padding: 0 5rem 5rem;
+
+                    &::before {
+                        content: "\e91c";
+                        color: #4d4f53;
+                        font-family: ingredion-icon;
+                        font-size: 1.5rem;
+                        right: 2.5rem;
+                        top: 1.875rem;
+                        display: block;
+                        cursor: pointer;
+                        position: absolute;
+                    }
 
                     h4 {
                         text-align: left !important;
@@ -132,7 +187,6 @@ header {
                 }
 
                 .header-dropdown.static.columns-4 {
-                    padding: 0 16vw;
                     white-space: nowrap;
 
                     >div {
@@ -239,6 +293,8 @@ header {
                             text-transform: none;
                             line-height: 1;
                             -webkit-font-smoothing: antialiased;
+                            right: 1rem;
+                            position: absolute;
                         }
 
                         @media (width < 1080px) {
@@ -303,14 +359,13 @@ header {
             align-items: center;
             height: inherit;
             margin: 0 30px 0 0;
-
+            font-family: var(--body-bold-font-family);
+            
             &:last-child {
                 margin-right: 0
             }
 
             >li {
-                font-family: OpenSans, Helvetica, sans-serif;
-                font-weight: bold;
                 font-size: 1rem;
                 letter-spacing: .03em;
                 color: #4d4e4c;
@@ -384,6 +439,7 @@ header {
             &:nth-child(2)>li,
             &:nth-child(3)>li {
                 font-weight: normal;
+                font-family: var(--body-font-family);
 
                 .loaded &>.dropdown {
                     left: auto
@@ -747,4 +803,181 @@ header {
 
 .form-dropdown {
     position: relative;
+}
+
+.dropdown .ingredient-finder.quick {
+    background: var(--light-grey);
+    height: 5rem;
+}
+
+.dropdown .ingredient-finder.quick .ingredient-quick-search h4,
+.dropdown .ingredient-finder.quick .ingredient-quick-search .button-container {
+    display: none;
+}
+
+.dropdown .ingredient-finder.quick>div>div:first-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 .9375rem;
+    font-family: OpenSans-Bold, Helvetica, sans-serif;
+    color: #373738;
+}
+
+.dropdown .ingredient-finder.quick .ingredient-quick-search .ingredient-quick-search-bar {
+    height: 2.5rem;
+    align-self: center;
+    flex: 2;
+    max-width: 23.8125rem;
+}
+
+.dropdown .ingredient-finder.quick .ingredient-quick-search-bar .form-typeahead {
+    margin-bottom: 0;
+    width: 100%;
+    letter-spacing: .0156rem;
+    font-family: OpenSans-Bold, Helvetica, sans-serif;
+    line-height: 3.5rem;
+    color: #4d4e4c;
+}
+
+.dropdown .ingredient-finder.quick .ingredient-quick-search-bar .form-typeahead input#search {
+    height: 2.5rem;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #d8d9d9;
+    border-radius: 2px;
+    background-color: #fff;
+    padding: .7813rem .625rem;
+    font-size: .875rem;
+    color: #373738;
+}
+
+.dropdown .ingredient-finder.quick .ingredient-quick-search-bar .form-typeahead button.icon-search {
+    position: absolute;
+    right: .625rem;
+    top: .5rem;
+    font-size: 1.5rem;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.dropdown .ingredient-finder.quick .ingredient-quick-search {
+    border: none;
+}
+
+.dropdown .ingredient-finder.quick .button {
+    display: inline-block;
+    cursor: pointer;
+    min-width: 11.25rem;
+    font-size: 1rem;
+    border-radius: .125rem;
+    background: #6cb33e;
+    text-align: center;
+    line-height: 1.5rem;
+    color: #373738;
+    font-family: MiloPro-Bold, Helvetica, sans-serif;
+    letter-spacing: .0313rem;
+    padding: .5rem 1.75rem;
+    text-transform: none;
+}
+
+.dropdown .ingredient-finder.quick .button.secondary {
+    display: inline-block;
+    padding: .375rem 1.75rem;
+    min-width: 11.25rem;
+    background: 0 0;
+    color: #6cb33e;
+    border-color: #6cb33e;
+    border-radius: .125rem;
+    font-family: MiloPro-Bold, Helvetica, sans-serif;
+    font-size: 1rem;
+    text-align: center;
+    line-height: 1.5rem;
+    letter-spacing: .0313rem;
+}
+
+.dropdown .ingredient-finder.quick a::after {
+    content: none;
+}
+
+.dropdown .ingredient-finder.quick .download-all {
+    display: inline-block;
+    font-family: MiloPro-Bold, Helvetica, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: .0313rem;
+    color: #6cb33e;
+    position: relative;
+    background: none;
+    padding: 0;
+}
+
+.download-all::before {
+    font-family: ingredion-icon;
+    text-decoration: none !important;
+    left: 0;
+    content: '\e94b';
+    font-size: .9375rem;
+    position: static;
+}
+
+@media (width >= 67.5625rem) {
+    .dropdown .ingredient-finder.quick .download-all {
+        margin: 0;
+        width: auto;
+        align-self: center;
+        margin-top: 0;
+    }
+
+    .download-all::before {
+        position: static;
+        padding-right: 0.3rem;
+    }
+
+    .dropdown .ingredient-finder.quick .button {
+        min-width: 11.25rem;
+        margin: 0;
+        margin-left: 1.5rem;
+        width: auto;
+        align-self: center;
+        margin-top: 0;
+    }
+    
+    .dropdown .ingredient-finder.quick .ingredient-quick-search {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        height: 5rem;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .dropdown .ingredient-finder.quick>div>div:first-child {
+        margin-right: 1rem;
+        white-space: nowrap;
+        padding: 0;
+        color: #373738;
+    }
+
+    .dropdown .ingredient-finder.quick>div>div:nth-child(2) {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        height: 5rem;
+        margin: 0;
+        padding: 0;
+    }
+
+    .dropdown .ingredient-finder.quick>div {
+        max-width: none;
+        display: flex;
+        justify-content: space-between;
+        height: 5rem;
+        background-color: #efefef;
+        padding: 0 4.25rem;
+    }
 }

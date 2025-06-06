@@ -1,6 +1,6 @@
 // valid regions and locales
 const VALID_REGIONS = ['na', 'sa', 'emea', 'apac'];
-const VALID_LOCALES = ['en-us', 'es-mx', 'pt-br', 'es-co', 'es-ar', 'en-uk', 'en-sg', 'ja-jp', 'sc-cn', 'en-au'];
+const VALID_LOCALES = ['en-us', 'es-mx', 'kerr', 'pt-br', 'es-co', 'es-ar', 'en-uk', 'en-sg', 'ja-jp', 'sc-cn', 'en-au'];
 
 /**
  * Retrieves the region and locale from the URL path.

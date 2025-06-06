@@ -37,7 +37,7 @@ async function renderRelatedIngredient(productDisplayName) {
         description,
         div({ class: 'cta-links' },
           viewAllDocsLink,
-          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, product.productName, product.productId) }, 'Download All Documents'),
+          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, locale, product.productName, product.productId) }, 'Download All Documents'),
         ),
       ),
       div({ class: 'buttons' },
