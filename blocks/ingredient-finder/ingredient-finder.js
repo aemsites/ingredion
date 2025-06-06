@@ -165,7 +165,6 @@ export default async function decorate(block) {
 
   async function searchIngredientsByCategory() {
     queryParams = localStorage.getItem('query-params');
-    localStorage.removeItem('query-params');
     const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(region, locale);
     const apiResponse1 = await fetch(`${url}?${queryParams}`);
     const data1 = await apiResponse1.json();
@@ -213,8 +212,8 @@ export default async function decorate(block) {
   }
 
   function updateSearchButtonState(selected, selected1, $searchButton) {
-    const hasApplication = selected.textContent !== 'Application';
-    const hasSubApplication = selected1.textContent !== 'Sub Application';
+    const hasApplication = !selected.textContent.includes('Application');
+    const hasSubApplication = !selected1.textContent.includes('Sub Application');
     const $searchLink = $searchButton.querySelector('a');
     if (hasApplication || hasSubApplication) {
       $searchLink.classList.remove('disabled');
@@ -234,6 +233,9 @@ export default async function decorate(block) {
   }
 
   if (block.classList.contains('category')) {
+    const searchParams = new URLSearchParams(window.location.search);
+    let applications = searchParams.get('applications');
+    let subApplications = searchParams.get('subApplications');
     const $parent = div({ class: 'ingredient-finder-form-categories' });
     const heading = h4('Ingredient search by category');
 
@@ -276,6 +278,19 @@ export default async function decorate(block) {
       dropdownOptions1,
     );
 
+    if (applications) {
+      selected.textContent = applications;
+      selected.classList.add('has-value');
+      selected.classList.remove('disabled');
+      selected1.classList.add('has-value');
+      selected1.classList.remove('disabled');
+      $subApplication.classList.remove('disabled');
+    }
+
+    if (subApplications) {
+      selected1.textContent = subApplications;
+    }
+
     const $searchButton = p(
       { class: 'button-container' },
       a(
@@ -290,14 +305,31 @@ export default async function decorate(block) {
       ),
     );
 
+    updateSearchButtonState(selected, selected1, $searchButton);
+
     if (/[?&]applicationID=[^&]*&applications=[^&]*/.test(window.location.href)
       && localStorage.getItem('query-params')) {
-      searchIngredientsByCategory();
+      await searchIngredientsByCategory();
+
+      const option = [...options.querySelectorAll('.dropdown-option')]
+        .find((opt) => opt.textContent.trim() === selected.textContent);
+
+      if (option) {
+        const selectedApp = data.applications.find((app) => app.label === option.textContent);
+        if (selectedApp && selectedApp.children) {
+          dropdownOptions1.innerHTML = '';
+          selectedApp.children.forEach((subItem) => {
+            const subOption = createDropdownOption(subItem);
+            dropdownOptions1.appendChild(subOption);
+          });
+        }
+      }
     }
 
     selected.addEventListener('click', (e) => {
       e.stopPropagation();
       options.classList.toggle('hidden');
+      dropdownOptions1.classList.add('hidden');
     });
 
     options.addEventListener('click', (e) => {
@@ -372,8 +404,8 @@ export default async function decorate(block) {
       const params = new URLSearchParams(queryParams);
       const applicationID = params.get('applicationID');
       const subApplicationID = params.get('subApplicationID');
-      const applications = params.get('applications');
-      const subApplications = params.get('subApplications');
+      applications = params.get('applications');
+      subApplications = params.get('subApplications');
       // Create new URL with double-encoded parameters
       const newParams = new URLSearchParams();
       newParams.set('applicationID', applicationID);
