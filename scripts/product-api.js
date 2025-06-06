@@ -19,11 +19,11 @@ export const DEFAULT_PATHS = {
   POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => `/content/ingredion-com/${region}/${locale}/jcr:content/header.search.json?initialTab=`,
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`,
   INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `/content/ingredion-com/${region}/${locale}.ingredient-search-typeahead.json?initialTab=`,
-  PRODUCT_DETAILS: (region, locale, productName) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
-  ALL_DOCUMENTS: (region, locale, productId) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.view.json`,
-  DOWNLOAD_DOCUMENTS: (region, locale , productName) => `/content/ingredion-com/ingredients/${region}`,
-  DOWNLOAD_ALL_DOCUMENTS: (region, locale, productName, productId) => `/content/ingredion-com/ingredients/${region}`,
-  DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH: (region, locale, productId) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.download.zip`,
+  PRODUCT_DETAILS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
+  ALL_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.view.json`,
+  DOWNLOAD_DOCUMENTS: (region) => `/content/ingredion-com/ingredients/${region}`,
+  DOWNLOAD_ALL_DOCUMENTS: (region) => `/content/ingredion-com/ingredients/${region}`,
+  DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.download.zip`,
   SEARCH_INGREDIENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
   SEARCH_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.techDocs.json`,
   SEARCH_INGREDIENTS_BY_NAME: (region, locale) => `/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`,
@@ -56,8 +56,8 @@ export const API_PATH_OVERRIDES = {
   DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.download.zip',
     'na-kerr': '/content/ingredion-com/na/kerr/buscar/jcr:content/searchResults.download.zip',
-  }, 
-  SEARCH_INGREDIENTS: { 
+  },
+  SEARCH_INGREDIENTS: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
     'sa-pt-br': '/content/ingredion-com/sa/pt-br/buscar/jcr:content/searchResults.ingredients.json',
   },
