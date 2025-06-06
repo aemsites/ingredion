@@ -403,6 +403,15 @@ export default class ArticleRenderer {
     this.filterTypesDropdown.appendChild($dropdown);
   }
 
+  normalizeTag(tag) {
+    const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
+    const parts = cleanedTag.split('/');
+    if (parts.length === 2) {
+      return `${parts[0].trim()} / ${parts[1].trim()}`;
+    }
+    return cleanedTag;
+  }
+
   renderFilterByTagDropdown() {
     if (!this.filterByTagDropdown) return;
     const tagCategory = this.filterByTagDropdown.getAttribute('data-tag');
@@ -416,7 +425,7 @@ export default class ArticleRenderer {
     this.state.allArticles.forEach((article) => {
       if (article?.tags && typeof article.tags === 'string') {
         article.tags.split(',').forEach((tag) => {
-          const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
+          const cleanedTag = this.normalizeTag(tag);
           if (cleanedTag.startsWith(`${tagCategory} /`)) {
             tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
           }
@@ -483,7 +492,7 @@ export default class ArticleRenderer {
     this.state.filteredArticles.forEach((article) => {
       if (article.tags) {
         article.tags.split(',').forEach((tag) => {
-          const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
+          const cleanedTag = this.normalizeTag(tag);
           tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
         });
       }
@@ -520,7 +529,7 @@ export default class ArticleRenderer {
           if (foundTag) originalName = foundTag.original;
         });
 
-        const $li = li(originalName, span({ class: 'icon-close' }, '\ue91c'));
+        const $li = li(originalName, span({ class: 'icon-close' }));
         $li.addEventListener('click', () => {
           this.state.tags = this.state.tags.filter((t) => t !== tag);
           this.state.currentPage = 0;

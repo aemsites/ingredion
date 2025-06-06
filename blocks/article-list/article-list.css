@@ -170,7 +170,10 @@
             cursor: pointer;
 
             a { color: var(--text-color) }
-            .icon-close { color: var(--green) }
+            
+            .icon-close { 
+              color: var(--green); 
+              margin-left: 10px; }
           }
         }
       }
@@ -188,6 +191,7 @@
 
         .articles {
           .card {
+            position: relative;
             display: flex;
             border: 1px solid var(--border-color);
             margin-top: 2.5rem;
@@ -218,9 +222,41 @@
                 margin: 20px 0 0;
               }
 
-              h4 { margin: 0 }
+              h4 { 
+                letter-spacing: .016rem;
+                font-family: MiloPro-Bold, Helvetica, sans-serif;
+                margin: 0 0 1rem !important;
+                font-size: 1.5rem;
+                line-height: 2rem;
+              }
 
               .button { margin: 1rem 0 0 }
+            }
+          }
+        }
+
+        .featured {
+          background-color: var(--background-color-grey);
+
+          .external-link-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+          }
+
+          .featured-tag {
+            font-family: MiloPro-Bold;
+            color: #b41f75;
+            font-size: 1.2rem;
+            margin: 0 0 .5rem;
+          }
+
+          .button {
+            background: var(--purple);
+            color: var(--white);
+
+            &:hover {
+              background: var(--dark-purple);
             }
           }
         }
