@@ -93,7 +93,7 @@ async function createIngredientPanel(ingredientResults) {
     paginationDiv: $pagination,
     perPageDropdown: $perPageDropdown,
     countDiv: $count,
-    prefetchedData: true,
+    prefetchedData: false,
   }).render();
   return $articlePage;
 }
