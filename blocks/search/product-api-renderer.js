@@ -181,7 +181,7 @@ export default class ProductApiRenderer {
         // Find the corresponding facet option to get the label
         const facetGroup = results.facets?.[group];
         console.log(facetGroup);
-        const facetOption = facetGroup?.options.find((opt) => opt.value === value);
+        const facetOption = facetGroup?.options.find((opt) => opt.label === value);
         if (facetOption) {
           appliedFacets.push({
             group,
