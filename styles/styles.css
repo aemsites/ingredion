@@ -529,3 +529,194 @@ main {
   width: 100%;
   margin: 0;
 }
+
+.embeddedServiceHelpButton {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+  z-index: 999;
+  font-family: sans-serif;
+}
+
+.embeddedServiceHelpButton .assistiveText {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+@media only screen and (min-width: 48em) {
+  .embeddedServiceHelpButton {
+      background-color: transparent;
+  }
+}
+
+.embeddedServiceHelpButton .helpButton {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  height: 46px;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.embeddedServiceHelpButton div[dir="rtl"] .helpButton {
+  left: 12px;
+  right: auto;
+}
+
+@supports not (-ms-high-contrast: none) {
+  .embeddedServiceHelpButton.embeddedServiceBottomTabBar .helpButton {
+      bottom: calc(0.75rem + env(safe-area-inset-bottom, 0));
+  }
+}
+
+.embeddedServiceHelpButton .helpButton .uiButton {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 12px;
+  height: 46px;
+  box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 23px;
+  line-height: 1;
+  background: #000;
+  font-size: 0.875em;
+  color: #fff;
+  font-weight: normal;
+  text-shadow: none;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.embeddedServiceHelpButton .helpButton .uiButton .label {
+  color: #fff;
+}
+
+.embeddedServicePreventScrolling {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+.embeddedServiceHelpButton .helpButton .uiButton:focus {
+  outline: none;
+}
+
+.embeddedServiceHelpButton .helpButton .helpButtonEnabled:hover::before,
+.embeddedServiceHelpButton .helpButton .helpButtonEnabled:focus::before {
+  content: " ";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 23px;
+  background-color: #000;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.embeddedServiceHelpButton .helpButton .helpButtonEnabled.no-hover:hover::before,
+.embeddedServiceHelpButton .helpButton .helpButtonEnabled.no-hover:focus::before {
+  display: none;
+}
+
+@media only screen and (min-width: 48em) {
+  .embeddedServiceHelpButton .helpButton,
+  .embeddedServiceHelpButton.embeddedServiceBottomTabBar .helpButton {
+      position: fixed;
+      bottom: 0;
+  }
+
+  .embeddedServiceHelpButton .helpButton .uiButton {
+      border-radius: 8px 8px 0 0;
+  }
+
+  .embeddedServiceHelpButton .helpButton .uiButton:hover::before,
+  .embeddedServiceHelpButton .helpButton .uiButton:focus::before {
+      border-radius: 8px 8px 0 0;
+  }
+}
+
+.embeddedServiceHelpButton .uiButton {
+  font-weight: bold;
+  font-size: 16px;
+  margin: 2px 3px;
+  padding: 4px 6px;
+  min-width: 12em;
+  max-width: 14em;
+  text-decoration: none;
+  text-align: center;
+  border: 0;
+  background: #dddfe1;
+}
+
+.embeddedServiceHelpButton .helpButtonDisabled {
+  cursor: default;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.embeddedServiceHelpButton .helpButtonEnabled {
+  cursor: pointer;
+  position: relative;
+}
+
+.embeddedServiceHelpButton .uiButton .helpButtonLabel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  align-self: stretch;
+  max-width: 100%;
+  line-height: normal;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.embeddedServiceHelpButton .uiButton .helpButtonLabel .message {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.helpButtonEnabled:focus .helpButtonLabel {
+  text-decoration: underline;
+}
+
+.embeddedServiceHelpButton .embeddedServiceIcon {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin-right: 10px;
+  line-height: 1;
+  vertical-align: top;
+}
+
+.embeddedServiceHelpButton div[dir="rtl"] .embeddedServiceIcon {
+  margin-left: 10px;
+  margin-right: auto;
+}
+
+.embeddedServiceHelpButton .embeddedServiceIcon::before {
+  font-family: "embeddedserviceiconfont";
+  font-size: 1.25em;
+  content: attr(data-icon);  
+  text-rendering: auto;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

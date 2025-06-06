@@ -1,10 +1,10 @@
-import { loadScript } from './aem.js';
+import { getMetadata, loadScript } from './aem.js';
 
 async function initLaunch(env) {
   const launchUrls = {
     dev: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-159a0321787a-development.min.js',
     stage: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-509818e86df2-staging.min.js',
-    prod: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-0e5b0f94b7f5.min.js',
+    prod: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-0e5b0f94b7f5.min.js'
   };
   if (!Object.keys(launchUrls).includes(env)) {
     return; // unknown env -> skip martech initialization
@@ -14,40 +14,12 @@ async function initLaunch(env) {
 
 /**
  * Initializes the full Martech stack.
- *
  */
-function initDataLayer() {
-  const pageHierarchy = JSON.parse(localStorage.getItem('pageHierarchy'));
-  window.dataLayer = {
-    page: {
-      pageLevel1: pageHierarchy[0],
-      pageLevel2: pageHierarchy[1],
-      pageLevel3: pageHierarchy[2],
-      pageName: pageHierarchy.join('|'),
-      pageRegion: pageHierarchy[0],
-      pageLanguage: pageHierarchy[1],
-      previousPageName: localStorage.getItem('previousPageName'),
-      pageURL: window.location.href,
-      pageHierarchy: pageHierarchy.join('/'),
-    },
-    user: {
-      country: pageHierarchy[1].split(' - ')[0],
-    },
-    event: {
-      eventName: 'eventName',
-      eventInfo1: '1',
-      eventInfo2: '2',
-      eventInfo3: '3',
-      eventInfo4: '4',
-    },
-  };
-  localStorage.setItem('previousPageName', window.location.href);
-}
-
 export async function initMartech(env) {
   initDataLayer();
   await initLaunch(env);
-  loadScript('/scripts/gtm-init.js', { defer: true });
+  loadScript('/scripts/gtm-init.js', { defer: true });  
+  
 }
 
 export async function addCookieBanner() {
@@ -58,4 +30,51 @@ export async function addCookieBanner() {
   <div id="consent_blackbar"></div>
 </div>`;
   document.querySelector('main').append(cookieBanner);
+}
+
+export async function initChatWidget() {
+  const addWidget = document.createElement('div');
+  addWidget.classList.add('embeddedServiceHelpButton');
+  addWidget.innerHTML = `
+    <div class="embeddedServiceHelpButton">
+      <div class="helpButton">
+        <button class="helpButtonEnabled uiButton" href="javascript:void(0)">
+          <span class="embeddedServiceIcon" aria-hidden="true" data-icon="" style="display: inline-block;"></span>
+          <span class="helpButtonLabel" id="helpButtonSpan" aria-live="polite" aria-atomic="true">
+            <span class="assistiveText">Live chat:</span>
+            <span class="message">Chat with an expert</span>
+          </span>
+        </button>
+      </div>
+    </div>`;
+  document.querySelector('main').append(addWidget);
+}
+
+
+function initDataLayer() {  
+  const pageHierarchy = JSON.parse(localStorage.getItem('pageHierarchy'));  
+  window.dataLayer = {
+    page: {
+      pageLevel1: pageHierarchy[0],
+      pageLevel2: pageHierarchy[1],
+      pageLevel3: pageHierarchy[2],      
+      pageName: pageHierarchy.join('|'),
+      pageRegion: pageHierarchy[0],
+      pageLanguage: pageHierarchy[1],
+      previousPageName: localStorage.getItem('previousPageName'),
+      pageURL: window.location.href,
+      pageHierarchy: pageHierarchy.join('/')
+  },
+  user: {
+      country: pageHierarchy[1].split(' - ')[0]
+  },  
+  event: {
+      eventName: 'eventName',
+          eventInfo1: '1',
+          eventInfo2: '2',
+          eventInfo3: '3',
+          eventInfo4: '4'
+  }
+};
+localStorage.setItem('previousPageName', window.location.href);
 }
