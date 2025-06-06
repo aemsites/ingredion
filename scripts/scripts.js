@@ -30,6 +30,37 @@ export function unwrapNestedDivs(element) {
   });
 }
 
+/** allow for link attributes to be added by authors
+ * example usage = Text [class:button,target:_blank,title:Title goes here]
+ * @param main
+ */
+export function decorateLinks(main) {
+  main.querySelectorAll('a').forEach((link) => {
+    const iconSpan = link.querySelector('span.icon');
+    if (iconSpan) {
+      const iconImg = link.querySelector('img');
+      if (iconImg) {
+        const iconName = iconImg.getAttribute('data-icon-name');
+        if (iconName) {
+          link.setAttribute('aria-label', iconName);
+        }
+      }
+    }
+
+    const match = link.textContent.match(/(.*)\[([^\]]*)]/);
+    if (match) {
+      const [, linkText, attrs] = match;
+      link.textContent = linkText.trim();
+      attrs.split(',').forEach((attr) => {
+        let [key, ...value] = attr.trim().split(':');
+        key = key.trim().toLowerCase();
+        value = value.join(':').trim();
+        if (key) link.setAttribute(key, value);
+      });
+    }
+  });
+}
+
 /**
  * Extracts a class name from a string like "Some text [class:some-class]"
  * and returns it with the cleaned text.
@@ -97,24 +128,6 @@ function buildAutoBlocks(main) {
 }
 */
 
-/**
- * Decorate links
- * @param {Element} main The container element
- */
-function decorateLinks(main) {
-  main.querySelectorAll('a').forEach((link) => {
-    // add aria-label to links with icons for Accessibility
-    if (link.querySelector('span.icon')) {
-      const iconName = link.querySelector('img').getAttribute('data-icon-name');
-      link.setAttribute('aria-label', iconName);
-    }
-  });
-}
-
-/**
- * Decorates the main element.
- * @param {Element} main The main element
- */
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
   // hopefully forward compatible button decoration

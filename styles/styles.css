@@ -377,7 +377,6 @@ main {
     margin: auto;
     max-width: 50.1875rem;
 
-   /* overide to full width */
    &.full-width {
     max-width: none;
     }
