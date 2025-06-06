@@ -17,6 +17,7 @@ import ProductApiRenderer from '../search/product-api-renderer.js';
 import { loadCSS } from '../../scripts/aem.js';
 
 const [region, locale] = getRegionLocale();
+const pagePath = window.location.pathname;
 
 async function createIngredientPanel(ingredientResults) {
   const $sortDropdown = div();
@@ -123,7 +124,7 @@ function attachIngredientResults(block, ingredientResults, totalItemsCount, sear
     $results = div({ class: 'results' }, h2(`${totalItemsCount} results for: `), span({ class: 'search-value' }, searchValue));
     const $clearLink = a({ class: 'clear-link', href: '#' }, 'Clear');
     $clearLink.addEventListener('click', () => {
-      window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder`);
+      window.history.pushState({}, '', pagePath);
       window.location.reload();
     });
     $results.append($clearLink);
@@ -146,7 +147,7 @@ export default async function decorate(block) {
       q: searchValue,
     });
     // update the url with the new query params
-    window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${searchParams}`);
+    window.history.pushState({}, '', `${pagePath}?${searchParams}`);
     let data;
     try {
       const response = await fetch(`${url}?${searchParams.toString()}`);
@@ -310,7 +311,7 @@ export default async function decorate(block) {
         const appKey = option.getAttribute('data-key');
         const appLabel = option.getAttribute('data-encoded-label');
         queryParams += `&applicationID=${appKey}&applications=${appLabel}`;
-        window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
+        window.history.pushState({}, '', `${pagePath}?${queryParams}`);
 
         const selectedApp = data.applications.find((app) => app.label === option.textContent);
         if (selectedApp && selectedApp.children) {
@@ -324,7 +325,7 @@ export default async function decorate(block) {
           $subApplication.classList.remove('disabled');
         }
         queryParams = queryParams.replace(/&subApplicationID=[^&]*&subApplications=[^&]*/, '');
-        window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
+        window.history.pushState({}, '', `${pagePath}?${queryParams}`);
         updateSearchButtonState(selected, selected1, $searchButton);
       }
     });
@@ -349,7 +350,7 @@ export default async function decorate(block) {
         const subKey = option.getAttribute('data-key');
         const subLabel = option.getAttribute('data-encoded-label');
         queryParams += `&subApplicationID=${subKey}&subApplications=${subLabel}`;
-        window.history.pushState({}, '', `/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`);
+        window.history.pushState({}, '', `${pagePath}?${queryParams}`);
         updateSearchButtonState(selected, selected1, $searchButton);
       }
     });

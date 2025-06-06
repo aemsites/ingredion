@@ -310,7 +310,7 @@ export default async function decorate(doc) {
           product.productType ? div({ class: 'type' }, strong('Product Type: '), product.productType) : null,
           div({ class: 'cta-links' },
             a({ class: 'view-all', href: '#technical-documents' }, 'View All Documents'),
-            a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, product.productName, product.productId) }, 'Download All Documents'),
+            a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, locale, product.productName, product.productId) }, 'Download All Documents'),
           ),
           div({ class: 'cta-buttons' },
             a({ class: 'button add-sample-btn' }, 'Add Sample'),
@@ -403,7 +403,7 @@ export default async function decorate(doc) {
 
         if (!selectedIds) return;
 
-        const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(region, product.productName)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
+        const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(region, locale, product.productName)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
 
         // Use a temp link for reliability across browsers
         const tempLink = a({ href: downloadUrl, download: `${docType}-documents.zip`, style: 'display: none' });
