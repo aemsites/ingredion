@@ -1020,11 +1020,11 @@ function testURL(url) {
     }
     // Handle localhost and ingredion.com URLs
     if (url.includes('localhost:3001')) {
-      return url.replace('http://localhost:3001', previewURL).split('.html')[0] + queryParams;
+      return url.replace('http://localhost:3001', previewURL).split('.html')[0].toLowerCase().replaceAll('_','-') + queryParams;
     }
     
     if (url.includes('ingredion.com')) {
-      return url.replace('https://www.ingredion.com', previewURL).split('.html')[0] + queryParams;
+      return url.replace('https://www.ingredion.com', previewURL).split('.html')[0].toLowerCase().replaceAll('_','-') + queryParams;
     }
     
     // Default case for other absolute URLs
@@ -1032,7 +1032,7 @@ function testURL(url) {
   } 
   
   // Handle relative URLs
-  return `${previewURL}${url}`.split('.html')[0];
+  return `${previewURL}${url}`.split('.html')[0].toLowerCase().replaceAll('_','-');
 }
 
 export function convertHrefs(element) {
