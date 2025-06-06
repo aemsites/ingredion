@@ -63,7 +63,7 @@ export default {
     const isFormulationTemplate = document.querySelector('.formulation-page');
     convertHrefs(main);
     if (isFormulationTemplate) {
-      createFormulationTemplate(document, main);
+      createFormulationTemplate(document, main, path);
     } else {
       getSocialShare(document, main);
       createHeroBlock(document, main);
@@ -219,14 +219,14 @@ function toHex(rgb) {
   }).join('')}`;
 }
 
-function createFormulationTemplate(document, main) {
+function createFormulationTemplate(document, main, path) {
   console.log('createFormulationTemplate');
   const formulationPage = document.querySelector('.formulation-page');
   const formulationHeader = formulationPage.querySelector('.formulation-header .formulation-header__wrapper');
   const slimHeader = formulationPage.querySelector('.formulation-header .slim-header');
   slimHeader.remove();
 
-  createGalleryBlock(formulationHeader);
+  createGalleryBlock(formulationHeader, path);
 
   const formulationInstructions = formulationPage.querySelectorAll('.formulation-header .ingredientListingTable');
   if (formulationInstructions && formulationInstructions.length === 1) {
@@ -243,7 +243,7 @@ function createFormulationTemplate(document, main) {
   createIngredientBlock(document, main, true);
 }
 
-function createGalleryBlock(formulationHeader) {
+function createGalleryBlock(formulationHeader, path) {
   // Create gallery table cells
   const cells = [['Gallery']];
 
@@ -315,9 +315,20 @@ function createGalleryBlock(formulationHeader) {
       p.append(innerDiv);
     });
   }
-  // Add CTA
+
+  // Add Contact us modal CTA
+  const VALID_REGIONS = ['na', 'sa', 'emea', 'apac'];
+  const VALID_LOCALES = ['en-us', 'es-mx', 'kerr', 'pt-br', 'es-co', 'es-ar', 'en-uk', 'en-sg', 'ja-jp', 'sc-cn', 'en-au'];
+  const segments = path.split('/')
+                        .filter((segment) => segment);
+  // fallback values 'na' and 'en-us'
+  let [region = 'na', locale = 'en-us'] = segments;
+  // validate region and locale
+  if (!VALID_REGIONS.includes(region)) region = 'na';
+  if (!VALID_LOCALES.includes(locale)) locale = 'en-us';
+
   const cta = galleryText.querySelector('.formulation-header__cta > a');
-  cta.href = 'https://main--ingredion--aemsites.aem.live/na/en-us/modals/contact-us-modal';
+  cta.href = `https://main--ingredion--aemsites.aem.live/${region}/${locale}/modals/contact-us-modal`;
   galleryTextDiv.append(cta);
 
   // Build final gallery block
