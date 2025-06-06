@@ -2,12 +2,7 @@ import {
   nav, a, li, ul, strong,
 } from './dom-helpers.js';
 import { loadCSS } from './aem.js';
-import { getRegionLocale } from './utils.js';
-
-const regionLocaleMap = {
-  na: 'North America',
-  'en-us': 'United States - English',
-};
+import { getRegionLocale, getRegionLocaleMap } from './utils.js';
 
 async function fetchIndex(homePath) {
   const indexPath = `${homePath}/indexes/global-index.json`;
@@ -51,8 +46,8 @@ export async function breadcrumbs() {
   const homeCrumb = li(homeLink);
   const crumbList = ul(homeCrumb);
   const pageHierarchy = [];
-  pageHierarchy.push(regionLocaleMap[region]);
-  pageHierarchy.push(regionLocaleMap[locale]);
+  pageHierarchy.push(getRegionLocaleMap(region));
+  pageHierarchy.push(getRegionLocaleMap(locale));
   pathParts.forEach((part, index) => {
     currentPath += `/${part}`;
     const { pageNames, pagePath } = getPageNamesByPath(currentPath);

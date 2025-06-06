@@ -1,5 +1,5 @@
 import { loadScript } from './aem.js';
-import { getRegionLocale } from './utils.js';
+import { getRegionLocale, getRegionLocaleMap } from './utils.js';
 
 function getEnvironment() {
   const { hostname } = window.location;
@@ -28,11 +28,7 @@ function initDataLayer() {
   let pageHierarchy = JSON.parse(localStorage.getItem('pageHierarchy'));
   if (!pageHierarchy) {
     const [region, locale] = getRegionLocale();
-    const regionLocaleMap = {
-      na: 'North America',
-      'en-us': 'United States - English',
-    };
-    pageHierarchy = [regionLocaleMap[region], regionLocaleMap[locale], 'index'];
+    pageHierarchy = [getRegionLocaleMap(region), getRegionLocaleMap(locale), 'index'];
   }
   window.dataLayer = {
     page: {
