@@ -129,10 +129,6 @@ function buildAutoBlocks(main) {
 */
 
 /**
- * Decorate links
- * @param {Element} main The container element
- */
-/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
