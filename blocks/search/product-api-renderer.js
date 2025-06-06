@@ -31,7 +31,7 @@ async function updateUrlAndFetchResults(url, context, resetToFirstPage = true) {
     // Update the results while preserving applied facets
     context.results = {
       ...newResults,
-      appliedFacets: newResults.appliedFacets || context.results.appliedFacets,
+      appliedFacets: context.results.appliedFacets,
     };
 
     console.log('new results:', JSON.stringify(context.results, null, 2));
