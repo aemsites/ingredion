@@ -31,6 +31,7 @@ async function updateUrlAndFetchResults(url, context, resetToFirstPage = true) {
     // Update the results while preserving applied facets
     context.results = {
       ...newResults,
+      appliedFacets: newResults.appliedFacets || context.results.appliedFacets,
     };
 
     console.log('new results:', JSON.stringify(context.results, null, 2));
@@ -179,6 +180,7 @@ export default class ProductApiRenderer {
       valueArray.forEach((value) => {
         // Find the corresponding facet option to get the label
         const facetGroup = results.facets?.[group];
+        console.log(facetGroup);
         const facetOption = facetGroup?.options.find((opt) => opt.value === value);
         if (facetOption) {
           appliedFacets.push({
@@ -187,6 +189,7 @@ export default class ProductApiRenderer {
             label: facetOption.label,
           });
         }
+        console.log('applied facets:', JSON.stringify(appliedFacets, null, 2));
       });
     });
 
