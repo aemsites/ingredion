@@ -4,25 +4,13 @@
 export const API_HOST = 'https://www.ingredion.com';
 
 // stage - testing (todo: remove before go-live)
-  //export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
+// export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
 
 export const getUrlParams = () => {
   const params = new URLSearchParams(window.location.search);
   return {
     productName: params.get('name'),
   };
-};
-
-export const resolveApiPath = (apiKey, region, locale) => {
-  const key = `${region}-${locale}`;
-  const override = API_PATH_OVERRIDES[apiKey]?.[key];
-  if (override) return override;
-
-  const defaultBuilder = DEFAULT_PATHS[apiKey];
-  if (defaultBuilder) return defaultBuilder(region, locale);
-
-  console.warn(`No path defined for ${apiKey}`);
-  return '';
 };
 
 export const DEFAULT_PATHS = {
@@ -96,4 +84,16 @@ export const API_PRODUCT = {
   SEARCH_INGREDIENTS: (region, locale) => `${API_HOST}${resolveApiPath('SEARCH_INGREDIENTS', region, locale)}`,
   SEARCH_DOCUMENTS: (region, locale) => `${API_HOST}${resolveApiPath('SEARCH_DOCUMENTS', region, locale)}`,
   SEARCH_INGREDIENTS_BY_NAME: (region, locale) => `${API_HOST}${resolveApiPath('SEARCH_INGREDIENTS_BY_NAME', region, locale)}`,
+};
+
+export const resolveApiPath = (apiKey, region, locale) => {
+  const key = `${region}-${locale}`;
+  const override = API_PATH_OVERRIDES[apiKey]?.[key];
+  if (override) return override;
+
+  const defaultBuilder = DEFAULT_PATHS[apiKey];
+  if (defaultBuilder) return defaultBuilder(region, locale);
+
+  console.warn(`No path defined for ${apiKey}`);
+  return '';
 };
