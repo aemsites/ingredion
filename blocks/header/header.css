@@ -293,6 +293,8 @@ header {
                             text-transform: none;
                             line-height: 1;
                             -webkit-font-smoothing: antialiased;
+                            right: 1rem;
+                            position: absolute;
                         }
 
                         @media (width < 1080px) {

@@ -130,6 +130,10 @@ function attachIngredientResults(block, ingredientResults, totalItemsCount, sear
     $results.append($clearLink);
     $section.append($results);
     $section.append(ingredientResults);
+    // Scroll to the results section
+    setTimeout(() => {
+      $results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   }
 }
 
