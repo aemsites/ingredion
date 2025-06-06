@@ -10,7 +10,6 @@ async function fetchResults(searchParams, apiEndpoint) {
       `${apiEndpoint}?${searchParams.toString()}`,
     );
     if (!response.ok) throw new Error('Failed to fetch');
-    console.log(response);
     return response.json();
   } catch (error) {
     console.error('Error fetching results:', error);
@@ -26,16 +25,11 @@ async function updateUrlAndFetchResults(url, context, resetToFirstPage = true) {
 
     // Make API call with updated params
     const newResults = await fetchResults(url.searchParams, context.apiEndpoint);
-    console.log('results:', JSON.stringify(newResults, null, 2));
-
     // Update the results while preserving applied facets
     context.results = {
       ...newResults,
       appliedFacets: context.results.appliedFacets,
     };
-
-    console.log('new results:', JSON.stringify(context.results, null, 2));
-
     // Update state with new data
     context.state = {
       ...context.state,
@@ -180,7 +174,6 @@ export default class ProductApiRenderer {
       valueArray.forEach((value) => {
         // Find the corresponding facet option to get the label
         const facetGroup = results.facets?.[group];
-        console.log(facetGroup);
         const facetOption = facetGroup?.options.find((opt) => opt.label === value);
         if (facetOption) {
           appliedFacets.push({
@@ -189,7 +182,6 @@ export default class ProductApiRenderer {
             label: facetOption.label,
           });
         }
-        console.log('applied facets:', JSON.stringify(appliedFacets, null, 2));
       });
     });
 
@@ -476,7 +468,6 @@ export default class ProductApiRenderer {
     if (this.results.appliedFacets?.length > 0) {
       filtersList.appendChild($appliedFilterHeading);
       const appliedFacets = div({ class: 'facet-applied' });
-      console.log(this.results);
       this.results.appliedFacets.forEach((facet) => {
         const appliedItem = div({ class: 'facet-applied__item' });
         appliedItem.appendChild(div({ class: 'facet-applied__label' }, facet.label));
