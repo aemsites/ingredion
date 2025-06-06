@@ -17,7 +17,7 @@ export default async function decorate(block) {
     if (fragment.firstElementChild.classList.contains('footer-utility')) {
       const li = fragment.firstElementChild.querySelector('li:last-child');
       const a = document.createElement('a');
-      a.href = `javascript:void(0)`;
+      a.href = 'javascript:void(0)'; // eslint-disable-line no-script-url
       a.textContent = li.textContent;
       li.textContent = '';
       a.setAttribute('onclick', 'truste.eu.clickListener()');

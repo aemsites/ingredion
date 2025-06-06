@@ -1,10 +1,21 @@
-import { getMetadata, loadScript } from './aem.js';
+import { loadScript } from './aem.js';
+
+function getEnvironment() {
+  const { hostname } = window.location;
+  if (hostname === 'localhost' || hostname.endsWith('.aem.page') || hostname.endsWith('.aem.live')) {
+    return 'dev';
+  }
+  if (hostname === 'www.ingredion.us' || hostname === 'www.ingredion.com') {
+    return 'prod';
+  }
+  return 'unknown';
+}
 
 async function initLaunch(env) {
   const launchUrls = {
     dev: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-159a0321787a-development.min.js',
     stage: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-509818e86df2-staging.min.js',
-    prod: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-0e5b0f94b7f5.min.js'
+    prod: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-0e5b0f94b7f5.min.js',
   };
   if (!Object.keys(launchUrls).includes(env)) {
     return; // unknown env -> skip martech initialization
@@ -12,14 +23,42 @@ async function initLaunch(env) {
   await loadScript(launchUrls[env], { async: '' });
 }
 
+function initDataLayer() {
+  const pageHierarchy = JSON.parse(localStorage.getItem('pageHierarchy'));
+  if (!pageHierarchy) return;
+  window.dataLayer = {
+    page: {
+      pageLevel1: pageHierarchy[0],
+      pageLevel2: pageHierarchy[1],
+      pageLevel3: pageHierarchy[2],
+      pageName: pageHierarchy.join('|'),
+      pageRegion: pageHierarchy[0],
+      pageLanguage: pageHierarchy[1],
+      previousPageName: localStorage.getItem('previousPageName'),
+      pageURL: window.location.href,
+      pageHierarchy: pageHierarchy.join('/'),
+    },
+    user: {
+      country: pageHierarchy[1].split(' - ')[0],
+    },
+    event: {
+      eventName: 'eventName',
+      eventInfo1: '1',
+      eventInfo2: '2',
+      eventInfo3: '3',
+      eventInfo4: '4',
+    },
+  };
+  localStorage.setItem('previousPageName', window.location.href);
+}
+
 /**
  * Initializes the full Martech stack.
  */
-export async function initMartech(env) {
+export async function initMartech() {
   initDataLayer();
-  await initLaunch(env);
-  loadScript('/scripts/gtm-init.js', { defer: true });  
-  
+  await initLaunch(getEnvironment());
+  loadScript('/scripts/gtm-init.js', { defer: true });
 }
 
 export async function addCookieBanner() {
@@ -48,33 +87,4 @@ export async function initChatWidget() {
       </div>
     </div>`;
   document.querySelector('main').append(addWidget);
-}
-
-
-function initDataLayer() {  
-  const pageHierarchy = JSON.parse(localStorage.getItem('pageHierarchy'));  
-  window.dataLayer = {
-    page: {
-      pageLevel1: pageHierarchy[0],
-      pageLevel2: pageHierarchy[1],
-      pageLevel3: pageHierarchy[2],      
-      pageName: pageHierarchy.join('|'),
-      pageRegion: pageHierarchy[0],
-      pageLanguage: pageHierarchy[1],
-      previousPageName: localStorage.getItem('previousPageName'),
-      pageURL: window.location.href,
-      pageHierarchy: pageHierarchy.join('/')
-  },
-  user: {
-      country: pageHierarchy[1].split(' - ')[0]
-  },  
-  event: {
-      eventName: 'eventName',
-          eventInfo1: '1',
-          eventInfo2: '2',
-          eventInfo3: '3',
-          eventInfo4: '4'
-  }
-};
-localStorage.setItem('previousPageName', window.location.href);
 }

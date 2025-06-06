@@ -1,7 +1,6 @@
 // add delayed functionality here
 import { initBackToTop } from './back-to-top.js';
-import { sampleRUM, } from './aem.js';
-import { getEnvironment } from './scripts.js';
+import { sampleRUM } from './aem.js';
 import { initMartech, addCookieBanner } from './martech.js';
 
 if (document.readyState === 'loading') {
@@ -15,5 +14,5 @@ sampleRUM('cwv');
 
 // Full Martech stack
 
-initMartech(getEnvironment());
+initMartech();
 addCookieBanner();
