@@ -328,6 +328,7 @@ export default async function decorate(block) {
     selected.addEventListener('click', (e) => {
       e.stopPropagation();
       options.classList.toggle('hidden');
+      dropdownOptions1.classList.add('hidden');
     });
 
     options.addEventListener('click', (e) => {
