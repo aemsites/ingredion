@@ -4,6 +4,14 @@ import { API_HOST, API_PRODUCT, getUrlParams } from '../../scripts/product-api.j
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 
+const [region, locale] = getRegionLocale();
+
+// Checks if a path looks like a valid image file (e.g., ends with /filename.ext)
+function isValidImagePath(path) {
+  // check if image path is valid
+  return /\/[^/]+\.[a-zA-Z0-9]+$/.test(path);
+}
+
 // Update fixed header
 function updateFixedHeader($productHeader) {
   // clean up any existing fixed headers and observers
@@ -87,20 +95,48 @@ function updateFixedHeader($productHeader) {
   };
 }
 
+function showProductError($main) {
+  const $error = div({ class: 'default-content-wrapper' },
+    div({ class: 'error-message' }, 'Issue retrieving product information'),
+  );
+  $main.querySelector('.section').appendChild($error);
+}
+
 export default async function decorate(doc) {
   const { productName } = getUrlParams();
-  const [region, locale] = getRegionLocale();
   await loadTranslations(locale);
 
   const $main = doc.querySelector('main');
 
   // get product details
-  const fetchProductDetails = await fetch(API_PRODUCT.PRODUCT_DETAILS(productName));
-  const productDetails = await fetchProductDetails.json();
-  const product = productDetails.results[0];
+  let product = null;
+  let productDetails = null;
+  try {
+    // eslint-disable-next-line max-len
+    const fetchProductDetails = await fetch(API_PRODUCT.PRODUCT_DETAILS(region, locale, productName));
+    if (fetchProductDetails.status === 204) {
+      showProductError($main);
+      return;
+    }
+    if (fetchProductDetails.ok) {
+      productDetails = await fetchProductDetails.json();
+      product = productDetails.results?.[0];
+      if (!product) {
+        showProductError($main);
+        return;
+      }
+    } else {
+      showProductError($main);
+      return;
+    }
+  } catch (e) {
+    showProductError($main);
+    return;
+  }
 
   // get product documents
-  const fetchProductDocs = await fetch(API_PRODUCT.ALL_DOCUMENTS(product.productId));
+  const fetchProductDocs = await fetch(
+    API_PRODUCT.ALL_DOCUMENTS(region, locale, product.productId));
   const productDocs = await fetchProductDocs.json();
 
   // update the title tag with the product name
@@ -111,45 +147,56 @@ export default async function decorate(doc) {
 
   let gallery = '';
   if (product.resourceLinks) {
-    // If videos exist, load Vimeo script
-    if (product.resourceLinks.some((link) => link.teaserVideo)) {
-      await new Promise((resolve) => {
-        if (window.Vimeo) {
-          resolve();
-        } else {
-          const vimeoScript = script({ src: 'https://player.vimeo.com/api/player.js' });
-          vimeoScript.onload = resolve;
-          document.head.appendChild(vimeoScript);
-        }
-      });
-    }
-
-    gallery = div({ class: 'gallery' },
-      div({ class: 'slides-wrapper' },
-        div({ class: 'slides' },
-          ...product.resourceLinks.map((link, index) => {
-            if (link.teaserVideo) {
-              // Video
-              const videoId = link.teaserVideo.split('/').pop();
-              return div({ class: `video slide ${index === 0 ? 'active' : ''}` },
-                div({ class: 'vimeo-player', 'data-vimeo-id': videoId }),
-                div({ class: 'play-btn' }),
-                img({ src: API_HOST + link.teaserVideoThumbnail, alt: 'video thumbnail' }),
-              );
-            }
-            // Image
-            return div({ class: `image slide ${index === 0 ? 'active' : ''}` },
-              img({ src: API_HOST + link.resourceLink, alt: 'product image' }),
-            );
-          }),
-        ),
-        div({ class: 'slide-nav' },
-          ...product.resourceLinks.map((link, index) => div({ class: `thumb ${index === 0 ? 'active' : ''}` },
-            img({ src: API_HOST + (link.teaserVideoThumbnail || link.resourceLink), alt: 'thumb image' }),
-          )),
-        ),
-      ),
+    // Filter out resource links that are not valid paths
+    // eslint-disable-next-line max-len
+    const validResourceLinks = product.resourceLinks.filter((link) => link.resourceLink && isValidImagePath(link.resourceLink),
     );
+    // Only build the gallery if there are valid image paths
+    if (validResourceLinks.length > 0) {
+      // If videos exist, load Vimeo script
+      if (product.resourceLinks.some((link) => link.teaserVideo)) {
+        await new Promise((resolve) => {
+          if (window.Vimeo) {
+            resolve();
+          } else {
+            const vimeoScript = script({ src: 'https://player.vimeo.com/api/player.js' });
+            vimeoScript.onload = resolve;
+            document.head.appendChild(vimeoScript);
+          }
+        });
+      }
+
+      // Build the gallery using only valid image/video links
+      gallery = div({ class: 'gallery' },
+        div({ class: 'slides-wrapper' },
+          div({ class: 'slides' },
+            ...validResourceLinks.map((link, index) => {
+              if (link.teaserVideo) {
+                // Video slide
+                const videoId = link.teaserVideo.split('/').pop();
+                return div({ class: `video slide ${index === 0 ? 'active' : ''}` },
+                  div({ class: 'vimeo-player', 'data-vimeo-id': videoId }),
+                  div({ class: 'play-btn' }),
+                  img({ src: API_HOST + link.teaserVideoThumbnail, alt: 'video thumbnail' }),
+                );
+              }
+              // Image slide
+              return div({ class: `image slide ${index === 0 ? 'active' : ''}` },
+                img({ src: API_HOST + link.resourceLink, alt: 'product image' }),
+              );
+            }),
+          ),
+          div({ class: 'slide-nav' },
+            ...validResourceLinks.map((link, index) => div({ class: `thumb ${index === 0 ? 'active' : ''}` },
+              img({ src: API_HOST + (link.teaserVideoThumbnail || link.resourceLink), alt: 'thumb image' }),
+            )),
+          ),
+        ),
+      );
+    } else {
+      // No valid images: do not render the gallery
+      gallery = '';
+    }
   }
 
   // render page content (mobile or desktop)
@@ -174,7 +221,7 @@ export default async function decorate(doc) {
           ),
           div({ class: 'cta-buttons' },
             a({ class: 'button add-sample-btn' }, 'Add Sample'),
-            a({ class: 'button secondary', href: `/${region}/${locale}/modals/contact-us-modal` }, translate('contact-us')),
+            a({ class: 'button secondary', href: `/${region}/${locale}/modals/contact-us-modal-pdp` }, translate('contact-us')),
           ),
         ),
         div({ class: 'anchor-nav' },
@@ -206,8 +253,7 @@ export default async function decorate(doc) {
             ),
 
             // Technical Documents Table
-            div({ class: 'table-wrapper mobile-view' },
-
+            productDocs.technicalDocuments?.length > 0 ? div({ class: 'table-wrapper mobile-view' },
               h2(product.heading),
               h3({ id: 'technical-documents' }, translate('technical-documents')),
               table(
@@ -221,10 +267,10 @@ export default async function decorate(doc) {
                 ),
                 ),
               ),
-            ),
+            ) : null,
 
             // SDS Documents Table
-            div({ class: 'table-wrapper mobile-view' },
+            productDocs.sdsDocuments?.length > 0 ? div({ class: 'table-wrapper mobile-view' },
               h3({ id: 'sds-documents' }, translate('sds-documents')),
               table(
                 tr(
@@ -237,7 +283,7 @@ export default async function decorate(doc) {
                 ),
                 ),
               ),
-            ),
+            ) : null,
           ),
         ),
       );
@@ -261,14 +307,14 @@ export default async function decorate(doc) {
       $productHeader = div({ class: 'product-header' },
         div({ class: 'content' },
           h1(product.heading),
-          div({ class: 'type' }, strong('Product Type: '), product.productType),
+          product.productType ? div({ class: 'type' }, strong('Product Type: '), product.productType) : null,
           div({ class: 'cta-links' },
             a({ class: 'view-all', href: '#technical-documents' }, 'View All Documents'),
-            a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(productName, product.productId) }, 'Download All Documents'),
+            a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, locale, product.productName, product.productId) }, 'Download All Documents'),
           ),
           div({ class: 'cta-buttons' },
             a({ class: 'button add-sample-btn' }, 'Add Sample'),
-            a({ class: 'button secondary', href: `/${region}/${locale}/modals/contact-us-modal` }, translate('contact-us')),
+            a({ class: 'button secondary', href: `/${region}/${locale}/modals/contact-us-modal-pdp` }, translate('contact-us')),
           ),
         ),
         div({ class: 'anchor-nav' },
@@ -357,7 +403,7 @@ export default async function decorate(doc) {
 
         if (!selectedIds) return;
 
-        const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(product.productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
+        const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(region, locale, product.productName)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
 
         // Use a temp link for reliability across browsers
         const tempLink = a({ href: downloadUrl, download: `${docType}-documents.zip`, style: 'display: none' });

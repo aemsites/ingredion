@@ -14,8 +14,6 @@ import {
   getMetadata,
 } from './aem.js';
 
-import { toggleError } from '../blocks/form/form.js';
-
 /**
  * Recursively removes nested <div> elements from a given element.
  */
@@ -28,6 +26,37 @@ export function unwrapNestedDivs(element) {
         element.insertBefore(child.firstChild, child);
       }
       element.removeChild(child);
+    }
+  });
+}
+
+/** allow for link attributes to be added by authors
+ * example usage = Text [class:button,target:_blank,title:Title goes here]
+ * @param main
+ */
+export function decorateLinks(main) {
+  main.querySelectorAll('a').forEach((link) => {
+    const iconSpan = link.querySelector('span.icon');
+    if (iconSpan) {
+      const iconImg = link.querySelector('img');
+      if (iconImg) {
+        const iconName = iconImg.getAttribute('data-icon-name');
+        if (iconName) {
+          link.setAttribute('aria-label', iconName);
+        }
+      }
+    }
+
+    const match = link.textContent.match(/(.*)\[([^\]]*)]/);
+    if (match) {
+      const [, linkText, attrs] = match;
+      link.textContent = linkText.trim();
+      attrs.split(',').forEach((attr) => {
+        let [key, ...value] = attr.trim().split(':');
+        key = key.trim().toLowerCase();
+        value = value.join(':').trim();
+        if (key) link.setAttribute(key, value);
+      });
     }
   });
 }
@@ -99,24 +128,6 @@ function buildAutoBlocks(main) {
 }
 */
 
-/**
- * Decorate links
- * @param {Element} main The container element
- */
-function decorateLinks(main) {
-  main.querySelectorAll('a').forEach((link) => {
-    // add aria-label to links with icons for Accessibility
-    if (link.querySelector('span.icon')) {
-      const iconName = link.querySelector('img').getAttribute('data-icon-name');
-      link.setAttribute('aria-label', iconName);
-    }
-  });
-}
-
-/**
- * Decorates the main element.
- * @param {Element} main The main element
- */
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
   // hopefully forward compatible button decoration
@@ -208,6 +219,43 @@ async function loadEager(doc) {
 function addHeroObserver(doc) {
   const anchorBlock = doc.querySelector('.anchor-wrapper');
   const heroBlock = doc.querySelector('.hero-wrapper');
+  // Function to update active section
+  function updateActiveSection() {
+    if (!anchorBlock) return;
+    const anchorLinks = anchorBlock.querySelectorAll('a');
+    // Get all sections
+    const sections = [];
+    anchorLinks.forEach((link) => {
+      const target = doc.querySelector(link.getAttribute('href'));
+      if (target) sections.push(target);
+    });
+
+    // Find the first section that's above the middle of the viewport
+    const viewportMiddle = window.innerHeight / 2;
+    let activeSection = null;
+
+    sections.forEach((section) => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= viewportMiddle
+        && (!activeSection
+        || section.getBoundingClientRect().top > activeSection.getBoundingClientRect().top)) {
+        activeSection = section;
+      }
+    });
+
+    // Update active state
+    if (activeSection && activeSection !== updateActiveSection.currentActive) {
+      updateActiveSection.currentActive = activeSection;
+      anchorLinks.forEach((link) => {
+        if (link.getAttribute('href') === `#${activeSection.id}`) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+  }
+  // Handle the fixed navigation
   if (anchorBlock && heroBlock) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -220,34 +268,27 @@ function addHeroObserver(doc) {
     });
     observer.observe(heroBlock);
   }
+
+  // Handle the active section highlighting
   if (anchorBlock) {
     const anchorLinks = anchorBlock.querySelectorAll('a');
-    const arrayLinks = [];
+    // Update active section on scroll
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+
+    // Update active section on click (after small delay for scroll animation)
     anchorLinks.forEach((link) => {
-      arrayLinks.push(link.getAttribute('href'));
-    });
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const index = arrayLinks.indexOf(`#${entry.target.id}`);
-        if (entry.isIntersecting) {
-          anchorLinks.forEach((link) => {
-            link.classList.remove('active');
-          });
-          anchorLinks[index].classList.add('active');
-        }
+      link.addEventListener('click', () => {
+        setTimeout(updateActiveSection, 100);
       });
     });
-    anchorLinks.forEach((link) => {
-      const target = doc.querySelector(link.getAttribute('href'));
-      if (target) {
-        observer.observe(target);
-      }
-    });
+
+    // Initial update
+    updateActiveSection();
   }
 }
 
 function initializePhoneValidation(document) {
-  const form = document.querySelector('.modal dialog form') || document.querySelector('form');
+  const form = document.querySelector('.modal dialog form') || document.querySelector('#form-block');
   if (!form) return;
   const input = document.querySelector('.Phone > input');
   const countryDropdown = document.querySelector('.Country .form-dropdown > input');
@@ -283,7 +324,7 @@ function initializePhoneValidation(document) {
     }
   });
 
-  input.addEventListener('input', (e) => {
+  input.addEventListener('input', async (e) => {
     const isValid = iti.isValidNumber();
     let errorMessage;
     if (!isValid && input.value === '') {
@@ -293,6 +334,7 @@ function initializePhoneValidation(document) {
     } else {
       input.setAttribute('full-phone-number', iti.getNumber());
     }
+    const { toggleError } = await import('../blocks/form/form.js');
     toggleError(input.parentElement, !isValid, errorMessage);
   });
 }

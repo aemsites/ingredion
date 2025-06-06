@@ -1,7 +1,8 @@
 .section > .carousel-wrapper {
   max-width: 90rem;
   padding: 0;
-  margin: 0 0 150px 100px;
+  margin: 0;
+  margin-left: 6rem;
 }
 
 .carousel {
@@ -13,11 +14,10 @@
     position: relative;
     height: 604px;
     align-items: center;
-    margin: 100px 0 100px 99px;
+    margin: 0;
 
     .carousel-overview {
       display: flex;
-      justify-content: center;
       align-items: center;
       flex-shrink: 0;
       z-index: 1;
@@ -57,7 +57,7 @@
 
         .carousel-slide {
           padding: 1.25rem 1.5rem;
-          min-width: 44%;
+          max-width: 250px;
           flex: 0 0 44%;
           min-height: 464px;
           scroll-snap-align: start;

@@ -1,14 +1,19 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
-import { div, h3, h4, p, a } from '../../scripts/dom-helpers.js';
-import { createOptimizedPicture, readBlockConfig } from '../../scripts/aem.js';
+import { div, h3, h4, p, a, strong, span, button, img } from '../../scripts/dom-helpers.js';
+import { createOptimizedPicture, readBlockConfig, loadCSS } from '../../scripts/aem.js';
 import { formatDate } from '../../scripts/utils.js';
+import { parseEventDate } from '../../scripts/product-utils.js';
 import ArticleRenderer from './article-renderer.js';
+import { openVideoModal } from '../video/video-modal.js';
+
+loadCSS(`${window.hlx.codeBasePath}/blocks/video/video.css`);
 
 export default async function decorate(block) {
   const {
     'article-data': jsonPath,
     'articles-per-page-options': articlesPerPageOptions,
     'pagination-max-buttons': paginationMaxBtns,
+    filters: documentFilters,
   } = readBlockConfig(block);
 
   const $search = div();
@@ -19,7 +24,6 @@ export default async function decorate(block) {
   const $articles = div({ class: 'articles' });
 
   let $articlePage;
-  let $articleCard;
 
   if (block.classList.contains('cards')) {
     // cards view
@@ -28,7 +32,7 @@ export default async function decorate(block) {
     const $filterMarketsDropdown = div({ 'data-tag': 'Markets' }); // pass the tag
     const $clearFilters = a({ class: 'clear-all' }, 'Clear All');
 
-    $articleCard = (article) => a({ class: 'card', href: article.path },
+    const $articleCard = (article) => a({ class: 'card', href: article.path },
       a({ class: 'thumb', href: article.path },
         createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
       ),
@@ -77,22 +81,136 @@ export default async function decorate(block) {
       paginationDiv: $pagination,
       perPageDropdown: $perPageDropdown,
       countDiv: $count,
+      documentFilters,
     }).render();
-  } else {
-    // list view
-    const $filtersList = div();
+  } else if (block.classList.contains('events')) {
+    // Events view
+    const $filterYearsDropdown = div();
+    const $filterTypesDropdown = div();
+    const $clearFilters = a({ class: 'clear-all' }, 'Clear All');
 
-    $articleCard = (article) => div({ class: 'card' },
-      a({ class: 'thumb', href: article.path },
-        createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
+    const $articleCard = (article) => div({ class: 'card events' },
+      div({ class: 'image-wrapper' },
+        div({ class: 'thumb' },
+          p({ class: 'type' }, JSON.parse(article.eventType)),
+          createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
+        ),
       ),
       div({ class: 'info' },
+        p({ class: 'date' }, parseEventDate(article.eventDate, true)),
         h4(article.title),
-        p(article.description),
-        p({ class: 'date' }, formatDate(article.publishDate)),
-        a({ class: 'button', href: article.path }, 'Learn More'),
+        article.eventType && JSON.parse(article.eventType).length ? p({ class: 'details' }, strong('Event Type: '), JSON.parse(article.eventType)) : null,
+        article.location && JSON.parse(article.location).length ? p({ class: 'details' }, strong('Location: '), JSON.parse(article.location)) : null,
+        article.boothNumber && JSON.parse(article.boothNumber).length ? p({ class: 'details' }, strong('Booth Number: '), JSON.parse(article.boothNumber)) : null,
+        div({ class: 'description' }, JSON.parse(article.content)),
+      ),
+      div({ class: 'buttons' },
+        (() => {
+          if (article.watchNow && JSON.parse(article.watchNow).length) {
+            return a({ class: 'button', href: JSON.parse(article.watchNow) }, 'Watch Now');
+          } if (article.registrationEventSite && JSON.parse(article.registrationEventSite).length) {
+            return a({ class: 'button', href: JSON.parse(article.registrationEventSite) }, 'Register');
+          }
+          return null;
+        })(),
+        a({ class: 'button secondary', href: article.path }, 'Go To Event Site'),
       ),
     );
+
+    $articlePage = div({ class: 'article-list' },
+      div({ class: 'filter-search-sort' },
+        $search,
+        $filterYearsDropdown,
+        $filterTypesDropdown,
+        $sortDropdown,
+      ),
+      div({ class: 'clear-all-wrapper' }, $clearFilters),
+      div({ class: 'filter-results-wrapper' },
+        div({ class: 'results events' },
+          $count,
+          $articles,
+          div({ class: 'controls' },
+            $pagination,
+            $perPageDropdown,
+          ),
+        ),
+      ),
+    );
+
+    await new ArticleRenderer({
+      jsonPath,
+      articlesPerPageOptions,
+      paginationMaxBtns,
+      articleDiv: $articles,
+      articleCard: $articleCard,
+      clearFilters: $clearFilters,
+      filterYearsDropdown: $filterYearsDropdown,
+      filterTypesDropdown: $filterTypesDropdown,
+      searchDiv: $search,
+      sortDropdown: $sortDropdown,
+      paginationDiv: $pagination,
+      perPageDropdown: $perPageDropdown,
+      countDiv: $count,
+    }).render();
+  } else {
+    // regular list view
+    const $filtersList = div();
+
+    const $articleCard = (article) => {
+      const cardClasses = ['card'];
+      let watchVideoBtn = '';
+      let featuredTag = '';
+      let externalLink = '';
+      let ctaButton = a({ class: 'button', href: article.path }, 'Learn More');
+
+      // if redirect is not empty, card is a featured card
+      const isFeatured = article.redirect && article.redirect.length > 0;
+      if (isFeatured) {
+        article.path = article.redirect;
+        externalLink = img({ class: 'external-link-icon', src: '/icons/external-link.svg', alt: 'External Link' });
+        featuredTag = p({ class: 'featured-tag' }, 'Featured Content');
+        ctaButton = a({ class: 'button featured', href: article.redirect }, 'Access Insights');
+        cardClasses.push('featured');
+      }
+
+      let thumb = a({ class: 'thumb', href: article.path },
+        createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
+      );
+
+      // If this is a video, override the click to open a modal on click
+      const isVideo = article.tags && article.tags.includes('Resource Type / Video');
+      if (isVideo && article['video-url']) {
+        thumb = a({ class: 'thumb video', href: article.path },
+          createOptimizedPicture(article['video-thumbnail'], article.title, true, [{ width: '235' }]),
+          button({ class: 'play-button', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' })),
+        );
+        // Open modal on click of thumb or play button
+        const openVideoModalHandler = (e) => {
+          e.preventDefault();
+          openVideoModal(article['video-url'], true, false);
+        };
+        thumb.addEventListener('click', openVideoModalHandler);
+        watchVideoBtn = a({ class: 'button secondary watch-video-btn', href: article.path }, 'Watch Video');
+        watchVideoBtn.addEventListener('click', openVideoModalHandler);
+      }
+
+      return div({ class: cardClasses.join(' ') },
+        externalLink,
+        thumb,
+        div({ class: 'info' },
+          featuredTag,
+          h4(article.title),
+          (() => {
+            const descDiv = div({ class: 'description' });
+            descDiv.innerHTML = article.description;
+            return descDiv;
+          })(),
+          p({ class: 'date' }, formatDate(article.publishDate)),
+          ctaButton,
+          watchVideoBtn,
+        ),
+      );
+    };
 
     $articlePage = div({ class: 'article-list' },
       div({ class: 'filter-search-sort' },
@@ -126,6 +244,7 @@ export default async function decorate(block) {
       paginationDiv: $pagination,
       perPageDropdown: $perPageDropdown,
       countDiv: $count,
+      documentFilters,
     }).render();
   }
 

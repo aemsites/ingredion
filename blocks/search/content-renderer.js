@@ -154,7 +154,6 @@ export default class ContentResourcesRenderer {
    */
   updatePage() {
     const { currentPage, searchQuery, tags, sort, articlesPerPage, allArticles, year, type } = this.state;
-    console.log('Initial articles count:', allArticles.length);
     let articles = [...allArticles];
 
     // Filter articles by tags
@@ -164,7 +163,6 @@ export default class ContentResourcesRenderer {
         const articleTags = article.tags || '';
         return tags.every((tag) => articleTags.toLowerCase().replace(/\s+/g, '-').includes(tag));
       });
-      console.log('After tags filter:', articles.length);
     }
 
     // Filter articles by search query
@@ -174,9 +172,9 @@ export default class ContentResourcesRenderer {
         const title = (article.title || '').toLowerCase();
         const description = (article.description || '').toLowerCase();
         const content = (article.content || '').toLowerCase();
-        return title.includes(query) || description.includes(query) || content.includes(query);
+        const keywords = (article.keywords || '').toLowerCase();
+        return title.includes(query) || description.includes(query) || content.includes(query) || keywords.includes(query);
       });
-      console.log('After search filter:', articles.length);
     }
 
     // Filter articles by year
@@ -190,7 +188,6 @@ export default class ContentResourcesRenderer {
           return false;
         }
       });
-      console.log('After year filter:', articles.length);
     }
 
     // Filter articles by type
@@ -205,7 +202,6 @@ export default class ContentResourcesRenderer {
           return false;
         }
       });
-      console.log('After type filter:', articles.length);
     }
 
     // Sort articles

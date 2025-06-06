@@ -16,17 +16,22 @@
   padding: 40px 0;
 }
 
-.hero.align-left > div {
-  text-align: left;
-}
-
 .hero h1 {
   max-width: 1200px;
   margin-top: 0;
-  margin-left: auto;
+  margin-left: 0;
   margin-right: auto;
   color: var(--theme-clr-background);
   font-size: 3.5rem;
+  letter-spacing: -.58px;
+}
+
+.hero.text-black h1 {
+  color: var(--text-color);
+}
+
+.hero.align-left > div {
+  text-align: left;
 }
 
 .hero.homepage h1 {
@@ -35,8 +40,22 @@
   line-height: 3.5rem;
 }
 
+.hero h1 sup {
+  font-size: 47%;
+  top: -.7em;
+  padding-left: 2px;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
 .hero.homepage a {
   color: var(--dark-grey);
+  text-decoration: none;
+}
+
+.hero.homepage a:hover {
+  color: var(--theme-clr-background);
 }
 
 .hero picture {
@@ -72,6 +91,10 @@
   line-height: 2rem;
   letter-spacing: .0156rem;
   padding: 0 .9375rem;
+}
+
+.hero.block.text-black h1 + p {
+  color: var(--text-color);
 }
 
 .hero.block.align-left h1 + p {

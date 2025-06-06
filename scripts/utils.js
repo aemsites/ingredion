@@ -17,6 +17,7 @@ const REGION_LOCALE_MAP = new Map([
   ['emea', 'Europe, Middle East, and Africa'],
   ['apac', 'Asia Pacific'],
 ]);
+
 /**
  * Retrieves the region and locale from the URL path.
  * If the region or locale is not valid, it defaults to 'na' and 'en-us'

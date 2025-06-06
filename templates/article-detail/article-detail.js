@@ -1,18 +1,13 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h2, a, img, sup, p } from '../../scripts/dom-helpers.js';
+import { div, a, img } from '../../scripts/dom-helpers.js';
 import { getMetadata, createOptimizedPicture } from '../../scripts/aem.js';
 import { breadcrumbs } from '../../scripts/breadcrumbs.js';
 
 export default async function decorate(doc) {
   const $main = doc.querySelector('main');
   const $content = $main.querySelector('.default-content-wrapper');
-  const teaserTitle = getMetadata('teaser-title');
-  const teaserDescription = getMetadata('teaser-description');
+  const title = getMetadata('title');
   const heroImg = getMetadata('og:image');
-  const type = getMetadata('type');
-  const publishedDate = getMetadata('published-date');
-  const categories = getMetadata('categories');
-  const author = getMetadata('author');
   const socialShare = getMetadata('social-share');
   const $breadcrumbs = await breadcrumbs();
   const picBreakpoints = [
@@ -21,62 +16,72 @@ export default async function decorate(doc) {
     { width: '600' },
   ];
 
+  // Create hero section
   const $hero = div({ class: 'hero' });
   const $picture = $main.querySelector('picture');
+
   if ($picture) {
-    // if picture exist use it as the hero
     const pic = $picture.querySelector('img');
     const picOpt = createOptimizedPicture(pic.src, pic.alt, true, picBreakpoints);
     pic.replaceWith(picOpt);
     $hero.append($picture);
   } else if (heroImg) {
-    // use the metadata image as the hero
-    $hero.append(
-      createOptimizedPicture(heroImg, teaserTitle, true, picBreakpoints),
-    );
+    $hero.append(createOptimizedPicture(heroImg, title, true, picBreakpoints));
   }
+
+  // Create social share links
+  const platformConfig = {
+    facebook: {
+      url: 'https://www.facebook.com/sharer/sharer.php',
+      icon: '/icons/facebook.svg',
+    },
+    linkedin: {
+      url: 'https://www.linkedin.com/cws/share',
+      icon: '/icons/linkedin.svg',
+    },
+    x: {
+      url: 'https://x.com/intent/tweet',
+      icon: '/icons/x.svg',
+    },
+  };
 
   const socialShareLinks = socialShare.split(',')
     .map((platform) => {
-      const platformLink = platform.trim().toLowerCase();
-      if (platformLink === 'facebook') {
-        return a({
-          class: 'icon icon-facebook',
-          href: `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`,
-          'aria-label': 'Facebook',
-        }, img({ src: '/icons/facebook.svg', alt: 'Facebook' }));
-      }
-      if (platformLink === 'x') {
-        return a({
-          class: 'icon icon-x',
-          href: `https://x.com/intent/tweet?url=${window.location.href}`,
-          'aria-label': 'X',
-        }, img({ src: '/icons/x.svg', alt: 'X' }));
-      }
-      return null; // Return null for unsupported platforms
+      const platformKey = platform.trim().toLowerCase();
+      const config = platformConfig[platformKey];
+
+      if (!config) return null;
+
+      return a({
+        class: `icon icon-${platformKey}`,
+        href: `${config.url}?url=${window.location.href}`,
+        'aria-label': platformKey.charAt(0).toUpperCase() + platformKey.slice(1),
+      },
+      img({ src: config.icon, alt: platformKey.charAt(0).toUpperCase() + platformKey.slice(1) }));
     })
-    .filter(Boolean); // Filter out null entries
+    .filter(Boolean);
 
-  const $header = div({ class: 'header' },
-    $breadcrumbs,
-    div({ class: 'type' }, type),
-    h2(teaserTitle),
-    p({ class: 'description' }, teaserDescription),
-    p(sup(author)),
-    div({ class: 'social-share' },
-      // linkedIn always shown
-      a({
-        class: 'icon icon-linkedin',
-        href: `https://www.linkedin.com/cws/share?url=${window.location.href}`,
-        'aria-label': 'LinkedIn',
-      }, img({ src: '/icons/linkedin.svg', alt: 'LinkedIn' })),
-      // other share icons
-      ...socialShareLinks,
-    ),
-    div({ class: 'line-break' }),
-  );
+  const $socialShare = div({ class: 'social-share' }, ...socialShareLinks);
+  const $lineBreak = div({ class: 'line-break' });
 
-  // center align ### paragraphs
+  // Handle sections
+  const $sections = Array.from($main.querySelectorAll('.section'));
+  if ($sections.length) {
+    $sections.forEach((section) => section.remove());
+    const $container = div({ class: 'section-container' },
+      $breadcrumbs,
+      ...$sections,
+    );
+    $main.insertBefore($container, $hero.nextSibling);
+  }
+
+  // Add social share to article header
+  const $articleHeader = $main.querySelector('.article-header-wrapper');
+  if ($articleHeader) {
+    $articleHeader.append($socialShare, $lineBreak);
+  }
+
+  // Center align paragraphs with ###
   $content.querySelectorAll('p').forEach((paragraph) => {
     if (paragraph.textContent.trim() === '###') {
       paragraph.classList.add('centered');
@@ -84,36 +89,4 @@ export default async function decorate(doc) {
   });
 
   $main.prepend($hero);
-  $content.prepend($header);
-
-  const teaserTitleHeader = $header.querySelector('h2');
-  let categoryTags;
-
-  if (categories) {
-    categoryTags = div({ class: 'category-tags' },
-      publishedDate,
-      ' | ',
-      categories,
-    );
-  } else {
-    categoryTags = div({ class: 'category-tags' },
-      publishedDate,
-    );
-  }
-
-  teaserTitleHeader.insertAdjacentElement('afterend', categoryTags);
-
-  let nextElement = $content.nextElementSibling;
-  while (nextElement) {
-    const temp = nextElement.nextElementSibling;
-    if (nextElement.classList.contains('default-content-wrapper')) {
-      while (nextElement.firstChild) {
-        $content.appendChild(nextElement.firstChild);
-      }
-      nextElement.remove();
-    } else {
-      $content.appendChild(nextElement);
-    }
-    nextElement = temp;
-  }
 }

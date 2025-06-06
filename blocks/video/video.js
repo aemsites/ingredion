@@ -6,15 +6,11 @@
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-function embedVimeo(url, autoplay, background) {
+function embedVimeo(url, autoplay) {
   const [, video] = url.pathname.split('/');
   let suffix = '';
-  if (background || autoplay) {
-    const suffixParams = {
-      autoplay: autoplay ? '1' : '0',
-      background: background ? '1' : '0',
-    };
-    suffix = `?${Object.entries(suffixParams).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')}`;
+  if (autoplay) {
+    suffix = '?autoplay=1';
   }
   const temp = document.createElement('div');
   temp.innerHTML = `<div class="video-modal" style="display: block;">
@@ -130,11 +126,25 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
 
 export default async function decorate(block) {
   const placeholder = block.querySelector('picture');
-  const link = block.querySelector('a').href;
+  const link = block.querySelector('a')?.href;
   block.textContent = '';
   block.dataset.embedLoaded = false;
 
   const autoplay = block.classList.contains('autoplay');
+  if (!placeholder && autoplay) {
+    const playOnLoad = autoplay && !prefersReducedMotion.matches;
+    loadVideoEmbed(block, link, playOnLoad, autoplay);
+  } else if (!placeholder || autoplay) {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        observer.disconnect();
+        const playOnLoad = autoplay && !prefersReducedMotion.matches;
+        loadVideoEmbed(block, link, playOnLoad, autoplay);
+      }
+    });
+    observer.observe(block);
+  }
+
   if (placeholder) {
     block.classList.add('placeholder');
     const wrapper = document.createElement('div');
@@ -144,23 +154,12 @@ export default async function decorate(block) {
     if (!autoplay) {
       wrapper.insertAdjacentHTML(
         'beforeend',
-        '<button class="play-button"><span class="icon-play-button"></span></button?',
+        '<button class="play-button" aria-label="Play video"><span class="icon-play-button"></span></button>',
       );
       wrapper.addEventListener('click', () => {
         loadVideoEmbed(block, link, true, false);
       });
     }
     block.append(wrapper);
-  }
-
-  if (!placeholder || autoplay) {
-    const observer = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting)) {
-        observer.disconnect();
-        const playOnLoad = autoplay && !prefersReducedMotion.matches;
-        loadVideoEmbed(block, link, playOnLoad, autoplay);
-      }
-    });
-    observer.observe(block);
   }
 }

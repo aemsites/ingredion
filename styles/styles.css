@@ -33,6 +33,7 @@
   --border-color-light: #d8d9d9;
   --white: #fff;
   --black: #000;
+  --pastel-green: #68E0A1;
 
   /* form styles */
   --form-field-border-color: #d8d9d9;
@@ -78,7 +79,8 @@
 .purple { --theme-clr-background: var(--purple); --theme-clr-text: #fff }
 .dark-purple { --theme-clr-background: var(--dark-purple); --theme-clr-text: #fff }
 .dark-blue { --theme-clr-background: var(--dark-blue); --theme-clr-text: #fff }
-.yellow { --theme-clr-background: var(--yellow); --theme-clr-text: var(--black) }
+.yellow { --theme-clr-background: var(--yellow); --theme-clr-text: var(--dark-grey) }
+.pastel-green { --theme-clr-background: var(--pastel-green); --theme-clr-text: var(--dark-grey) }
 
 /* fallback fonts */
 @font-face {
@@ -166,6 +168,7 @@ ul,
 pre,
 blockquote {
   margin: 0.8em 0 .25em;
+  font-size: 1rem;
 }
 
 ol,
@@ -196,8 +199,15 @@ button {
 /* links */
 a:any-link {
   color: var(--green);
-  text-decoration: none;
   word-break: break-word;
+}
+
+sup, sub {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+  top: -.5em;
 }
 
 /* buttons */
@@ -216,7 +226,7 @@ a.button,
   color: var(--dark-grey);
   border: 0;
   padding: 1rem;
-  text-transform: capitalize;
+  text-decoration: none;
 
   &:hover {
     background: var(--purple);
@@ -229,7 +239,6 @@ a.button,
     color: var(--green);
     border: 2px solid var(--green);
     padding: .875rem;
-    text-transform: capitalize;
 
     &:hover {
       border-color: var(--dark-green);
@@ -250,7 +259,7 @@ a.button,
     }
   }
 
-  &.play {
+  &.play, &.play:hover {
     cursor: pointer;
     border: 0;
     background: #fff;
@@ -365,6 +374,12 @@ main {
   /* sections */
   .section.center {
     text-align: center;
+    margin: auto;
+    max-width: 50.1875rem;
+
+   &.full-width {
+    max-width: none;
+    }
   }
 
   > .section {
@@ -375,6 +390,58 @@ main {
       max-width: var(--max-page-width);
       margin: auto;
     }
+  }
+
+  .light-grey {
+    background: rgba(239 239 239 / 40%);
+  }
+
+  .margin-b-small {
+    margin-bottom: 3.125rem;
+  }
+
+  .margin-t-small {
+    margin-top: 3.125rem;
+  }
+
+  .margin-b-medium {
+    margin-bottom: 6.25rem;
+  }
+
+  .margin-t-medium {
+    margin-top: 6.25rem;
+  }
+
+  .margin-b-large {
+    margin-bottom: 12.5rem;
+  }
+
+  .margin-t-large {
+    margin-top: 12.5rem;
+  }
+
+  .padding-b-small {
+    padding-bottom: 3.125rem;
+  }
+
+  .padding-t-small {
+    padding-top: 3.125rem;
+  }
+
+  .padding-b-medium {
+    padding-bottom: 6.25rem;
+  }
+
+  .padding-t-medium {
+    padding-top: 6.25rem;
+  }
+
+  .padding-b-large {
+    padding-bottom: 12.5rem;
+  }
+
+  .padding-t-large {
+    padding-top: 12.5rem;
   }
 }
 

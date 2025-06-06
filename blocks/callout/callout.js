@@ -1,4 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { openVideoModal } from '../video/video-modal.js';
 
 const themeColors = [
   'blue',
@@ -11,121 +12,46 @@ const themeColors = [
   'dark-purple',
   'dark-blue',
   'yellow',
+  'pastel-green',
 ];
-
-function embedVimeo(url, autoplay, background) {
-  const [, video] = url.pathname.split('/');
-  let suffix = '';
-  if (background || autoplay) {
-    const suffixParams = {
-      autoplay: autoplay ? '1' : '0',
-      background: background ? '1' : '0',
-    };
-    suffix = `?${Object.entries(suffixParams).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')}`;
-  }
-  const temp = document.createElement('div');
-  temp.innerHTML = `<div class="video-modal" style="display: block;">
-    <div class="video-modal-wrapper">
-      <div class='video-modal-content' style="left: 0; width: 100%; position: relative; padding-bottom: 45%;">
-        <iframe src="https://player.vimeo.com/video/${video}${suffix}" 
-          style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" 
-          frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen  
-          title="Content from Vimeo" loading="lazy"></iframe>
-        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal"></div>
-      </div>
-    </div>
-  </div>`;
-  return temp.children.item(0);
-}
-
-function embedYoutube(url, autoplay, background) {
-  const usp = new URLSearchParams(url.search);
-  let suffix = '';
-  if (background || autoplay) {
-    const suffixParams = {
-      autoplay: autoplay ? '1' : '0',
-      mute: background ? '1' : '0',
-      controls: background ? '0' : '1',
-      disablekb: background ? '1' : '0',
-      loop: background ? '1' : '0',
-      playsinline: background ? '1' : '0',
-    };
-    suffix = `&${Object.entries(suffixParams).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')}`;
-  }
-  let vid = usp.get('v') ? encodeURIComponent(usp.get('v')) : '';
-  const embed = url.pathname;
-  if (url.origin.includes('youtu.be')) {
-    [, vid] = url.pathname.split('/');
-  }
-
-  const temp = document.createElement('div');
-  temp.innerHTML = `<div class="video-modal" style="display: block;">
-    <div class="video-modal-wrapper">
-      <div class='video-modal-content' style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 45%;">
-        <iframe src="https://www.youtube.com${vid ? `/embed/${vid}?rel=0&v=${vid}${suffix}` : embed}" style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;"
-        frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen
-        title="Content from YouTube" loading="lazy"></iframe>
-        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal"></div>
-      </div>
-    </div>
-  </div>`;
-  return temp.children.item(0);
-}
-
-const loadVideoEmbed = (block, link, autoplay, background) => {
-  if (block.dataset.embedLoaded === 'true') {
-    return;
-  }
-  const url = new URL(link);
-  const isVimeo = link.includes('vimeo');
-  const isYoutube = link.includes('youtube') || link.includes('youtu.be');
-  if (isYoutube) {
-    const embedWrapper = embedYoutube(url, autoplay, background);
-    block.append(embedWrapper);
-    embedWrapper.querySelector('iframe').addEventListener('load', () => {
-      block.dataset.embedLoaded = true;
-    });
-    document.body.classList.add('modal-open');
-    embedWrapper.querySelector('.video-modal-close').addEventListener('click', () => {
-      embedWrapper.remove();
-      block.dataset.embedLoaded = false;
-      document.body.classList.remove('modal-open');
-    });
-  } else if (isVimeo) {
-    const embedWrapper = embedVimeo(url, autoplay, background);
-    block.append(embedWrapper);
-    embedWrapper.querySelector('iframe').addEventListener('load', () => {
-      block.dataset.embedLoaded = true;
-    });
-    document.body.classList.add('modal-open');
-    embedWrapper.querySelector('.video-modal-close').addEventListener('click', () => {
-      embedWrapper.remove();
-      block.dataset.embedLoaded = false;
-      document.body.classList.remove('modal-open');
-    });
-  }
-};
 
 export default function decorate(block) {
   const pic = block.querySelector('picture');
   const h3 = block.querySelector('h3');
   const h2 = block.querySelector('h2');
   const h1 = block.querySelector('h1');
-  const link = block.querySelector('a');
-  const pFirstOfType = block.querySelector('p:first-of-type');
+  const linkElement = block.querySelector('a[href*="youtube.com"], a[href*="youtu.be"], a[href*="vimeo.com"]');
+  const videoLink = linkElement ? linkElement.href : null;
+
+  // This line selects the first paragraph or unordered list element within the block
+  // It uses a CSS selector with the :first-of-type pseudo-class to get the first paragraph
+  // or alternatively selects a ul element if it exists instead
+  // This element will be used as the text content for the callout when no header is present
+  const textElement = block.querySelector('p:first-of-type, ul');
+
+  if (block.classList.contains('full-width')) {
+    block.parentElement.classList.add('full-width');
+  }
 
   const header = h1 ?? h2 ?? h3;
 
-  const textWrapper = header ? header.closest('div') : pFirstOfType.closest('div');
+  const textWrapper = header ? header.closest('div') : textElement.closest('div');
   textWrapper.classList.add('callout-content');
 
   const classListArray = Array.from(block.classList);
 
-  const hasThemeColor = themeColors.some((color) => classListArray.includes(color));
+  const themeColor = themeColors.find((color) => classListArray.includes(color));
+  const hasThemeColor = !!themeColor;
   if (!hasThemeColor) {
     block.classList.add('default');
-  } else if (link) {
-    link.classList.add('transparent'); // apply transparent button style
+  } else if (linkElement) {
+    linkElement.classList.add('transparent'); // apply transparent button style
+  }
+
+  if (themeColor === 'green') {
+    block.querySelectorAll('a').forEach((a) => {
+      a.style.color = 'var(--white)';
+    });
   }
 
   if (pic) {
@@ -152,10 +78,14 @@ export default function decorate(block) {
           '<div class="video-placeholder-play"><button type="button" class="button play" title="Play"></button></div>',
         );
         picWrapper.addEventListener('click', () => {
-          loadVideoEmbed(block, link.href, true, false);
+          if (videoLink) {
+            openVideoModal(videoLink, true, false);
+          }
         });
       }
-      link.remove();
+      if (linkElement) {
+        linkElement.remove();
+      }
     }
   } else {
     block.classList.add('text-only');
