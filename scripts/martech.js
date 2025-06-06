@@ -16,11 +16,10 @@ async function initLaunch(env) {
  * Initializes the full Martech stack.
  */
 export async function initMartech(env) {
+  initDataLayer();
   await initLaunch(env);
   loadScript('/scripts/gtm-init.js', { defer: true });  
-  await loadScript('/scripts/salesforce-chat-widget.js', { defer: true });
-
-  await initChatWidget();
+  
 }
 
 export async function addCookieBanner() {
@@ -49,4 +48,33 @@ export async function initChatWidget() {
       </div>
     </div>`;
   document.querySelector('main').append(addWidget);
+}
+
+
+function initDataLayer() {  
+  const pageHierarchy = JSON.parse(localStorage.getItem('pageHierarchy'));  
+  window.dataLayer = {
+    page: {
+      pageLevel1: pageHierarchy[0],
+      pageLevel2: pageHierarchy[1],
+      pageLevel3: pageHierarchy[2],      
+      pageName: pageHierarchy.join('|'),
+      pageRegion: pageHierarchy[0],
+      pageLanguage: pageHierarchy[1],
+      previousPageName: localStorage.getItem('previousPageName'),
+      pageURL: window.location.href,
+      pageHierarchy: pageHierarchy.join('/')
+  },
+  user: {
+      country: pageHierarchy[1].split(' - ')[0]
+  },  
+  event: {
+      eventName: 'eventName',
+          eventInfo1: '1',
+          eventInfo2: '2',
+          eventInfo3: '3',
+          eventInfo4: '4'
+  }
+};
+localStorage.setItem('previousPageName', window.location.href);
 }
