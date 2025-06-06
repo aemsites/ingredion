@@ -371,6 +371,11 @@ main {
     text-align: center;
     max-width: 50.1875rem;
     margin: auto;
+
+  /* overide to full width */
+   &.full-width {
+    max-width: none;
+    }
   }
 
   > .section {
