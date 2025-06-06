@@ -571,7 +571,7 @@ export default class ProductApiRenderer {
     }));
 
     // Find the currently selected option and use its label for display
-    const selectedOption = sortOptions.find((opt) => opt.value === this.state.sort);
+    const selectedOption = sortOptions.find((opt) => opt.label === this.state.sort);
     const selectedDisplay = selectedOption ? selectedOption.label : 'Sort By';
 
     const $dropdown = createSelectDropdown({
@@ -585,7 +585,7 @@ export default class ProductApiRenderer {
             url.searchParams.set('activePage', '1');
 
             // Update dropdown display
-            const selectedOption = sortOptions.find((opt) => opt.value === value);
+            const selectedOption = sortOptions.find((opt) => opt.label === value);
             dropdown.querySelector('.selected').textContent = `${selectedOption.label}`;
 
             // Update selected option styling
