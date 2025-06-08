@@ -62,6 +62,9 @@ export function createHeroBlock(document, main) {
       }
     });
     if (hero.classList.contains('hero--text-left')) blockOptions.push('align-left');
+
+    if (!hero.querySelector('.hero__text').classList.contains('hero__text--light')) blockOptions.push('text-black');
+
     const cells = blockOptions.length > 0 ? [[`Hero(${blockOptions.join(', ')})`]] : [['Hero']];
     
     const image = hero.querySelector('.hero__image > picture').outerHTML;
