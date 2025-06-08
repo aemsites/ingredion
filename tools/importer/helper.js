@@ -211,6 +211,8 @@ export function createCalloutBlock(document, main) {
       blockOptions.push(backgroundColor);
     }
     
+    let ctaLeft;
+
     [...callOut.children].forEach((child) => {
       if (child.classList.contains('colorblock-text-cta__text')) {
         heading = child.querySelector('.heading > h3').textContent;
@@ -218,6 +220,7 @@ export function createCalloutBlock(document, main) {
         if (rteText) {
           rteText = rteText.innerHTML;
         }
+        ctaLeft = callOut.classList.contains('colorblock-text-cta--ctaLeft');
       } else if (child.classList.contains('secondary-cta-link')) {
         ctalink = child.outerHTML;
       }
@@ -225,8 +228,13 @@ export function createCalloutBlock(document, main) {
     });
     
     const cells = blockOptions.length > 0 ? [[`Callout(${blockOptions.join(', ')})`]] : [['Callout']];
-    cells.push([`<h3>${heading}</h3> ${rteText}`, `${ctalink}`]);
     
+    if (ctaLeft) {
+      cells.push([`${ctalink}`, `<h3>${heading}</h3> ${rteText}`]);
+    } else {
+      cells.push([`<h3>${heading}</h3> ${rteText}`, `${ctalink}`]);
+    }
+
     const callOutBlock = WebImporter.DOMUtils.createTable(cells, document);
     callOut.replaceWith(callOutBlock);
   });
