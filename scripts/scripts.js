@@ -398,7 +398,7 @@ export function getEnvironment() {
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3500);
+  window.setTimeout(() => import('./delayed.js'), 3200);
   // load anything that can be postponed to the latest here
 }
 
