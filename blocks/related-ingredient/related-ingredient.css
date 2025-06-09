@@ -138,8 +138,8 @@
 }
 
 .related-ingredient-container {
-  background: rgba(239, 239, 239, 0.4);
-  padding: 7.5rem 0px;
+  background: rgb(239 239 239 / 40%);
+  padding: 7.5rem 0;
 
   .default-content-wrapper {
     max-width: 50.1875rem;
