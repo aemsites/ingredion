@@ -100,10 +100,6 @@
       }
     }
 
-    > .callout-image {
-      order: 1;
-    }
-
     .button-container {
       a {
         min-width: 10rem;
@@ -233,16 +229,6 @@
 
   .default {
     margin: 0;
-    
-    > div {
-      > .callout-content {
-        order: 1;
-      }
-  
-      > .callout-image {
-        order: 0;
-      }
-    }
   }
 
   .text-only {
@@ -318,6 +304,20 @@
 
       h3, p, ul, li {
         max-width: none;
+      }
+    }
+  }
+}
+
+@media (width < 1080px) {
+  .default {    
+    > div {
+      > .callout-content {
+        order: 0;
+      }
+  
+      > .callout-image {
+        order: 1;
       }
     }
   }
