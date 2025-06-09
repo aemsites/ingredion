@@ -168,8 +168,8 @@
 .callout > div > .callout-content {
           a.button:hover {
             text-decoration: none;
-            border-color: var(--light-grey);
-            color: var(--light-grey);
+            border-color: var(--new-green);
+            color: var(--new-green);
           }
       }
 
@@ -287,8 +287,8 @@
 
         a:hover {
           text-decoration: none;
-          border-color: var(--light-grey);
-          color: var(--light-grey);
+          border-color: var(--new-green);
+          color: var(--new-green);
         }
       }
     }
