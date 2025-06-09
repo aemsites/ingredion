@@ -7,7 +7,6 @@ export default function decorate(block) {
   const alt = block.querySelector(':scope > div:nth-child(2)').textContent.trim().slice(0, 125);
   const mobilePic = block.querySelectorAll('picture')[1];
   const mobileBreakpoint = window.matchMedia('(max-width: 768px)');
-  desktopImg.setAttribute('fetchpriority', 'high');
 
   // remove mobile row from DOM
   Array.from(block.children).forEach((row) => {
