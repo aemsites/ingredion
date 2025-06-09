@@ -2,6 +2,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  justify-content: center;
 }
 
 .cards .button {
@@ -84,27 +85,18 @@
 
 @media (width >= 1080px) {
   .cards > ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 40px 20px;
-  }
+    
+    > li {
+      flex-basis: calc(33% - 26px);
 
-  
-}
-
-@media (width <= 1079px) {
-  .cards {
-    overflow-x: auto;
-  }
-
-  .cards > ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(85%, 1fr));
-    gap: 20px 40px;
-  }
-
-  .cards > ul > li {
-    flex-shrink: 0;
+      &:nth-child(3n+1) {
+        margin-left: 0;
+      }
+    }
   }
 }
 
@@ -112,6 +104,7 @@
   background: var(--theme-clr-background);
   color: var(--theme-clr-text);
   transition: transform 0.2s linear;
+  margin-bottom: 40px;
 }
 
 .cards > ul > li img {
@@ -167,12 +160,24 @@
 
   .cards.slim > ul {
     width: auto;
-    grid-template-columns: repeat(auto-fit, minmax(23%, 1fr));
-    gap: 10px;
+    gap: 0;
   }
 }
 
-@media (width <= 1079px) {
+.cards.slim > ul > li {
+  display: inline-block;
+  max-width: 17.1875rem;
+  box-shadow: 0 20px 40px 0 rgba(0 0 0 / 10%);
+  margin: 0 1rem;
+  outline: 0;
+  flex-basis: calc(22%);
+
+  &:last-child{
+    margin-right: 0;
+  }
+}
+
+@media (width < 1080px) {
   .cards.slim {
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -187,19 +192,17 @@
     width: 100%;
     overflow-x: auto;
     padding-bottom: 50px;
+    justify-content: normal;
+    
+    > li {
+      flex-shrink: 0;
+      flex-basis: auto;
+    }
   }
 
   .cards.slim > ul::-webkit-scrollbar {
     display: none;
   }
-}
-
-.cards.slim > ul > li {
-  display: inline-block;
-  max-width: 17.1875rem;
-  box-shadow: 0 20px 40px 0 rgba(0 0 0 / 10%);
-  margin: 0 1.25rem;
-  outline: 0;
 }
 
 @media (width >= 1080px) {
@@ -209,12 +212,6 @@
 
   .cards.slim > ul > li:hover {
     transform: translate(0, -10px);
-  }
-}
-
-@media (width <= 1079px) {
-  .cards.slim > ul > li {
-    flex-shrink: 0;
   }
 }
 
