@@ -136,3 +136,19 @@
     }
   }
 }
+
+.related-ingredient-container {
+  background: rgba(239, 239, 239, 0.4);
+  padding: 7.5rem 0px;
+
+  .default-content-wrapper {
+    max-width: 50.1875rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2.5rem;
+    
+    h2, p {
+      text-align: center;
+    }
+  }
+}
