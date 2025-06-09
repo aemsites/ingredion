@@ -7,6 +7,7 @@
 
     .filter-search-sort {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       margin: 6rem 0 2.5rem;
       gap: 40px;
@@ -15,6 +16,10 @@
         position: relative;
         flex: 1;
 
+        @media (width <= 1080px) {
+          min-width: 100%;
+          margin-bottom: 20px;
+        }
 
         input {
           width: 100%;
@@ -57,10 +62,19 @@
         width: 180px;
         ul { width: inherit }
       }
+      
       .filter-years { width: 110px }
       .filter-by-tag { width: 260px }
 
+      @media (width <= 1080px) {
+        gap: 20px;
 
+        [class*="filter-"]:not(.filter-search) {
+          flex: 1 1 0;
+          min-width: 0;
+          width: calc(100vw * .33 - 30px);
+        }
+      }
     }
 
 
@@ -100,6 +114,7 @@
           margin: 0;
           cursor: pointer;
           border-top: 1px solid var(--border-color);
+          text-transform: capitalize;
 
           .icon {
             color: var(--green);
@@ -120,7 +135,11 @@
             display: flex;
             align-items: center;
 
-            a { color: var(--text-color) }
+            a { 
+              color: var(--text-color);
+              text-decoration: none;
+              text-transform: capitalize;
+            }
 
             &::before {
               content: '';
@@ -151,9 +170,13 @@
             display: flex;
             align-items: center;
             cursor: pointer;
+            text-transform: capitalize;
 
             a { color: var(--text-color) }
-            .icon-close { color: var(--green) }
+            
+            .icon-close { 
+              color: var(--green); 
+              margin-left: 10px; }
           }
         }
       }
@@ -171,6 +194,7 @@
 
         .articles {
           .card {
+            position: relative;
             display: flex;
             border: 1px solid var(--border-color);
             margin-top: 2.5rem;
@@ -184,7 +208,7 @@
               flex: none;
               width: 235px;
               height: 185px;
-              background: #dfdfdf;
+              position: relative;
 
               img {
                 width: 100%;
@@ -201,12 +225,109 @@
                 margin: 20px 0 0;
               }
 
-              h4 { margin: 0 }
+              h4 { 
+                letter-spacing: .016rem;
+                font-family: MiloPro-Bold, Helvetica, sans-serif;
+                margin: 0 0 1rem !important;
+                font-size: 1.5rem;
+                line-height: 2rem;
+              }
 
               .button { margin: 1rem 0 0 }
             }
           }
         }
+
+        .featured {
+          background-color: var(--background-color-grey);
+
+          .external-link-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+          }
+
+          .featured-tag {
+            font-family: MiloPro-Bold;
+            color: #b41f75;
+            font-size: 1.2rem;
+            margin: 0 0 .5rem;
+          }
+
+          .button {
+            background: var(--purple);
+            color: var(--white);
+
+            &:hover {
+              background: var(--dark-purple);
+            }
+          }
+        }
+
+
+        /* Events View Styles */
+        .events {
+          @media ( width <= 1080px) {
+            flex-direction: column;
+          }
+
+          .info {
+            padding-right: 80px;
+
+            @media ( width <= 1080px) {
+              padding-right: 0;
+              margin: 0;
+            }
+
+            .date {
+              font-family: OpenSans-Bold, Helvetica, sans-serif;
+              font-size: .75rem;
+              color: #373738;
+              margin: 0 0 .5rem;
+            }
+
+            .details {
+              margin: 10px 0;
+              font-size: 1rem;
+
+              strong {
+                font-family: OpenSans-Bold, Helvetica, sans-serif;
+                font-weight: 700;
+              }
+            }
+
+            .description {
+              margin: 30px 0;
+              font-size: 1rem;
+            }
+          }
+
+          .image-wrapper {
+            min-height: 260px;
+
+            .type {
+              font-size: 1rem;
+              font-family: MiloPro-Bold, Helvetica, sans-serif;
+              font-weight: 700;
+              color: var(--mustard);
+              margin: 0 0 10px;
+            }
+          }
+
+          .buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+
+            @media ( width <= 1080px) {
+              flex-direction: row;
+            }
+          }
+        }
+
+
 
         /* Cards View Styles */
         &.cards {

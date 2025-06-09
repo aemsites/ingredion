@@ -1,8 +1,26 @@
 .author {
     display: flex;
+    flex-direction: column;
+    margin: 0 0.9375rem;
+}
+
+.author.static-author-block {
+    flex-direction: row;
+    padding: 0 0 6.5625rem;
 }
 
 .author-bio-image {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    img {
+        box-shadow: 4px 10px 15px 0 rgba(0 0 0 / 10%);
+    }
+}
+
+.static-author-block .author-bio-image {
+    display: block;
     width: 100%;
     max-width: 4.8125rem;
     height: 5.125rem;
@@ -10,6 +28,23 @@
 }
 
 .author-bio-text {
+    text-align: left;
+    margin-left: 0.625rem;
+    margin-top: 0.625rem;
+
+    .designation {
+        font-size: 1.375rem;
+        line-height: 2rem;
+        letter-spacing: .0156rem;
+        color: var(--text-color);
+        margin: 1rem 0;
+    }
+}
+
+.static-author-block .author-bio-text {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: .0156rem;
     max-width: 33.25rem;
 }
 
@@ -20,8 +55,10 @@
     line-height: 2rem;
 }
 
-.author-bio-text .heading h4 {
-    font-size: 1.5rem;
+.author-bio-text .heading h1 {
+    font-size: 2.5rem;
+    line-height: 3.5rem;
+    letter-spacing: -.0312rem;
 }
 
 .body-text {
@@ -38,30 +75,42 @@
 }
 
 @media (width >= 67.5625rem) {
-    .author {
-        flex-basis: 100%;
+    .author.static-author-block {
+        padding: 0;
     }
-}
 
-@media (width >= 67.5625rem) {
-    .author-bio-image {
+    .author-bio-text .heading h1 {
+        font-size: 3.5rem;
+    }
+
+    .author-bio-text .heading h4 {
+        font-size: 1.5rem;
+    }
+
+    .static-author-block .author-bio-image {
         margin-right: 2.5rem;
         max-width: 10.625rem;
         height: 11.1875rem;
     }
 }
 
-@media (width >= 67.5625rem) {
-    .heading h4 {
-        font-size: 1.5rem;
+@media (width >= 48rem) {
+    .author:not(.static-author-block) {
+        flex-direction: row;
     }
-}
 
-@media (width >= 67.5625rem) {
-    .author-wrapper {
-        display: flex;
-        flex-wrap: wrap;
-        margin-left: auto;
-        margin-right: auto;
+    .author:not(.static-author-block) .author-bio-image {
+        width: 25%;
+        margin-right: 0.625rem;
+
+        img {
+            width: 100%;
+            height: 12.5rem;
+            object-fit: cover;
+        }
+    }
+
+    .author:not(.static-author-block) .author-bio-text {
+        width: 75%;
     }
 }

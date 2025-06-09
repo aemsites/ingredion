@@ -1,16 +1,145 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, h4, h3, a, table, tr, th, td, label, input } from './dom-helpers.js';
 import { API_PRODUCT, API_HOST } from './product-api.js';
-import { translate } from './utils.js';
+import { translate, getRegionLocale } from './utils.js';
 import { createModal } from '../blocks/modal/modal.js';
 import { loadCSS } from './aem.js';
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+/**
+ * Format a date into a readable string
+ * @param {Date} date - The date to format
+ * @param {boolean} isRange - Whether this is part of a date range
+ * @returns {string} The formatted date string
+ */
+function formatDate(date, isRange = false) {
+  const month = MONTHS[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${month} ${day}${isRange ? '' : ','} ${year}`;
+}
+
+/**
+ * Parse event date from various string formats and optionally format it
+ * @param {string} dateStr - The date string to parse
+ * @param {boolean} [format=false] - Whether to return a formatted string instead of Date object
+ * @returns {Date|string|null} The parsed date, formatted string, or null if unparseable
+ */
+export function parseEventDate(dateStr, format = false) {
+  if (!dateStr) return null;
+
+  try {
+    // Handle JSON string format
+    const parsed = JSON.parse(dateStr);
+    if (!parsed || !parsed[0]) return null;
+    // eslint-disable-next-line no-param-reassign,prefer-destructuring
+    dateStr = parsed[0];
+  } catch (e) {
+    // If it's not a JSON string, use it as is
+  }
+
+  // Handle ISO date format (2025-04-28T20:25:57.917Z)
+  if (dateStr.includes('T')) {
+    const date = new Date(dateStr);
+    return format ? formatDate(date) : date;
+  }
+
+  // Extract year from the date string
+  const yearMatch = dateStr.match(/\d{4}/);
+  if (!yearMatch) return null;
+  const year = parseInt(yearMatch[0], 10);
+
+  // Handle date ranges (e.g., "October 13-14, 2021" or "May 10-12, 2022")
+  const rangeMatch = dateStr.match(/^([A-Za-z]+\s+\d+)(?:-(\d+))?,\s+\d{4}/);
+  if (rangeMatch) {
+    const date = new Date(rangeMatch[0]);
+    date.setFullYear(year);
+    if (format) {
+      if (rangeMatch[2]) {
+        // If we have a range end date, format it as a range
+        const endDate = new Date(date);
+        endDate.setDate(parseInt(rangeMatch[2], 10));
+        const startMonth = MONTHS[date.getMonth()];
+        const endMonth = MONTHS[endDate.getMonth()];
+
+        if (startMonth === endMonth) {
+          return `${startMonth} ${date.getDate()}-${endDate.getDate()}, ${year}`;
+        }
+        return `${formatDate(date, true)}-${formatDate(endDate)}`;
+      }
+      return formatDate(date);
+    }
+    return date;
+  }
+
+  // Handle single dates (e.g., "February 9, 2023")
+  const singleDateMatch = dateStr.match(/^[A-Za-z]+\s+\d+,\s+\d{4}/);
+  if (singleDateMatch) {
+    const date = new Date(singleDateMatch[0]);
+    date.setFullYear(year);
+    return format ? formatDate(date) : date;
+  }
+
+  // Handle dates with "Start time" suffix
+  const startTimeMatch = dateStr.match(/^([A-Za-z]+\s+\d+,\s+\d{4})\s+Start time/);
+  if (startTimeMatch) {
+    const date = new Date(startTimeMatch[1]);
+    date.setFullYear(year);
+    return format ? formatDate(date) : date;
+  }
+
+  // Handle dates with ampersand (e.g., "September 8 & 9, 2022")
+  const ampersandMatch = dateStr.match(/^([A-Za-z]+\s+\d+)\s*&\s*(\d+),\s+\d{4}/);
+  if (ampersandMatch) {
+    const date = new Date(ampersandMatch[0]);
+    date.setFullYear(year);
+    if (format) {
+      const endDate = new Date(date);
+      endDate.setDate(parseInt(ampersandMatch[2], 10));
+      const startMonth = MONTHS[date.getMonth()];
+      const endMonth = MONTHS[endDate.getMonth()];
+
+      if (startMonth === endMonth) {
+        return `${startMonth} ${date.getDate()}-${endDate.getDate()}, ${year}`;
+      }
+      return `${formatDate(date, true)}-${formatDate(endDate)}`;
+    }
+    return date;
+  }
+
+  // Handle dates with extra spaces around dash (e.g., "July 19 - 23, 2021")
+  const spacedDashMatch = dateStr.match(/^([A-Za-z]+\s+\d+)\s*-\s*(\d+),\s+\d{4}/);
+  if (spacedDashMatch) {
+    const date = new Date(spacedDashMatch[0]);
+    date.setFullYear(year);
+    if (format) {
+      const endDate = new Date(date);
+      endDate.setDate(parseInt(spacedDashMatch[2], 10));
+      const startMonth = MONTHS[date.getMonth()];
+      const endMonth = MONTHS[endDate.getMonth()];
+
+      if (startMonth === endMonth) {
+        return `${startMonth} ${date.getDate()}-${endDate.getDate()}, ${year}`;
+      }
+      return `${formatDate(date, true)}-${formatDate(endDate)}`;
+    }
+    return date;
+  }
+
+  return null;
+}
 
 // eslint-disable-next-line import/prefer-default-export
 export async function viewAllDocsModal(product) {
   loadCSS('/styles/documents-table.css');
 
+  const [region, locale] = getRegionLocale();
+
   // Get product documents after we have the product ID
-  const productDocsResponse = await fetch(API_PRODUCT.ALL_DOCUMENTS(product.productId));
+  const productDocsResponse = await fetch(
+    API_PRODUCT.ALL_DOCUMENTS(region, locale, product.productId));
   const productDocs = await productDocsResponse.json();
 
   // Function to render modal content based on viewport size
@@ -19,7 +148,7 @@ export async function viewAllDocsModal(product) {
       // Mobile view
       return div({ class: 'related-ingredient-modal' },
         // Technical Documents Table
-        div({ class: 'table-wrapper mobile-view' },
+        productDocs.technicalDocuments?.length > 0 ? div({ class: 'table-wrapper mobile-view' },
           h4(product.heading),
           h3({ id: 'technical-documents' }, translate('technical-documents')),
           table(
@@ -32,10 +161,10 @@ export async function viewAllDocsModal(product) {
               td(a({ class: 'doc', href: API_HOST + techDoc.path, target: '_blank' }, 'VIEW')),
             )),
           ),
-        ),
+        ) : null,
 
         // SDS Documents Table
-        div({ class: 'table-wrapper mobile-view' },
+        productDocs.sdsDocuments?.length > 0 ? div({ class: 'table-wrapper mobile-view' },
           h3({ id: 'sds-documents' }, translate('sds-documents')),
           table(
             tr(
@@ -47,14 +176,14 @@ export async function viewAllDocsModal(product) {
               td(a({ class: 'doc', href: API_HOST + sdsDoc.path, target: '_blank' }, 'VIEW')),
             )),
           ),
-        ),
+        ) : null,
       );
     }
 
     // Desktop view
     const $modalContent = div({ class: 'related-ingredient-modal' },
       // Technical Documents Table
-      div({ class: 'table-wrapper' },
+      productDocs.technicalDocuments?.length > 0 ? div({ class: 'table-wrapper' },
         h4(product.heading),
         h3({ id: 'technical-documents' }, translate('technical-documents')),
         table(
@@ -72,10 +201,10 @@ export async function viewAllDocsModal(product) {
           )),
         ),
         div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'technical' }, 'Download Documents')),
-      ),
+      ) : null,
 
       // SDS Documents Table
-      div({ class: 'table-wrapper' },
+      productDocs.sdsDocuments?.length > 0 ? div({ class: 'table-wrapper' },
         h3({ id: 'sds-documents' }, translate('sds-documents')),
         table(
           tr(
@@ -92,7 +221,7 @@ export async function viewAllDocsModal(product) {
           )),
         ),
         div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'sds' }, 'Download Documents')),
-      ),
+      ) : null,
     );
 
     // Add Select All functionality for both tables
@@ -115,7 +244,7 @@ export async function viewAllDocsModal(product) {
 
       if (!selectedIds) return;
 
-      const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(product.productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
+      const downloadUrl = `${API_PRODUCT.DOWNLOAD_DOCUMENTS(region, locale, product.productName, product.productId)}?productId=${product.productId}&documentType=${docType}&assetId=${selectedIds}`;
 
       // Use a temp link for reliability across browsers
       const tempLink = a({ href: downloadUrl, download: `${docType}-documents.zip`, style: 'display: none' });

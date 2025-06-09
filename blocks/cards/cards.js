@@ -1,50 +1,7 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { openVideoModal } from '../video/video-modal.js';
 
 const isDesktop = window.matchMedia('(width >= 1280px)');
-
-function embedVimeo(url, autoplay, background) {
-  const [, video] = url.pathname.split('/');
-  let suffix = '';
-  if (background || autoplay) {
-    const suffixParams = {
-      autoplay: autoplay ? '1' : '0',
-      background: background ? '1' : '0',
-    };
-    suffix = `?${Object.entries(suffixParams).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')}`;
-  }
-  const temp = document.createElement('div');
-  temp.innerHTML = `<div class="video-modal" style="display: block;">
-    <div class="video-modal-wrapper">
-      <div class='video-modal-content'>
-        <iframe src="https://player.vimeo.com/video/${video}${suffix}" 
-          style="border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;" 
-          frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen  
-          title="Content from Vimeo" loading="lazy"></iframe>
-        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal"></div>
-      </div>
-    </div>
-  </div>`;
-  return temp.children.item(0);
-}
-
-const loadVideoEmbed = (block, link, autoplay, background) => {
-  if (block.dataset.embedLoaded === 'true') {
-    return;
-  }
-  const url = new URL(link);
-  const isVimeo = link.includes('vimeo');
-  if (isVimeo) {
-    const embedWrapper = embedVimeo(url, autoplay, background);
-    block.append(embedWrapper);
-    embedWrapper.querySelector('iframe').addEventListener('load', () => {
-      block.dataset.embedLoaded = true;
-    });
-    embedWrapper.querySelector('.video-modal-close').addEventListener('click', () => {
-      embedWrapper.remove();
-      block.dataset.embedLoaded = false;
-    });
-  }
-};
 
 function showCard(block, cardIndex = 0) {
   block.dataset.activeCard = cardIndex;
@@ -167,11 +124,11 @@ export default async function decorate(block) {
             '<div class="video-placeholder-play"><button type="button" class="button play" title="Play"></button></div>',
           );
           wrapper.addEventListener('click', () => {
-            loadVideoEmbed(block, link.href, true, false);
+            openVideoModal(link.href, true, false);
           });
           link.addEventListener('click', (e) => {
             e.preventDefault();
-            loadVideoEmbed(block, link.href, true, false);
+            openVideoModal(link.href, true, false);
           });
         }
         li.prepend(wrapper);
@@ -215,27 +172,27 @@ export default async function decorate(block) {
           wrapperLink.appendChild(bodyContainer);
         }
       }
-
-      const btnContainers = li.querySelectorAll('.button-container');
-      if (btnContainers) {
-        btnContainers.forEach((btnContainer, index) => {
-          if (btnContainers.length === 1 || index > 0) {
-            const a = btnContainer.querySelector('a');
-            const span = document.createElement('span');
-            span.className = 'icon-green-arrow';
-            a.append(span);
-            const imageAnchor = li.querySelector('.cards-card-image a');
-            if (!imageAnchor) return;
+      ul.append(li);
+    }
+    const btnContainers = li.querySelectorAll('.button-container');
+    if (btnContainers) {
+      btnContainers.forEach((btnContainer, index) => {
+        if (btnContainers.length === 1 || index > 0) {
+          const a = btnContainer.querySelector('a');
+          const span = document.createElement('span');
+          span.className = 'icon-green-arrow';
+          a.append(span);
+          const imageAnchor = li.querySelector('.cards-card-image a');
+          if (imageAnchor) {
             imageAnchor.href = a.href;
             imageAnchor.setAttribute('aria-label', a.href);
             btnContainer.classList.add('secondary-cta');
-          } else {
-            btnContainer.classList.add('heading');
           }
-          btnContainer.classList.remove('button-container');
-        });
-      }
-      ul.append(li);
+        } else {
+          btnContainer.classList.add('heading');
+        }
+        btnContainer.classList.remove('button-container');
+      });
     }
   });
   ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));

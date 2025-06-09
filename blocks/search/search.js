@@ -1,12 +1,17 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
-import { div, h3, h4, p, a, strong, span } from '../../scripts/dom-helpers.js';
+import { div, h3, h4, p, a, strong, span, button } from '../../scripts/dom-helpers.js';
 import { buildBlock, decorateBlock, loadBlock, createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
-import { formatDate, translate } from '../../scripts/utils.js';
+import { formatDate, getRegionLocale, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
-import { viewAllDocsModal } from '../../scripts/product-utils.js';
+import { viewAllDocsModal, parseEventDate } from '../../scripts/product-utils.js';
 import { API_HOST, API_PRODUCT } from '../../scripts/product-api.js';
 import ContentResourcesRenderer from './content-renderer.js';
 import ProductApiRenderer from './product-api-renderer.js';
+import { openVideoModal } from '../video/video-modal.js';
+
+loadCSS(`${window.hlx.codeBasePath}/blocks/video/video.css`);
+
+const [region, locale] = getRegionLocale();
 
 function filterIndex(results, query) {
   if (!query) return [];
@@ -37,21 +42,46 @@ async function createContentResourcesPanel(contentResourcesResults) {
   const $articles = div({ class: 'articles' });
   const $filtersList = div();
 
-  const $articleCard = (article) => div({ class: 'card' },
-    a({ class: 'thumb', href: article.path },
+  const $articleCard = (article) => {
+    let thumb = a({ class: 'thumb', href: article.path },
       createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
-    ),
-    div({ class: 'info' },
-      h4(article.title),
-      (() => {
-        const descDiv = div({ class: 'description' });
-        descDiv.innerHTML = article.description;
-        return descDiv;
-      })(),
-      p({ class: 'date' }, formatDate(article.publishDate)),
-      a({ class: 'button', href: article.path }, 'Learn More'),
-    ),
-  );
+    );
+    let watchVideoBtn = '';
+
+    // If this is a video, override the click to open a modal on click
+    const isVideo = article.tags && article.tags.includes('Resource Type / Video');
+    if (isVideo && article['video-url']) {
+      thumb = a({ class: 'thumb video', href: article.path },
+        createOptimizedPicture(article['video-thumbnail'], article.title, true, [{ width: '235' }]),
+        button({ class: 'play-button', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' })),
+      );
+      // Open modal on click of thumb or play button
+      const openVideoModalHandler = (e) => {
+        e.preventDefault();
+        openVideoModal(article['video-url'], true, false);
+      };
+      thumb.addEventListener('click', openVideoModalHandler);
+
+      watchVideoBtn = a({ class: 'button secondary watch-video-btn', href: article.path }, 'Watch Video');
+
+      watchVideoBtn.addEventListener('click', openVideoModalHandler);
+    }
+
+    return div({ class: 'card' },
+      thumb,
+      div({ class: 'info' },
+        h4(article.title),
+        (() => {
+          const descDiv = div({ class: 'description' });
+          descDiv.innerHTML = article.description;
+          return descDiv;
+        })(),
+        p({ class: 'date' }, formatDate(article.publishDate)),
+        a({ class: 'button', href: article.path }, 'Learn More'),
+        watchVideoBtn,
+      ),
+    );
+  };
 
   const $articlePage = div({ class: 'article-list' },
     div({ class: 'filter-results-wrapper' },
@@ -114,12 +144,12 @@ async function createIngredientPanel(ingredientResults) {
         description,
         div({ class: 'cta-links' },
           viewAllDocsLink,
-          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(article.productId) }, 'Download All Documents'),
+          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(region, locale, article.productId) }, 'Download All Documents'),
         ),
       ),
       div({ class: 'buttons' },
         addSampleBtn,
-        a({ class: 'button secondary', href: `/na/en-us/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
+        a({ class: 'button secondary', href: `/${region}/${locale}/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
       ),
     );
     return relatedIngredientBlock;
@@ -146,7 +176,7 @@ async function createIngredientPanel(ingredientResults) {
 
   // Ingredient Renderer
   await new ProductApiRenderer({
-    apiEndpoint: API_PRODUCT.SEARCH_INGREDIENTS(),
+    apiEndpoint: API_PRODUCT.SEARCH_INGREDIENTS(region, locale),
     results: ingredientResults,
     articlesPerPageOptions: ['6', '12', '18', '24', '30'],
     paginationMaxBtns: 5,
@@ -210,7 +240,7 @@ async function createTechDocsPanel(techDocsResults) {
 
   // Technical & SDS Documents Renderer
   await new ProductApiRenderer({
-    apiEndpoint: API_PRODUCT.SEARCH_DOCUMENTS(),
+    apiEndpoint: API_PRODUCT.SEARCH_DOCUMENTS(region, locale),
     results: techDocsResults,
     articlesPerPageOptions: ['6', '12', '18', '24', '30'],
     paginationMaxBtns: 5,
@@ -236,7 +266,6 @@ async function createEventPanel(eventsData) {
   const $perPageDropdown = div();
   const $articles = div({ class: 'articles' });
 
-  // TODO: Fix date - meeting with Jessica on May 5th
   const $articleCard = (article) => div({ class: 'card' },
     div({ class: 'image-wrapper' },
       div({ class: 'thumb' },
@@ -245,7 +274,7 @@ async function createEventPanel(eventsData) {
       ),
     ),
     div({ class: 'info' },
-      p({ class: 'date' }, JSON.parse(article.eventDate)),
+      p({ class: 'date' }, parseEventDate(article.eventDate, true)),
       h4(article.title),
       article.eventType && JSON.parse(article.eventType).length ? p({ class: 'details' }, strong('Event Type: '), JSON.parse(article.eventType)) : null,
       article.location && JSON.parse(article.location).length ? p({ class: 'details' }, strong('Location: '), JSON.parse(article.location)) : null,
@@ -338,10 +367,10 @@ async function displaySearchResults(
       title: 'Events',
       count: eventsResults?.length || 0,
       panel: () => {
-        // Sort events by date (newest first)
+        // Sort events by date (newest first) using parseEventDate
         const sortedEvents = [...eventsResults].sort((a, b) => {
-          const dateA = new Date(JSON.parse(a.eventDate));
-          const dateB = new Date(JSON.parse(b.eventDate));
+          const dateA = parseEventDate(a.eventDate);
+          const dateB = parseEventDate(b.eventDate);
           return dateB - dateA;
         });
         return createEventPanel(sortedEvents);
@@ -415,8 +444,8 @@ async function displaySearchResults(
 }
 
 async function fetchSearchResults(searchParams) {
-  const globalIndexUrl = '/na/en-us/indexes/global-index.json';
-  const newsEventsIndexUrl = '/na/en-us/indexes/news-events-index.json';
+  const globalIndexUrl = `/${region}/${locale}/indexes/global-index.json`;
+  const newsEventsIndexUrl = `/${region}/${locale}/indexes/news-events-index.json`;
 
   // Create a cache object to store promises
   const cache = new Map();
@@ -430,8 +459,8 @@ async function fetchSearchResults(searchParams) {
 
   try {
     // Construct the ingredient and tech docs URLs with all search params
-    const ingredientUrl = `${API_PRODUCT.SEARCH_INGREDIENTS()}?${searchParams.toString()}`;
-    const techDocsUrl = `${API_PRODUCT.SEARCH_DOCUMENTS()}?${searchParams.toString()}`;
+    const ingredientUrl = `${API_PRODUCT.SEARCH_INGREDIENTS(region, locale)}?${searchParams.toString()}`;
+    const techDocsUrl = `${API_PRODUCT.SEARCH_DOCUMENTS(region, locale)}?${searchParams.toString()}`;
 
     // Make all requests in parallel and cache the index requests
     const [

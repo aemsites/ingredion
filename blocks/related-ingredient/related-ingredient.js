@@ -6,10 +6,13 @@ import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { viewAllDocsModal } from '../../scripts/product-utils.js';
 
+const [region, locale] = getRegionLocale();
+
 async function renderRelatedIngredient(productDisplayName) {
   try {
     // Fetch product details
-    const productDetailsResponse = await fetch(API_PRODUCT.PRODUCT_DETAILS(productDisplayName));
+    const productDetailsResponse = await fetch(
+      API_PRODUCT.PRODUCT_DETAILS(region, locale, productDisplayName));
     const productDetails = await productDetailsResponse.json();
 
     if (!productDetails?.results?.[0]) {
@@ -30,16 +33,16 @@ async function renderRelatedIngredient(productDisplayName) {
 
     const relatedIngredientBlock = div({ class: 'related-ingredient' },
       div({ class: 'content' },
-        h4({ class: 'product-name' }, productDisplayName),
+        h4({ class: 'product-name' }, product.heading),
         description,
         div({ class: 'cta-links' },
           viewAllDocsLink,
-          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(product.productName, product.productId) }, 'Download All Documents'),
+          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, locale, product.productName, product.productId) }, 'Download All Documents'),
         ),
       ),
       div({ class: 'buttons' },
         addSampleBtn,
-        a({ class: 'button secondary', href: `/na/en-us/ingredient?name=${product.productName}`, title: 'Learn More' }, 'Learn More'),
+        a({ class: 'button secondary', href: `/${region}/${locale}/ingredient?name=${product.productName}`, title: 'Learn More' }, 'Learn More'),
       ),
     );
 
@@ -57,7 +60,6 @@ async function renderRelatedIngredient(productDisplayName) {
 
 export default async function decorate(block) {
   const { 'product-name': productDisplayName } = readBlockConfig(block);
-  const [, locale] = getRegionLocale();
   await loadTranslations(locale);
 
   // placeholder until rendered

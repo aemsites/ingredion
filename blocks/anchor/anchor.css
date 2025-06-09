@@ -23,6 +23,7 @@
     color: #373738;
     text-transform: uppercase;
     padding: 0 1.25rem;
+    text-decoration: none;
   }
 
   a:hover {

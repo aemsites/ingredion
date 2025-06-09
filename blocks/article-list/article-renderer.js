@@ -1,6 +1,7 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline, no-shadow */
-import { div, h3, h4, h5, ul, li, a, small, span, form, input, button } from '../../scripts/dom-helpers.js';
+import { div, h3, h4, h5, ul, li, a, small, span, button, form, input } from '../../scripts/dom-helpers.js';
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
+import { parseEventDate } from '../../scripts/product-utils.js';
 
 function getUrlParams(key) {
   const params = new URLSearchParams(window.location.search);
@@ -97,13 +98,14 @@ export default class ArticleRenderer {
     perPageDropdown,
     filterByTagDropdown,
     clearFilters,
+    documentFilters,
   }) {
     this.jsonPath = jsonPath;
     this.articleDiv = articleDiv;
     this.articleCard = articleCard;
     this.articlesPerPageOptions = String(articlesPerPageOptions).split(',').map(Number);
     this.paginationDiv = paginationDiv;
-    this.paginationMaxBtns = paginationMaxBtns;
+    this.paginationMaxBtns = Number(paginationMaxBtns);
     this.filterTagsList = filterTagsList;
     this.filterYearsDropdown = filterYearsDropdown;
     this.filterTypesDropdown = filterTypesDropdown;
@@ -113,11 +115,13 @@ export default class ArticleRenderer {
     this.perPageDropdown = perPageDropdown;
     this.filterByTagDropdown = filterByTagDropdown;
     this.clearFilters = clearFilters;
+    this.documentFilters = documentFilters;
     this.state = {
       allArticles: [],
       totalArticles: 0,
       currentPage: (parseInt(getUrlParams('page'), 10) || 1) - 1,
-      tags: (getUrlParams('tags') || '').split(',').filter(Boolean),
+      // Normalize tags from URL on initialization
+      tags: (getUrlParams('tags') || '').split(',').filter(Boolean).map((tag) => this.normalizeTag(tag)),
       sort: getUrlParams('sort') || 'newest',
       searchQuery: getUrlParams('q') || '',
       year: getUrlParams('year') || '',
@@ -139,7 +143,8 @@ export default class ArticleRenderer {
   parseUrl() {
     return {
       currentPage: (parseInt(getUrlParams('page'), 10) || 1) - 1,
-      tags: (getUrlParams('tags') || '').split(',').filter(Boolean),
+      // Normalize tags from URL when parsing
+      tags: (getUrlParams('tags') || '').split(',').filter(Boolean).map((tag) => this.normalizeTag(tag)),
       sort: getUrlParams('sort') || 'newest',
       searchQuery: getUrlParams('q') || '',
       articlesPerPage: getUrlParams('per-page') || this.articlesPerPageOptions[0],
@@ -155,7 +160,7 @@ export default class ArticleRenderer {
 
     // Filter articles by tags
     if (tags.length > 0) {
-      articles = articles.filter((article) => tags.every((tag) => article.tags.toLowerCase().replace(/\s+/g, '-').includes(tag)));
+      articles = articles.filter((article) => tags.every((tag) => article.normalizedTags.some((normalizedArticleTag) => normalizedArticleTag === tag)));
     }
 
     // Filter articles by search query
@@ -166,15 +171,36 @@ export default class ArticleRenderer {
 
     // Filter articles by year
     if (year) {
-      articles = articles.filter((article) => new Date(article.publishDate * 1000).getFullYear() === parseInt(year, 10));
+      articles = articles.filter((article) => {
+        const date = article.eventDate ? parseEventDate(article.eventDate) : new Date(article.publishDate * 1000);
+        return date && date.getFullYear() === parseInt(year, 10);
+      });
     }
 
     // Filter articles by type
     if (type) {
       articles = articles.filter((article) => {
-        if (!article.type) return false;
-        const articleType = JSON.parse(article.type)[0];
-        return articleType === type;
+        // Try eventType first (for events)
+        if (article.eventType) {
+          try {
+            const articleType = JSON.parse(article.eventType)[0];
+            return articleType === type;
+          } catch (e) {
+            console.warn('Invalid eventType format:', article.eventType);
+            return false;
+          }
+        }
+        // Fall back to type if eventType is not available
+        if (article.type) {
+          try {
+            const articleType = JSON.parse(article.type)[0];
+            return articleType === type;
+          } catch (e) {
+            console.warn('Invalid type format:', article.type);
+            return false;
+          }
+        }
+        return false;
       });
     }
 
@@ -187,10 +213,18 @@ export default class ArticleRenderer {
         articles = articles.sort((A, B) => B.title.localeCompare(A.title));
         break;
       case 'oldest':
-        articles = articles.sort((A, B) => parseInt(A.publishDate, 10) - parseInt(B.publishDate, 10));
+        articles = articles.sort((A, B) => {
+          const dateA = A.eventDate ? parseEventDate(A.eventDate) : new Date(A.publishDate * 1000);
+          const dateB = B.eventDate ? parseEventDate(B.eventDate) : new Date(B.publishDate * 1000);
+          return (dateA || 0) - (dateB || 0);
+        });
         break;
       case 'newest': default:
-        articles = articles.sort((A, B) => parseInt(B.publishDate, 10) - parseInt(A.publishDate, 10));
+        articles = articles.sort((A, B) => {
+          const dateA = A.eventDate ? parseEventDate(A.eventDate) : new Date(A.publishDate * 1000);
+          const dateB = B.eventDate ? parseEventDate(B.eventDate) : new Date(B.publishDate * 1000);
+          return (dateB || 0) - (dateA || 0);
+        });
         break;
     }
 
@@ -207,7 +241,7 @@ export default class ArticleRenderer {
     this.renderPagination();
     this.renderPerPageDropdown();
     this.renderClearFilters();
-    this.updateUrl(); // sync state
+    this.updateUrl();
   }
 
   updateUrl() {
@@ -273,8 +307,11 @@ export default class ArticleRenderer {
 
     const years = {};
     this.state.allArticles.forEach((article) => {
-      const year = new Date(article.publishDate * 1000).getFullYear();
-      years[year] = (years[year] || 0) + 1;
+      const date = article.eventDate ? parseEventDate(article.eventDate) : new Date(article.publishDate * 1000);
+      if (date) {
+        const year = date.getFullYear();
+        years[year] = (years[year] || 0) + 1;
+      }
     });
 
     const yearOptions = [
@@ -310,16 +347,33 @@ export default class ArticleRenderer {
     this.filterTypesDropdown.innerHTML = '';
 
     const types = {};
+    // eslint-disable-next-line consistent-return
     this.state.allArticles.forEach((article) => {
-      if (article.type) {
+      // Try eventType first (for events)
+      if (!article.eventType) {
+        if (article.type) {
+          try {
+            const type = JSON.parse(article.type)[0];
+            if (type && type !== 'undefined') {
+              types[type] = (types[type] || 0) + 1;
+            }
+          } catch (e) {
+            console.warn('Invalid type format:', article.type);
+            return false;
+          }
+        }
+        // eslint-disable-next-line brace-style
+      }
+      // Fall back to type if eventType is not available
+      else {
         try {
-          const type = JSON.parse(article.type)[0];
-          if (type && type !== 'undefined') { // Only count defined types
+          const type = JSON.parse(article.eventType)[0];
+          if (type && type !== 'undefined') {
             types[type] = (types[type] || 0) + 1;
           }
         } catch (e) {
           // Skip invalid JSON
-          console.warn('Invalid type format:', article.type);
+          console.warn('Invalid eventType format:', article.eventType);
         }
       }
     });
@@ -352,6 +406,18 @@ export default class ArticleRenderer {
     this.filterTypesDropdown.appendChild($dropdown);
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  normalizeTag(tag) {
+    const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
+    const parts = cleanedTag.split('/');
+    if (parts.length === 2) {
+      // Ensure both parts are lowercased for consistent internal representation
+      return `${parts[0].trim().toLowerCase()} / ${parts[1].trim().toLowerCase()}`;
+    }
+    // If no slash, lowercase the whole tag
+    return cleanedTag.toLowerCase();
+  }
+
   renderFilterByTagDropdown() {
     if (!this.filterByTagDropdown) return;
     const tagCategory = this.filterByTagDropdown.getAttribute('data-tag');
@@ -359,60 +425,78 @@ export default class ArticleRenderer {
 
     this.filterByTagDropdown.innerHTML = '';
 
-    const tags = {};
+    const tags = {}; // Stores normalized_category/tag_part -> count
 
-    // Build tag counts from all articles
+    // Build tag counts from all articles, using normalized tags
     this.state.allArticles.forEach((article) => {
-      article.tags.split(',').forEach((tag) => {
-        const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
-        if (cleanedTag.startsWith(`${tagCategory} /`)) {
-          tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
-        }
-      });
+      if (article?.normalizedTags && article.normalizedTags.length > 0) {
+        article.normalizedTags.forEach((normalizedTag) => {
+          const parts = normalizedTag.split(' / ');
+          let originalHeadingCandidate; // This will now just be the lowercased heading
+
+          if (parts.length === 2) {
+            originalHeadingCandidate = parts[0].trim();
+          } else {
+            originalHeadingCandidate = normalizedTag.trim();
+          }
+
+          // Only count tags that start with the target category (case-insensitive)
+          if (originalHeadingCandidate === tagCategory.toLowerCase()) {
+            tags[normalizedTag] = (tags[normalizedTag] || 0) + 1;
+          }
+        });
+      }
     });
 
-    // Process tags to get just the second part after "Markets /"
-    const tagOptions = Object.keys(tags)
-      .map((fullTag) => {
-        const [, tag] = fullTag.split(' / ');
-        const cleanedValue = tag.toLowerCase().replace(/\s+/g, '-'); // for filtering
+    // Process tags to get just the second part after "Category /"
+    const tagOptions = Object.keys(tags) // Keys are now full normalized tags (e.g., "category / tag")
+      .map((fullNormalizedTag) => {
+        const parts = fullNormalizedTag.split(' / ');
+        let displayLabel;
+
+        if (parts.length === 2) {
+          // fullNormalizedTag is like "category / tag"
+          displayLabel = parts[1].trim(); // This will be lowercased tag part
+        } else {
+          // fullNormalizedTag is just a category (e.g., "resource type")
+          displayLabel = fullNormalizedTag; // This will be lowercased category
+        }
+
         return {
-          value: cleanedValue, // lowercase hyphenated for filtering
-          label: tag.trim(), // original format for display
-          count: tags[fullTag],
+          value: fullNormalizedTag, // Store the full normalized tag as the value for state.tags
+          label: displayLabel,
+          count: tags[fullNormalizedTag],
         };
       })
       .sort((a, b) => a.label.localeCompare(b.label));
 
-    // Add "All Markets" option at the end
+    // Add "All Categories" option at the end
     tagOptions.push({ value: '', label: `All ${tagCategory}` });
 
     // Find the currently selected option and use its label for display
-    const selectedTag = this.state.tags.find((tag) => tagOptions.some((option) => option.value === tag),
-    );
+    const selectedTag = this.state.tags.find((tag) => tagOptions.some((option) => option.value === tag));
     const selectedOption = tagOptions.find((opt) => opt.value === selectedTag);
     const selectedDisplay = selectedOption ? selectedOption.label : '';
 
     const $dropdown = createSelectDropdown({
       options: tagOptions,
-      selectedValue: selectedDisplay, // Use the display label instead of the value
+      selectedValue: selectedDisplay,
       defaultText: tagCategory,
       onSelect: (value, option, dropdown) => {
         this.state.currentPage = 0;
 
         // Remove any existing tags from this category
-        this.state.tags = this.state.tags.filter((tag) => !tagOptions.some((option) => option.value === tag),
-        );
+        this.state.tags = this.state.tags.filter((tag) => !tagOptions.some((option) => option.value === tag));
 
         // Add the new tag if one was selected
         if (value) {
           this.state.tags.push(value);
         }
 
-        // Use the original format label for display
+        // Use the original format label for display (now lowercased consistent)
         const selectedOption = tagOptions.find((opt) => opt.value === value);
         dropdown.querySelector('.selected').textContent = selectedOption
-          ? selectedOption.label // Use the original format label
+          ? selectedOption.label
           : tagCategory;
 
         this.updatePage();
@@ -426,26 +510,48 @@ export default class ArticleRenderer {
   renderFilterTags() {
     if (!this.filterTagsList) return;
     this.filterTagsList.innerHTML = '';
-    const tags = {};
+    const tags = {}; // Stores normalized_category/tag_part -> count
 
     // Build tag counts from the filtered articles
     this.state.filteredArticles.forEach((article) => {
-      article.tags.split(',').forEach((tag) => {
-        const cleanedTag = tag.replace(/["[\]]+/g, '').trim();
-        tags[cleanedTag] = (tags[cleanedTag] || 0) + 1;
-      });
+      if (article.normalizedTags && article.normalizedTags.length > 0) {
+        article.normalizedTags.forEach((normalizedTag) => {
+          tags[normalizedTag] = (tags[normalizedTag] || 0) + 1;
+        });
+      }
     });
 
     // Group tags by heading
     const groupedTags = {};
-    Object.keys(tags).forEach((rawTag) => {
-      if (!rawTag.trim()) return; // ignore blank tags
-      const [heading, tag] = rawTag.split(' / ');
-      if (!groupedTags[heading]) groupedTags[heading] = [];
-      groupedTags[heading].push({
-        tag: tag !== undefined ? tag.toLowerCase().replace(/\s+/g, '-') : '', // cleaned tag
-        original: tag,
-        count: tags[rawTag],
+    Object.keys(tags).forEach((normalizedTagKey) => {
+      if (!normalizedTagKey.trim()) return; // ignore blank tags
+
+      const parts = normalizedTagKey.split(' / ');
+      let normalizedHeadingPart;
+      let originalTagPart; // This will be lowercased tag part or empty
+      let displayHeadingCasing; // This will just be the normalizedHeadingPart (lowercased)
+
+      if (parts.length === 2) {
+        normalizedHeadingPart = parts[0].trim();
+        originalTagPart = parts[1].trim();
+        displayHeadingCasing = normalizedHeadingPart;
+      } else {
+        normalizedHeadingPart = normalizedTagKey.trim();
+        originalTagPart = '';
+        displayHeadingCasing = normalizedHeadingPart;
+      }
+
+      if (!groupedTags[normalizedHeadingPart]) {
+        groupedTags[normalizedHeadingPart] = {
+          displayHeading: displayHeadingCasing,
+          items: [],
+        };
+      }
+
+      groupedTags[normalizedHeadingPart].items.push({
+        tag: normalizedTagKey, // This is the full normalized tag, matching this.state.tags
+        original: originalTagPart || normalizedHeadingPart, // For display in the filter list. If no tag part, use heading.
+        count: tags[normalizedTagKey],
       });
     });
 
@@ -461,13 +567,13 @@ export default class ArticleRenderer {
       this.state.tags.forEach((tag) => {
         let originalName = tag;
 
-        // find the original name
+        // find the original name (tag is already normalized here)
         Object.values(groupedTags).forEach((group) => {
-          const foundTag = group.find((item) => item.tag === tag);
+          const foundTag = group.items.find((item) => item.tag === tag); // item.tag is also normalized
           if (foundTag) originalName = foundTag.original;
         });
 
-        const $li = li(originalName, span({ class: 'icon-close' }, '\ue91c'));
+        const $li = li(originalName, span({ class: 'icon-close' }));
         $li.addEventListener('click', () => {
           this.state.tags = this.state.tags.filter((t) => t !== tag);
           this.state.currentPage = 0;
@@ -480,6 +586,9 @@ export default class ArticleRenderer {
       const $clearAll = li({ class: 'clear-all' }, 'Clear All');
       $clearAll.addEventListener('click', () => {
         this.state.tags = []; // clear all tags
+        this.state.searchQuery = ''; // clear search query
+        this.state.year = ''; // clear year filter
+        this.state.type = ''; // clear type filter
         this.state.currentPage = 0;
         this.updatePage();
       });
@@ -492,28 +601,36 @@ export default class ArticleRenderer {
     this.groupState = this.groupState || {};
 
     // Build filter groups
-    Object.keys(groupedTags).sort().forEach((heading) => {
-      const isOpen = this.groupState[heading] || false;
+    Object.keys(groupedTags).sort().forEach((normalizedHeadingKey) => {
+      const group = groupedTags[normalizedHeadingKey];
+      const headingForDisplay = group.displayHeading; // Use the stored lowercased heading for display
+      const isOpen = this.groupState[normalizedHeadingKey] || false; // Use normalized key for state
 
-      const $groupHeading = h5({ class: isOpen ? 'open' : '' }, heading, span({ class: 'icon' }, isOpen ? '－' : '＋'));
+      const $groupHeading = h5({ class: isOpen ? 'open' : '' }, headingForDisplay, span({ class: 'icon' }, isOpen ? '－' : '＋'));
 
       // create the filters list
       const $filters = ul({ class: 'filter-options', style: `display: ${isOpen ? 'block' : 'none'}` });
 
       // Toggle group visibility
       $groupHeading.addEventListener('click', () => {
-        this.groupState[heading] = !this.groupState[heading];
-        const isCurrentlyOpen = this.groupState[heading];
+        this.groupState[normalizedHeadingKey] = !this.groupState[normalizedHeadingKey]; // Use normalized key for state
+        const isCurrentlyOpen = this.groupState[normalizedHeadingKey];
         const icon = $groupHeading.querySelector('.icon');
         icon.textContent = isCurrentlyOpen ? '－' : '＋';
         $filters.style.display = isCurrentlyOpen ? 'block' : 'none';
       });
 
-      groupedTags[heading]
-        .sort((A, B) => A.original.localeCompare(B.original)) // Alphabetical sort by original tag name
+      if (this.documentFilters) {
+        const uniqueOptions = new Set(this.documentFilters.split(',').map((filter) => filter.split('/')[0].trim().toLowerCase())); // Normalize for comparison
+        if (uniqueOptions.has(headingForDisplay.trim().toLowerCase())) {
+          $groupHeading.style.display = 'none';
+        }
+      }
+      group.items // Iterate over items in the current group
+        .sort((A, B) => A.original.localeCompare(B.original)) // Alphabetical sort by original tag name (now lowercased tag part or heading)
         .forEach(({ tag, original, count }) => {
           const isSelected = this.state.tags.includes(tag);
-          const $li = li({ class: isSelected ? 'selected' : '' }, a({ href: `?tags=${tag}` }, `${original} `, small(`(${count})`)));
+          const $li = li({ class: isSelected ? 'selected' : '' }, a({ href: `?tags=${encodeURIComponent(tag)}` }, `${original} `, small(`(${count})`)));
 
           $li.addEventListener('click', (event) => {
             event.preventDefault();
@@ -650,12 +767,6 @@ export default class ArticleRenderer {
     return $pageBtn;
   }
 
-  /**
-   * Render the article list and initialize event listeners.
-   * Fetches translations and articles, updates the page, and sets up a popstate event listener.
-   * @async
-   * @returns {Promise<void>}
-   */
   renderPagination() {
     if (!this.paginationDiv) return;
     this.paginationDiv.innerHTML = '';
@@ -738,6 +849,9 @@ export default class ArticleRenderer {
 
   /**
    * Render the article list and initialize event listeners.
+   * Fetches translations and articles, updates the page, and sets up a popstate event listener.
+   * @async
+   * @returns {Promise<void>}
    */
   async render() {
     try {
@@ -753,10 +867,53 @@ export default class ArticleRenderer {
       // handle articles response
       if (!articlesResponse.ok) throw new Error('Failed to fetch articles');
       const { data } = await articlesResponse.json();
-      this.state.allArticles = data;
 
+      // Normalize tags for all articles immediately after fetching
+      const normalizedData = data.map((article) => {
+        const newArticle = { ...article };
+        if (newArticle.tags && typeof newArticle.tags === 'string') {
+          try {
+            const parsedTags = JSON.parse(newArticle.tags);
+            // Ensure normalizedTags are fully lowercased
+            newArticle.normalizedTags = parsedTags.map((tag) => this.normalizeTag(tag));
+          } catch (e) {
+            console.warn('Invalid tags format:', newArticle.tags, e);
+            newArticle.normalizedTags = [];
+          }
+        } else {
+          newArticle.normalizedTags = [];
+        }
+        return newArticle;
+      });
+
+      if (this.documentFilters) {
+        const filters = this.documentFilters.split(',').map((f) => f.trim().toLowerCase()); // Normalize filters for comparison
+        this.state.allArticles = normalizedData.filter((article) =>
+          // Use normalizedTags for filtering
+          // eslint-disable-next-line implicit-arrow-linebreak
+          filters.every((filter) => article.normalizedTags.some((normalizedTag) => {
+            // The filter and normalizedTag are already fully lowercased here
+            const filterParts = filter.split('/').map((p) => p.trim());
+            const normalizedTagParts = normalizedTag.split(' / ').map((p) => p.trim());
+
+            if (filterParts.length === 2) {
+              // Filter is category/tag
+              return normalizedTagParts[0] === filterParts[0] && normalizedTagParts[1] === filterParts[1];
+            }
+            if (filterParts.length === 1) {
+              // Filter is just a category
+              return normalizedTagParts[0] === filterParts[0];
+            }
+            return false;
+          }))
+
+          ,
+        );
+      } else {
+        this.state.allArticles = normalizedData;
+      }
       // render page after data and translations are loaded
-      await this.updatePage();
+      this.updatePage();
     } catch (error) {
       console.error('Error during render:', error);
     }
