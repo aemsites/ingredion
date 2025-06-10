@@ -609,6 +609,7 @@ main > .section > .default-content-wrapper {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
     gap: 40px 20px;
+    max-width: 63.25rem;
   }
 }
 
