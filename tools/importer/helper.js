@@ -15,7 +15,7 @@ const colorMapping = new Map([
   ['#b41f75', 'purple'],
   ['#6a0c5f', 'dark-purple'],
   ['#ffffff', ''],
-  ['#68e0a1', 'teal']
+  ['#68e0a1', 'pastel-green']
 ]);
 
 const sheet = new Map([
@@ -62,6 +62,9 @@ export function createHeroBlock(document, main) {
       }
     });
     if (hero.classList.contains('hero--text-left')) blockOptions.push('align-left');
+
+    if (!hero.querySelector('.hero__text').classList.contains('hero__text--light')) blockOptions.push('text-black');
+
     const cells = blockOptions.length > 0 ? [[`Hero(${blockOptions.join(', ')})`]] : [['Hero']];
     
     const image = hero.querySelector('.hero__image > picture').outerHTML;
@@ -211,6 +214,8 @@ export function createCalloutBlock(document, main) {
       blockOptions.push(backgroundColor);
     }
     
+    let ctaLeft;
+
     [...callOut.children].forEach((child) => {
       if (child.classList.contains('colorblock-text-cta__text')) {
         heading = child.querySelector('.heading > h3').textContent;
@@ -218,6 +223,7 @@ export function createCalloutBlock(document, main) {
         if (rteText) {
           rteText = rteText.innerHTML;
         }
+        ctaLeft = callOut.classList.contains('colorblock-text-cta--ctaLeft');
       } else if (child.classList.contains('secondary-cta-link')) {
         ctalink = child.outerHTML;
       }
@@ -225,8 +231,13 @@ export function createCalloutBlock(document, main) {
     });
     
     const cells = blockOptions.length > 0 ? [[`Callout(${blockOptions.join(', ')})`]] : [['Callout']];
-    cells.push([`<h3>${heading}</h3> ${rteText}`, `${ctalink}`]);
     
+    if (ctaLeft) {
+      cells.push([`${ctalink}`, `<h3>${heading}</h3> ${rteText}`]);
+    } else {
+      cells.push([`<h3>${heading}</h3> ${rteText}`, `${ctalink}`]);
+    }
+
     const callOutBlock = WebImporter.DOMUtils.createTable(cells, document);
     callOut.replaceWith(callOutBlock);
   });
@@ -1020,11 +1031,11 @@ function testURL(url) {
     }
     // Handle localhost and ingredion.com URLs
     if (url.includes('localhost:3001')) {
-      return url.replace('http://localhost:3001', previewURL).split('.html')[0] + queryParams;
+      return url.replace('http://localhost:3001', previewURL).split('.html')[0].toLowerCase().replaceAll('_','-') + queryParams;
     }
     
     if (url.includes('ingredion.com')) {
-      return url.replace('https://www.ingredion.com', previewURL).split('.html')[0] + queryParams;
+      return url.replace('https://www.ingredion.com', previewURL).split('.html')[0].toLowerCase().replaceAll('_','-') + queryParams;
     }
     
     // Default case for other absolute URLs
@@ -1032,7 +1043,7 @@ function testURL(url) {
   } 
   
   // Handle relative URLs
-  return `${previewURL}${url}`.split('.html')[0];
+  return `${previewURL}${url}`.split('.html')[0].toLowerCase().replaceAll('_','-');
 }
 
 export function convertHrefs(element) {
