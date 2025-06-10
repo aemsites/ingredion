@@ -151,4 +151,12 @@
       text-align: center;
     }
   }
+
+  .related-ingredient-wrapper {
+    margin-bottom: 2.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
