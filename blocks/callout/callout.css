@@ -53,6 +53,7 @@
         line-height: 2.5rem;
       }
   
+    
       p, ul, li {
         font-family: var(--body-font-family);
         font-size: 1rem;
@@ -68,6 +69,7 @@
       a.button {
         color: var(--theme-clr-text);
         text-decoration: none;
+        font-size: 1.2rem;
         font-weight: bold;
         background: var(--theme-clr-background);
       }
@@ -168,7 +170,6 @@
 .callout > div > .callout-content {
           a.button:hover {
             text-decoration: none;
-            border-color: var(--new-green);
             color: var(--new-green);
           }
       }
