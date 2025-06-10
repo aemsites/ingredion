@@ -1,28 +1,26 @@
 .section > .carousel-wrapper {
   max-width: 90rem;
   padding: 0;
-  margin: 0;
-  margin-left: 6rem;
+  margin: auto;
 }
 
 .carousel {
-  min-height: 604px;
-
   .carousel-container {
     display: flex;
     flex-direction: row;
     position: relative;
-    height: 604px;
     align-items: center;
-    margin: 0;
+    margin: 100px 0 100px 99px;
 
     .carousel-overview {
       display: flex;
+      justify-content: flex-start;
       align-items: center;
       flex-shrink: 0;
       z-index: 1;
       width: 30%;
       height: 100%;
+      text-align: left;
 
       div > div {
         margin: 10px;
@@ -57,7 +55,7 @@
 
         .carousel-slide {
           padding: 1.25rem 1.5rem;
-          max-width: 250px;
+          min-width: 44%;
           flex: 0 0 44%;
           min-height: 464px;
           scroll-snap-align: start;
@@ -147,14 +145,15 @@
           top: -10px;
           z-index: 10;
           box-shadow: 4px 10px 15px 0 rgba(0 0 0 / 10%);
+          cursor: pointer;
 
           &.slide-prev {
             left: unset;
-            right: 200px;
+            right: 4.5rem;
           }
 
           &.slide-next {
-            right: 140px;
+            right: 1rem;
 
             &::after {
               transform: translate(-50%, -50%) rotate(45deg);
@@ -191,8 +190,6 @@
 
 @media (width < 1080px) {
   .carousel {
-    min-height: 900px;
-
     .carousel-container {
       flex-direction: column;
       margin: auto;
@@ -202,6 +199,7 @@
         width: 100%;
         height: auto;
         margin: 0;
+        justify-content: center;
 
         > div > div {
           > h3 {
