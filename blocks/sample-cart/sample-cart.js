@@ -3,7 +3,7 @@ import {
   p,
   button,
 } from '../../scripts/dom-helpers.js';
-import { 
+import {
   getCookie,
   getRegionLocale,
   loadTranslations,
