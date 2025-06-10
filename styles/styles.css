@@ -396,51 +396,51 @@ main {
     background: rgba(239 239 239 / 40%);
   }
 
-  .section.margin-b-small {
+  .margin-b-small {
     margin-bottom: 3.125rem !important;
   }
 
-  .section.margin-t-small {
+  .margin-t-small {
     margin-top: 3.125rem !important;
   }
 
-  .section.margin-b-medium {
+  .margin-b-medium {
     margin-bottom: 6.25rem !important;
   }
 
-  .section.margin-t-medium {
+  .margin-t-medium {
     margin-top: 6.25rem !important;
   }
 
-  .section.margin-b-large {
+  .margin-b-large {
     margin-bottom: 12.5rem !important;
   }
 
-  .section.margin-t-large {
+  .margin-t-large {
     margin-top: 12.5rem !important;
   }
 
-  .section.padding-b-small {
+  .padding-b-small {
     padding-bottom: 3.125rem !important;
   }
 
-  .section.padding-t-small {
+  .padding-t-small {
     padding-top: 3.125rem !important;
   }
 
-  .section.padding-b-medium {
+  .padding-b-medium {
     padding-bottom: 6.25rem !important;
   }
 
-  .section.padding-t-medium {
+  .padding-t-medium {
     padding-top: 6.25rem !important;
   }
 
-  .section.padding-b-large {
+  .padding-b-large {
     padding-bottom: 12.5rem !important;
   }
 
-  .section.padding-t-large {
+  .padding-t-large {
     padding-top: 12.5rem !important;
   }
 }
