@@ -9,7 +9,7 @@ import {
   button,
   span,
 } from '../../scripts/dom-helpers.js';
-import { getRegionLocale, translate } from '../../scripts/utils.js';
+import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
 import { viewAllDocsModal } from '../../scripts/product-utils.js';
 import { API_PRODUCT } from '../../scripts/product-api.js';
@@ -138,9 +138,16 @@ function attachIngredientResults(block, ingredientResults, totalItemsCount, sear
 }
 
 export default async function decorate(block) {
+  await loadTranslations(locale);
   let queryParams = 'activePage=1&perPage=6';
   let typeaheadData = null;
   let $dropdownOptions;
+  let applicationText = translate('application');
+  let subApplicationText = translate('sub-application');
+  let searchIngredientsText = translate('search-ingredients');
+  let searchByCategoryHeading = translate('search-category-heading');
+  let searchByIngredientsHeading = translate('search-ingredients-heading');
+  let searchByKeywordsText = translate('search-by-keywords');
 
   async function searchIngredientsByName(searchValue) {
     if (!searchValue) return;
@@ -216,8 +223,8 @@ export default async function decorate(block) {
   }
 
   function updateSearchButtonState(selected, selected1, $searchButton) {
-    const hasApplication = !selected.textContent.includes('Application');
-    const hasSubApplication = !selected1.textContent.includes('Sub Application');
+    const hasApplication = !selected.textContent.includes(applicationText);
+    const hasSubApplication = !selected1.textContent.includes(subApplicationText);
     const $searchLink = $searchButton.querySelector('a');
     if (hasApplication || hasSubApplication) {
       $searchLink.classList.remove('disabled');
@@ -241,15 +248,15 @@ export default async function decorate(block) {
     let applications = searchParams.get('applications');
     let subApplications = searchParams.get('subApplications');
     const $parent = div({ class: 'ingredient-finder-form-categories' });
-    const heading = h4('Ingredient search by category');
+    const heading = h4(searchByCategoryHeading);
 
     const initialTab = input({
       type: 'hidden',
       name: 'initialTab',
       id: 'initialTab',
-      placeholder: 'Application',
+      placeholder: applicationText,
     });
-    const selected = div({ class: 'selected' }, 'Application');
+    const selected = div({ class: 'selected' }, applicationText);
 
     // Fetch and process application data
     const apiResponse = await fetch(
@@ -271,9 +278,9 @@ export default async function decorate(block) {
       type: 'hidden',
       name: 'initialTab',
       id: 'initialTab1',
-      placeholder: 'Sub Application',
+      placeholder: subApplicationText,
     });
-    const selected1 = div({ class: 'selected disabled' }, 'Sub Application');
+    const selected1 = div({ class: 'selected disabled' }, subApplicationText);
     const dropdownOptions1 = div({ class: 'dropdown-options hidden' });
     const $subApplication = div(
       { class: 'sub-application select-dropdown disabled' },
@@ -301,11 +308,11 @@ export default async function decorate(block) {
         {
           class: 'button primary-cta primary-cta--small primary-cta--full-width disabled',
           href: '#',
-          'aria-label': 'Search ingredients',
+          'aria-label': searchIngredientsText,
           role: 'button',
           'aria-disabled': 'true',
         },
-        'Search ingredients',
+        searchIngredientsText,
       ),
     );
 
@@ -356,7 +363,7 @@ export default async function decorate(block) {
             const subOption = createDropdownOption(subItem);
             dropdownOptions1.appendChild(subOption);
           });
-          selected1.textContent = 'Sub Application';
+          selected1.textContent = subApplicationText;
           selected1.classList.remove('disabled');
           $subApplication.classList.remove('disabled');
         }
@@ -447,14 +454,14 @@ export default async function decorate(block) {
   } else if (block.classList.contains('quick')) {
     const searchQuery = new URLSearchParams(window.location.search).get('q');
     const $parent = div({ class: 'ingredient-quick-search' });
-    const heading = h4('Ingredient quick search');
+    const heading = h4(searchByIngredientsHeading);
     const $searchBar = div(
       { class: 'ingredient-quick-search-bar' },
       div(
         { class: 'form-typeahead form-typeahead-ingredient-search' },
         input({
           id: 'search',
-          placeholder: 'Search for ingredients by keyword',
+          placeholder: searchByKeywordsText,
           name: 'q',
           'aria-label': 'Search Input',
           value: searchQuery || '',
@@ -478,10 +485,10 @@ export default async function decorate(block) {
           {
             class: 'button-search button primary-cta primary-cta--small primary-cta--full-width',
             href: '#',
-            'aria-label': 'Search ingredients',
+            'aria-label': searchIngredientsText,
             role: 'button',
           },
-          'Search ingredients',
+          searchIngredientsText,
         ),
       ),
     );
