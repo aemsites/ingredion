@@ -34,7 +34,7 @@ export default async function decorate(block) {
     const authorTextContainer = div(
       { class: 'author-bio-text' },
       div({ class: 'heading', tabIndex: 0 }, isAuthorNameH4 ? h4(authorInformation.name) : h1(authorInformation.name)),
-      authorInformation.designation && p({ class: 'designation', taxIndex: 0 }, authorInformation.designation),
+      authorInformation[`designation-${locale}`] && p({ class: 'designation', taxIndex: 0 }, authorInformation[`designation-${locale}`]),
       ...authorInformation[`description-${locale}`].split('\\n').map((line) => p({ class: 'body-text', taxIndex: 0 }, line)),
     );
 
