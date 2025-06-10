@@ -19,6 +19,10 @@
   letter-spacing: -0.0313rem;
 }
 
+h2#crea-el-futuro-con-personas-a-las-que-les-importa {
+  text-align: left;
+}
+
 .cta-icons.section-content-columns-4 > a, .cta-icons.section-content-columns-6 > a {
   margin: 0 0.75rem 1.5rem;
 }
