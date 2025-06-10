@@ -9,17 +9,7 @@
   max-width: 50.1875rem;
 }
 
-.default-content-wrapper h2 {
-  text-align: center;
-  font-family: MiloPro-Bold, Helvetica, sans-serif;
-  font-size: 2rem;
-  margin: 0 0 1rem;
-  color: var(--text-color);
-  line-height: 3rem;
-  letter-spacing: -0.0313rem;
-}
-
-h2#crea-el-futuro-con-personas-a-las-que-les-importa {
+.cta-icons > h2{
   text-align: left;
 }
 
