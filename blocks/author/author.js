@@ -1,8 +1,10 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
 import { div, p, h1, h4, picture, img } from '../../scripts/dom-helpers.js';
 import { unwrapNestedDivs } from '../../scripts/scripts.js';
+import { getRegionLocale } from '../../scripts/utils.js';
 
 const authorSpreadsheetPath = '/author/author-info.json';
+const [, locale] = getRegionLocale();
 
 export default async function decorate(block) {
   unwrapNestedDivs(block);
@@ -33,7 +35,7 @@ export default async function decorate(block) {
       { class: 'author-bio-text' },
       div({ class: 'heading', tabIndex: 0 }, isAuthorNameH4 ? h4(authorInformation.name) : h1(authorInformation.name)),
       authorInformation.designation && p({ class: 'designation', taxIndex: 0 }, authorInformation.designation),
-      p({ class: 'body-text', taxIndex: 0 }, authorInformation.description),
+      ...authorInformation[`description-${locale}`].split('\\n').map((line) => p({ class: 'body-text', taxIndex: 0 }, line)),
     );
 
     block.appendChild(authorImageContainer);
