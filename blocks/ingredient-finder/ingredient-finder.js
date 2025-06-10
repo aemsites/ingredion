@@ -142,12 +142,12 @@ export default async function decorate(block) {
   let queryParams = 'activePage=1&perPage=6';
   let typeaheadData = null;
   let $dropdownOptions;
-  let applicationText = translate('application');
-  let subApplicationText = translate('sub-application');
-  let searchIngredientsText = translate('search-ingredients');
-  let searchByCategoryHeading = translate('search-category-heading');
-  let searchByIngredientsHeading = translate('search-ingredients-heading');
-  let searchByKeywordsText = translate('search-by-keywords');
+  const applicationText = translate('application');
+  const subApplicationText = translate('sub-application');
+  const searchIngredientsText = translate('search-ingredients');
+  const searchByCategoryHeading = translate('search-category-heading');
+  const searchByIngredientsHeading = translate('search-ingredients-heading');
+  const searchByKeywordsText = translate('search-by-keywords');
 
   async function searchIngredientsByName(searchValue) {
     if (!searchValue) return;

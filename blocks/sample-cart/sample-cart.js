@@ -3,9 +3,14 @@ import {
   p,
   button,
 } from '../../scripts/dom-helpers.js';
-import { getCookie, getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
+import { 
+  getCookie,
+  getRegionLocale,
+  loadTranslations,
+  translate,
+} from '../../scripts/utils.js';
 
-const [region, locale] = getRegionLocale();
+const [, locale] = getRegionLocale();
 
 function deleteCartItem(itemName, itemUrl, clickedButton) {
   const cartCookies = getCookie('cartCookies');
@@ -100,7 +105,7 @@ function addItemToCart(ingredientName, ingredientUrl) {
 export default async function decorate(block) {
   await loadTranslations(locale);
   const cartIngredientsHeading = translate('cart-ingredients-heading');
-  const cartNoItemsMessage = translate('cart-no-items-message')
+  const cartNoItemsMessage = translate('cart-no-items-message');
   const sampleCart = document.createElement('div');
   sampleCart.classList.add('sample-cart');
 

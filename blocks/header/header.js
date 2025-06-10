@@ -438,7 +438,7 @@ async function buildDropdownsMobile($header) {
 export default async function decorate(block) {
   await loadTranslations(locale);
   const searchText = translate('search').toLowerCase();
-  const sampleCartLink = translate('sample-cart-link').toLowerCase()
+  const sampleCartLink = translate('sample-cart-link').toLowerCase();
   block.remove();
   const navPath = `/${region}/${locale}/header/header`;
   const navFrag = await loadFragment(navPath, false);
