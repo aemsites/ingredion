@@ -89,7 +89,15 @@
     gap: 40px 20px;
   }
 
-  
+  .cards:has(ul:only-child li:only-child) > ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; 
+    justify-items: center;
+
+    & > li {
+      grid-column: 2; 
+    }
+  } 
 }
 
 @media (width <= 1079px) {
