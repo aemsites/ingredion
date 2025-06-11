@@ -24,7 +24,9 @@ const sheet = new Map([
   ['news', 'news'],
   ['resource-library', 'formulation'],
   ['snacking-inspiration', 'snacking-inspo'],
-  ['snacking-knowledge', 'snacking-knowl']
+  ['snacking-knowledge', 'snacking-knowl'],
+  ['structured-vegetable-protein-search', 'meat-alt'],
+  ['snacking-troubleshooting', 'markets-food'],
 ]);
 
 const paddingMapping = new Map([
@@ -37,6 +39,8 @@ const paddingMapping = new Map([
   ['padding-b', 'margin-b'],
   ['padding-t', 'margin-t']
 ]);
+
+
 
 const previewURL = 'https://main--ingredion--aemsites.aem.page';
 const r = new RegExp('^(?:[a-z+]+:)?//', 'i');
@@ -112,7 +116,18 @@ export function createHeroBlock(document, main) {
         })
         .join('');
     }
-    
+    const tagURLs = elements.dateCategory?.querySelectorAll('a');
+    tagURLs.forEach(tag => {
+      const href = tag.href
+        .replaceAll('Ingredion%3A', '')
+        .replaceAll('Ingredion-com%3A', '')
+        .replaceAll('ingredion-s7-demo%3A', '')
+        .replaceAll('resource-type', 'resource+type');
+      const queryParams = href.split('tags=');
+      const tags = queryParams[1].replaceAll('-', '+').replaceAll('%2F', '+%2F+');
+      const newHref = `${queryParams[0]}tags=${tags}`;
+      tag.href = newHref;
+    });
     const cells = [
       ['Article Header'],
       ['Type', elements.type?.outerHTML],
@@ -601,7 +616,9 @@ export function createCardsBlock(document, main) {
 
 export function createVideoBlock(document, main) {
   let videoBlocks = document.querySelectorAll('.video-banner');
+  let isVideoPage = false;
   videoBlocks.forEach((videoBlock) => {
+    isVideoPage = true;
     const cells = [['Video']];
     let videoURL = videoBlock.getAttribute('data-video-url');
     const picture = videoBlock.querySelector('.video-banner__wrapper > picture');
@@ -622,6 +639,11 @@ export function createVideoBlock(document, main) {
     const videoTable = WebImporter.DOMUtils.createTable(cells, document);
     picture.replaceWith(videoTable);
   });
+  if (isVideoPage) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 export function createIngredientBlock(document, main, formulation = false) {
@@ -697,7 +719,7 @@ export function createIngredientBlock(document, main, formulation = false) {
         }
         if (description) {
           div.appendChild(description);
-        }
+        } 
         if (mainHeading || description) {
           div.appendChild(sectionMetadataTable);
           div.appendChild(pTag());

@@ -33,7 +33,7 @@ import {
 } from './helper.js';
 
 import { newsMap } from './mapping.js';
-
+let isVideoPage = false;
 export default {
   /**
    * Apply DOM operations to the provided document and return
@@ -71,7 +71,7 @@ export default {
       createCalloutBlock(document, main);
       createCardsBlock(document, main);
       createArticleList(document, main);
-      createVideoBlock(document, main);
+      isVideoPage = createVideoBlock(document, main);
       createCarouselBlock(document, main);
       createTableBlock(document, main); 
       createCTAIconBlock(document, main);
@@ -96,6 +96,7 @@ export default {
       '.dynamic-form',
       '.print-disclaimer',
       '.pagination',
+      '.embeddedServiceHelpButton',
     ]);
 
     WebImporter.rules.transformBackgroundImages(main, document);
@@ -167,6 +168,9 @@ const createMetadata = (main, document, url, html) => {
   const type = getMetadataProp(document, '.category-label');
   if (type && type !== undefined) {
     meta.type = type;
+  }
+  if (isVideoPage) {
+    meta.type = (meta.type == '' || meta.type == null || meta.type == undefined) ? 'Video' : `${meta.type}, Video`;
   }
 
   const socialShare = getSocialShare(document);

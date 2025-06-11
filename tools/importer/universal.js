@@ -36,7 +36,7 @@ import {
 import { skipPages } from './skippages.js';
 import { newsMap } from './mapping.js';
 import { urlCategoryMap } from './keywords.js';
-
+let isVideoPage = false;
 export default {
   /**
    * Apply DOM operations to the provided document and return
@@ -74,7 +74,7 @@ export default {
     //getSocialShare(document, main);    
     createCalloutBlock(document, main);
     createCardsBlock(document, main);
-    createVideoBlock(document, main);
+    isVideoPage = createVideoBlock(document, main);
     createColorBlock(document, main);
     createIngredientBlock(document, main);
     createContactUs(main, document);
@@ -170,6 +170,10 @@ const createMetadata = (main, document, url, html) => {
   // Get type and social metadata
   const type = getMetadataProp(document, '.category-label');
   meta.type = (type == null || type == undefined) ? '' : type;
+  if (isVideoPage) {
+    console.log('isVideoPage', isVideoPage);
+    meta.type = (meta.type == null || meta.type == undefined || meta.type == '') ? 'Video' : `${meta.type}, Video`;
+  }
 
   const socialShare = getSocialShare(document);
   if (socialShare) meta['social-share'] = socialShare;

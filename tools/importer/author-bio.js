@@ -14,7 +14,7 @@ transform: ({ document, url, params }) => {
     
     
     const newPath = WebImporter.FileUtils.sanitizePath(url.pathname);
-    const blogHeader = document.querySelector('.blog-header');
+    const blogHeader = document.querySelector('.video-banner');
     if (blogHeader) {// no "element", the "from" property is provided instead - importer will download the "from" resource as "path"
     result.push({ 
       path: new URL(params.originalURL).pathname.replace(/\/$/, '').replace(/\.html$/, ''),      
