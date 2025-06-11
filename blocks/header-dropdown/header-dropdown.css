@@ -136,12 +136,8 @@
                 display: block;
                 border-bottom: none;
 
-                picture {
-                    margin-bottom: 0;
-                }
-
                 img {
-                    height: 10.5rem;
+                    height: 12.5rem;
                 }
             }
         }
