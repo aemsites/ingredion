@@ -432,6 +432,12 @@ header {
                         opacity: 1;
                         transition: visibility .5s, opacity .5s linear;
                     }
+
+                    .section.row {
+                        p.button-container a.button {
+                            text-transform: none;
+                        }
+                    }
                 }
             }
 

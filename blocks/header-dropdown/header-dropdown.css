@@ -5,14 +5,16 @@
     height: inherit;
 
     @media (width >=1080px) {
-        box-shadow: inset 0 0 20px 0 rgb(0 0 0 / 10%);
+        box-shadow: inset 10px 0 10px -10px rgb(0 0 0 / 10%),
+                    inset -10px 0 10px -10px rgb(0 0 0 / 10%),
+                    inset 0 10px 10px -10px rgb(0 0 0 / 10%);
      }
 }
 
 .header-dropdown {
     display: flex;
     width: 100%;
-    height: 31rem;
+    height: 28rem;
     min-height: 300px;
 
     p {
@@ -24,6 +26,10 @@
             font-size: 16px;
         }
         
+    }
+
+    .button-container a.button:hover {
+        color: var(--dark-green);
     }
 
     ul {
@@ -50,9 +56,6 @@
         }
 
         @media (width >=1080px) {
-            overflow-y: scroll;
-            scrollbar-width: none;
-
             li a {
                 line-height: 1.5rem;
             }
@@ -81,7 +84,6 @@
     >div {
         display: flex;
         width: 100%;
-        height: inherit;
         justify-content: space-between;
 
         >div {
@@ -89,6 +91,51 @@
             flex-direction: column;
             flex: 1;
             padding: 30px 20px 0;
+        }
+    }
+}
+
+@media(width >= 67.5625rem) {
+    .header-dropdown.static.columns-3 {
+        padding: 2.5rem 4.25rem 0;
+
+        >div {
+            > div {
+                padding: 0;
+
+                li > strong > a {
+                    font-family: opensans-bold, helvetica, sans-serif;
+                }
+            }
+
+            >div:first-of-type {
+                border-bottom: none;
+                max-width: 17.1875rem;
+                min-width: 11.875rem;
+                overflow-y: scroll;
+                scrollbar-width: none;
+
+                .button-container a.button {
+                    text-transform: none;
+                }
+            }
+
+            >div:nth-of-type(2) {
+                max-width: 10.6875rem;
+                height: 25rem;
+                overflow-y: scroll;
+                scrollbar-width: none;
+
+                .button-container a.button {
+                    text-transform: none;
+                }
+            }
+
+            >div:nth-of-type(3) {
+                max-width: 23.8125rem;
+                display: block;
+                border-bottom: none;
+            }
         }
     }
 }
@@ -184,6 +231,10 @@
 
         p {
             margin: 0;
+        }
+
+        .button-container a.button:hover {
+            color: var(--dark-green);
         }
     }
 }
