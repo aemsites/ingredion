@@ -135,10 +135,6 @@
                 max-width: 23.8125rem;
                 display: block;
                 border-bottom: none;
-
-                img {
-                    height: 12.5rem;
-                }
             }
         }
     }
