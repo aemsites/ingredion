@@ -180,6 +180,7 @@
       border: 2px solid var(--green);
       color: var(--green);
       background: transparent;
+      font-size: 1.2rem;
     }
 
     a:hover {
@@ -283,12 +284,12 @@
           border: 2px solid var(--theme-clr-text);
           color: var(--theme-clr-text);
           text-decoration: none;
+          font-size: 1.2rem;
           background: var(--theme-clr-background);
         }
 
         a:hover {
           text-decoration: none;
-          border-color: var(--new-green);
           color: var(--new-green);
         }
       }
