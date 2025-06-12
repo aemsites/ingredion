@@ -62,7 +62,7 @@
   --heading-font-size-l: 34px;
   --heading-font-size-m: 27px;
   --heading-font-size-s: 24px;
-  --heading-font-size-xs: 22px;
+  --heading-font-size-xs: 14px;
 
   /* nav height */
   --nav-height: 208px;
@@ -108,7 +108,7 @@
     --heading-font-size-l: 28px;
     --heading-font-size-m: 22px;
     --heading-font-size-s: 20px;
-    --heading-font-size-xs: 18px;
+    --heading-font-size-xs: 14px;
   }
 }
 

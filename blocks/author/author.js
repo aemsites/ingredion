@@ -26,10 +26,10 @@ export default async function decorate(block) {
   if (authorInformation) {
     const authorImageContainer = div(
       { class: 'author-bio-image' },
-      picture(img({
+      ...(authorInformation.image ? [picture(img({
         src: authorInformation.image,
         alt: `${authorInformation.name}`,
-      })),
+      }))] : []),
     );
     const authorTextContainer = div(
       { class: 'author-bio-text' },
