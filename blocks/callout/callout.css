@@ -183,6 +183,14 @@
           }
       }
 
+.yellow.callout > div > .callout-content {
+  a.button:hover {
+    text-decoration: none;
+    border-color: var(--theme-clr-text);
+    color: var(--theme-clr-text);
+  }
+}
+
 .default.text-only {
   .button-container {
     a {
