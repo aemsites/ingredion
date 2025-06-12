@@ -86,6 +86,16 @@
   }
 }
 
+.callout.default {
+  & > div {
+      & .callout-content {
+          a.button {
+            background: var(--green);
+          }
+      }
+  }
+}
+
 .default {
   margin: 0 15px;
 
@@ -290,6 +300,16 @@
           border-color: var(--light-grey);
           color: var(--light-grey);
         }
+      }
+    }
+  }
+
+  .yellow.text-only {
+    .button-container {
+      a:hover {
+        text-decoration: none;
+        border-color: var(--theme-clr-text);
+        color: var(--theme-clr-text);
       }
     }
   }
