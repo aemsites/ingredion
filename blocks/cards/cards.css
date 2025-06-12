@@ -559,10 +559,15 @@ main > .section > .default-content-wrapper {
 }
 
 @media (width >= 1080px) {
-  .cards.two-column > ul {
+  .cards.two-column {
+    justify-content: center;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
-    gap: 40px 20px;
+
+    > ul {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
+      gap: 40px 20px;
+      max-width: 63.25rem;
+    }
   }
 }
-
