@@ -20,7 +20,7 @@ export default async function decorate(block) {
       a.href = 'javascript:void(0)'; // eslint-disable-line no-script-url
       a.textContent = li.textContent;
       li.textContent = '';
-      a.setAttribute('onclick', 'truste.eu.clickListener()');
+      a.addEventListener('click', () => truste.eu.clickListener());
       li.append(a);
     }
 
