@@ -86,6 +86,16 @@
   }
 }
 
+.callout.default {
+  & > div {
+      & .callout-content {
+          a.button {
+            background: var(--green);
+          }
+      }
+  }
+}
+
 .default {
   margin: 0 15px;
 
@@ -172,6 +182,14 @@
             color: var(--light-grey);
           }
       }
+
+.yellow.callout > div > .callout-content {
+  a.button:hover {
+    text-decoration: none;
+    border-color: var(--theme-clr-text);
+    color: var(--theme-clr-text);
+  }
+}
 
 .default.text-only {
   .button-container {
@@ -290,6 +308,16 @@
           border-color: var(--light-grey);
           color: var(--light-grey);
         }
+      }
+    }
+  }
+
+  .yellow.text-only {
+    .button-container {
+      a:hover {
+        text-decoration: none;
+        border-color: var(--theme-clr-text);
+        color: var(--theme-clr-text);
       }
     }
   }
