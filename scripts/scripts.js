@@ -378,27 +378,12 @@ async function loadLazy(doc) {
 }
 
 /**
- * Returns the environment based on the hostname.
- * @returns {string} The environment
- */
-export function getEnvironment() {
-  const { hostname } = window.location;
-  if (hostname === 'localhost' || hostname.endsWith('.aem.page') || hostname.endsWith('.aem.live')) {
-    return 'dev';
-  }
-  if (hostname === 'www.ingredion.us' || hostname === 'www.ingredion.com') {
-    return 'prod';
-  }
-  return 'unknown';
-}
-
-/**
  * Loads everything that happens a lot later,
  * without impacting the user experience.
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3500);
+  window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
 }
 
