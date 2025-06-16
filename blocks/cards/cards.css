@@ -89,7 +89,15 @@
     gap: 40px 20px;
   }
 
-  
+  .cards:has(ul:only-child li:only-child) > ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; 
+    justify-items: center;
+
+    & > li {
+      grid-column: 2; 
+    }
+  } 
 }
 
 @media (width <= 1079px) {
@@ -551,10 +559,15 @@ main > .section > .default-content-wrapper {
 }
 
 @media (width >= 1080px) {
-  .cards.two-column > ul {
+  .cards.two-column {
+    justify-content: center;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
-    gap: 40px 20px;
+
+    > ul {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
+      gap: 40px 20px;
+      max-width: 63.25rem;
+    }
   }
 }
-

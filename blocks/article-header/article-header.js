@@ -8,6 +8,8 @@ export default function decorate(block) {
     if (content.textContent.trim()) {
       if (cssClass === 'title') {
         newBlock.append(h2(content.firstElementChild.textContent || content.textContent));
+      } else if (cssClass === 'description') {
+        newBlock.append(div({ class: cssClass }, content));
       } else {
         newBlock.append(div({ class: cssClass }, content.firstElementChild || content));
       }

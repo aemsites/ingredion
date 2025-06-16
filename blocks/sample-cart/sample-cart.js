@@ -3,7 +3,14 @@ import {
   p,
   button,
 } from '../../scripts/dom-helpers.js';
-import { getCookie } from '../../scripts/utils.js';
+import {
+  getCookie,
+  getRegionLocale,
+  loadTranslations,
+  translate,
+} from '../../scripts/utils.js';
+
+const [, locale] = getRegionLocale();
 
 function deleteCartItem(itemName, itemUrl, clickedButton) {
   const cartCookies = getCookie('cartCookies');
@@ -96,13 +103,16 @@ function addItemToCart(ingredientName, ingredientUrl) {
 }
 
 export default async function decorate(block) {
+  await loadTranslations(locale);
+  const cartIngredientsHeading = translate('cart-ingredients-heading');
+  const cartNoItemsMessage = translate('cart-no-items-message');
   const sampleCart = document.createElement('div');
   sampleCart.classList.add('sample-cart');
 
   const heading = document.createElement('div');
   heading.classList.add('heading');
   heading.setAttribute('tabindex', '0');
-  heading.innerHTML = '<h4>Ingredients in Your Cart</h4>';
+  heading.innerHTML = `<h4>${cartIngredientsHeading}</h4>`;
   sampleCart.appendChild(heading);
 
   const cartList = document.createElement('div');
@@ -134,7 +144,7 @@ export default async function decorate(block) {
   const noItems = document.createElement('div');
   noItems.classList.add('cart-list__noItems');
   noItems.style.display = 'block';
-  noItems.innerHTML = '<p class="body-text">There are currently no items in your cart</p>';
+  noItems.innerHTML = `<p class="body-text">${cartNoItemsMessage}</p>`;
 
   if (cartCookies && cartCookies.length > 0) {
     const items = cartCookies.split('cookie ').filter(Boolean);

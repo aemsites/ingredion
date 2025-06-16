@@ -101,17 +101,17 @@ async function buildIngredientFinderQuickDropdown(dropdown) {
   if (dropdown) {
     const ingredientQuickFinderBlock = ingredientFinder.querySelector('.ingredient-finder.quick');
     dropdown.prepend(ingredientQuickFinderBlock);
-    ingredientQuickFinderBlock.prepend(div(p('Ingredient quick select')));
+    ingredientQuickFinderBlock.prepend(div(p(translate('nav-quick-select'))));
 
     const searchContainer = ingredientQuickFinderBlock.querySelector('.ingredient-quick-search');
-    const viewDetailsBtn = a({ class: 'button view-details disabled' }, 'View details');
+    const viewDetailsBtn = a({ class: 'button view-details disabled' }, translate('nav-quick-select-view-details'));
     const addSampleBtn = a(
       { class: 'button secondary add-sample disabled' },
-      'Add sample',
+      translate('nav-quick-select-add-sample'),
     );
     const downloadAllBtn = a(
       { class: 'button download-all disabled' },
-      'Download All Documents',
+      translate('nav-quick-select-download'),
     );
 
     searchContainer.append(viewDetailsBtn);
@@ -126,7 +126,7 @@ async function buildIngredientFinderQuickDropdown(dropdown) {
       downloadAllBtn.classList.toggle('disabled', !hasSearchInput);
     });
 
-    quickSearchInput.placeholder = 'Product name, keyword or PIN';
+    quickSearchInput.placeholder = translate('nav-quick-select-placeholder');
 
     const wrapper = div();
     searchContainer.parentNode.insertBefore(wrapper, searchContainer);
@@ -199,14 +199,14 @@ async function buildIngredientFinderCategoryDropdown(dropdown) {
     categoryDropdowns.forEach((categoryDropdown) => {
       const selectedDiv = categoryDropdown.querySelector('.selected');
       if (selectedDiv && !selectedDiv.classList.contains('has-value')) {
-        selectedDiv.textContent = `Select ${selectedDiv.textContent.trim()}`;
+        selectedDiv.textContent = `${translate('select')} ${selectedDiv.textContent.trim()}`;
       }
     });
 
     const buttonContainer = wrapper.querySelector('.button-container');
     const anchor = buttonContainer?.querySelector('a');
     if (anchor) {
-      anchor.textContent = 'Search';
+      anchor.textContent = translate('search');
     }
 
     if (isMobile.matches) {
@@ -438,6 +438,7 @@ async function buildDropdownsMobile($header) {
 export default async function decorate(block) {
   await loadTranslations(locale);
   const searchText = translate('search').toLowerCase();
+  const sampleCartLink = translate('sample-cart-link').toLowerCase();
   block.remove();
   const navPath = `/${region}/${locale}/header/header`;
   const navFrag = await loadFragment(navPath, false);
@@ -458,7 +459,7 @@ export default async function decorate(block) {
   const $btnCart = a(
     {
       class: 'icon-cart',
-      href: `/${region}/${locale}/sample-cart`,
+      href: `/${region}/${locale}/${sampleCartLink}`,
       'aria-label': 'Cart',
     },
     '\u{e919}',
