@@ -4,11 +4,6 @@
   justify-content: center;
 }
 
-.section .default-content-wrapper {
-  margin: 3.125rem auto 2.5rem;
-  max-width: 50.1875rem;
-}
-
 .cta-icons > h2{
   text-align: left;
 }
