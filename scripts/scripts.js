@@ -226,7 +226,7 @@ function addHeroObserver(doc) {
     // Get all sections
     const sections = [];
     anchorLinks.forEach((link) => {
-      const target = doc.querySelector(link.getAttribute('href'));
+      const target = doc.querySelector(decodeURIComponent(link.getAttribute('href')));
       if (target) sections.push(target);
     });
 
@@ -247,7 +247,7 @@ function addHeroObserver(doc) {
     if (activeSection && activeSection !== updateActiveSection.currentActive) {
       updateActiveSection.currentActive = activeSection;
       anchorLinks.forEach((link) => {
-        if (link.getAttribute('href') === `#${activeSection.id}`) {
+        if (link.getAttribute('href') === `#${encodeURIComponent(activeSection.id)}`) {
           link.classList.add('active');
         } else {
           link.classList.remove('active');
