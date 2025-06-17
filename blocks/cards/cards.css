@@ -174,10 +174,16 @@
   }
 
   .cards.slim > ul {
+    display: flex;
     width: auto;
-    grid-template-columns: repeat(auto-fit, minmax(23%, 1fr));
-    gap: 10px;
+    justify-content: center;
+    gap: 40px 30px;
   }
+
+  .cards.slim > ul > li {
+      width: 23%;
+      margin: 0 !important;
+    }
 }
 
 @media (width <= 1079px) {
