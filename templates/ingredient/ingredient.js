@@ -133,7 +133,7 @@ export default async function decorate(doc) {
     showProductError($main);
     return;
   }
-
+  localStorage.setItem('productFacets', JSON.stringify(productDetails.facets));
   // get product documents
   const fetchProductDocs = await fetch(
     API_PRODUCT.ALL_DOCUMENTS(region, locale, product.productId));

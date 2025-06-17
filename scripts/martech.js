@@ -30,6 +30,8 @@ function initDataLayer() {
     const [region, locale] = getRegionLocale();
     pageHierarchy = [getRegionLocaleMap(region), getRegionLocaleMap(locale), 'index'];
   }
+  const productFacets = JSON.parse(localStorage.getItem('productFacets'));
+
   window.dataLayer = {
     page: {
       pageLevel1: pageHierarchy[0],
@@ -53,6 +55,13 @@ function initDataLayer() {
       eventInfo4: '4',
     },
   };
+  if (productFacets) {
+    window.dataLayer.product = {
+      application: productFacets.applications?.options?.map((opt) => opt.label).join(',') || '',
+      subApplication: productFacets.subApplications?.options?.map((opt) => opt.label).join(',') || '',
+      productType: productFacets.productType?.options?.map((opt) => opt.label).join(',') || '',
+    };
+  }
   localStorage.setItem('previousPageName', window.location.href);
 }
 
