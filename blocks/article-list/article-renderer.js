@@ -219,15 +219,12 @@ export default class ArticleRenderer {
           return (dateA || 0) - (dateB || 0);
         });
         break;
-      case 'newest':
+      case 'newest': default:
         articles = articles.sort((A, B) => {
           const dateA = A.eventDate ? parseEventDate(A.eventDate) : new Date(A.publishDate * 1000);
           const dateB = B.eventDate ? parseEventDate(B.eventDate) : new Date(B.publishDate * 1000);
           return (dateB || 0) - (dateA || 0);
         });
-        break;
-      default:
-        articles = this.shuffleArray(articles);
         break;
     }
 
@@ -889,12 +886,9 @@ export default class ArticleRenderer {
         return newArticle;
       });
 
-      // Shuffle all articles to randomize featured content distribution
-      const shuffledData = this.shuffleArray(normalizedData);
-
       if (this.documentFilters) {
         const filters = this.documentFilters.split(',').map((f) => f.trim().toLowerCase()); // Normalize filters for comparison
-        this.state.allArticles = shuffledData.filter((article) =>
+        this.state.allArticles = normalizedData.filter((article) =>
           // Use normalizedTags for filtering
           // eslint-disable-next-line implicit-arrow-linebreak
           filters.every((filter) => article.normalizedTags.some((normalizedTag) => {
@@ -916,7 +910,7 @@ export default class ArticleRenderer {
           ,
         );
       } else {
-        this.state.allArticles = shuffledData;
+        this.state.allArticles = normalizedData;
       }
       // render page after data and translations are loaded
       this.updatePage();
@@ -965,16 +959,5 @@ export default class ArticleRenderer {
     } else {
       this.clearFilters.classList.add('hidden');
     }
-  }
-
-  // Function to shuffle an array using Fisher-Yates algorithm
-  // eslint-disable-next-line class-methods-use-this
-  shuffleArray(array) {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
   }
 }
