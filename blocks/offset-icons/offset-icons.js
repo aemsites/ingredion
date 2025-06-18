@@ -10,7 +10,7 @@ export default function decorate(block) {
       { class: 'offset-icons-list' },
       ...Array.from(rows).slice(1).map((row) => {
         const children = Array.from(row.children);
-        return div({class: 'offset-icons-card' }, ...children);
+        return div({ class: 'offset-icons-card' }, ...children);
       }),
     ),
   );
