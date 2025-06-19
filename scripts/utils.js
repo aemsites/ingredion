@@ -1,6 +1,34 @@
 // valid regions and locales
 const VALID_REGIONS = ['na', 'sa', 'emea', 'apac'];
-const VALID_LOCALES = ['en-us', 'es-mx', 'kerr', 'pt-br', 'es-co', 'es-ar', 'en-uk', 'en-sg', 'ja-jp', 'sc-cn', 'en-au'];
+const VALID_LOCALES = [
+  'en-us',
+  'es-mx',
+  'kerr',
+  'pt-br',
+  'es-co',
+  'es-ar',
+  'en-uk',
+  'en-sg',
+  'ja-jp',
+  'sc-cn',
+  'en-au',
+];
+const REGION_LOCALE_MAP = new Map([
+  ['na', 'North America'],
+  ['en-us', 'United States - English'],
+  ['es-mx', 'Mexico - Spanish'],
+  ['pt-br', 'Brazil - Portuguese'],
+  ['es-co', 'Colombia - Spanish'],
+  ['es-ar', 'Argentina - Spanish'],
+  ['en-uk', 'United Kingdom - English'],
+  ['en-sg', 'Singapore - English'],
+  ['ja-jp', 'Japan - Japanese'],
+  ['sc-cn', 'China - Simplified Chinese'],
+  ['en-au', 'Australia - English'],
+  ['sa', 'South America'],
+  ['emea', 'Europe, Middle East, and Africa'],
+  ['apac', 'Asia Pacific'],
+]);
 
 /**
  * Retrieves the region and locale from the URL path.
@@ -146,4 +174,8 @@ export function getCookie(name) {
     return decodeURIComponent(foundCookie.substring(foundCookie.indexOf('=') + 1));
   }
   return null;
+}
+
+export function getRegionLocaleMap(key) {
+  return REGION_LOCALE_MAP.get(key);
 }

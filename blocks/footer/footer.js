@@ -13,7 +13,19 @@ export default async function decorate(block) {
   // decorate footer DOM
   block.textContent = '';
   const footer = document.createElement('div');
-  while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
+  while (fragment.firstElementChild) {
+    if (fragment.firstElementChild.classList.contains('footer-utility')) {
+      const li = fragment.firstElementChild.querySelector('li:last-child');
+      const a = document.createElement('a');
+      a.href = 'javascript:void(0)'; // eslint-disable-line no-script-url
+      a.textContent = li.textContent;
+      li.textContent = '';
+      a.addEventListener('click', () => truste.eu.clickListener()); // eslint-disable-line no-undef
+      li.append(a);
+    }
+
+    footer.append(fragment.firstElementChild);
+  }
 
   block.append(footer);
 }
