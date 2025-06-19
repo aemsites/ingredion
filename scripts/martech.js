@@ -26,10 +26,11 @@ async function initLaunch(env) {
 
 function initDataLayer() {
   let pageHierarchy = JSON.parse(localStorage.getItem('pageHierarchy'));
+  const [region, locale] = getRegionLocale();
   if (!pageHierarchy) {
-    const [region, locale] = getRegionLocale();
     pageHierarchy = [getRegionLocaleMap(region), getRegionLocaleMap(locale), 'index'];
   }
+  const pageLanguage = locale.split('-')[0];
   const productFacets = JSON.parse(localStorage.getItem('productFacets'));
 
   window.dataLayer = {
@@ -39,7 +40,7 @@ function initDataLayer() {
       pageLevel3: pageHierarchy[2],
       pageName: pageHierarchy.join('|'),
       pageRegion: pageHierarchy[0],
-      pageLanguage: pageHierarchy[1],
+      pageLanguage,
       previousPageName: localStorage.getItem('previousPageName'),
       pageURL: window.location.href,
       pageHierarchy: pageHierarchy.join('/'),
