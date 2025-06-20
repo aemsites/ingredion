@@ -5,7 +5,7 @@
 # 2. post body below to - https://admin.hlx.page/config/aemsites/sites/ingredion/content/query.yaml
 # content-type = text/yaml
 
-version: 1.9
+version: 2.2
 indices:
   global-na-en-us:
     include:
@@ -45,8 +45,11 @@ indices:
         select: main > div > div.video > div > div > p > picture > img
         value: attribute(el, "src")
       video-url:
-        select: main > div > div.video > div > div > p > a
+        selectFirst: main > div > div.video > div > div > p > a
         value: attribute(el, "href")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-na-en-us-news-events:
     include:
@@ -89,6 +92,9 @@ indices:
       watchNow:
         select: head > meta[name="watch-now"]
         values: attribute(el, "content")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-na-es-mx:
     include:
@@ -128,8 +134,11 @@ indices:
         select: main > div > div.video > div > div > p > picture > img
         value: attribute(el, "src")
       video-url:
-        select: main > div > div.video > div > div > p > a
+        selectFirst: main > div > div.video > div > div > p > a
         value: attribute(el, "href")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-na-es-mx-news-events:
     include:
@@ -172,6 +181,9 @@ indices:
       watchNow:
         select: head > meta[name="watch-now"]
         values: attribute(el, "content")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-na-kerr:
     include:
@@ -211,8 +223,11 @@ indices:
         select: main > div > div.video > div > div > p > picture > img
         value: attribute(el, "src")
       video-url:
-        select: main > div > div.video > div > div > p > a
+        selectFirst: main > div > div.video > div > div > p > a
         value: attribute(el, "href")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-na-kerr-news-events:
     include:
@@ -255,6 +270,9 @@ indices:
       watchNow:
         select: head > meta[name="watch-now"]
         values: attribute(el, "content")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-sa-pt-br:
     include:
@@ -294,8 +312,11 @@ indices:
         select: main > div > div.video > div > div > p > picture > img
         value: attribute(el, "src")
       video-url:
-        select: main > div > div.video > div > div > p > a
+        selectFirst: main > div > div.video > div > div > p > a
         value: attribute(el, "href")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-sa-pt-br-news-events:
     include:
@@ -338,6 +359,9 @@ indices:
       watchNow:
         select: head > meta[name="watch-now"]
         values: attribute(el, "content")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-sa-es-co:
     include:
@@ -377,8 +401,11 @@ indices:
         select: main > div > div.video > div > div > p > picture > img
         value: attribute(el, "src")
       video-url:
-        select: main > div > div.video > div > div > p > a
+        selectFirst: main > div > div.video > div > div > p > a
         value: attribute(el, "href")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-sa-es-co-news-events:
     include:
@@ -421,6 +448,9 @@ indices:
       watchNow:
         select: head > meta[name="watch-now"]
         values: attribute(el, "content")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-sa-es-ar:
     include:
@@ -460,8 +490,11 @@ indices:
         select: main > div > div.video > div > div > p > picture > img
         value: attribute(el, "src")
       video-url:
-        select: main > div > div.video > div > div > p > a
+        selectFirst: main > div > div.video > div > div > p > a
         value: attribute(el, "href")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-sa-es-ar-news-events:
     include:
@@ -504,6 +537,9 @@ indices:
       watchNow:
         select: head > meta[name="watch-now"]
         values: attribute(el, "content")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-emea-en-uk:
     include:
@@ -543,8 +579,11 @@ indices:
         select: main > div > div.video > div > div > p > picture > img
         value: attribute(el, "src")
       video-url:
-        select: main > div > div.video > div > div > p > a
+        selectFirst: main > div > div.video > div > div > p > a
         value: attribute(el, "href")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-emea-en-uk-news-events:
     include:
@@ -587,6 +626,9 @@ indices:
       watchNow:
         select: head > meta[name="watch-now"]
         values: attribute(el, "content")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")  
 
   global-apac-en-sg:
     include:
@@ -626,8 +668,11 @@ indices:
         select: main > div > div.video > div > div > p > picture > img
         value: attribute(el, "src")
       video-url:
-        select: main > div > div.video > div > div > p > a
-        value: attribute(el, "href")  
+        selectFirst: main > div > div.video > div > div > p > a
+        value: attribute(el, "href")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-apac-en-sg-news-events:
     include:
@@ -670,6 +715,9 @@ indices:
       watchNow:
         select: head > meta[name="watch-now"]
         values: attribute(el, "content")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")  
 
   global-apac-ja-jp:
     include:
@@ -709,8 +757,11 @@ indices:
         select: main > div > div.video > div > div > p > picture > img
         value: attribute(el, "src")
       video-url:
-        select: main > div > div.video > div > div > p > a
-        value: attribute(el, "href")  
+        selectFirst: main > div > div.video > div > div > p > a
+        value: attribute(el, "href")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-apac-ja-jp-news-events:
     include:
@@ -753,6 +804,9 @@ indices:
       watchNow:
         select: head > meta[name="watch-now"]
         values: attribute(el, "content")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-apac-sc-cn:
     include:
@@ -792,8 +846,11 @@ indices:
         select: main > div > div.video > div > div > p > picture > img
         value: attribute(el, "src")
       video-url:
-        select: main > div > div.video > div > div > p > a
+        selectFirst: main > div > div.video > div > div > p > a
         value: attribute(el, "href")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-apac-sc-cn-news-events:
     include:
@@ -836,6 +893,9 @@ indices:
       watchNow:
         select: head > meta[name="watch-now"]
         values: attribute(el, "content")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-apac-en-au:
     include:
@@ -875,8 +935,11 @@ indices:
         select: main > div > div.video > div > div > p > picture > img
         value: attribute(el, "src")
       video-url:
-        select: main > div > div.video > div > div > p > a
-        value: attribute(el, "href")  
+        selectFirst: main > div > div.video > div > div > p > a
+        value: attribute(el, "href")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
 
   global-apac-en-au-news-events:
     include:
@@ -919,3 +982,6 @@ indices:
       watchNow:
         select: head > meta[name="watch-now"]
         values: attribute(el, "content")
+      redirect:
+        select: head > meta[name="redirect"]
+        value: attribute(el, "content")
