@@ -135,6 +135,11 @@
   padding-left: .9375rem;
 }
 
+.hero .circle-asset {
+  bottom: -50px;
+  right: 9%;
+}
+
 @media (width >= 768px) {
   .hero {
     padding: 40px 32px;

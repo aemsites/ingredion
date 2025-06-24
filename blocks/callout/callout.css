@@ -31,6 +31,7 @@
     .callout-content {
       color: var(--theme-clr-text);
       padding: 80px;
+      position: relative;
 
       h1, h2, h3 {
         color: var(--theme-clr-text);
@@ -242,6 +243,17 @@
           margin-right: auto;
           width: 100%;
         }
+
+        &:last-child .circle-asset {
+          left: -3.125rem;
+          right: auto;
+        }
+
+        .circle-asset {
+          right: -3.125rem;
+          left: auto;
+          bottom: 2.5rem;
+        }
       }
     }
   }
@@ -343,6 +355,12 @@
     > div {
       > .callout-content {
         order: 0;
+
+        .circle-asset {
+          bottom: -3.125rem;
+          left: 50%;
+          transform: translateX(-50%);
+        }
       }
   
       > .callout-image {

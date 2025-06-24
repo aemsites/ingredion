@@ -1,5 +1,20 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
+const circleColors = [
+  'circle-blue',
+  'circle-teal',
+  'circle-green',
+  'circle-orange',
+  'circle-red',
+  'circle-lilac',
+  'circle-purple',
+  'circle-dark-purple',
+  'circle-dark-blue',
+  'circle-yellow',
+  'circle-pastel-green',
+  'circle-white',
+];
+
 export default function decorate(block) {
   const picContainer = block.querySelector(':scope > div');
   const desktopPic = picContainer.querySelector('picture');
@@ -7,6 +22,8 @@ export default function decorate(block) {
   const alt = block.querySelector(':scope > div:nth-child(2)').textContent.trim().slice(0, 125);
   const mobilePic = block.querySelectorAll('picture')[1];
   const mobileBreakpoint = window.matchMedia('(max-width: 768px)');
+  const classListArray = Array.from(block.classList);
+  const circleColor = circleColors.find((color) => classListArray.includes(color));
 
   // remove mobile row from DOM
   Array.from(block.children).forEach((row) => {
@@ -17,6 +34,15 @@ export default function decorate(block) {
       }
     }
   });
+
+  if(circleColor) {
+    const circleAssetContainer = document.createElement('div');
+    circleAssetContainer.classList.add('circle-asset');
+    circleAssetContainer.classList.add(circleColor);
+    const heroWrapper = document.querySelector('.hero-wrapper .hero');
+    heroWrapper.append(circleAssetContainer);
+    block.classList.remove(circleColor);
+  }
 
   function onResize(e) {
     const currentPic = picContainer.querySelector('picture');
