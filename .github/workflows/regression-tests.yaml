@@ -1,0 +1,104 @@
+name: Regression Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      test_url:
+        description: 'Override URL for testing (optional)'
+        required: false
+        default: ''
+      metric:
+        description: 'Metric to test'
+        required: false
+        default: 'cwv'
+        type: choice
+        options:
+          - cwv
+          - ui
+          - ux
+          - errors
+      device:
+        description: 'Device type'
+        required: false
+        default: 'desktop'
+        type: choice
+        options:
+          - desktop
+          - mobile
+
+# Prevent multiple runs on the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regression-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Clone regression tester repository
+      run: git clone https://github.com/MarquiseRosier/regression-tester.git
+      
+    - name: Install regression tester dependencies
+      run: |
+        cd regression-tester
+        # Check if package.json exists, if not, create a basic one
+        if [ ! -f package.json ]; then
+          echo '{"type": "module", "dependencies": {"dotenv": "^16.0.0", "yargs": "^17.0.0"}}' > package.json
+        fi
+        npm install
+      
+    - name: Construct AEM Preview URL
+      id: construct-url
+      run: |
+        BRANCH="${{ github.head_ref }}"
+        REPO="${{ github.event.repository.name }}"
+        OWNER="${{ github.repository_owner }}"
+        PREVIEW_URL="https://${BRANCH}--${REPO}--${OWNER}.aem.live/na/en-us"
+        
+        echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+        echo "live_url=https://main--ingredion--aemsites.aem.live/na/en-us" >> $GITHUB_OUTPUT
+        echo "domain_key=56B9EDF2-699A-40CB-A445-2DFC087546D9-8E11F549" >> $GITHUB_OUTPUT
+        echo "Branch: $BRANCH"
+        echo "Repository: $REPO"
+        echo "Owner: $OWNER"
+        echo "Constructed AEM Preview URL: $PREVIEW_URL"
+      
+    - name: Run regression tests
+      run: |
+        cd regression-tester
+        node index.js \
+          --domainkey "${{ steps.construct-url.outputs.domain_key || '56B9EDF2-699A-40CB-A445-2DFC087546D9-8E11F549'}}" \
+          --metric "${{ github.event.inputs.metric || 'cwv' }}" \
+          --device "${{ github.event.inputs.device || 'desktop' }}" \
+          --previewUrl "${{ steps.construct-url.outputs.preview_url }}" \
+          --liveUrl "${{ steps.construct-url.outputs.live_url }}"
+      env:
+        NODE_ENV: test
+        CI: true
+      
+    - name: Upload test results (if any)
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: regression-test-results-${{ github.run_number }}
+        path: |
+          regression-tester/results/
+          regression-tester/logs/
+          regression-tester/output/
+        retention-days: 7 
