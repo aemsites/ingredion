@@ -1,6 +1,10 @@
 .offset-icons-list-wrapper {
   margin: 0 15px;
-  
+
+  p {
+    letter-spacing: 0.25px;
+  }
+
   .offset-icons-overview {
     text-align: center;
 
@@ -33,10 +37,6 @@
         }
       }
     }
-  }
-
-  p {
-    letter-spacing: 0.25px;
   }
 
   @media (width >= 1080px) {
