@@ -10,9 +10,32 @@ export default function decorate(block) {
       { class: 'offset-icons-list' },
       ...Array.from(rows).slice(1).map((row) => {
         const children = Array.from(row.children);
-        return div({ class: 'offset-icons-card' }, ...children);
+        return createCard(children);
       }),
     ),
   );
   block.replaceChildren(offsetIconContainer);
+ }
+
+function createCard(element) {
+  const imageBlock = element[0];
+  const cardHeading = element[1];
+  const cardDescription = element[2];
+
+  const offsetIconCard = document.createElement('div');
+  offsetIconCard.classList.add('offset-icons-card');
+  
+  const imageContainer = document.createElement('div');
+  imageContainer.classList.add('image-container');
+  imageBlock && imageContainer.append(imageBlock);
+
+  const contentBlock = document.createElement('div');
+  contentBlock.classList.add('content-block');
+  cardHeading && contentBlock.append(cardHeading);
+  cardDescription && contentBlock.append(cardDescription);
+  
+  offsetIconCard.append(imageContainer);
+  offsetIconCard.append(contentBlock);
+
+  return offsetIconCard;
 }
