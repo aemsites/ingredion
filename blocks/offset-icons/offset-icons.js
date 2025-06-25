@@ -10,19 +10,19 @@ function createCard(element) {
 
   const imageContainer = document.createElement('div');
   imageContainer.classList.add('image-container');
-  if(imageBlock) {
+  if (imageBlock) {
     imageContainer.append(imageBlock);
   }
 
   const contentBlock = document.createElement('div');
   contentBlock.classList.add('content-block');
-  if(cardHeading) {
+  if (cardHeading) {
     contentBlock.append(cardHeading);
   }
-  if(cardDescription){
+  if (cardDescription) {
     contentBlock.append(cardDescription);
   }
-  
+
   offsetIconCard.append(imageContainer);
   offsetIconCard.append(contentBlock);
 
