@@ -69,10 +69,10 @@ jobs:
         BRANCH="${{ github.head_ref }}"
         REPO="${{ github.event.repository.name }}"
         OWNER="${{ github.repository_owner }}"
-        PREVIEW_URL="https://${BRANCH}--${REPO}--${OWNER}.aem.live/na/en-us"
+        PREVIEW_URL="https://${BRANCH}--${REPO}--${OWNER}.aem.live"
         
         echo "preview_url=$PREVIEW_URL" >> $GITHUB_OUTPUT
-        echo "live_url=https://main--ingredion--aemsites.aem.live/na/en-us" >> $GITHUB_OUTPUT
+        echo "live_url=https://main--ingredion--aemsites.aem.live" >> $GITHUB_OUTPUT
         echo "domain_key=56B9EDF2-699A-40CB-A445-2DFC087546D9-8E11F549" >> $GITHUB_OUTPUT
         echo "Branch: $BRANCH"
         echo "Repository: $REPO"
