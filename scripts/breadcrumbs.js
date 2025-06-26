@@ -2,7 +2,7 @@ import {
   nav, a, li, ul, strong,
 } from './dom-helpers.js';
 import { loadCSS } from './aem.js';
-import { getRegionLocale } from './utils.js';
+import { getRegionLocale, getRegionLocaleMap } from './utils.js';
 
 async function fetchIndex(homePath) {
   const indexPath = `${homePath}/indexes/global-index.json`;
@@ -21,6 +21,7 @@ export async function breadcrumbs() {
   const $breadcrumbs = nav({ class: 'breadcrumbs' });
   // todo: update breadcrumbs - just static HTML for now
   const [region, locale] = getRegionLocale();
+
   const homePath = `/${region}/${locale}`;
   const data = await fetchIndex(homePath);
   let { pathname } = window.location;
@@ -44,11 +45,12 @@ export async function breadcrumbs() {
   const homeLink = a({ href: `${homePath}/` }, 'Ingredion');
   const homeCrumb = li(homeLink);
   const crumbList = ul(homeCrumb);
-
+  const pageHierarchy = [];
+  pageHierarchy.push(getRegionLocaleMap(region));
+  pageHierarchy.push(getRegionLocaleMap(locale));
   pathParts.forEach((part, index) => {
     currentPath += `/${part}`;
     const { pageNames, pagePath } = getPageNamesByPath(currentPath);
-
     if (pageNames.length === 0) return;
 
     const lastBreadcrumb = breadcrumbItems[breadcrumbItems.length - 1];
@@ -68,13 +70,14 @@ export async function breadcrumbs() {
       } else {
         link = strong();
       }
+      pageHierarchy.push(pageName);
 
       link.textContent = pageName;
       liEl.appendChild(link);
       breadcrumbItems.push(liEl);
     });
   });
-
+  localStorage.setItem('pageHierarchy', JSON.stringify(pageHierarchy));
   // TODO: add more cases where breadcrumbs are not displayed
   if (breadcrumbItems.length > 0) {
     // Append all breadcrumb items to the container if there are more than one
