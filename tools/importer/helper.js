@@ -69,6 +69,12 @@ export function createHeroBlock(document, main) {
 
     if (!hero.querySelector('.hero__text').classList.contains('hero__text--light')) blockOptions.push('text-black');
 
+    const circleAsset = hero.querySelector('.circle-asset');
+    if(circleAsset) {
+      const circleColor = colorMapping.get(toHex(circleAsset.style.borderColor).toLowerCase());
+      circleColor !='' ? blockOptions.push(`circle-${circleColor}`) : blockOptions.push('circle-white');
+    }
+
     const cells = blockOptions.length > 0 ? [[`Hero(${blockOptions.join(', ')})`]] : [['Hero']];
     
     const image = hero.querySelector('.hero__image > picture').outerHTML;
@@ -107,7 +113,7 @@ export function createHeroBlock(document, main) {
     };
     // Clean up description by removing sup tags
     if (elements.description) {
-      const pTags = elements.description.querySelectorAll('p');
+      const pTags = elements.description.querySelectorAll('p, h3, ul');
       elements.description.innerHTML = Array.from(pTags)
         .map(p => {
           const pClone = p.cloneNode(true);
@@ -153,6 +159,7 @@ export function createCalloutBlock(document, main) {
   let heading = '';
   let rteText = '';
   let ctalink = '';
+  let circleAsset='';
   
   callOutBlocks.forEach((callOut) => {
     convertHrefs(callOut);
@@ -183,6 +190,12 @@ export function createCalloutBlock(document, main) {
         rteText = child.querySelector('.colorblock-img-text__text--wrapper .rte-block');
         if (rteText) {
           rteText = rteText.innerHTML;
+        }
+
+        circleAsset = child.querySelector('.circle-asset');
+        if(circleAsset) {
+          const circleColor = colorMapping.get(toHex(circleAsset.style.borderColor).toLowerCase());
+          circleColor !='' ? blockOptions.push(`circle-${circleColor}`) : blockOptions.push('circle-white');
         }
         
         ctalink = child.querySelector('.colorblock-img-text__text--wrapper .secondary-cta-link') ?
@@ -570,7 +583,7 @@ export function createCardsBlock(document, main) {
     const cells = [['Cards(two-column)']];
     cards.forEach((card) => {      
       const cardImg = card.querySelector('.img-caption__image > picture').outerHTML;
-      const cardTexts = card.querySelectorAll('.caption-text > p');
+      const cardTexts = card.querySelectorAll('.img-caption > h3, .img-caption > p');
       const div = document.createElement('div');
       cardTexts.forEach((cardText) => {
         const innerDiv = document.createElement('div');
@@ -653,9 +666,6 @@ export function createIngredientBlock(document, main, formulation = false) {
   const mainHeading = relatedIngredients.querySelector('.section-title-description-wrapper .heading > h2');
   const description = relatedIngredients.querySelector('.section-title-description-wrapper .rte-block');
   const resultProdCards = document.querySelectorAll('.result-prod-card');
-  const sectionMetadata = [['Section Metadata']];
-  sectionMetadata.push(['Style', 'center']);
-  const sectionMetadataTable = WebImporter.DOMUtils.createTable(sectionMetadata, document);
   if (!resultProdCards) {
     const cells = [['related ingredient']];
     const heading = relatedIngredients.querySelector('.heading > h2').textContent;
@@ -679,10 +689,6 @@ export function createIngredientBlock(document, main, formulation = false) {
     }
     if (description) {
       div.appendChild(description);
-    }
-    if (mainHeading || description) {
-      div.appendChild(sectionMetadataTable);
-      div.appendChild(pTag());
     }
     div.appendChild(table);
     
@@ -719,10 +725,6 @@ export function createIngredientBlock(document, main, formulation = false) {
         }
         if (description) {
           div.appendChild(description);
-        } 
-        if (mainHeading || description) {
-          div.appendChild(sectionMetadataTable);
-          div.appendChild(pTag());
         }
       }
       
