@@ -75,11 +75,10 @@ export default function decorate(block) {
 
     const circleColor = circleColors.find((color) => classListArray.includes(color));
 
-    if(circleColor) {
+    if (circleColor) {
       const circleAssetContainer = document.createElement('div');
       circleAssetContainer.classList.add('circle-asset');
       circleAssetContainer.classList.add(circleColor);
-      
       textWrapper.append(circleAssetContainer);
       block.classList.remove(circleColor);
     }

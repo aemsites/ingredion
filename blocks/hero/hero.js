@@ -35,7 +35,7 @@ export default function decorate(block) {
     }
   });
 
-  if(circleColor) {
+  if (circleColor) {
     const circleAssetContainer = document.createElement('div');
     circleAssetContainer.classList.add('circle-asset');
     circleAssetContainer.classList.add(circleColor);
