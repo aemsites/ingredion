@@ -69,6 +69,12 @@ export function createHeroBlock(document, main) {
 
     if (!hero.querySelector('.hero__text').classList.contains('hero__text--light')) blockOptions.push('text-black');
 
+    const circleAsset = hero.querySelector('.circle-asset');
+    if(circleAsset) {
+      const circleColor = colorMapping.get(toHex(circleAsset.style.borderColor).toLowerCase());
+      circleColor !='' ? blockOptions.push(`circle-${circleColor}`) : blockOptions.push('circle-white');
+    }
+
     const cells = blockOptions.length > 0 ? [[`Hero(${blockOptions.join(', ')})`]] : [['Hero']];
     
     const image = hero.querySelector('.hero__image > picture').outerHTML;
@@ -153,6 +159,7 @@ export function createCalloutBlock(document, main) {
   let heading = '';
   let rteText = '';
   let ctalink = '';
+  let circleAsset='';
   
   callOutBlocks.forEach((callOut) => {
     convertHrefs(callOut);
@@ -183,6 +190,12 @@ export function createCalloutBlock(document, main) {
         rteText = child.querySelector('.colorblock-img-text__text--wrapper .rte-block');
         if (rteText) {
           rteText = rteText.innerHTML;
+        }
+
+        circleAsset = child.querySelector('.circle-asset');
+        if(circleAsset) {
+          const circleColor = colorMapping.get(toHex(circleAsset.style.borderColor).toLowerCase());
+          circleColor !='' ? blockOptions.push(`circle-${circleColor}`) : blockOptions.push('circle-white');
         }
         
         ctalink = child.querySelector('.colorblock-img-text__text--wrapper .secondary-cta-link') ?
