@@ -3,8 +3,11 @@ import { getRegionLocale, getRegionLocaleMap } from './utils.js';
 
 function getEnvironment() {
   const { hostname } = window.location;
-  if (hostname === 'localhost' || hostname.endsWith('.aem.page') || hostname.endsWith('.aem.live')) {
+  if (hostname === 'localhost') {
     return 'dev';
+  }
+  if (hostname.endsWith('.aem.page') || hostname.endsWith('.aem.live')) {
+    return 'stage';
   }
   if (hostname === 'www.ingredion.us' || hostname === 'www.ingredion.com') {
     return 'prod';
@@ -14,7 +17,7 @@ function getEnvironment() {
 
 async function initLaunch(env) {
   const launchUrls = {
-    dev: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-0e5b0f94b7f5.min.js',
+    dev: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-159a0321787a-development.min.js',
     stage: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-509818e86df2-staging.min.js',
     prod: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-0e5b0f94b7f5.min.js',
   };
