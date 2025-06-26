@@ -570,7 +570,7 @@ export function createCardsBlock(document, main) {
     const cells = [['Cards(two-column)']];
     cards.forEach((card) => {      
       const cardImg = card.querySelector('.img-caption__image > picture').outerHTML;
-      const cardTexts = card.querySelectorAll('.caption-text > p');
+      const cardTexts = card.querySelectorAll('.img-caption > h3, .img-caption > p');
       const div = document.createElement('div');
       cardTexts.forEach((cardText) => {
         const innerDiv = document.createElement('div');
