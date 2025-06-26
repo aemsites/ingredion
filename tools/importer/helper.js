@@ -666,9 +666,6 @@ export function createIngredientBlock(document, main, formulation = false) {
   const mainHeading = relatedIngredients.querySelector('.section-title-description-wrapper .heading > h2');
   const description = relatedIngredients.querySelector('.section-title-description-wrapper .rte-block');
   const resultProdCards = document.querySelectorAll('.result-prod-card');
-  const sectionMetadata = [['Section Metadata']];
-  sectionMetadata.push(['Style', 'center']);
-  const sectionMetadataTable = WebImporter.DOMUtils.createTable(sectionMetadata, document);
   if (!resultProdCards) {
     const cells = [['related ingredient']];
     const heading = relatedIngredients.querySelector('.heading > h2').textContent;
@@ -692,10 +689,6 @@ export function createIngredientBlock(document, main, formulation = false) {
     }
     if (description) {
       div.appendChild(description);
-    }
-    if (mainHeading || description) {
-      div.appendChild(sectionMetadataTable);
-      div.appendChild(pTag());
     }
     div.appendChild(table);
     
@@ -732,10 +725,6 @@ export function createIngredientBlock(document, main, formulation = false) {
         }
         if (description) {
           div.appendChild(description);
-        } 
-        if (mainHeading || description) {
-          div.appendChild(sectionMetadataTable);
-          div.appendChild(pTag());
         }
       }
       
