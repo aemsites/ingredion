@@ -244,15 +244,15 @@
           width: 100%;
         }
 
-        &:last-child .circle-asset {
-          left: -3.125rem;
-          right: auto;
-        }
-
         .circle-asset {
           right: -3.125rem;
           left: auto;
           bottom: 2.5rem;
+        }
+
+        &:last-child .circle-asset {
+          left: -3.125rem;
+          right: auto;
         }
       }
     }
