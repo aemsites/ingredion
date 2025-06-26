@@ -107,7 +107,7 @@ export function createHeroBlock(document, main) {
     };
     // Clean up description by removing sup tags
     if (elements.description) {
-      const pTags = elements.description.querySelectorAll('p');
+      const pTags = elements.description.querySelectorAll('p, h3, ul');
       elements.description.innerHTML = Array.from(pTags)
         .map(p => {
           const pClone = p.cloneNode(true);
