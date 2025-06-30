@@ -376,7 +376,7 @@ function createFilters(locations) {
   });
   let $typeFilter = createDropdown(translate('select-type'), uniqueTypes, 'type');
 
-  const $searchButton = button({ class: 'button search', disabled: true }, translate('search'));
+  const $searchButton = button({ class: 'button search', disabled: true }, translate('search-button'));
   $searchButton.addEventListener('click', () => {
     handleSearch($countryFilter, $typeFilter);
     $searchButton.parentElement.classList.add('reset');

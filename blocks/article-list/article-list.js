@@ -1,7 +1,7 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
 import { div, h3, h4, p, a, strong, span, button, img } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, readBlockConfig, loadCSS } from '../../scripts/aem.js';
-import { formatDate } from '../../scripts/utils.js';
+import { formatDate, translate } from '../../scripts/utils.js';
 import { parseEventDate } from '../../scripts/product-utils.js';
 import ArticleRenderer from './article-renderer.js';
 import { openVideoModal } from '../video/video-modal.js';
@@ -41,7 +41,7 @@ export default async function decorate(block) {
         h4(article.title),
         p({ class: 'date' }, formatDate(article.publishDate)),
         p(article.description),
-        a({ class: 'arrow', href: article.path }, 'Learn More'),
+        a({ class: 'arrow', href: article.path }, translate('learn-more')),
       ),
     );
 
@@ -161,7 +161,7 @@ export default async function decorate(block) {
       let watchVideoBtn = '';
       let featuredTag = '';
       let externalLink = '';
-      let ctaButton = a({ class: 'button', href: article.path }, 'Learn More');
+      let ctaButton = a({ class: 'button', href: article.path }, translate('learn-more'));
 
       // if redirect is not empty, card is a featured card
       const isFeatured = article.redirect && article.redirect.length > 0;
