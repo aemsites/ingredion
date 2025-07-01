@@ -1,0 +1,88 @@
+.offset-icons-list-wrapper {
+  margin: 0 15px;
+
+  p {
+    letter-spacing: 0.25px;
+  }
+
+  .offset-icons-overview {
+    text-align: center;
+
+    h2 {
+      font-size: 2.5rem;
+
+      +p {
+        font-size: 22px;
+      }
+    }
+  }
+
+  .offset-icons-list {
+    .offset-icons-card {
+      display: flex;
+      flex-direction: row;
+      margin-top: 4rem;
+
+      .image-container img {
+        width: 78px;
+      }
+
+      .content-block {
+        width: 90%;
+        padding-left: 30px;
+
+        h4 {
+          font-size: 2rem;
+          margin-top: 0;
+        }
+      }
+    }
+  }
+
+  @media (width >= 1080px) {
+    max-width: 63.3125rem;
+    margin: auto;
+  
+    .offset-icons-overview{
+      width: 50%;
+      text-align: left;
+
+      h2 {
+        font-size: 2rem;
+      }
+    }
+
+    .offset-icons-list {
+      display: flex;
+      flex-wrap: wrap;
+
+      .offset-icons-card {
+        width: 50%;
+        flex-direction: column;
+        margin-top: 0;
+
+        .image-container img {
+          width: 6rem;
+        }
+
+        .content-block {
+          width: 100%;
+          padding-left: 0;
+
+          h4 {
+            font-size: 1.5rem;
+          }
+        }
+
+        &:nth-child(2n+1) {
+          margin-top: 7.5rem;
+        }
+
+        &:last-child {
+          margin-top: 0;
+          margin-left: auto;
+        }
+      }
+    }
+  }
+}
