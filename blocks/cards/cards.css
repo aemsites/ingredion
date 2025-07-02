@@ -516,6 +516,10 @@ main > .section > .default-content-wrapper {
   height: 24rem;
 }
 
+.cards.video.two-column .video-placeholder {
+  aspect-ratio: 16 / 9;
+  height: max-content; 
+}
 
 .cards.video .video-placeholder > * {
   display: flex;
