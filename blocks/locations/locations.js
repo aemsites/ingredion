@@ -228,13 +228,12 @@ function createDropdown(title, options, type) {
     const label = type === 'country' ? option : translate(optionClass);
     const $option = li({ class: `option ${optionClass}` }, label);
     $option.addEventListener('click', () => {
-      if($dropdown.classList.contains('country')) {
+      if ($dropdown.classList.contains('country')) {
         $dropdown.querySelector('.selected').textContent = option;
-      }
-      else {
+      } else {
         $dropdown.querySelector('.selected').textContent = translate(option.toLowerCase().replaceAll(' ', '-'));
       }
-      $dropdown.querySelector('.selected').setAttribute('value',option);
+      $dropdown.querySelector('.selected').setAttribute('value', option);
       $list.classList.remove('open');
     });
     $list.append($option);

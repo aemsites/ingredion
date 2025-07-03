@@ -267,11 +267,10 @@ function addHeroObserver(doc) {
         }
       });
     });
-    if(heroBlock) {
+    if (heroBlock) {
       observer.observe(heroBlock);
-    }
-    else {
-      observer.observe(breadcrumb)
+    } else {
+      observer.observe(breadcrumb);
     }
   }
 
