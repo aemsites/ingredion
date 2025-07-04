@@ -14,6 +14,11 @@ footer {
     @media (width >= 1080px) {
       padding: 0 32px 24px;
     }
+
+    .footer-menu .default-content-wrapper > ul >li:first-child a {
+      color: #6cb33e;
+      text-decoration: underline;
+    }
   }
 
   .footer-utility {
