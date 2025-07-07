@@ -13,6 +13,7 @@ import {
   loadCSS,
   getMetadata,
 } from './aem.js';
+import { initDataLayerEarly } from './martech.js';
 
 /**
  * Recursively removes nested <div> elements from a given element.
@@ -189,6 +190,9 @@ export async function loadTemplate(doc, templateName) {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
+  // Initialize data layer early to prevent flicker
+  initDataLayerEarly();
+  
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
   const templateName = getMetadata('template');
