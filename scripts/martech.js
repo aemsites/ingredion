@@ -24,12 +24,7 @@ async function initLaunch(env) {
   if (!Object.keys(launchUrls).includes(env)) {
     return; // unknown env -> skip martech initialization
   }
-  
-  // Load script with async and defer to prevent blocking and flicker
-  await loadScript(launchUrls[env], { 
-    async: true, 
-    defer: true 
-  });
+  await loadScript(launchUrls[env], { async: '' });
 }
 
 function initDataLayer() {
@@ -41,12 +36,7 @@ function initDataLayer() {
   const pageLanguage = locale.split('-')[0];
   const productFacets = JSON.parse(localStorage.getItem('productFacets'));
 
-  // Initialize dataLayer early to prevent flicker
-  if (!window.dataLayer) {
-    window.dataLayer = [];
-  }
-
-  const dataLayerData = {
+  window.dataLayer = {
     page: {
       pageLevel1: pageHierarchy[0],
       pageLevel2: pageHierarchy[1],
@@ -69,17 +59,13 @@ function initDataLayer() {
       eventInfo4: '4',
     },
   };
-  
   if (productFacets) {
-    dataLayerData.product = {
+    window.dataLayer.product = {
       application: productFacets.applications?.options?.map((opt) => opt.label).join(',') || '',
       subApplication: productFacets.subApplications?.options?.map((opt) => opt.label).join(',') || '',
       productType: productFacets.productType?.options?.map((opt) => opt.label).join(',') || '',
     };
   }
-  
-  // Push to dataLayer instead of overwriting
-  window.dataLayer.push(dataLayerData);
   localStorage.setItem('previousPageName', window.location.href);
 }
 
@@ -100,8 +86,6 @@ export function initDataLayerEarly() {
 export async function initMartech() {
   // Ensure data layer is initialized
   initDataLayerEarly();
-  
-  // Load Launch script with proper attributes to prevent flicker
   await initLaunch(getEnvironment());
   // await loadScript('/scripts/gtm-init.js', { defer: true });
 }
@@ -114,11 +98,6 @@ export async function addCookieBanner() {
   <div id="consent_blackbar"></div>
 </div>`;
   document.querySelector('main').append(cookieBanner);
-  
-  // Add loaded class after a short delay to prevent flicker
-  setTimeout(() => {
-    cookieBanner.classList.add('loaded');
-  }, 100);
 }
 
 export async function initChatWidget() {
@@ -128,7 +107,7 @@ export async function initChatWidget() {
     <div class="embeddedServiceHelpButton">
       <div class="helpButton">
         <button class="helpButtonEnabled uiButton" href="javascript:void(0)">
-          <span class="embeddedServiceIcon" aria-hidden="true" data-icon=" " style="display: inline-block;"></span>
+          <span class="embeddedServiceIcon" aria-hidden="true" data-icon="" style="display: inline-block;"></span>
           <span class="helpButtonLabel" id="helpButtonSpan" aria-live="polite" aria-atomic="true">
             <span class="assistiveText">Live chat:</span>
             <span class="message">Chat with an expert</span>
@@ -137,14 +116,4 @@ export async function initChatWidget() {
       </div>
     </div>`;
   document.querySelector('main').append(addWidget);
-  
-  // Add loaded class after a short delay to prevent flicker
-  setTimeout(() => {
-    addWidget.classList.add('loaded');
-  }, 100);
-}
-
-// Initialize data layer immediately when script loads to prevent flicker
-if (typeof window !== 'undefined') {
-  initDataLayerEarly();
 }

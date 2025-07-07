@@ -595,22 +595,6 @@ main {
   z-index: 10001;
   width: 100%;
   margin: 0;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.cookie-banner.loaded {
-  opacity: 1;
-}
-
-/* Prevent flicker for embedded service help button */
-.embeddedServiceHelpButton {
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.embeddedServiceHelpButton.loaded {
-  opacity: 1;
 }
 
 
