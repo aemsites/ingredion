@@ -1,7 +1,8 @@
 // This file contains all the product API endpoints
 
+export const API_HOST = 'https://publish-p154883-e1640201.adobeaemcloud.com';
 // prod
-export const API_HOST = 'https://www.ingredion.com';
+// export const API_HOST = 'https://www.ingredion.com';
 
 // stage - testing (todo: remove before go-live)
 // export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
@@ -14,9 +15,9 @@ export const getUrlParams = () => {
 };
 
 export const DEFAULT_PATHS = {
-  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => `/content/ingredion-com/${region}/${locale}/jcr:content/header.search.json?initialTab=`,
-  SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`,
-  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `/content/ingredion-com/${region}/${locale}.ingredient-search-typeahead.json?initialTab=`,
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/headeringredient/header.${region}.search.json?noparam=true`, // Updated to HeaderIngredientSearchByCategoryServlet endpoint - IAMIGR-66
+  SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/ingredient-finder/ingredientfinder.${region}.searchCat.json?noparam=true`, // Updated to IngredientFinderSearchByCategoryServlet endpoint - IAMIGR-68
+  INGREDIENT_SEARCH_TYPEAHEAD: (region) => `/bin/ingredion-com/typeaheadingredient.${region}.ingredient-search-typeahead.json?noparam=true`, // Updated to IngredientSearchTypeaheadServlet endpoint - IAMIGR-65
   PRODUCT_DETAILS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
   ALL_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.view.json`,
   DOWNLOAD_DOCUMENTS: (region) => `/content/ingredion-com/ingredients/${region}`,
