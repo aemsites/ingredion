@@ -121,6 +121,10 @@
   }
 }
 
+.text-center .callout-content {
+  text-align: center;
+}
+
 /* video display in callout */
 .video {
   .placeholder {
@@ -378,8 +382,4 @@ body.modal-open {
 
 .search-content {
   border: 2px solid #706f73;
-}
-
-.text-center .callout-content {
-  text-align: center;
 }

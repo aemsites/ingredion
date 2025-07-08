@@ -4,9 +4,7 @@
   margin: auto;
 }
 
-
 .contact-us-wrapper {
-
   .contact-us {
     padding: 5rem 0.9375rem;
     max-width: 63.875rem;
@@ -44,7 +42,7 @@
           h5 {
             font-size: 1rem;
             margin: 0 0 1rem;
-            letter-spacing: .015625rem;
+            letter-spacing: 0.25px;
           }
         }
       }
