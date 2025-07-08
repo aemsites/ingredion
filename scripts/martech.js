@@ -6,7 +6,7 @@ function getEnvironment() {
   if (hostname === 'localhost') {
     return 'dev';
   }
-  if (hostname.endsWith('.aem.page') || hostname.endsWith('.aem.live')) {
+  if (hostname.endsWith('.aem.page') || hostname.endsWith('.aem.live') || hostname === 'preview.ingredion.com') {
     return 'stage';
   }
   if (hostname === 'www.ingredion.us' || hostname === 'www.ingredion.com') {
