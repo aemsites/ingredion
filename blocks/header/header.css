@@ -13,10 +13,6 @@ header {
   width: 100%;
   background: #fff;
   box-shadow: 0 0 20px 0 rgb(0 0 0 / 10%);
-
-  /* em used as sup for TM */
-
-  /* mobile view */;
 }
 
 header a em:first-child,
