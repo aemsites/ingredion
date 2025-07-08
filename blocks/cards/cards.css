@@ -356,6 +356,7 @@ main > .section > .default-content-wrapper {
 .cards.four-column > ul > li {
   margin-right: 20px;
   margin-bottom: 2.5rem;
+  margin-top: 0;
 }
 
 .cards.four-column .cards-card-image {
