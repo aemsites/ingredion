@@ -202,6 +202,7 @@
 
 .locations .locator-search .filters .search-clear .search {
   width: 100%;
+  padding: 1rem;
 }
 
 .locations .locator-search .filters .search-clear.reset .search {
