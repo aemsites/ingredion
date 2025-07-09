@@ -160,7 +160,7 @@ html {
   /* TODO: FIX ME */;
 }
 
-.ingredient-template .mobile-view .product-header.fixed .content .cta-buttons {
+.ingredient-template .product-header.fixed .content.mobile-view .cta-buttons {
   display: none;
 }
 
@@ -173,7 +173,7 @@ html {
   margin: 0;
 }
 
-.ingredient-template .mobile-view .product-header.fixed .content .cta-links {
+.ingredient-template .product-header.fixed .content.mobile-view .cta-links {
   display: none;
 }
 
@@ -308,7 +308,7 @@ html {
   transition: top 240ms ease-in-out;
 }
 
-.ingredient-template .gallery .slides-wrapper .fix-me-6, .slide-down .ingredient-template .gallery .slides-wrapper {
+.ingredient-template .gallery .slides-wrapper .fix-me-6, .ingredient-template .slide-down .gallery .slides-wrapper {
   top: 180px;
 }
 
