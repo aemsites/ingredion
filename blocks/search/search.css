@@ -29,28 +29,26 @@
   }
 
   /* related ingredient block overrides */
-  @media ( width >= 1080px) {
-    .related-ingredient {
-      --border-clr: var(--border-color);
-      --border-size: 1px;
+  .related-ingredient {
+    --border-clr: var(--border-color);
+    --border-size: 1px;
 
-      display: table;
-      table-layout: fixed;
-      width: 100%;
-      margin-top: 2.5rem;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    margin-top: 2.5rem;
 
-      .content {
-        display: table-cell;
-        width: 70%;
-        vertical-align: middle;
-      }
+    .content {
+      display: table-cell;
+      width: 70%;
+      vertical-align: middle;
+    }
 
-      .buttons {
-        display: table-cell;
-        width: 30%;
-        vertical-align: middle;
-        text-align: center;
-      }
+    .buttons {
+      display: table-cell;
+      width: 30%;
+      vertical-align: middle;
+      text-align: center;
     }
   }
 
