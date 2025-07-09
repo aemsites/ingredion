@@ -15,9 +15,9 @@ export const getUrlParams = () => {
 };
 
 export const DEFAULT_PATHS = {
-  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/headeringredient/header.${region}.search.json?noparam=true`, // Updated to HeaderIngredientSearchByCategoryServlet endpoint - IAMIGR-66
-  SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/ingredient-finder/ingredientfinder.${region}.searchCat.json?noparam=true`, // Updated to IngredientFinderSearchByCategoryServlet endpoint - IAMIGR-68
-  INGREDIENT_SEARCH_TYPEAHEAD: (region) => `/bin/ingredion-com/typeaheadingredient.${region}.ingredient-search-typeahead.json?noparam=true`, // Updated to IngredientSearchTypeaheadServlet endpoint - IAMIGR-65
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/headeringredient/header.${region}.search.json?noparam=true`,
+  SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/ingredient-finder/ingredientfinder.${region}.searchCat.json?noparam=true`,
+  INGREDIENT_SEARCH_TYPEAHEAD: (region) => `/bin/ingredion-com/typeaheadingredient.${region}.ingredient-search-typeahead.json?noparam=true`,
   PRODUCT_DETAILS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
   ALL_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.view.json`,
   DOWNLOAD_DOCUMENTS: (region) => `/content/ingredion-com/ingredients/${region}`,
