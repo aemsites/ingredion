@@ -181,7 +181,7 @@ input[disabled="disabled"] {
   cursor: not-allowed;
 }
 
-@media (min-width: 1080px) {
+@media (width >= 1080px) {
   .col-span-1 {
     flex: 8.33%;
   }

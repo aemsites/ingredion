@@ -96,25 +96,25 @@
 	max-width: none;
 }
 
-@media (min-width: 67.5625rem) {
+@media (width >= 67.5625rem) {
 	.quoteblock-wrapper {
 		padding: 8.375rem 2.5rem;
 	}
 }
 
-@media (min-width: 67.5625rem) {
+@media (width >= 67.5625rem) {
 	.quoteblock-wrapper .heading h1::before {
 		left: -2.125rem;
 	}
 }
 
-@media (min-width: 67.5625rem) {
+@media (width >= 67.5625rem) {
 	.quoteblock-wrapper .heading h1::after {
 		right: -2.125rem;
 	}
 }
 
-@media (min-width: 67.5625rem) {
+@media (width >= 67.5625rem) {
 	.section.quote-container .quote-wrapper {
 		box-sizing: border-box;
 		max-width: 76.4375rem;
