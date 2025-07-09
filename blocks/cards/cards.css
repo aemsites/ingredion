@@ -551,6 +551,10 @@ main > .section > .default-content-wrapper {
   transform: translate(-50%, -50%);
 }
 
+.cards.video .video-placeholder .video-placeholder-play button.play {
+  background: #fff;
+}
+
 .cards.video [class*="icon-"],
 .cards.video [class^="icon-"] {
   font-family: var(--ingredion-icon-font-family) !important;
