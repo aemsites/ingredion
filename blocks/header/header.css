@@ -772,8 +772,8 @@ header nav.category > ul:nth-child(2) > li .header-dropdown {
   outline: 0;
 }
 
-.form-dropdown {
-  position: relative;
+.ingredient-quick-search-bar .form-dropdown {
+    position: unset;
 }
 
 .dropdown .ingredient-finder.quick {
