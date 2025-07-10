@@ -219,6 +219,7 @@ async function loadEager(doc) {
 function addHeroObserver(doc) {
   const anchorBlock = doc.querySelector('.anchor-wrapper');
   const heroBlock = doc.querySelector('.hero-wrapper');
+  const breadcrumb = doc.querySelector('.breadcrumbs-wrapper');
   // Function to update active section
   function updateActiveSection() {
     if (!anchorBlock) return;
@@ -256,7 +257,7 @@ function addHeroObserver(doc) {
     }
   }
   // Handle the fixed navigation
-  if (anchorBlock && heroBlock) {
+  if (anchorBlock) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -266,7 +267,12 @@ function addHeroObserver(doc) {
         }
       });
     });
-    observer.observe(heroBlock);
+    if(heroBlock) {
+      observer.observe(heroBlock);
+    }
+    else {
+      observer.observe(breadcrumb);
+    }
   }
 
   // Handle the active section highlighting
