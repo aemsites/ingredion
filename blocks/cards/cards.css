@@ -522,6 +522,15 @@ main > .section > .default-content-wrapper {
   position: absolute;
 }
 
+.cards.video.two-column .video-placeholder {
+  aspect-ratio: 16 / 9;
+  height: max-content;
+}
+
+.cards.video .video-placeholder picture {
+  height: 100%;
+}
+
 @media (width <= 1079px) {
   .cards.video .video-placeholder {
     aspect-ratio: 16 / 9;
