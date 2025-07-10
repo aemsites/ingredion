@@ -267,10 +267,9 @@ function addHeroObserver(doc) {
         }
       });
     });
-    if(heroBlock) {
+    if (heroBlock) {
       observer.observe(heroBlock);
-    }
-    else {
+    } else {
       observer.observe(breadcrumb);
     }
   }
