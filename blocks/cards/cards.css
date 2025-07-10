@@ -144,6 +144,10 @@
   text-align: left;
 }
 
+.cards-card-body ul {
+  list-style-type: disc;
+}
+
 .cards-card-body h3 {
   line-height: 2.5rem;
   letter-spacing: -0.0313rem;
