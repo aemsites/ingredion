@@ -31,10 +31,10 @@ export const DEFAULT_PATHS = {
 export const API_PATH_OVERRIDES = {
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: {
     'na-es-mx': '/bin/ingredion-com/ingredient-finder.na.search.json?noparam=true',
-    'na-kerr':  '/bin/ingredion-com/ingredient-finder.na.search.json?noparam=true',
+    'na-kerr': '/bin/ingredion-com/ingredient-finder.na.search.json?noparam=true',
     'sa-pt-br': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true',
     'sa-es-co': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true',
-    'sa-es-ar': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true'
+    'sa-es-ar': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true',
   },
   PRODUCT_DETAILS: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
@@ -81,6 +81,7 @@ const resolveApiPath = (apiKey, region, locale) => {
   const defaultBuilder = DEFAULT_PATHS[apiKey];
   if (defaultBuilder) return defaultBuilder(region, locale);
 
+  // eslint-disable-next-line no-console
   console.warn(`No path defined for ${apiKey}`);
   return '';
 };
