@@ -15,9 +15,9 @@ export const getUrlParams = () => {
 };
 
 export const DEFAULT_PATHS = {
-  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/headeringredient/header.${region}.search.json?noparam=true`,
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/headeringredient/header.${region}.search.json`,
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/ingredient-finder.${region}.search.json`,
-  INGREDIENT_SEARCH_TYPEAHEAD: (region) => `/bin/ingredion-com/typeaheadingredient.${region}.ingredient-search-typeahead.json?noparam=true`,
+  INGREDIENT_SEARCH_TYPEAHEAD: (region) => `/bin/ingredion-com/typeaheadingredient.${region}.ingredient-search-typeahead.json`,
   PRODUCT_DETAILS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
   ALL_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.view.json`,
   DOWNLOAD_DOCUMENTS: (region) => `/content/ingredion-com/ingredients/${region}`,
@@ -30,11 +30,11 @@ export const DEFAULT_PATHS = {
 
 export const API_PATH_OVERRIDES = {
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: {
-    'na-es-mx': '/bin/ingredion-com/ingredient-finder.na.search.json?noparam=true',
-    'na-kerr': '/bin/ingredion-com/ingredient-finder.na.search.json?noparam=true',
-    'sa-pt-br': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true',
-    'sa-es-co': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true',
-    'sa-es-ar': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true',
+    'na-es-mx': '/bin/ingredion-com/ingredient-finder.na.search.json',
+    'na-kerr': '/bin/ingredion-com/ingredient-finder.na.search.json',
+    'sa-pt-br': '/bin/ingredion-com/ingredient-finder.sa.search.json',
+    'sa-es-co': '/bin/ingredion-com/ingredient-finder.sa.search.json',
+    'sa-es-ar': '/bin/ingredion-com/ingredient-finder.sa.search.json',
   },
   PRODUCT_DETAILS: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
