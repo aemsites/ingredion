@@ -79,7 +79,6 @@ export default function decorate(block) {
       const circleAssetContainer = document.createElement('div');
       circleAssetContainer.classList.add('circle-asset');
       circleAssetContainer.classList.add(circleColor);
-      
       textWrapper.append(circleAssetContainer);
       block.classList.remove(circleColor);
     }
