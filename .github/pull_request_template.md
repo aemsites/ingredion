@@ -3,5 +3,5 @@ Please always provide the [GitHub issue(s)](../issues) your PR is for, as well a
 Fix #<gh-issue-id>
 
 Test URLs:
-- Before: https://main--ingredion--aemsites.aem.live/
-- After: https://<branch>--ingredion--aemsites.aem.live/
+- Before: https://main--ingredion--aemsites.aem.live/?martech=off
+- After: https://<branch>--ingredion--aemsites.aem.live/?martech=off
