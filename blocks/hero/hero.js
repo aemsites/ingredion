@@ -36,12 +36,12 @@ export default function decorate(block) {
   });
 
   if (circleColor) {
-  const circleAssetContainer = document.createElement('div');
-  circleAssetContainer.classList.add('circle-asset');
-  circleAssetContainer.classList.add(circleColor);
-  const heroWrapper = document.querySelector('.hero-wrapper .hero');
-  heroWrapper.append(circleAssetContainer);
-  block.classList.remove(circleColor);
+    const circleAssetContainer = document.createElement('div');
+    circleAssetContainer.classList.add('circle-asset');
+    circleAssetContainer.classList.add(circleColor);
+    const heroWrapper = document.querySelector('.hero-wrapper .hero');
+    heroWrapper.append(circleAssetContainer);
+    block.classList.remove(circleColor);
   }
 
   function onResize(e) {
