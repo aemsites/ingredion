@@ -328,6 +328,7 @@
   .default > div > .callout-content {
     order: 0;
   }
+  
   .default > div > .callout-content .circle-asset {
     bottom: -3.125rem;
     left: 50%;
