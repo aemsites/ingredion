@@ -1,5 +1,5 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, ul, li, span } from '../../scripts/dom-helpers.js';
+import { div, ul, li, span, a } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 function buildSubMenu(block) {
@@ -39,7 +39,17 @@ function buildSubMenu(block) {
 
       if (colN === 0) {
         // build section list
-        const $section = li({ 'data-item': rowN }, col.textContent);
+        const linkElement = col.querySelector('p a');
+        let $section;
+
+        if (linkElement && linkElement.href) {
+          $section = li({ 'data-item': rowN },
+            a({ href: linkElement.href }, col.textContent),
+          );
+        } else {
+          $section = li({ 'data-item': rowN }, col.textContent);
+        }
+
         $section.addEventListener('click', () => setActiveItem($section, rowN));
         $section.addEventListener('mouseover', () => setActiveItem($section, rowN));
         // set first item as active

@@ -37,6 +37,15 @@
   margin: 0;
 }
 
+.header-dropdown .nav-list li a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: bold;
+  font-family: var(--body-bold-font-family);
+  font-size: 1rem;
+  margin: 0;
+}
+
 .header-dropdown ul li {
   font-size: .95rem;
 }
