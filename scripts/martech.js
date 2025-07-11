@@ -15,6 +15,11 @@ function getEnvironment() {
   return 'unknown';
 }
 
+function isMartechDisabled() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('martech') === 'off';
+}
+
 async function initLaunch(env) {
   const launchUrls = {
     dev: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-159a0321787a-development.min.js',
@@ -73,12 +78,18 @@ function initDataLayer() {
  * Initializes the full Martech stack.
  */
 export async function initMartech() {
+  if (isMartechDisabled()) {
+    return;
+  }
   initDataLayer();
   await initLaunch(getEnvironment());
   // await loadScript('/scripts/gtm-init.js', { defer: true });
 }
 
 export async function addCookieBanner() {
+  if (isMartechDisabled()) {
+    return;
+  }
   const cookieBanner = document.createElement('div');
   cookieBanner.classList.add('cookie-banner');
   cookieBanner.innerHTML = `<a class="footer__utility--link" href="javascript:void(0)" onclick="truste.eu.clickListener()"></a>
