@@ -14,30 +14,27 @@ export const getUrlParams = () => {
   };
 };
 
-// TODO: remove this once noparam issue is fixed by AEM team.
-const addNoParams = (url) => (url.includes('?') ? url : `${url}?noparam=true`);
-
 export const DEFAULT_PATHS = {
-  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region) => addNoParams(`/bin/ingredion-com/headeringredient/header.${region}.search.json`),
-  SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region) => addNoParams(`/bin/ingredion-com/ingredient-finder.${region}.search.json`),
-  INGREDIENT_SEARCH_TYPEAHEAD: (region) => addNoParams(`/bin/ingredion-com/typeaheadingredient.${region}.ingredient-search-typeahead.json`),
-  PRODUCT_DETAILS: (region, locale) => addNoParams(`/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`),
-  ALL_DOCUMENTS: (region, locale) => addNoParams(`/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.view.json`),
-  DOWNLOAD_DOCUMENTS: (region) => addNoParams(`/content/ingredion-com/ingredients/${region}`),
-  DOWNLOAD_ALL_DOCUMENTS: (region) => addNoParams(`/content/ingredion-com/ingredients/${region}`),
-  DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH: (region, locale) => addNoParams(`/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.download.zip`),
-  SEARCH_INGREDIENTS: (region, locale) => addNoParams(`/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`),
-  SEARCH_DOCUMENTS: (region, locale) => addNoParams(`/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.techDocs.json`),
-  SEARCH_INGREDIENTS_BY_NAME: (region, locale) => addNoParams(`/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`),
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/headeringredient/header.${region}.search.json?noparam=true`,
+  SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/ingredient-finder.${region}.search.json`,
+  INGREDIENT_SEARCH_TYPEAHEAD: (region) => `/bin/ingredion-com/typeaheadingredient.${region}.ingredient-search-typeahead.json?noparam=true`,
+  PRODUCT_DETAILS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
+  ALL_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.view.json`,
+  DOWNLOAD_DOCUMENTS: (region) => `/content/ingredion-com/ingredients/${region}`,
+  DOWNLOAD_ALL_DOCUMENTS: (region) => `/content/ingredion-com/ingredients/${region}`,
+  DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.download.zip`,
+  SEARCH_INGREDIENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
+  SEARCH_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.techDocs.json`,
+  SEARCH_INGREDIENTS_BY_NAME: (region, locale) => `/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`,
 };
 
 export const API_PATH_OVERRIDES = {
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: {
-    'na-es-mx': addNoParams('/bin/ingredion-com/ingredient-finder.na.search.json'),
-    'na-kerr': addNoParams('/bin/ingredion-com/ingredient-finder.na.search.json'),
-    'sa-pt-br': addNoParams('/bin/ingredion-com/ingredient-finder.sa.search.json'),
-    'sa-es-co': addNoParams('/bin/ingredion-com/ingredient-finder.sa.search.json'),
-    'sa-es-ar': addNoParams('/bin/ingredion-com/ingredient-finder.sa.search.json'),
+    'na-es-mx': '/bin/ingredion-com/ingredient-finder.na.search.json?noparam=true',
+    'na-kerr': '/bin/ingredion-com/ingredient-finder.na.search.json?noparam=true',
+    'sa-pt-br': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true',
+    'sa-es-co': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true',
+    'sa-es-ar': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true',
   },
   PRODUCT_DETAILS: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
