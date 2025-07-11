@@ -1,7 +1,8 @@
 // This file contains all the product API endpoints
 
+export const API_HOST = 'https://publish-p154883-e1640201.adobeaemcloud.com';
 // prod
-export const API_HOST = 'https://www.ingredion.com';
+// export const API_HOST = 'https://www.ingredion.com';
 
 // stage - testing (todo: remove before go-live)
 // export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
@@ -14,9 +15,9 @@ export const getUrlParams = () => {
 };
 
 export const DEFAULT_PATHS = {
-  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => `/content/ingredion-com/${region}/${locale}/jcr:content/header.search.json?initialTab=`,
-  SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`,
-  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `/content/ingredion-com/${region}/${locale}.ingredient-search-typeahead.json?initialTab=`,
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/headeringredient/header.${region}.search.json`,
+  SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/ingredient-finder.${region}.search.json`,
+  INGREDIENT_SEARCH_TYPEAHEAD: (region) => `/bin/ingredion-com/typeaheadingredient.${region}.ingredient-search-typeahead.json`,
   PRODUCT_DETAILS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
   ALL_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.view.json`,
   DOWNLOAD_DOCUMENTS: (region) => `/content/ingredion-com/ingredients/${region}`,
@@ -29,11 +30,11 @@ export const DEFAULT_PATHS = {
 
 export const API_PATH_OVERRIDES = {
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: {
-    'na-es-mx': '/content/ingredion-com/na/es-mx/ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
-    'na-kerr': '/content/ingredion-com/na/kerr/ingredient-finder/jcr:content/par/ingredientfinder.search.json',
-    'sa-pt-br': '/content/ingredion-com/sa/pt-br/ingredientes/busque-o-ingrediente/jcr:content/par/ingredientfinder.search.json',
-    'sa-es-co': '/content/ingredion-com/sa/es-co/nuestros-ingredientes/busca-el-ingrediente/jcr:content/par/ingredientfinder.search.json',
-    'sa-es-ar': '/content/ingredion-com/sa/es-ar/nuestros-ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
+    'na-es-mx': '/bin/ingredion-com/ingredient-finder.na.search.json',
+    'na-kerr': '/bin/ingredion-com/ingredient-finder.na.search.json',
+    'sa-pt-br': '/bin/ingredion-com/ingredient-finder.sa.search.json',
+    'sa-es-co': '/bin/ingredion-com/ingredient-finder.sa.search.json',
+    'sa-es-ar': '/bin/ingredion-com/ingredient-finder.sa.search.json',
   },
   PRODUCT_DETAILS: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
@@ -80,6 +81,7 @@ const resolveApiPath = (apiKey, region, locale) => {
   const defaultBuilder = DEFAULT_PATHS[apiKey];
   if (defaultBuilder) return defaultBuilder(region, locale);
 
+  // eslint-disable-next-line no-console
   console.warn(`No path defined for ${apiKey}`);
   return '';
 };
