@@ -698,3 +698,30 @@ main .padding-t-large {
   flex-direction: row;
   min-height: fit-content;
 }
+
+/* circle colors */
+.circle-blue { border-color: var(--blue); }
+.circle-teal { border-color: var(--teal); }
+.circle-green { border-color: var(--green); }
+.circle-orange { border-color: var(--orange); }
+.circle-red { border-color: var(--red); }
+.circle-lilac { border-color: var(--lilac); }
+.circle-purple { border-color: var(--purple); }
+.circle-dark-purple { border-color: var(--dark-purple); }
+.circle-dark-blue { border-color: var(--dark-blue); }
+.circle-yellow { border-color: var(--yellow); }
+.circle-pastel-green { border-color: var(--pastel-green); }
+.circle-white { border-color: var(--white); }
+
+.circle-asset {
+  display: inline-block;
+  width: 100px !important;;
+  height: 100px;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 13px;
+  background-color: rgba(0,0,0,0);
+  position: absolute;
+  z-index: 2;
+  padding: 0 !important;
+}

@@ -15,6 +15,21 @@ const themeColors = [
   'pastel-green',
 ];
 
+const circleColors = [
+  'circle-blue',
+  'circle-teal',
+  'circle-green',
+  'circle-orange',
+  'circle-red',
+  'circle-lilac',
+  'circle-purple',
+  'circle-dark-purple',
+  'circle-dark-blue',
+  'circle-yellow',
+  'circle-pastel-green',
+  'circle-white',
+];
+
 export default function decorate(block) {
   const pic = block.querySelector('picture');
   const h3 = block.querySelector('h3');
@@ -57,6 +72,17 @@ export default function decorate(block) {
   if (pic) {
     const picWrapper = pic.closest('div');
     picWrapper.classList.add('callout-image');
+
+    const circleColor = circleColors.find((color) => classListArray.includes(color));
+
+    if (circleColor) {
+      const circleAssetContainer = document.createElement('div');
+      circleAssetContainer.classList.add('circle-asset');
+      circleAssetContainer.classList.add(circleColor);
+      
+      textWrapper.append(circleAssetContainer);
+      block.classList.remove(circleColor);
+    }
 
     const img = pic.querySelector('img');
     const optimizedPicture = createOptimizedPicture(

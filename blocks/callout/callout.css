@@ -31,6 +31,7 @@
 .callout > div .callout-content {
   color: var(--theme-clr-text);
   padding: 80px;
+  position: relative;
 }
 
 .callout > div .callout-content h1, .callout > div .callout-content h2, .callout > div .callout-content h3 {
@@ -310,11 +311,27 @@
   .callout.full-width > div > .callout-content h3, .callout.full-width > div > .callout-content p, .callout.full-width > div > .callout-content ul, .callout.full-width > div > .callout-content li {
     max-width: none;
   }
+
+  .callout > div .callout-content .circle-asset {
+    right: -3.125rem;
+    left: auto;
+    bottom: 2.5rem;
+  }
+
+  .callout > div .callout-content:last-child .circle-asset {
+    left: -3.125rem;
+    right: auto;
+  }
 }
 
 @media (width <= 1079px) {
   .default > div > .callout-content {
     order: 0;
+  }
+  .default > div > .callout-content .circle-asset {
+    bottom: -3.125rem;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .default > div > .callout-image {
