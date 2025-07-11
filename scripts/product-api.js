@@ -30,11 +30,11 @@ export const DEFAULT_PATHS = {
 
 export const API_PATH_OVERRIDES = {
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: {
-    'na-es-mx': '/content/ingredion-com/na/es-mx/ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
-    'na-kerr': '/content/ingredion-com/na/kerr/ingredient-finder/jcr:content/par/ingredientfinder.search.json',
-    'sa-pt-br': '/content/ingredion-com/sa/pt-br/ingredientes/busque-o-ingrediente/jcr:content/par/ingredientfinder.search.json',
-    'sa-es-co': '/content/ingredion-com/sa/es-co/nuestros-ingredientes/busca-el-ingrediente/jcr:content/par/ingredientfinder.search.json',
-    'sa-es-ar': '/content/ingredion-com/sa/es-ar/nuestros-ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
+    'na-es-mx': '/bin/ingredion-com/ingredient-finder.na.search.json?noparam=true',
+    'na-kerr':  '/bin/ingredion-com/ingredient-finder.na.search.json?noparam=true',
+    'sa-pt-br': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true',
+    'sa-es-co': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true',
+    'sa-es-ar': '/bin/ingredion-com/ingredient-finder.sa.search.json?noparam=true'
   },
   PRODUCT_DETAILS: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
