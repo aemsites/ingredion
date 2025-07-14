@@ -87,7 +87,7 @@ const resolveApiPath = (apiKey, region, locale) => {
 export const API_PRODUCT = {
   POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => 'https://stg.ingredion.com/content/ingredion-com/na/en-us/jcr:content/header.search.json',
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}${resolveApiPath('SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY', region, locale)}`,
-  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `${API_HOST}${resolveApiPath('INGREDIENT_SEARCH_TYPEAHEAD', region, locale)}`,
+  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `https://stg.ingredion.com/content/ingredion-com/na/en-us.ingredient-search-typeahead.json`,
   PRODUCT_DETAILS: (region, locale, productName) => `${API_HOST}${resolveApiPath('PRODUCT_DETAILS', region, locale)}?initialTab=&q=${productName}`,
   ALL_DOCUMENTS: (region, locale, productId) => `${API_HOST}${resolveApiPath('ALL_DOCUMENTS', region, locale, productId)}?productId=${productId}`,
   DOWNLOAD_DOCUMENTS: (region, locale, productName) => `${API_HOST}${resolveApiPath('DOWNLOAD_DOCUMENTS', region, locale, productName)}/${productName}/jcr:content.download.zip`,
