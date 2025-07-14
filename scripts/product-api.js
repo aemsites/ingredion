@@ -25,7 +25,7 @@ export const DEFAULT_PATHS = {
   DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.download.zip`,
   SEARCH_INGREDIENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
   SEARCH_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.techDocs.json`,
-  SEARCH_INGREDIENTS_BY_NAME: (region, locale) => `/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`
+  SEARCH_INGREDIENTS_BY_NAME: (region, locale) => `/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`,
 };
 
 export const API_PATH_OVERRIDES = {
