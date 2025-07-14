@@ -14,9 +14,9 @@ export const getUrlParams = () => {
 };
 
 export const DEFAULT_PATHS = {
-  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => `/content/ingredion-com/${region}/${locale}/jcr:content/header.search.json?initialTab=`,
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => `/content/ingredion-com/${region}/${locale}/jcr:content/header.search.json=`,
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`,
-  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `/content/ingredion-com/${region}/${locale}.ingredient-search-typeahead.json?initialTab=`,
+  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `/content/ingredion-com/${region}/${locale}.ingredient-search-typeahead.json`,
   PRODUCT_DETAILS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
   ALL_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.view.json`,
   DOWNLOAD_DOCUMENTS: (region) => `/content/ingredion-com/ingredients/${region}`,
