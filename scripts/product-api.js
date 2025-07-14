@@ -1,7 +1,7 @@
 // This file contains all the product API endpoints
 
 // prod
-export const API_HOST = 'https://www.ingredion.com';
+export const API_HOST = 'https://stg.ingredion.com';
 
 // stage - testing (todo: remove before go-live)
 // export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
@@ -85,9 +85,9 @@ const resolveApiPath = (apiKey, region, locale) => {
 };
 
 export const API_PRODUCT = {
-  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => 'https://stg.ingredion.com/content/ingredion-com/na/en-us/jcr:content/header.search.json',
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}${resolveApiPath('POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY', region, locale)}`,
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}${resolveApiPath('SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY', region, locale)}`,
-  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `https://stg.ingredion.com/content/ingredion-com/na/en-us.ingredient-search-typeahead.json`,
+  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `${API_HOST}${resolveApiPath('INGREDIENT_SEARCH_TYPEAHEAD', region, locale)}`,
   PRODUCT_DETAILS: (region, locale, productName) => `${API_HOST}${resolveApiPath('PRODUCT_DETAILS', region, locale)}?initialTab=&q=${productName}`,
   ALL_DOCUMENTS: (region, locale, productId) => `${API_HOST}${resolveApiPath('ALL_DOCUMENTS', region, locale, productId)}?productId=${productId}`,
   DOWNLOAD_DOCUMENTS: (region, locale, productName) => `${API_HOST}${resolveApiPath('DOWNLOAD_DOCUMENTS', region, locale, productName)}/${productName}/jcr:content.download.zip`,
