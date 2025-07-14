@@ -19,12 +19,12 @@ export const DEFAULT_PATHS = {
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region) => `/bin/ingredion-com/ingredient-finder.${region}.search.json`,
   INGREDIENT_SEARCH_TYPEAHEAD: (region) => `/bin/ingredion-com/typeaheadingredient.${region}.ingredient-search-typeahead.json`,
   PRODUCT_DETAILS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
-  ALL_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.view.json`,
-  DOWNLOAD_DOCUMENTS: (region) => `/content/ingredion-com/ingredients/${region}`,
-  DOWNLOAD_ALL_DOCUMENTS: (region) => `/content/ingredion-com/ingredients/${region}`,
-  DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.download.zip`,
-  SEARCH_INGREDIENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.ingredients.json`,
-  SEARCH_DOCUMENTS: (region, locale) => `/content/ingredion-com/${region}/${locale}/search/jcr:content/searchResults.techDocs.json`,
+  ALL_DOCUMENTS: (region) => `/bin/ingredion-com/ingredient-finder.${region}.search.json`,
+  DOWNLOAD_DOCUMENTS: (region) => `/bin/ingredion-com/searchResults.${region}.ingredients.json`,
+  DOWNLOAD_ALL_DOCUMENTS: (region) => `/bin/ingredion-com/tech-documents.${region}.techDocs.json`,
+  DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH: (region) => `/bin/ingredion-com/documents.${region}.view.json`,
+  SEARCH_INGREDIENTS: (region) => `/bin/ingredion-com/documents-download.${region}.download.zip`,
+  SEARCH_DOCUMENTS: (region) => `/bin/ingredion-com/sdsAssets.${region}.download.zip`,
   SEARCH_INGREDIENTS_BY_NAME: (region, locale) => `/content/ingredion-com/${region}/${locale}/ingredients/ingredient-finder/jcr:content/par/ingredientfinder.search.json`,
 };
 
