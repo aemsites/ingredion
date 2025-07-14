@@ -37,39 +37,39 @@ export const API_PATH_OVERRIDES = {
     'sa-es-ar': '/bin/ingredion-com/ingredient-finder.sa.search.json',
   },
   PRODUCT_DETAILS: {
-    'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
-    'sa-pt-br': '/content/ingredion-com/sa/pt-br/buscar/jcr:content/searchResults.ingredients.json',
+    'na-es-mx': '/bin/ingredion-com/searchResults.na.ingredients.json',
+    'sa-pt-br': '/bin/ingredion-com/searchResults.sa.ingredients.json',
   },
   ALL_DOCUMENTS: {
-    'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.view.json',
-    'sa-pt-br': '/content/ingredion-com/sa/pt-br/buscar/jcr:content/searchResults.ingredients.json',
+    'na-es-mx': '/bin/ingredion-com/ingredient-finder.na.search.json',
+    'sa-pt-br': '/bin/ingredion-com/ingredient-finder.sa.search.json',
   },
   DOWNLOAD_DOCUMENTS: {
-    'na-es-mx': '/content/ingredion-com/ingredients/es-mx',
-    'na-kerr': '/content/ingredion-com/ingredients/kerr',
+    'na-es-mx': '/bin/ingredion-com/searchResults.na.ingredients.json',
+    'na-kerr': '/bin/ingredion-com/searchResults.na.ingredients.json',
   },
   DOWNLOAD_ALL_DOCUMENTS: {
-    'na-es-mx': '/content/ingredion-com/ingredients/es-mx',
-    'na-kerr': '/content/ingredion-com/ingredients/kerr',
+    'na-es-mx': '/bin/ingredion-com/tech-documents.na.techDocs.json',
+    'na-kerr': '/bin/ingredion-com/tech-documents.na.techDocs.json',
   },
   DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH: {
-    'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.download.zip',
-    'na-kerr': '/content/ingredion-com/na/kerr/buscar/jcr:content/searchResults.download.zip',
+    'na-es-mx': '/bin/ingredion-com/documents.na.view.json',
+    'na-kerr': '/bin/ingredion-com/documents.na.view.json',
   },
   SEARCH_INGREDIENTS: {
-    'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.ingredients.json',
-    'sa-pt-br': '/content/ingredion-com/sa/pt-br/buscar/jcr:content/searchResults.ingredients.json',
+    'na-es-mx': '/bin/ingredion-com/documents-download.na.download.zip',
+    'sa-pt-br': '/bin/ingredion-com/documents-download.sa.download.zip',
   },
   SEARCH_DOCUMENTS: {
-    'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.techDocs.json',
-    'sa-pt-br': '/content/ingredion-com/sa/pt-br/buscar/jcr:content/searchResults.techDocs.json',
+    'na-es-mx': '/bin/ingredion-com/sdsAssets.na.download.zip',
+    'sa-pt-br': '/bin/ingredion-com/sdsAssets.sa.download.zip',
   },
   SEARCH_INGREDIENTS_BY_NAME: {
-    'na-es-mx': '/content/ingredion-com/na/es-mx/ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
-    'na-kerr': '/content/ingredion-com/na/kerr/ingredient-finder/jcr:content/par/ingredientfinder.search.json',
-    'sa-pt-br': '/content/ingredion-com/sa/pt-br/ingredientes/busque-o-ingrediente/jcr:content/par/ingredientfinder.search.json',
-    'sa-es-co': '/content/ingredion-com/sa/es-co/nuestros-ingredientes/busca-el-ingrediente/jcr:content/par/ingredientfinder.search.json',
-    'sa-es-ar': '/content/ingredion-com/sa/es-ar/nuestros-ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
+    'na-es-mx': '/bin/ingredion-com/ingredient-finder.na.search.json',
+    'na-kerr': '/bin/ingredion-com/ingredient-finder.na.search.json',
+    'sa-pt-br': '/bin/ingredion-com/ingredient-finder.sa.search.json',
+    'sa-es-co': '/bin/ingredion-com/ingredient-finder.sa.search.json',
+    'sa-es-ar': '/bin/ingredion-com/ingredient-finder.sa.search.json',
   },
 };
 
