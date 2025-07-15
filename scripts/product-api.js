@@ -33,10 +33,10 @@ export const DEFAULT_PATHS = {
 
 export const API_PATH_OVERRIDES = {
   POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: {
-    'na-en-us': '/scripts/api/na/en/us/header.search.json?initialTab=',
+    'na-en-us': '/scripts/static/header.search.json',
   },
   INGREDIENT_SEARCH_TYPEAHEAD: {
-    'na-en-us': '/scripts/api/na/en-us.ingredient-search-typeahead.json?initialTab=',
+    'na-en-us': '/scripts/static/en-us.ingredient-search-typeahead.json',
   },
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
