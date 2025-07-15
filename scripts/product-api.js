@@ -3,8 +3,12 @@
 // prod
 export const API_HOST = 'https://www.ingredion.com';
 
+// API host for specific endpoints (header search and typeahead)
+export const API_HOST_SPECIAL = window.location.origin;
+
 // stage - testing (todo: remove before go-live)
 // export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
+// export const API_HOST_SPECIAL = 'https://ingredion-stage65.adobecqms.net';
 
 export const getUrlParams = () => {
   const params = new URLSearchParams(window.location.search);
@@ -28,6 +32,12 @@ export const DEFAULT_PATHS = {
 };
 
 export const API_PATH_OVERRIDES = {
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: {
+    'na-en-us': '/api/na/en/us/header.search.json?initialTab=',
+  },
+  INGREDIENT_SEARCH_TYPEAHEAD: {
+    'na-en-us': '/api/na/en-us.ingredient-search-typeahead.json?initialTab=',
+  },
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: {
     'na-es-mx': '/content/ingredion-com/na/es-mx/ingredientes/buscador-de-ingredientes/jcr:content/par/ingredientfinder.search.json',
     'na-kerr': '/content/ingredion-com/na/kerr/ingredient-finder/jcr:content/par/ingredientfinder.search.json',
@@ -85,9 +95,19 @@ const resolveApiPath = (apiKey, region, locale) => {
 };
 
 export const API_PRODUCT = {
-  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}${resolveApiPath('POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY', region, locale)}`,
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => {
+    const key = `${region}-${locale}`;
+    const isSpecialEndpoint = key === 'na-en-us';
+    const host = isSpecialEndpoint ? API_HOST_SPECIAL : API_HOST;
+    return `${host}${resolveApiPath('POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY', region, locale)}`;
+  },
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}${resolveApiPath('SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY', region, locale)}`,
-  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `${API_HOST}${resolveApiPath('INGREDIENT_SEARCH_TYPEAHEAD', region, locale)}`,
+  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => {
+    const key = `${region}-${locale}`;
+    const isSpecialEndpoint = key === 'na-en-us';
+    const host = isSpecialEndpoint ? API_HOST_SPECIAL : API_HOST;
+    return `${host}${resolveApiPath('INGREDIENT_SEARCH_TYPEAHEAD', region, locale)}`;
+  },
   PRODUCT_DETAILS: (region, locale, productName) => `${API_HOST}${resolveApiPath('PRODUCT_DETAILS', region, locale)}?initialTab=&q=${productName}`,
   ALL_DOCUMENTS: (region, locale, productId) => `${API_HOST}${resolveApiPath('ALL_DOCUMENTS', region, locale, productId)}?productId=${productId}`,
   DOWNLOAD_DOCUMENTS: (region, locale, productName) => `${API_HOST}${resolveApiPath('DOWNLOAD_DOCUMENTS', region, locale, productName)}/${productName}/jcr:content.download.zip`,
