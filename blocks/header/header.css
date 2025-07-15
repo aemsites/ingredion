@@ -347,6 +347,13 @@ header nav.category > ul {
   font-family: var(--body-bold-font-family);
 }
 
+header nav.category > ul:first-child {
+  max-width: 46rem;
+  justify-content: space-between;
+  flex: 2;
+  flex-basis: 100%;
+}
+
 header nav.category > ul:last-child {
   margin-right: 0;
 }
@@ -356,7 +363,6 @@ header nav.category > ul > li {
   letter-spacing: .03em;
   color: #4d4e4c;
   height: inherit;
-  margin-right: 50px;
 }
 
 header nav.category > ul > li:last-child {
@@ -584,6 +590,10 @@ header nav.category > ul:nth-child(2) > li .header-dropdown {
     width: 100vw;
     background: #fff;
     height: auto;
+  }
+
+  header .mobile-menu nav.category > ul:first-child {
+    max-width: none;
   }
 
   header .mobile-menu nav.category > ul > li {

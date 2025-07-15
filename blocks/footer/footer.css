@@ -21,6 +21,12 @@ footer .footer > div {
   }
 }
 
+footer .footer > div .footer-menu .default-content-wrapper > ul >li:first-child a,
+footer .footer > div .accordion-container .footer-menu .accordion-item:first-child a {
+  color: #6cb33e;
+  text-decoration: underline;
+}
+
 footer .footer-utility {
   border-top: 1px solid var(--border-color);
 }
@@ -34,7 +40,7 @@ footer .footer-utility ul:first-of-type {
 footer .footer-utility ul:first-of-type li {
   list-style: none;
   line-height: 1.75rem;
-  margin: 0 .9375rem 0 0;
+  margin: 0 .9375rem;
   display: inline-block;
   font-size: .625rem;
   font-family: var(--body-bold-font-family);
@@ -81,7 +87,11 @@ footer .social-share .button-container > a {
     flex-direction: row;
   }
 
-  footer .footer-utility ul:first-of-type li a:hover {
+  footer .footer-utility ul:first-of-type li {
+    padding: 0.5rem 0;
+  }
+
+  footer .footer-utility ul:first-of-type a:hover {
     color: var(--green);
   }
 
