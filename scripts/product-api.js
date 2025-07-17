@@ -1,6 +1,6 @@
 // This file contains all the product API endpoints
 
-export const API_HOST = 'https://publish-p154883-e1640303.adobeaemcloud.com';
+export const API_HOST = 'https://preview.ingredion.com';
 // prod
 // export const API_HOST = 'https://www.ingredion.com';
 
