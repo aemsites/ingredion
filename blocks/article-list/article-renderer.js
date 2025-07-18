@@ -308,7 +308,7 @@ export default class ArticleRenderer {
     const years = {};
     this.state.allArticles.forEach((article) => {
       const date = article.eventDate ? parseEventDate(article.eventDate) : new Date(article.publishDate * 1000);
-      if (date) {
+      if (date && article.publishDate) {
         const year = date.getFullYear();
         years[year] = (years[year] || 0) + 1;
       }
