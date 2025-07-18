@@ -1,6 +1,6 @@
 // This file contains all the product API endpoints
 
-// prod
+// prod testing comment
 export const API_HOST = 'https://www.ingredion.com';
 
 // stage - testing (todo: remove before go-live)
