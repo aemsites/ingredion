@@ -206,7 +206,7 @@ async function buildIngredientFinderCategoryDropdown(dropdown) {
     const buttonContainer = wrapper.querySelector('.button-container');
     const anchor = buttonContainer?.querySelector('a');
     if (anchor) {
-      anchor.textContent = translate('search');
+      anchor.textContent = translate('search-button');
     }
 
     if (isMobile.matches) {
@@ -376,7 +376,7 @@ async function buildDropdownsMobile($header) {
     }
     newDiv.appendChild(spanWrapper);
 
-    const viewAllButton = span({ class: 'view-all' }, 'VIEW ALL', span({ class: 'icon-green-arrow-up' }));
+    const viewAllButton = span({ class: 'view-all' }, translate('view-all'), span({ class: 'icon-green-arrow-up' }));
     newDiv.appendChild(viewAllButton);
 
     const subNavFrag = await loadFragment(subNavPath);
@@ -540,7 +540,7 @@ export default async function decorate(block) {
         div({ class: 'form-typeahead form-typeahead--nav-search' },
           input({
             id: 'search',
-            placeholder: 'Search',
+            placeholder: translate('search-button'),
             name: 'q',
             'aria-label': 'Search Input',
             value: '',

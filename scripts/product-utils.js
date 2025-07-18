@@ -200,7 +200,7 @@ export async function viewAllDocsModal(product) {
             td(techDoc.size),
           )),
         ),
-        div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'technical' }, 'Download Documents')),
+        div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'technical' }, translate('download-documents'))),
       ) : null,
 
       // SDS Documents Table
@@ -220,7 +220,7 @@ export async function viewAllDocsModal(product) {
             td(sdsDoc.size),
           )),
         ),
-        div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'sds' }, 'Download Documents')),
+        div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'sds' }, translate('download-documents'))),
       ) : null,
     );
 
