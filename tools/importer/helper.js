@@ -1000,10 +1000,11 @@ export function createForm(document, main, url) {
 }
 
 export function createTableBlock(document, main) {
-  const tableParents = document.querySelectorAll('.ingredionTable .ingredion-table .ingredion-table');
+  const tableParents = document.querySelectorAll('.ingredionTable .ingredion-table .ingredion-table, .inlineTable .ingredion-table .ingredion-table');
   if (!tableParents) return;
+  const cells = [['Table']];
+  console.log(cells);
   tableParents.forEach((tableParent) => {
-    const cells = [['Table']];
     const th = tableParent.querySelectorAll('thead > tr > th');
     const tr = tableParent.querySelectorAll('tbody > tr');
     
@@ -1012,6 +1013,7 @@ export function createTableBlock(document, main) {
       headingArray.push(heading.textContent);
     });
     cells.push(headingArray);
+    console.log(cells + "  heading");
     
     tr.forEach((row) => {
       const rowArray = [];
@@ -1020,6 +1022,7 @@ export function createTableBlock(document, main) {
         rowArray.push(cell.innerHTML);
       });
       cells.push(rowArray);
+      console.log(cells+"  row");
     });
     
     const table = WebImporter.DOMUtils.createTable(cells, document);
