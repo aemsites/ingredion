@@ -1134,7 +1134,7 @@ export function sanitizeMetaTags(tags) {
   return [[...new Set(sanitizedTags)], [...new Set(tempArray)]];
 }
 
-export function createArticleList(document, main) {
+export function createArticleList(document, main, path) {
   const element = document.querySelector('.news-blog-article-mount, .resource-listing-mount, .events-listing-mount');
   if (!element) return;
   
@@ -1145,9 +1145,21 @@ export function createArticleList(document, main) {
   const perPageOptions = document.createElement('div');
   const cardVariant = document.querySelector('.element');
   perPageOptions.innerHTML = `<div>6</div><div>12</div><div>18</div><div>24</div><div>30</div>`;
+
+  // region and local
+  const VALID_REGIONS = ['na', 'sa', 'emea', 'apac'];
+  const VALID_LOCALES = ['en-us', 'es-mx', 'kerr', 'pt-br', 'es-co', 'es-ar', 'en-uk', 'en-sg', 'ja-jp', 'sc-cn', 'en-au'];
+  const segments = path.split('/')
+                        .filter((segment) => segment);
+  // fallback values 'na' and 'en-us'
+  let [region = 'na', locale = 'en-us'] = segments;
+  // validate region and locale
+  if (!VALID_REGIONS.includes(region)) region = 'na';
+  if (!VALID_LOCALES.includes(locale)) locale = 'en-us';
+
   const cells = [
     ['Article List'],
-    ['Article Data', `/na/en-us/indexes/global-index.json?sheet=${sheetName}`],
+    ['Article Data', `/${region}/${locale}/indexes/global-index.json?sheet=${sheetName}`],
     ['Articles per page options', perPageOptions.outerHTML],
     ['Pagination max buttons', '5']
   ];

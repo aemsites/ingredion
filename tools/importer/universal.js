@@ -83,7 +83,7 @@ export default {
     createTableBlock(document, main);
     //createAnchorBlock(document, main);
     createCTAIconBlock(document, main);
-    createArticleList(document, main);
+    createArticleList(document, main, path);
     addAuthorBio(document, main);
     createMetadata(main, document, path, html);   
 

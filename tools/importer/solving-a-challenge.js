@@ -70,7 +70,7 @@ export default {
       alignCenter(document);
       createCalloutBlock(document, main);
       createCardsBlock(document, main);
-      createArticleList(document, main);
+      createArticleList(document, main, path);
       isVideoPage = createVideoBlock(document, main);
       createCarouselBlock(document, main);
       createTableBlock(document, main); 
