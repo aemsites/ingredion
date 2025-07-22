@@ -354,7 +354,9 @@ function createFormulationInstructions(instructions, formulationPage) {
 
   // Add description section
   const description = instructions.querySelector('.section .section__content .section-title-description-wrapper .heading > h2');
-  formulationInstructionsDiv.append(description);
+  if (description) {
+    formulationInstructionsDiv.append(description);
+  }
 
   // Add section metadata for instructions
   const section = [['Section Metadata']];
@@ -475,7 +477,10 @@ function createFormulationInstructionsWithMultipleTables(instructions) {
   
   // Add description section
   const description = instructions[0].querySelector('.section .section__content .section-title-description-wrapper .heading > h2');
-  formulationInstructionsDiv.append(description);
+  
+  if (description) {
+    formulationInstructionsDiv.append(description);
+  }
 
   // Add section metadata for instructions
   const section = [['Section Metadata']];
