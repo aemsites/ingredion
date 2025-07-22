@@ -78,14 +78,14 @@
   aspect-ratio: 16 / 9;
 }
 
-@media (min-width: 48rem) {
+@media (width >= 48rem) {
   .video .video-modal iframe {
     width:90%;
     height: 80%;
   }
 }
 
-@media (min-width: 67.5625rem) {
+@media (width >= 67.5625rem) {
   .video .video-modal iframe {
     width: 100%;
     max-width: 63.3125rem
