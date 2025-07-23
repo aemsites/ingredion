@@ -434,7 +434,8 @@
   color: var(--text-color);
   font-size: 1rem;
   line-height: 1.5rem;
-  letter-spacing: .016rem;
+  letter-spacing: var(--letter-spacing-medium);
+  font-weight: normal;
 }
 
 .article-list .filter-results-wrapper .results .articles .card {
@@ -496,7 +497,6 @@
 .article-list.events .filter-results-wrapper .results .articles .card .image-wrapper .type {
   font-size: 1rem;
   font-family: MiloPro-Bold, Helvetica, sans-serif;
-  font-weight: 700;
   color: var(--mustard);
   margin: 0 0 10px;
 }
@@ -603,7 +603,6 @@
 .article-list .filter-results-wrapper .results.cards .articles .card .info .date {
   font-size: 14px;
   font-family: OpenSans-Bold, Helvetica, sans-serif;
-  font-weight: 800;
 }
 
 .article-list .filter-results-wrapper .results.cards .articles .card .info .arrow {
@@ -611,7 +610,7 @@
   color: var(--green);
   font-size: 16px;
   font-family: OpenSans-Bold, Helvetica, sans-serif;
-  font-weight: 600;
+  font-weight: normal;
   padding: 0 16px 0 0;
   text-decoration: underline;
 }

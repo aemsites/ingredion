@@ -16,7 +16,6 @@
   border-radius: 0;
   padding: 0.5em;
   color: initial;
-  font-weight: bold;
   line-height: unset;
   text-overflow: unset;
   overflow: unset;
@@ -34,7 +33,6 @@
   color: #4d4e4c;
   font-family: MiloPro-Bold, Helvetica, sans-serif;
   font-size: 14px;
-  font-weight: 700;
   letter-spacing: .5px;
   line-height: 24px;
   text-align: center;

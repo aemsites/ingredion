@@ -315,7 +315,6 @@ header .btn-tech-doc-samples a {
   background: var(--green);
   color: var(--text-color);
   font-size: .95rem;
-  font-weight: bold;
   padding: .6rem 1.95rem;
   font-family: MiloPro-Bold, Helvetica, sans-serif;
   letter-spacing: .042rem;
@@ -540,7 +539,6 @@ header nav.category > ul:nth-child(2) > li .header-dropdown {
     background: var(--green);
     border: 0;
     font-size: .95rem;
-    font-weight: bold;
     padding: .6rem 1.95rem;
     margin: 18px 0 4px;
     font-family: MiloPro-Bold, Helvetica, sans-serif;
@@ -588,7 +586,6 @@ header nav.category > ul:nth-child(2) > li .header-dropdown {
 
   header .mobile-menu nav.category > ul > li {
     border-bottom: 1px solid #d8d9d9;
-    font-weight: bold;
     color: #4d4e4c;
     letter-spacing: normal;
     line-height: 3.5rem;

@@ -146,7 +146,7 @@
 
 .cards-card-body h3 {
   line-height: 2.5rem;
-  letter-spacing: -0.0313rem;
+  letter-spacing: var(--letter-spacing-large);
   margin-bottom: 1rem;
   font-weight: bold;
   font-size: 32px;
@@ -326,15 +326,15 @@ main > .section > .default-content-wrapper {
 }
 
 .section.cards-container .default-content-wrapper h2 {
-  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  font-family: MiloPro-Medium, Helvetica, sans-serif;
   font-size: 2.5rem;
   line-height: 3rem;
-  letter-spacing: -.0313rem;
+  letter-spacing: 0.0313rem;
   margin: 33.2px 0;
 }
 
 .cards.four-column .cards-card-body h3 {
-  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  font-family: MiloPro-Medium, Helvetica, sans-serif;
   font-size: 1.25rem;
   line-height: 1.5rem;
   color: var(--text-color);

@@ -25,7 +25,7 @@
 }
 
 .accordion.footer details summary h4 {
-  font-family: var(--heading-font-family);
+  font-family: var(--heading-medium-font-family);
   font-size: 1.2rem;
   color: var(--text-color);
   line-height: 3.5rem;

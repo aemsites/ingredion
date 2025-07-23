@@ -26,6 +26,7 @@
 .header-dropdown p strong {
   font-family: var(--body-bold-font-family);
   font-size: 16px;
+  font-weight: normal;
 }
 
 .header-dropdown .button-container a.button:hover {
@@ -40,7 +41,7 @@
 .header-dropdown .nav-list li a {
   color: var(--text-color);
   text-decoration: none;
-  font-weight: bold;
+  font-weight: normal;
   font-family: var(--body-bold-font-family);
   font-size: 1rem;
   margin: 0;
@@ -114,6 +115,7 @@
 
   .header-dropdown.static.columns-3 > div > div li > strong > a {
     font-family: opensans-bold, helvetica, sans-serif;
+    font-weight: normal;
   }
 
   .header-dropdown.static.columns-3 > div > div:first-of-type {
@@ -297,7 +299,6 @@
   color: var(--text-color);
   font-family: OpenSans-Regular, Helvetica, sans-serif;
   font-size: 14px;
-  font-weight: 700;
   letter-spacing: 0.25px;
   line-height: 3.5rem;
   margin: 0 1.875rem .9375rem;

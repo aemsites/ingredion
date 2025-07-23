@@ -261,8 +261,8 @@
 }
 
 .article-list .filter-results-wrapper .results .articles .card .info h4 {
-  letter-spacing: .016rem;
-  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  letter-spacing: var(--letter-spacing-medium);
+  font-family: MiloPro-Medium, Helvetica, sans-serif;
   margin: 0 0 1rem !important;
   font-size: 1.5rem;
   line-height: 2rem;
@@ -344,7 +344,6 @@
 .article-list .filter-results-wrapper .results .events .image-wrapper .type {
   font-size: 1rem;
   font-family: MiloPro-Bold, Helvetica, sans-serif;
-  font-weight: 700;
   color: var(--mustard);
   margin: 0 0 10px;
 }
@@ -409,7 +408,6 @@
 .article-list .filter-results-wrapper .results.cards .articles .card .info .type {
   font-size: 20px;
   font-family: MiloPro-Bold, Helvetica, sans-serif;
-  font-weight: 700;
   color: var(--mustard);
 }
 
@@ -420,7 +418,6 @@
 .article-list .filter-results-wrapper .results.cards .articles .card .info .date {
   font-size: 14px;
   font-family: OpenSans-Bold, Helvetica, sans-serif;
-  font-weight: 800;
 }
 
 .article-list .filter-results-wrapper .results.cards .articles .card .info .arrow {

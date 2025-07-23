@@ -49,7 +49,7 @@
 }
 
 .heading h1, .heading h2, .heading h3, .heading h4, .heading h5, .heading h6 {
-  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  font-family: MiloPro-Medium, Helvetica, sans-serif;
   margin: 0 0 1rem;
   color: #373738;
   line-height: 2rem;
@@ -58,7 +58,7 @@
 .author-bio-text .heading h1 {
   font-size: 2.5rem;
   line-height: 3.5rem;
-  letter-spacing: -.0312rem;
+  letter-spacing: 0.0312rem;
 }
 
 .body-text {

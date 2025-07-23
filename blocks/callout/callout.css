@@ -35,8 +35,8 @@
 
 .callout > div .callout-content h1, .callout > div .callout-content h2, .callout > div .callout-content h3 {
   color: var(--theme-clr-text);
-  font-family: var(--heading-font-family);
-  letter-spacing: -.0313rem;
+  font-family: var(--heading-medium-font-family);
+  letter-spacing: var(--letter-spacing-large);
 }
 
 .callout > div .callout-content h1 {
@@ -69,7 +69,6 @@
 .callout > div .callout-content a.button {
   color: var(--theme-clr-text);
   text-decoration: none;
-  font-weight: bold;
   background: var(--theme-clr-background);
 }
 

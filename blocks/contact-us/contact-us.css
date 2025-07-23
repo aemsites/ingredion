@@ -7,7 +7,7 @@
 .heading h3 {
   font-size: 1.5rem;
   line-height: 2.5rem;
-  letter-spacing: -0.0313rem;
+  letter-spacing: 0.0313rem;
 }
 
 .heading h4 {
@@ -21,7 +21,7 @@
 .heading h4,
 .heading h5,
 .heading h6 {
-  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  font-family: MiloPro-Medium, Helvetica, sans-serif;
   margin: 0 0 1rem;
   color: var(--text-color);
 }

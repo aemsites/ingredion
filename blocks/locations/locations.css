@@ -169,7 +169,7 @@
 
 .locations .locator-search h2 {
   margin: 0;
-  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  font-family: MiloPro-Medium, Helvetica, sans-serif;
   line-height: 2rem;
   font-size: 1.5em;
   font-weight: 700;
@@ -186,7 +186,7 @@
 }
 
 .locations .locator-search .filters h3 {
-  font-weight: 700;
+  font-weight: normal;
   font-family: OpenSans-Bold, Helvetica, sans-serif;
   font-size: 14px;
   line-height: 1.5rem;
@@ -301,7 +301,6 @@
   padding: 1rem 2.5rem;
   font-family: MiloPro-Bold, Helvetica, sans-serif;
   font-size: 16px;
-  font-weight: 700;
   color: #373738;
 }
 
@@ -340,7 +339,6 @@
   padding: 0 2.5rem;
   font-family: MiloPro-Bold, Helvetica, sans-serif;
   font-size: 16px;
-  font-weight: 700;
   color: #373738;
   border-bottom: 1px solid #d8d9d9;
 }

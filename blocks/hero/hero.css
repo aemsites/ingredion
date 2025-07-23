@@ -23,7 +23,7 @@
   margin-right: auto;
   color: var(--theme-clr-background);
   font-size: 3.5rem;
-  letter-spacing: -.58px;
+  letter-spacing: 0.58px;
   line-height: 3.5rem;
 }
 
@@ -37,7 +37,7 @@
 
 .hero.homepage h1 {
   font-size: 4rem;
-  letter-spacing: -.0625rem;
+  letter-spacing: var(--letter-spacing);
   line-height: 3.5rem;
 }
 

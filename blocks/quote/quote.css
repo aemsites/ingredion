@@ -15,7 +15,7 @@
 .heading h1 {
 	font-size: 2.5rem;
 	line-height: 3.5rem;
-	letter-spacing: -.0313rem;
+	letter-spacing: 0.0313rem;
 }
 
 .quoteblock-wrapper .heading h1 {
@@ -41,7 +41,7 @@
 	line-height: 2rem;
 	margin: 0 auto;
 	text-transform: capitalize;
-	letter-spacing: -.0313rem;
+	letter-spacing: 0.0313rem;
 }
 
 .heading-center {
@@ -49,7 +49,7 @@
 }
 
 .label-text {
-	font-family: MiloPro-Bold, Helvetica, sans-serif;
+	font-family: MiloPro-Medium, Helvetica, sans-serif;
 	font-size: 1.25rem;
 	line-height: 1.5rem;
 	color: var(--text-color);
@@ -85,7 +85,7 @@
 	font-family: MiloPro-Bold, Helvetica, sans-serif;
 	font-size: 5.5rem;
 	line-height: 6.625rem;
-	letter-spacing: -.0313rem;
+	letter-spacing: 0.0313rem;
 }
 
 .section.quote-container .quote-wrapper {

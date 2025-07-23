@@ -216,6 +216,7 @@ html {
   font-size: 14px;
   color: var(--text-color);
   transition: color 0.3s ease;
+  text-decoration: none;
 }
 
 .ingredient-template .mobile-view .product-header.fixed .anchor-nav .content a {

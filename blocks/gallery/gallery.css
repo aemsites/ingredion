@@ -116,22 +116,22 @@
 .gallery > div .gallery-content h1 {
   color: var(--green);
   font-size: var(--heading-font-size-xl);
-  font-family: var(--heading-font-family);
-  letter-spacing: -.0313rem;
+  font-family: var(--heading-medium-font-family);
+  letter-spacing: 0.0313rem;
   margin-top: 0;
 }
 
 .gallery > div .gallery-content h2 {
   font-size: var(--heading-font-size-l);
-  letter-spacing: -.0313rem;
+  letter-spacing: 0.0313rem;
   line-height: 1rem;
 }
 
 .gallery > div .gallery-content h3 {
   color: var(--theme-clr-text);
-  font-family: var(--heading-font-family);
+  font-family: var(--heading-medium-font-family);
   font-size: var(--heading-font-size-m);
-  letter-spacing: -.0313rem;
+  letter-spacing: 0.0313rem;
 }
 
 .gallery > div .gallery-content p, .gallery > div .gallery-content ul, .gallery > div .gallery-content li, .gallery > div .gallery-content a {
@@ -157,7 +157,6 @@
   min-width: 11.25rem;
   padding: .875rem;
   border: none;
-  font-weight: bold;
   font-family: MiloPro-Bold, Helvetica, sans-serif;
   text-decoration: none;
 }
@@ -185,7 +184,7 @@
 
   .gallery > div .gallery-content h3 {
     font-size: 1.5rem;
-    letter-spacing: -.0313rem;
+    letter-spacing: 0.0313rem;
     line-height: 1.5rem;
   }
 

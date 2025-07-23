@@ -29,7 +29,7 @@
 
 .carousel .carousel-container .carousel-overview div > div h3 {
   font-size: 2.5rem;
-  letter-spacing: -.0313rem;
+  letter-spacing: 0.0313rem;
 }
 
 .carousel .carousel-container .carousel-overview div > div p {
@@ -78,7 +78,7 @@
 }
 
 .carousel .carousel-container .carousel-slides-container .carousel-slides .carousel-slide .slide-body h3 {
-  letter-spacing: -0.0313rem;
+  letter-spacing: 0.0313rem;
   font-size: 32px;
 }
 
