@@ -65,7 +65,11 @@ export default function decorate(block) {
   }
 
   const galleryModal = document.createElement('div');
-  updateModal(galleryModal, blockImage);
+  
+  if (allPics.length > 1) {
+    updateModal(galleryModal, blockImage);
+  }
+
 
   const modalImage = galleryModal.querySelector('.image-modal-container img');
 
