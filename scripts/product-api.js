@@ -3,12 +3,8 @@
 // prod
 export const API_HOST = 'https://www.ingredion.com';
 
-// API host for specific endpoints (header search and typeahead)
-export const API_HOST_SPECIAL = window.location.origin;
-
 // stage - testing (todo: remove before go-live)
 // export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
-// export const API_HOST_SPECIAL = 'https://ingredion-stage65.adobecqms.net';
 
 export const getUrlParams = () => {
   const params = new URLSearchParams(window.location.search);
@@ -32,12 +28,6 @@ export const DEFAULT_PATHS = {
 };
 
 export const API_PATH_OVERRIDES = {
-  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: {
-    'na-en-us': '/scripts/static/header.search.json',
-  },
-  INGREDIENT_SEARCH_TYPEAHEAD: {
-    'na-en-us': '/scripts/static/en-us.ingredient-search-typeahead.json',
-  },
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: {
     'na-es-mx': '/bin/ingredion-com/ingredient-finder.na.search.json',
     'na-kerr': '/bin/ingredion-com/ingredient-finder.na.search.json',
@@ -96,19 +86,9 @@ const resolveApiPath = (apiKey, region, locale) => {
 };
 
 export const API_PRODUCT = {
-  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => {
-    const key = `${region}-${locale}`;
-    const isSpecialEndpoint = key === 'na-en-us';
-    const host = isSpecialEndpoint ? API_HOST_SPECIAL : API_HOST;
-    return `${host}${resolveApiPath('POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY', region, locale)}`;
-  },
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}${resolveApiPath('POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY', region, locale)}`,
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}${resolveApiPath('SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY', region, locale)}`,
-  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => {
-    const key = `${region}-${locale}`;
-    const isSpecialEndpoint = key === 'na-en-us';
-    const host = isSpecialEndpoint ? API_HOST_SPECIAL : API_HOST;
-    return `${host}${resolveApiPath('INGREDIENT_SEARCH_TYPEAHEAD', region, locale)}`;
-  },
+  INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => `${API_HOST}${resolveApiPath('INGREDIENT_SEARCH_TYPEAHEAD', region, locale)}`,
   PRODUCT_DETAILS: (region, locale, productName) => `${API_HOST}${resolveApiPath('PRODUCT_DETAILS', region, locale)}?initialTab=&q=${productName}`,
   ALL_DOCUMENTS: (region, locale, productId) => `${API_HOST}${resolveApiPath('ALL_DOCUMENTS', region, locale, productId)}?productId=${productId}`,
   DOWNLOAD_DOCUMENTS: (region, locale, productName) => `${API_HOST}${resolveApiPath('DOWNLOAD_DOCUMENTS', region, locale, productName)}`,
