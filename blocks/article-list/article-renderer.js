@@ -717,7 +717,7 @@ export default class ArticleRenderer {
     if (!this.searchDiv) return;
     this.searchDiv.innerHTML = '';
     this.searchDiv.classList.add('filter-search');
-    const searchPlaceholder = translate('search');
+    const searchPlaceholder = translate('search-button');
     const $form = form();
     const $input = input({
       type: 'listing-search',

@@ -28,13 +28,13 @@ async function createIngredientPanel(ingredientResults) {
   const $filtersList = div();
 
   const $articleCard = (article) => {
-    const addSampleBtn = a({ title: 'Add Sample', class: 'button add-sample-button' }, translate('add-sample'));
+    const addSampleBtn = a({ title: translate('add-sample'), class: 'button add-sample-button' }, translate('add-sample'));
     addSampleBtn.addEventListener('click', () => addIngredientToCart(article.productName, window.location.href));
 
     const description = div({ class: 'description' });
     description.innerHTML = (article.description).replace(/&nbsp;/g, ' ');
 
-    const viewAllDocsLink = a({ class: 'view-all' }, 'View All Documents');
+    const viewAllDocsLink = a({ class: 'view-all' }, translate('view-all-documents'));
     viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(article));
     const relatedIngredientBlock = div(
       { class: 'related-ingredient' },
@@ -45,13 +45,13 @@ async function createIngredientPanel(ingredientResults) {
         div(
           { class: 'cta-links' },
           viewAllDocsLink,
-          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(region, locale, article.productId) }, 'Download All Documents'),
+          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH(region, locale, article.productId) }, translate('download-all-documents')),
         ),
       ),
       div(
         { class: 'buttons' },
         addSampleBtn,
-        a({ class: 'button secondary', href: `/${region}/${locale}/ingredient?name=${article.productName}`, title: 'Learn More' }, 'Learn More'),
+        a({ class: 'button secondary', href: `/${region}/${locale}/ingredient?name=${article.productName}`, title: translate('learn-more') }, translate('learn-more')),
       ),
     );
     return relatedIngredientBlock;
