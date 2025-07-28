@@ -168,8 +168,8 @@ export default async function decorate(block) {
       if (isFeatured) {
         article.path = article.redirect;
         externalLink = img({ class: 'external-link-icon', src: '/icons/external-link.svg', alt: 'External Link' });
-        featuredTag = p({ class: 'featured-tag' }, 'Featured Content');
-        ctaButton = a({ class: 'button featured', href: article.redirect }, 'Access Insights');
+        featuredTag = p({ class: 'featured-tag' }, translate('featured-content'));
+        ctaButton = a({ class: 'button featured', href: article.redirect }, translate('access-insights'));
         cardClasses.push('featured');
       }
 
