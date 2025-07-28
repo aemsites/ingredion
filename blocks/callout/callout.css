@@ -9,6 +9,10 @@
   max-width: 100%;
 }
 
+.text-center .callout-content {
+  text-align: center;
+}
+
 .callout > div {
   display: flex;
   flex-direction: column;
