@@ -59,6 +59,10 @@
   margin: 0;
 }
 
+.article-detail main .section.center {
+  margin: auto;
+}
+
 .article-detail main .section-container .section p.centered {
   text-align: center;
 }
