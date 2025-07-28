@@ -305,13 +305,13 @@ function initializePhoneValidation(document) {
   });
 
   const initialCountryData = iti.getSelectedCountryData();
-  countryDropdown.value = initialCountryData.iso2;
+  countryDropdown.value = initialCountryData.iso2.toUpperCase();
   countryTrigger.textContent = initialCountryData.name;
   countryTrigger.style.color = 'black';
 
   input.addEventListener('countrychange', () => {
     const countryData = iti.getSelectedCountryData();
-    countryDropdown.value = countryData.iso2;
+    countryDropdown.value = countryData.iso2.toUpperCase();
     countryTrigger.textContent = countryData.name;
     countryTrigger.style.color = 'black';
     countryDropdown.dispatchEvent(new Event('change'));
