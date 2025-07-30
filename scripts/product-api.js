@@ -28,47 +28,49 @@ export const DEFAULT_PATHS = {
 };
 
 export const API_PATH_OVERRIDES = {
+  POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: {
+    'na-es-mx': '/bin/ingredion-com/headeringredient/header.es-mx.search.json',
+    'na-kerr': '/bin/ingredion-com/headeringredient/header.kerr.search.json',
+  },
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: {
-    'na-es-mx': '/bin/ingredion-com/ingredient-finder.na.search.json',
-    'na-kerr': '/bin/ingredion-com/ingredient-finder.na.search.json',
-    'sa-pt-br': '/bin/ingredion-com/ingredient-finder.sa.search.json',
-    'sa-es-co': '/bin/ingredion-com/ingredient-finder.sa.search.json',
-    'sa-es-ar': '/bin/ingredion-com/ingredient-finder.sa.search.json',
+    'na-es-mx': '/bin/ingredion-com/ingredient-finder.es-mx.search.json',
+    'na-kerr': '/bin/ingredion-com/ingredient-finder.kerr.search.json',
+  },
+  INGREDIENT_SEARCH_TYPEAHEAD: {
+    'na-es-mx': '/bin/ingredion-com/typeaheadingredient.es-mx.ingredient-search-typeahead.json',
+    'na-kerr': '/bin/ingredion-com/typeaheadingredient.kerr.ingredient-search-typeahead.json',
   },
   PRODUCT_DETAILS: {
-    'na-es-mx': '/bin/ingredion-com/searchResults.na.ingredients.json',
-    'sa-pt-br': '/bin/ingredion-com/searchResults.sa.ingredients.json',
+    'na-es-mx': '/bin/ingredion-com/searchResults.es-mx.ingredients.json',
+    'na-kerr': '/bin/ingredion-com/searchResults.kerr.ingredients.json',
   },
   ALL_DOCUMENTS: {
-    'na-es-mx': '/bin/ingredion-com/documents.na.view.json',
-    'sa-pt-br': '/bin/ingredion-com/documents.sa.view.json',
+    'na-es-mx': '/bin/ingredion-com/documents.es-mx.view.json',
+    'na-kerr': '/bin/ingredion-com/documents.kerr.view.json',
   },
   DOWNLOAD_DOCUMENTS: {
-    'na-es-mx': '/bin/ingredion-com/documents-download.na.download.zip',
-    'na-kerr': '/bin/ingredion-com/documents-download.na.download.zip',
+    'na-es-mx': '/bin/ingredion-com/documents-download.es-mx.download.zip',
+    'na-kerr': '/bin/ingredion-com/documents-download.kerr.download.zip',
   },
   DOWNLOAD_ALL_DOCUMENTS: {
-    'na-es-mx': '/bin/ingredion-com/documents-download.na.download.zip',
-    'na-kerr': '/bin/ingredion-com/documents-download.na.download.zip',
+    'na-es-mx': '/bin/ingredion-com/documents-download.es-mx.download.zip',
+    'na-kerr': '/bin/ingredion-com/documents-download.kerr.download.zip',
   },
   DOWNLOAD_ALL_DOCUMENTS_FROM_SEARCH: {
-    'na-es-mx': '/bin/ingredion-com/documents-download.na.download.zip',
-    'na-kerr': '/bin/ingredion-com/documents-download.na.download.zip',
+    'na-es-mx': '/bin/ingredion-com/documents-download.es-mx.download.zip',
+    'na-kerr': '/bin/ingredion-com/documents-download.kerr.download.zip',
   },
   SEARCH_INGREDIENTS: {
-    'na-es-mx': '/bin/ingredion-com/searchResults.na.ingredients.json',
-    'sa-pt-br': '/bin/ingredion-com/searchResults.sa.ingredients.json',
+    'na-es-mx': '/bin/ingredion-com/searchResults.es-mx.ingredients.json',
+    'na-kerr': '/bin/ingredion-com/searchResults.kerr.ingredients.json',
   },
   SEARCH_DOCUMENTS: {
-    'na-es-mx': '/bin/ingredion-com/tech-documents.na.techDocs.json',
-    'sa-pt-br': '/bin/ingredion-com/tech-documents.na.techDocs.json',
+    'na-es-mx': '/bin/ingredion-com/tech-documents.es-mx.techDocs.json',
+    'na-kerr': '/bin/ingredion-com/tech-documents.kerr.techDocs.json',
   },
   SEARCH_INGREDIENTS_BY_NAME: {
-    'na-es-mx': '/bin/ingredion-com/ingredient-finder.na.search.json',
-    'na-kerr': '/bin/ingredion-com/ingredient-finder.na.search.json',
-    'sa-pt-br': '/bin/ingredion-com/ingredient-finder.sa.search.json',
-    'sa-es-co': '/bin/ingredion-com/ingredient-finder.sa.search.json',
-    'sa-es-ar': '/bin/ingredion-com/ingredient-finder.sa.search.json',
+    'na-es-mx': '/bin/ingredion-com/ingredient-finder.es-mx.search.json',
+    'na-kerr': '/bin/ingredion-com/ingredient-finder.kerr.search.json',
   },
 };
 
