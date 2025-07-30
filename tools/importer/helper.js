@@ -746,23 +746,21 @@ export function createIngredientBlock(document, main, formulation = false) {
 }
 
 export function createContactUs(main, document) {
-  const contactUs = document.querySelectorAll('.contact-banner__wrapper .contact-banner__content'); 
+  const contactUs = document.querySelectorAll('.contact-banner__wrapper'); 
   if (contactUs.length > 0) {
     contactUs.forEach((contactUs) => {
-    const heading = contactUs.querySelector('.contact-banner__primary').textContent;
-    let contactDetailsHeading = contactUs.querySelector('.contact-banner__secondary--contact .heading') ?
-      contactUs.querySelector('.contact-banner__secondary--contact .heading').textContent : null;
-    let contactDetails = contactUs.querySelectorAll('.contact-banner__secondary--contact .body-text');
-    let contactDetailsText = '';
-    contactDetails.forEach((contactDetail) => {
-      contactDetailsText += ' ' + contactDetail.textContent;
-    }); 
-   
+    const heading = contactUs.querySelector('.heading');
+    const primaryContent = contactUs.querySelector('.contact-banner__primary');
+    let contactDetails = contactUs.querySelectorAll('.contact-banner__secondary--contact');
 
     const cells = [['contact-us']];
     cells.push([heading,]);
-    cells.push([contactDetailsHeading,]);
-    cells.push([contactDetailsText,]);
+    cells.push([primaryContent,]);
+
+    let contactDetailsText = '';
+    contactDetails.forEach((contactDetail) => {
+      cells.push([contactDetail,]);
+    });
     
     const contactUsBlock = WebImporter.DOMUtils.createTable(cells, document);
     const div = document.createElement('div');
