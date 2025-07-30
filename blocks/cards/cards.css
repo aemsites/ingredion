@@ -90,6 +90,7 @@
     gap: 24px 40px;
     justify-content: center;
   }
+  
   .cards.left-align > ul {
     justify-content: left;
   }
