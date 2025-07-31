@@ -4,12 +4,7 @@
   justify-content: center;
 }
 
-.section .default-content-wrapper {
-  margin: 3.125rem auto 2.5rem;
-  max-width: 50.1875rem;
-}
-
-.cta-icons > h2{
+.cta-icons > h2 {
   text-align: left;
 }
 
@@ -74,8 +69,8 @@
   }
 
   .icon-card:hover {
-    background: rgba(239 239 239 / 40%);
-    box-shadow: 0 8px 20px 0 rgba(0 0 0 / 10%);
+    background: rgb(239 239 239 / 40%);
+    box-shadow: 0 8px 20px 0 rgb(0 0 0 / 10%);
     transform: translate(0, -10px);
   }
 

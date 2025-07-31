@@ -1,75 +1,57 @@
-/* .tabs .tabs-list {
-    display: flex;
-    gap: 0.5ch;
-    max-width: 100%;
-    font-size: var(--body-font-size-xs);
-    overflow-x: auto;
-  } */
-  
-  @media (width >= 600px) {
-    .tabs .tabs-list {
-      font-size: var(--body-font-size-s);
-    }
+@media (width >= 600px) {
+  .tabs .tabs-list {
+    font-size: var(--body-font-size-s);
   }
-  
-  @media (width >= 900px) {
-    .tabs .tabs-list {
-      font-size: var(--body-font-size-m);
-    }
+}
+
+@media (width >= 900px) {
+  .tabs .tabs-list {
+    font-size: var(--body-font-size-m);
   }
-  
-  .tabs .tabs-list button {
-    flex: 0 0 max-content;
-    margin: 0;
-    border-radius: 0;
-    padding: 0.5em;
-    color: initial;
-    font-weight: bold;
-    line-height: unset;
-    text-overflow: unset;
-    overflow: unset;
-    white-space: unset;
-    transition: background-color 0.2s;
-    width: 25%;
-    text-align: center;
-    height: 4rem;
-    border: 1px solid #cbcbcb;
-    background-color: rgb(239 239 239 / 50%);
-  }
-  
-  .tabs .tabs-list button p {
-    margin: 0;
-    color: #4d4e4c;
-    font-family: MiloPro-Bold, Helvetica, sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: .5px;
-    line-height: 24px;
-    text-align: center;
-    border: none;
-    outline: 0;
-    background: 0 0;
-    cursor: pointer;
-  }
-  
-  
-  .tabs .tabs-list button[aria-selected='true'] {
-    border-bottom: 1px solid var(--background-color);
-    cursor: initial;
-    color: #6cb33e;
-    border: none;
-    border-top: 4px solid #6cb33e;
-    background-color: inherit;
-  }
-  
-  /*
-  .tabs .tabs-panel {
-    margin-top: -1px;
-    padding: 24px;
-    border: 1px solid #dadada;
-    overflow: auto;
-  } */
-  
-  .tabs .tabs-panel[aria-hidden='true'] {
-    display: none;
-  }
+}
+
+.tabs .tabs-list button {
+  flex: 0 0 max-content;
+  margin: 0;
+  border-radius: 0;
+  padding: 0.5em;
+  color: initial;
+  font-weight: bold;
+  line-height: unset;
+  text-overflow: unset;
+  overflow: unset;
+  white-space: unset;
+  transition: background-color 0.2s;
+  width: 25%;
+  text-align: center;
+  height: 4rem;
+  border: 1px solid #cbcbcb;
+  background-color: rgb(239 239 239 / 50%);
+}
+
+.tabs .tabs-list button p {
+  margin: 0;
+  color: #4d4e4c;
+  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  line-height: 24px;
+  text-align: center;
+  border: none;
+  outline: 0;
+  background: 0 0;
+  cursor: pointer;
+}
+
+.tabs .tabs-list button[aria-selected='true'] {
+  cursor: initial;
+  color: #6cb33e;
+  border: none;
+  border-top: 4px solid #6cb33e;
+  background-color: inherit;
+}
+
+.tabs .tabs-panel[aria-hidden='true'] {
+  display: none;
+}

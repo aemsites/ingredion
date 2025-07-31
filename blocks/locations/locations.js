@@ -228,7 +228,12 @@ function createDropdown(title, options, type) {
     const label = type === 'country' ? option : translate(optionClass);
     const $option = li({ class: `option ${optionClass}` }, label);
     $option.addEventListener('click', () => {
-      $dropdown.querySelector('.selected').textContent = option;
+      if ($dropdown.classList.contains('country')) {
+        $dropdown.querySelector('.selected').textContent = option;
+      } else {
+        $dropdown.querySelector('.selected').textContent = translate(option.toLowerCase().replaceAll(' ', '-'));
+      }
+      $dropdown.querySelector('.selected').setAttribute('value', option);
       $list.classList.remove('open');
     });
     $list.append($option);
@@ -310,8 +315,8 @@ function createLocationCard(location, index) {
 }
 
 function handleSearch($countryFilter, $typeFilter) {
-  const selectedCountry = $countryFilter.querySelector('.selected').textContent;
-  const selectedType = $typeFilter.querySelector('.selected').textContent;
+  const selectedCountry = $countryFilter.querySelector('.selected').getAttribute('value');
+  const selectedType = $typeFilter.querySelector('.selected').getAttribute('value');
 
   // Update state
   state.filters.country = selectedCountry;
@@ -335,7 +340,7 @@ function handleSearch($countryFilter, $typeFilter) {
       div({ class: 'country' }, selectedCountry),
       editSearch,
     ),
-    div({ class: 'type' }, selectedType === translate('select-type') ? '' : selectedType),
+    div({ class: 'type' }, selectedType === translate('select-type') ? '' : translate(selectedType.toLowerCase().replaceAll(' ', '-'))),
     $results,
   );
 
@@ -376,7 +381,7 @@ function createFilters(locations) {
   });
   let $typeFilter = createDropdown(translate('select-type'), uniqueTypes, 'type');
 
-  const $searchButton = button({ class: 'button search', disabled: true }, translate('search'));
+  const $searchButton = button({ class: 'button search', disabled: true }, translate('search-button'));
   $searchButton.addEventListener('click', () => {
     handleSearch($countryFilter, $typeFilter);
     $searchButton.parentElement.classList.add('reset');

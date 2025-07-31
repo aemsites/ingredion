@@ -1,409 +1,446 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
-
-@import '/styles/documents-table.css';
-
-
-html { scroll-behavior: smooth }
-
-.ingredient-template {
-  .default-content-wrapper { padding: 0 20px }
-
-  .error-message {
-    text-align: center;
-    margin: 100px 0;
-    color: var(--text-color);
-  }
-
-  .product-content {
-    display: flex;
-    gap: 60px;
-    margin-top: 60px;
-
-    .mobile-view & {
-      flex-direction: column;
-    }
-
-    .left-column {
-      width: 50%;
-      &:only-child { width: 75% }
-    }
-
-    .right-column { width: 50% }
-  }
-
-  .product-header {
-    transition: opacity 200ms ease;
-
-    &.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    h1 { margin: 0 }
-
-    .type {
-      margin-top: 16px;
-      strong { font-family: OpenSans-Bold, Helvetica, sans-serif }
-    }
-
-    .cta-links {
-      margin-top: 20px;
-
-      a {
-        position: relative;
-        text-decoration: underline;
-        padding-left: 24px;
-        margin: 40px 40px 0 0;
-        font-family: MiloPro-Bold, Helvetica, sans-serif;
-        letter-spacing: .032rem;
-        transition: color 0.3s ease;
-        font-size: 1rem;
-
-        &:hover { color: var(--dark-green) }
-
-        &::before {
-          font-family: ingredion-icon;
-          text-decoration: none !important;
-          position: absolute;
-          left: 0;
-          font-size: 1.2rem;
-          -webkit-font-smoothing: antialiased;
-        }
-      }
-
-      .view-all::before { content: '\e920' }
-
-      .download-all::before { content: '\e94b' }
-    }
-
-    .cta-buttons {
-      .button {
-        min-width: 210px;
-        margin: 30px 40px 0 0;
-        transition: all 0.3s ease;
-        text-decoration: none;
-      }
-    }
-
-    .anchor-nav { display: none }
-
-    &.fixed {
-      position: fixed;
-      display: block;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background: #fff;
-      opacity: 0;
-      transform: translateY(-40%);
-      transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
-      will-change: transform, opacity;
-
-      &.visible {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-      }
-
-      &.hidden {
-        display: none;
-        pointer-events: none;
-      }
-
-      .content {
-        position: relative;
-        display: flex;
-        align-items: center;
-        max-width: var(--max-page-width);
-        min-height: 100px;
-        margin: 0 auto;
-        padding: 0 20px;
-
-        h1 {
-          font-size: var(--heading-font-size-l);
-          max-width: 520px;
-
-          .mobile-view & { 
-            width: 100vw; 
-            max-width: unset;
-          }
-        }
-
-        .cta-buttons {
-          position: absolute;
-          right: 220px;
-          margin: 0;
-
-          .mobile-view & { display: none }
-
-          .button { 
-            min-width: 160px; 
-            margin-top: 0; 
-          }
-        }
-
-        .cta-links { 
-          margin: 0;
-
-          .mobile-view & { display: none }
-        }
-
-        .download-all {
-          position: absolute;
-          right: 20px;
-          top: 50%;
-          transform: translateY(-50%);
-          margin: 0;
-        }
-
-        .view-all, .type { 
-          display: none;
-        }
-      }
-
-      .anchor-nav {
-        display: block;
-        background: #efefef;
-        height: 48px;
-
-        .mobile-view & { height: 40px }
-
-        .content {
-          height: inherit;
-          min-height: unset;
-          justify-content: space-between;
-
-          a {
-            display: flex;
-            height: inherit;
-            width: 33.3%;
-            align-items: center;
-            justify-content: center;
-            font-family: MiloPro-Bold, Helvetica, sans-serif;
-            text-transform: uppercase;
-            font-size: 14px;
-            color: var(--text-color);
-            transition: color 0.3s ease;
-
-            .mobile-view & {
-              border-right: 1px solid #cfd0d0;
-              &:last-child { border-right: none }
-            }
-
-            &.active, &:hover { color: var(--green) }
-          }
-        }
-      }
-    }
-  }
-
-  .description {
-    margin: 60px 0;
-
-    h3 {
-      font-family: OpenSans-Regular, Helvetica, sans-serif;
-      font-size: 1.375rem;
-      line-height: 2rem;
-      letter-spacing: .016rem;
-    }
-  }
-
-
-  .view-all-docs-btn-wrapper {
-    text-align: center;
-    padding: 0 0 40px;
-
-    .button { width: 100% }
-  }
-
-  .view-all-docs-wrapper {
-    position: fixed;
-    inset: 0;
-    height: 100vh;
-    width: 100vw;
-    overflow: auto;
-    background: #fff;
-    z-index: 9999;
-    display: none;
-
-    &.active { display: block }
-
-    .docs-header {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      height: 80px;
-
-
-      box-shadow: 0 0 16px rgba(0 0 0 / 10%);
-
-      h4 {
-        margin: 0;
-        font-size: 22px;
-      }
-
-      .close-docs {
-        position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-
-        &::before {
-          content: "\e91c";
-          font-family: ingredion-icon;
-          color: #4d4f53;
-          font-size: 20px;
-        }
-      }     
-    }
-  }
-
-  .gallery {
-    position: relative;
-    width: 100%;
-    height: 100%;
-
-    .slides-wrapper {
-      position: sticky;
-      top: 20px;
-      width: 100%;
-      height: fit-content;
-      transition: top 240ms ease-in-out;
-
-      /* slide down when fixed header is visible */
-      .slide-down & { top: 180px }
-    }
-
-    .slides {
-      position: relative;
-
-      .slide {
-        display: none;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        transition: opacity 400ms ease-in-out;
-
-        &.active {
-          display: block;
-          opacity: 1;
-          position: relative;
-        }
-
-        &.new {
-          display: block;
-          position: absolute;
-          z-index: 2;
-          opacity: 0;
-        }
-
-        &.new.active { opacity: 1 }
-
-        &.video { aspect-ratio: 16 / 9 }
-
-        &.image { aspect-ratio: auto }
-
-        .play-btn {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: #fff;
-          border-radius: 50%;
-          width: 80px;
-          height: 80px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          transition: all 160ms ease;
-
-          /* triangle */
-          &::before {
-            content: '';
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 15px 0 15px 26px;
-            border-color: transparent transparent transparent var(--green);
-            margin-left: 5px;
-            transition: all 160ms ease;
-          }
-
-          &:hover::before {
-            border-color: transparent transparent transparent var(--dark-green);
-          }
-
-          &:hover {
-            /* zoom in */
-            transform: translate(-50%, -50%) scale(1.1);
-          }
-        }
-
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .vimeo-player {
-          display: none;
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          z-index: 2;
-        }
-
-        &.playing {
-          .play-btn {
-            display: none;
-          }
-          .vimeo-player {
-            display: block;
-          }
-        }
-      }
-    }
-
-    .slide-nav {
-      position: relative;
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-      overflow-x: auto;
-      z-index: 1;
-
-      .thumb {
-        flex: 0 0 100px;
-        height: 75px;
-        cursor: pointer;
-        border: 3px solid transparent;
-        transition: all 200ms ease;
-
-        &:hover, &.active { 
-          border: 2px solid var(--green);
-        }
-
-        .mobile-view & {
-          flex: 0 0 75px;
-          height: 50px;
-        }
-
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-      }
-    }
-  }
+@import url("/styles/documents-table.css");
+
+html {
+  scroll-behavior: smooth;
+}
+
+.ingredient-template .default-content-wrapper {
+  padding: 0 20px;
+}
+
+.ingredient-template .error-message {
+  text-align: center;
+  margin: 100px 0;
+  color: var(--text-color);
+}
+
+.ingredient-template .product-content {
+  display: flex;
+  gap: 60px;
+  margin-top: 60px;
+}
+
+.ingredient-template .mobile-view .product-content {
+  flex-direction: column;
+}
+
+.ingredient-template .product-content .left-column {
+  width: 50%;
+}
+
+.ingredient-template .product-content .left-column:only-child {
+  width: 75%;
+}
+
+.ingredient-template .product-content .right-column {
+  width: 50%;
+}
+
+.ingredient-template .product-header {
+  transition: opacity 200ms ease;
+}
+
+.ingredient-template .product-header.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ingredient-template .product-header h1 {
+  margin: 0;
+}
+
+.ingredient-template .product-header .type {
+  margin-top: 16px;
+}
+
+.ingredient-template .product-header .type strong {
+  font-family: OpenSans-Bold, Helvetica, sans-serif;
+}
+
+.ingredient-template .product-header .cta-links {
+  margin-top: 20px;
+}
+
+.ingredient-template .product-header .cta-links a {
+  position: relative;
+  text-decoration: underline;
+  padding-left: 24px;
+  margin: 40px 40px 0 0;
+  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  letter-spacing: .032rem;
+  transition: color 0.3s ease;
+  font-size: 1rem;
+}
+
+.ingredient-template .product-header .cta-links a:hover {
+  color: var(--dark-green);
+}
+
+.ingredient-template .product-header .cta-links a::before {
+  font-family: ingredion-icon;
+  text-decoration: none !important;
+  position: absolute;
+  left: 0;
+  font-size: 1.2rem;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ingredient-template .product-header .cta-links .view-all::before {
+  content: '\e920';
+}
+
+.ingredient-template .product-header .cta-links .download-all::before {
+  content: '\e94b';
+}
+
+.ingredient-template .product-header .cta-buttons .button {
+  min-width: 210px;
+  margin: 30px 40px 0 0;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.ingredient-template .product-header .anchor-nav {
+  display: none;
+}
+
+.ingredient-template .product-header.fixed {
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: #fff;
+  opacity: 0;
+  transform: translateY(-40%);
+  transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
+  will-change: transform, opacity;
+}
+
+.ingredient-template .product-header.fixed.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.ingredient-template .product-header.fixed.hidden {
+  display: none;
+  pointer-events: none;
+}
+
+.ingredient-template .product-header.fixed .content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: var(--max-page-width);
+  min-height: 100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.ingredient-template .product-header.fixed .content h1 {
+  font-size: var(--heading-font-size-l);
+  max-width: 520px;
+
+  /* TODO: FIX ME */;
+}
+
+.ingredient-template .mobile-view .product-header.fixed .content h1 {
+  width: 100vw;
+  max-width: unset;
+}
+
+.ingredient-template .product-header.fixed .content .cta-buttons {
+  position: absolute;
+  right: 220px;
+  margin: 0;
+
+  /* TODO: FIX ME */;
+}
+
+.ingredient-template .product-header.fixed .content.mobile-view .cta-buttons {
+  display: none;
+}
+
+.ingredient-template .product-header.fixed .content .cta-buttons .button {
+  min-width: 160px;
+  margin-top: 0;
+}
+
+.ingredient-template .product-header.fixed .content .cta-links {
+  margin: 0;
+}
+
+.ingredient-template .product-header.fixed .content.mobile-view .cta-links {
+  display: none;
+}
+
+.ingredient-template .product-header.fixed .content .download-all {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+}
+
+.ingredient-template .product-header.fixed .content .view-all, .ingredient-template .product-header.fixed .content .type {
+  display: none;
+}
+
+.ingredient-template .product-header.fixed .anchor-nav {
+  display: block;
+  background: #efefef;
+  height: 48px;
+}
+
+.ingredient-template .mobile-view .product-header.fixed .anchor-nav {
+  height: 40px;
+}
+
+.ingredient-template .product-header.fixed .anchor-nav .content {
+  height: inherit;
+  min-height: unset;
+  justify-content: space-between;
+}
+
+.ingredient-template .product-header.fixed .anchor-nav .content a {
+  display: flex;
+  height: inherit;
+  width: 33.3%;
+  align-items: center;
+  justify-content: center;
+  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: var(--text-color);
+  transition: color 0.3s ease;
+}
+
+.ingredient-template .mobile-view .product-header.fixed .anchor-nav .content a {
+  border-right: 1px solid #cfd0d0;
+}
+
+.ingredient-template .mobile-view .product-header.fixed .anchor-nav .content a:last-child {
+  border-right: none;
+}
+
+.ingredient-template .product-header.fixed .anchor-nav .content a.active, .ingredient-template .product-header.fixed .anchor-nav .content a:hover {
+  color: var(--green);
+}
+
+.ingredient-template .description {
+  margin: 60px 0;
+}
+
+.ingredient-template .description h3 {
+  font-family: OpenSans-Regular, Helvetica, sans-serif;
+  font-size: 1.375rem;
+  line-height: 2rem;
+  letter-spacing: .016rem;
+}
+
+.ingredient-template .view-all-docs-btn-wrapper {
+  text-align: center;
+  padding: 0 0 40px;
+}
+
+.ingredient-template .view-all-docs-btn-wrapper .button {
+  width: 100%;
+}
+
+.ingredient-template .view-all-docs-wrapper {
+  position: fixed;
+  inset: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: auto;
+  background: #fff;
+  z-index: 9999;
+  display: none;
+}
+
+.ingredient-template .view-all-docs-wrapper.active {
+  display: block;
+}
+
+.ingredient-template .view-all-docs-wrapper .docs-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 80px;
+  box-shadow: 0 0 16px rgb(0 0 0 / 10%);
+}
+
+.ingredient-template .view-all-docs-wrapper .docs-header h4 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.ingredient-template .view-all-docs-wrapper .docs-header .close-docs {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ingredient-template .view-all-docs-wrapper .docs-header .close-docs::before {
+  content: "\e91c";
+  font-family: ingredion-icon;
+  color: #4d4f53;
+  font-size: 20px;
+}
+
+.ingredient-template .gallery {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.ingredient-template .gallery .slides-wrapper {
+  position: sticky;
+  top: 20px;
+  width: 100%;
+  height: fit-content;
+  transition: top 240ms ease-in-out;
+}
+
+.ingredient-template .gallery .slides-wrapper .fix-me-6, .ingredient-template .slide-down .gallery .slides-wrapper {
+  top: 180px;
+}
+
+.ingredient-template .gallery .slides {
+  position: relative;
+}
+
+.ingredient-template .gallery .slides .slide {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 400ms ease-in-out;
+}
+
+.ingredient-template .gallery .slides .slide.active {
+  display: block;
+  opacity: 1;
+  position: relative;
+}
+
+.ingredient-template .gallery .slides .slide.new {
+  display: block;
+  position: absolute;
+  z-index: 2;
+  opacity: 0;
+}
+
+.ingredient-template .gallery .slides .slide.new.active {
+  opacity: 1;
+}
+
+.ingredient-template .gallery .slides .slide.video {
+  aspect-ratio: 16 / 9;
+}
+
+.ingredient-template .gallery .slides .slide.image {
+  aspect-ratio: auto;
+}
+
+.ingredient-template .gallery .slides .slide .play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+  transition: all 160ms ease;
+}
+
+.ingredient-template .gallery .slides .slide .play-btn::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 15px 0 15px 26px;
+  border-color: transparent transparent transparent var(--green);
+  margin-left: 5px;
+  transition: all 160ms ease;
+}
+
+.ingredient-template .gallery .slides .slide .play-btn:hover::before {
+  border-color: transparent transparent transparent var(--dark-green);
+}
+
+.ingredient-template .gallery .slides .slide .play-btn:hover {
+  /* zoom in */
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.ingredient-template .gallery .slides .slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ingredient-template .gallery .slides .slide .vimeo-player {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.ingredient-template .gallery .slides .slide.playing .play-btn {
+  display: none;
+}
+
+.ingredient-template .gallery .slides .slide.playing .vimeo-player {
+  display: block;
+}
+
+.ingredient-template .gallery .slide-nav {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  overflow-x: auto;
+  z-index: 1;
+}
+
+.ingredient-template .gallery .slide-nav .thumb {
+  flex: 0 0 100px;
+  height: 75px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 200ms ease;
+}
+
+.ingredient-template .gallery .slide-nav .thumb:hover, .ingredient-template .gallery .slide-nav .thumb.active {
+  border: 2px solid var(--green);
+}
+
+.ingredient-template .mobile-view .gallery .slide-nav .thumb {
+  flex: 0 0 75px;
+  height: 50px;
+}
+
+.ingredient-template .gallery .slide-nav .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

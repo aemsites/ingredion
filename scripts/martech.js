@@ -6,13 +6,18 @@ function getEnvironment() {
   if (hostname === 'localhost') {
     return 'dev';
   }
-  if (hostname.endsWith('.aem.page') || hostname.endsWith('.aem.live')) {
+  if (hostname.endsWith('.aem.page') || hostname.endsWith('.aem.live') || hostname === 'preview.ingredion.com') {
     return 'stage';
   }
   if (hostname === 'www.ingredion.us' || hostname === 'www.ingredion.com') {
     return 'prod';
   }
   return 'unknown';
+}
+
+function isMartechDisabled() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('martech') === 'off';
 }
 
 async function initLaunch(env) {
@@ -73,12 +78,18 @@ function initDataLayer() {
  * Initializes the full Martech stack.
  */
 export async function initMartech() {
+  if (isMartechDisabled()) {
+    return;
+  }
   initDataLayer();
   await initLaunch(getEnvironment());
   // await loadScript('/scripts/gtm-init.js', { defer: true });
 }
 
 export async function addCookieBanner() {
+  if (isMartechDisabled()) {
+    return;
+  }
   const cookieBanner = document.createElement('div');
   cookieBanner.classList.add('cookie-banner');
   cookieBanner.innerHTML = `<a class="footer__utility--link" href="javascript:void(0)" onclick="truste.eu.clickListener()"></a>

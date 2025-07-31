@@ -1,135 +1,140 @@
+dialog.related-ingredient-modal {
+  max-width: 1200px !important;
+}
 
-
-dialog.related-ingredient-modal { max-width: 1200px !important }
-  
 .table-wrapper {
-    max-width: 1024px;
-    margin: 0 auto;
+  max-width: 1024px;
+  margin: 0 auto;
+}
 
-    .mobile-view & {
-      max-width: 100%;
-      padding: 0 20px;
-    }
+.mobile-view .table-wrapper {
+  max-width: 100%;
+  padding: 0 20px;
+}
 
-    h4 {
-      margin: 40px 0 60px;
-    }
+.table-wrapper h4 {
+  margin: 40px 0 60px;
+}
 
-    h3 { scroll-margin-top: 160px }
+.table-wrapper h3 {
+  scroll-margin-top: 160px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 5rem;
-      display: table;
-      text-indent: initial;
-      unicode-bidi: isolate;
-      border-spacing: 2px;
-      border-color: gray;
+.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 5rem;
+  display: table;
+  text-indent: initial;
+  unicode-bidi: isolate;
+  border-spacing: 2px;
+  border-color: gray;
+}
 
-      tr {
-        border-bottom: 1px solid #d8d9d9;
+.table-wrapper table tr {
+  border-bottom: 1px solid #d8d9d9;
+}
 
-        &:first-child { border-bottom: 3px solid #d8d9d9 }
+.table-wrapper table tr:first-child {
+  border-bottom: 3px solid #d8d9d9;
+}
 
-        th, td {
-          font-family: OpenSans, Helvetica, sans-serif;
-          color: #373738;
-          text-align: left;
-          padding: 1rem 0;
-          font-size: 1rem;
+.table-wrapper table tr th, .table-wrapper table tr td {
+  font-family: OpenSans, Helvetica, sans-serif;
+  color: #373738;
+  text-align: left;
+  padding: 1rem 0;
+  font-size: 1rem;
+}
 
-          .select-all {
-            color: var(--green);
-            text-transform: uppercase;
-            cursor: pointer;
-          }
+.table-wrapper table tr th .select-all, .table-wrapper table tr td .select-all {
+  color: var(--green);
+  text-transform: uppercase;
+  cursor: pointer;
+}
 
-          .doc {
-            text-decoration: underline;
+.table-wrapper table tr th .doc, .table-wrapper table tr td .doc {
+  text-decoration: underline;
+}
 
-            &:hover { color: var(--dark-green) }
-          }
+.table-wrapper table tr th .doc:hover, .table-wrapper table tr td .doc:hover {
+  color: var(--dark-green);
+}
 
-          &:nth-child(1) {
-            width: 100px;
-            text-align: center;
-          }
+.table-wrapper table tr th:nth-child(1), .table-wrapper table tr td:nth-child(1) {
+  width: 100px;
+  text-align: center;
+}
 
-          &:nth-child(2) {
-            width: auto;
-            padding-left: 20px;
-          }
+.table-wrapper table tr th:nth-child(2), .table-wrapper table tr td:nth-child(2) {
+  width: auto;
+  padding-left: 20px;
+}
 
-          &:nth-child(3) {
-            width: 300px;
-            padding-left: 20px;
-          }
+.table-wrapper table tr th:nth-child(3), .table-wrapper table tr td:nth-child(3) {
+  width: 300px;
+  padding-left: 20px;
+}
 
-          &:nth-child(4) {
-            width: 130px;
-            padding-left: 20px;
-          }
+.table-wrapper table tr th:nth-child(4), .table-wrapper table tr td:nth-child(4) {
+  width: 130px;
+  padding-left: 20px;
+}
 
-          .mobile-view & {
-            &:nth-child(1) {
-              width: auto;
-              text-align: left;
-            }
+.mobile-view.table-wrapper table tr th:nth-child(1),
+.mobile-view.table-wrapper table tr td:nth-child(1) {
+  width: auto;
+  text-align: left;
+}
 
-            &:nth-child(2) {
-              width: 100px;
-              text-align: right;
-            }
-          }
-        }
-      }
-    }
 
-    .download-wrapper {
-      text-align: right;
-      padding: 0 0 40px;
+.mobile-view.table-wrapper table tr th:nth-child(2),
+.mobile-view.table-wrapper table tr td:nth-child(2) {
+  width: 100px;
+  text-align: right;
+}
 
-      .button { min-width: 310px }
-    }
-  }
+.table-wrapper .download-wrapper {
+  text-align: right;
+  padding: 0 0 40px;
+}
 
-  input[type="checkbox"] {
-    position: relative;
-    width: 20px;
-    height: 20px;
-    outline: none;
-    appearance: none;
-    cursor: pointer;
+.table-wrapper .download-wrapper .button {
+  min-width: 310px;
+}
 
-    &::before {
-      position: absolute;
-      content: '';
-      top: 0;
-      left: 0;
-      width: inherit;
-      height: inherit;
-      border: 1px solid #b2b2b2;
-      border-radius: 2px;
-    }
+input[type="checkbox"] {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
 
-    &:checked::before { background: var(--green) }
+input[type="checkbox"]::before {
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  width: inherit;
+  height: inherit;
+  border: 1px solid #b2b2b2;
+  border-radius: 2px;
+}
 
-    /* checkmark */
-    &:checked::after {
-      position: absolute;
-      content: '';
-      left: 5px;
-      top: 9px;
-      background: white;
-      width: 2px;
-      height: 2px;
-      box-shadow: 2px 0 0 white,
-      4px 0 0 white,
-      4px -2px 0 white,
-      4px -4px 0 white,
-      4px -6px 0 white,
-      4px -8px 0 white;
-      transform: rotate(45deg);
-    }
-  }
+input[type="checkbox"]:checked::before {
+  background: var(--green);
+}
+
+input[type="checkbox"]:checked::after {
+  position: absolute;
+  content: '';
+  left: 5px;
+  top: 9px;
+  background: white;
+  width: 2px;
+  height: 2px;
+  box-shadow: 2px 0 0 white, 4px 0 0 white, 4px -2px 0 white, 4px -4px 0 white, 4px -6px 0 white, 4px -8px 0 white;
+  transform: rotate(45deg);
+}
