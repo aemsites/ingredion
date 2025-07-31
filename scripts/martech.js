@@ -24,7 +24,7 @@ async function initLaunch(env) {
   if (!Object.keys(launchUrls).includes(env)) {
     return; // unknown env -> skip martech initialization
   }
-  await loadScript(launchUrls[env], { async: '' });
+  await loadScript(launchUrls[env], { async: '', nonce: 'aem' });
 }
 
 function initDataLayer() {
