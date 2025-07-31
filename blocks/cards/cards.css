@@ -582,3 +582,44 @@ main > .section > .default-content-wrapper {
     max-width: 63.25rem;
   }
 }
+
+.cards.icon-cards > ul {
+    display: flex;
+    flex-flow: row wrap;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 0;
+  }
+
+  .cards.icon-cards > ul > li {
+    flex-basis: calc(25% - 30px);
+    margin: 0 20px 20px 0;
+  }
+
+  .cards.icon-cards > ul > li:nth-child(4n+1) {
+    margin-left: 0;
+  }
+
+  .cards.icon-cards > ul > li .cards-card-body {
+    text-align: center;
+  }
+
+  .cards.icon-cards > ul > li .cards-card-body img {
+    width: auto;
+    height: 4.5rem;
+    margin: 0 auto 1.625rem;
+    aspect-ratio: auto;
+  }
+
+  .cards.icon-cards > ul > li .cards-card-body p {
+    font-size: 1rem;
+    font-family: OpenSans, Helvetica, sans-serif;
+    line-height: 1.5rem;
+    letter-spacing: 0.25px;
+  }
+
+@media (width <= 1079px) {
+  .cards.icon-cards > ul {
+    flex-direction: column;
+  }  
+}
