@@ -581,8 +581,9 @@ main > .section > .default-content-wrapper {
     gap: 40px 20px;
     max-width: 63.25rem;
   }
+}
 
-  .cards.icon-cards > ul {
+.cards.icon-cards > ul {
     display: flex;
     flex-flow: row wrap;
     margin-left: auto;
@@ -609,7 +610,6 @@ main > .section > .default-content-wrapper {
     margin: 0 auto 1.625rem;
     aspect-ratio: auto;
   }
-}
 
 @media (width <= 1079px) {
   .cards.icon-cards > ul {
