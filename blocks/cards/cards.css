@@ -611,6 +611,13 @@ main > .section > .default-content-wrapper {
     aspect-ratio: auto;
   }
 
+  .cards.icon-cards > ul > li .cards-card-body p {
+    font-size: 1rem;
+    font-family: OpenSans, Helvetica, sans-serif;
+    line-height: 1.5rem;
+    letter-spacing: 0.25px;
+  }
+
 @media (width <= 1079px) {
   .cards.icon-cards > ul {
     flex-direction: column;
