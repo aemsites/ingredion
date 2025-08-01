@@ -1,5 +1,11 @@
-.quality-image .center-align {
+.quality-image .center-align,
+.quality-image .center-align img {
   margin: auto;
+}
+
+.quality-image img,
+.quality-image picture {
+  width: auto;
 }
 
 .quality-image .tiny {
@@ -15,11 +21,6 @@
 }
 
 .quality-image .large {
-  width: 100%;
-}
-
-.quality-image img,
-.quality-image picture {
   width: 100%;
 }
 
