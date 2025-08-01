@@ -217,10 +217,10 @@ export default async function decorate(doc) {
           h1(product.heading),
           div({ class: 'type' }, strong('Product Type: '), product.productType),
           div({ class: 'cta-links' },
-            a({ class: 'view-all', href: '#technical-documents' }, 'View All Documents'),
+            a({ class: 'view-all', href: '#technical-documents' }, translate('view-all-documents')),
           ),
           div({ class: 'cta-buttons' },
-            a({ class: 'button add-sample-btn' }, 'Add Sample'),
+            a({ class: 'button add-sample-btn' }, translate('add-sample')),
             a({ class: 'button secondary', href: `/${region}/${locale}/modals/contact-us-modal-pdp` }, translate('contact-us')),
           ),
         ),
@@ -228,7 +228,7 @@ export default async function decorate(doc) {
           div({ class: 'content mobile-view' },
             a({ href: '#view-documents' }, 'Documents'),
             a({ href: '#' }, 'Contact'),
-            a({ class: 'add-sample-btn' }, 'Add Sample'),
+            a({ class: 'add-sample-btn' }, translate('add-sample')),
           ),
         ),
       );
@@ -244,7 +244,7 @@ export default async function decorate(doc) {
 
           h4('Technical and SDS Documents'),
 
-          div({ class: 'view-all-docs-btn-wrapper', id: 'view-documents' }, button({ class: 'button view-all-docs-btn' }, 'View All Documents')),
+          div({ class: 'view-all-docs-btn-wrapper', id: 'view-documents' }, button({ class: 'button view-all-docs-btn' }, translate('view-all-documents'))),
 
           div({ class: 'view-all-docs-wrapper' },
             div({ class: 'docs-header' },
@@ -309,11 +309,11 @@ export default async function decorate(doc) {
           h1(product.heading),
           product.productType ? div({ class: 'type' }, strong('Product Type: '), product.productType) : null,
           div({ class: 'cta-links' },
-            a({ class: 'view-all', href: '#technical-documents' }, 'View All Documents'),
-            a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, locale, product.productName, product.productId) }, 'Download All Documents'),
+            a({ class: 'view-all', href: '#technical-documents' }, translate('view-all-documents')),
+            a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, locale, product.productName, product.productId) }, translate('download-all-documents')),
           ),
           div({ class: 'cta-buttons' },
-            a({ class: 'button add-sample-btn' }, 'Add Sample'),
+            a({ class: 'button add-sample-btn' }, translate('add-sample')),
             a({ class: 'button secondary', href: `/${region}/${locale}/modals/contact-us-modal-pdp` }, translate('contact-us')),
           ),
         ),
@@ -354,7 +354,7 @@ export default async function decorate(doc) {
                 td(techDoc.size),
               )),
             ),
-            div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'technical' }, 'Download Documents')),
+            div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'technical' }, translate('download-documents'))),
           ) : null,
 
           // SDS Documents Table
@@ -374,7 +374,7 @@ export default async function decorate(doc) {
                 td(sdsDoc.size),
               )),
             ),
-            div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'sds' }, 'Download Documents')),
+            div({ class: 'download-wrapper' }, a({ class: 'button', 'data-doc-type': 'sds' }, translate('download-documents'))),
           ) : null,
         ),
       );

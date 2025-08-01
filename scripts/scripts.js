@@ -219,6 +219,7 @@ async function loadEager(doc) {
 function addHeroObserver(doc) {
   const anchorBlock = doc.querySelector('.anchor-wrapper');
   const heroBlock = doc.querySelector('.hero-wrapper');
+  const breadcrumb = doc.querySelector('.breadcrumbs-wrapper');
   // Function to update active section
   function updateActiveSection() {
     if (!anchorBlock) return;
@@ -256,7 +257,7 @@ function addHeroObserver(doc) {
     }
   }
   // Handle the fixed navigation
-  if (anchorBlock && heroBlock) {
+  if (anchorBlock) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -266,7 +267,11 @@ function addHeroObserver(doc) {
         }
       });
     });
-    observer.observe(heroBlock);
+    if (heroBlock) {
+      observer.observe(heroBlock);
+    } else {
+      observer.observe(breadcrumb);
+    }
   }
 
   // Handle the active section highlighting
@@ -305,13 +310,13 @@ function initializePhoneValidation(document) {
   });
 
   const initialCountryData = iti.getSelectedCountryData();
-  countryDropdown.value = initialCountryData.iso2;
+  countryDropdown.value = initialCountryData.iso2.toUpperCase();
   countryTrigger.textContent = initialCountryData.name;
   countryTrigger.style.color = 'black';
 
   input.addEventListener('countrychange', () => {
     const countryData = iti.getSelectedCountryData();
-    countryDropdown.value = countryData.iso2;
+    countryDropdown.value = countryData.iso2.toUpperCase();
     countryTrigger.textContent = countryData.name;
     countryTrigger.style.color = 'black';
     countryDropdown.dispatchEvent(new Event('change'));
