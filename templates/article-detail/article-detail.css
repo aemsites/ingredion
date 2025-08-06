@@ -1,7 +1,6 @@
 .article-detail main {
   position: relative;
-  min-height: 1px;
-  overflow: auto;
+  padding-top: 12.5rem;
 }
 
 .article-detail main .hero {
@@ -45,7 +44,6 @@
 
 @media (width >= 1081px) {
   .article-detail main .section-container {
-    margin-top: 200px;
     width: calc(100% - 80px);
     padding: 2.2rem 6.5625rem 12.5rem;
   }
@@ -79,4 +77,8 @@
   width: 104px;
   margin-bottom: 70px;
   background: var(--green);
+}
+
+.article-detail .footer-wrapper {
+  border-top-width: 2px;
 }

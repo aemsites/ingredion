@@ -3,7 +3,7 @@
   color: #373738;
   line-height: 2rem;
   margin-top: 1rem;
-  margin-bottom: 22px;
+  margin-bottom: 1rem;
 }
 
 .article-header-wrapper .type p {
@@ -12,6 +12,10 @@
   font-family: var(--heading-font-family);
   font-size: 1.25rem;
   line-height: 1.2;
+}
+
+.article-header-wrapper .type + h2 {
+    margin: 0;
 }
 
 .article-header-wrapper h2 {
