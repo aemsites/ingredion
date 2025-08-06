@@ -45,6 +45,14 @@
 	margin: 16px 0;
 }
 
+.related-ingredient .productType {
+	font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: .015625rem;
+    color: #373738;
+    margin: 0 0 .5rem;
+}
+
 .related-ingredient .content {
 	flex: 1;
 	padding: 2.5rem .968rem 0.5rem;
