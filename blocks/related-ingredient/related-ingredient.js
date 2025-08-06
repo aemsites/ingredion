@@ -1,5 +1,5 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h4, a } from '../../scripts/dom-helpers.js';
+import { div, h4, a, strong } from '../../scripts/dom-helpers.js';
 import { API_PRODUCT } from '../../scripts/product-api.js';
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
@@ -34,6 +34,7 @@ async function renderRelatedIngredient(productDisplayName) {
     const relatedIngredientBlock = div({ class: 'related-ingredient' },
       div({ class: 'content' },
         h4({ class: 'product-name' }, product.heading),
+          product.productType ? div({ class: 'productType' }, strong('Product Type: '), product.productType) : null,
         description,
         div({ class: 'cta-links' },
           viewAllDocsLink,
