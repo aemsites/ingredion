@@ -39,7 +39,7 @@ export default function decorate(block) {
     const circleAssetContainer = document.createElement('div');
     circleAssetContainer.classList.add('circle-asset');
     circleAssetContainer.classList.add(circleColor);
-    const heroWrapper = document.querySelector('.hero-wrapper .hero');
+    const heroWrapper = block.closest('.hero');
     heroWrapper.append(circleAssetContainer);
     block.classList.remove(circleColor);
   }
