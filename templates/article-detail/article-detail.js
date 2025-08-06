@@ -89,4 +89,22 @@ export default async function decorate(doc) {
   });
 
   $main.prepend($hero);
+
+  // Add green line before author container
+  const $authorContainer = $main.querySelector('.author-container');
+  if ($authorContainer) {
+    const $lineBrekEnd = div({ class: 'line-break-end' });
+    $authorContainer.prepend($lineBrekEnd);
+  }
+
+  //Move section with class name "outside-blog" outside of article blog section
+  const $outsideBlog = Array.from($main.querySelectorAll('.outside-blog'));
+  if ($outsideBlog.length) {
+    $outsideBlog.forEach((section) => {
+      $main.querySelector('.outside-blog').remove();
+      $main.append(section);
+    });
+    // $main.querySelector('.outside-blog').remove();
+    // $main.append($outsideBlog);
+  }
 }

@@ -1,6 +1,5 @@
 .article-detail main {
   position: relative;
-  padding-top: 12.5rem;
 }
 
 .article-detail main .hero {
@@ -13,6 +12,9 @@
 }
 
 @media (width >= 1081px) {
+  .article-detail main {
+    padding-top: 12.5rem;
+  }
   .article-detail main .hero {
     position: absolute;
     height: 540px;
@@ -33,8 +35,6 @@
   background: #fff;
   max-width: var(--max-page-width);
   margin: 0 auto;
-  border-radius: 4px;
-  box-shadow: 4px 20px 40px 4px rgb(0 0 0 / 10%);
   padding: 0 .9375rem 5rem;
 }
 
@@ -46,6 +46,8 @@
   .article-detail main .section-container {
     width: calc(100% - 80px);
     padding: 2.2rem 6.5625rem 12.5rem;
+    border-radius: 4px;
+    box-shadow: 4px 20px 40px 4px rgb(0 0 0 / 10%);
   }
 
   .article-detail main .section-container .breadcrumbs {
@@ -71,12 +73,17 @@
   margin-bottom: 3.5rem;
 }
 
-.article-detail main .section-container .section .line-break {
+.article-detail main .section-container .line-break,
+.article-detail main .section-container .line-break-end {
   box-sizing: border-box;
   height: 3px;
   width: 104px;
   margin-bottom: 70px;
   background: var(--green);
+}
+
+.article-detail main .section-container .line-break-end {
+  margin: 5rem 0 0;
 }
 
 .article-detail .footer-wrapper {

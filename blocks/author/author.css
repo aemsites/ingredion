@@ -6,7 +6,6 @@
 
 .author.static-author-block {
   flex-direction: row;
-  padding: 0 0 6.5625rem;
 }
 
 .author-bio-image {
@@ -75,10 +74,6 @@
 }
 
 @media (width >= 67.5625rem) {
-  .author.static-author-block {
-    padding: 0;
-  }
-
   .author-bio-text .heading h1 {
     font-size: 3.5rem;
   }
