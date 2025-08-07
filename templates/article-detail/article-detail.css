@@ -53,6 +53,10 @@
   .article-detail main .section-container .breadcrumbs {
     padding: 0;
   }
+
+  .article-detail main .section-container .contact-us {
+    margin: auto 50px;
+  }
 }
 
 .article-detail main .section-container .section {
