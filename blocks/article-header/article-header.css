@@ -14,10 +14,6 @@
   line-height: 1.2;
 }
 
-.article-header-wrapper .type + h2 {
-    margin: 0;
-}
-
 .article-header-wrapper h2 {
   font-size: 2.5rem;
   line-height: 3rem;
@@ -25,6 +21,10 @@
   font-family: MiloPro-Bold, Helvetica, sans-serif;
   margin: 3.5rem 0 1rem;
   color: #373738;
+}
+
+.article-header-wrapper .type + h2 {
+    margin: 0;
 }
 
 .article-header-wrapper .date-tags p {
