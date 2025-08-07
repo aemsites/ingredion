@@ -97,7 +97,7 @@ export default async function decorate(doc) {
     $authorContainer.prepend($lineBrekEnd);
   }
 
-  //Move section with class name "outside-blog" outside of article blog section
+  // Move section with class name "outside-blog" outside of article blog section
   const $outsideBlog = Array.from($main.querySelectorAll('.outside-blog'));
   if ($outsideBlog.length) {
     $outsideBlog.forEach((section) => {
