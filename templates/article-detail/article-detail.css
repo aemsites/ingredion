@@ -82,7 +82,7 @@
   background: var(--green);
 }
 
-.article-detail main .section-container .line-break-end {
+.article-detail main .section-container .section.line-break-end {
   margin: 5rem 0 0;
 }
 
