@@ -104,7 +104,5 @@ export default async function decorate(doc) {
       $main.querySelector('.outside-blog').remove();
       $main.append(section);
     });
-    // $main.querySelector('.outside-blog').remove();
-    // $main.append($outsideBlog);
   }
 }
