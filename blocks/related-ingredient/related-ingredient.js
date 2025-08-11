@@ -1,5 +1,5 @@
 /* eslint-disable function-paren-newline, object-curly-newline */
-import { div, h4, a } from '../../scripts/dom-helpers.js';
+import { div, h4, a, strong } from '../../scripts/dom-helpers.js';
 import { API_PRODUCT } from '../../scripts/product-api.js';
 import { getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 import { addIngredientToCart } from '../../scripts/add-to-cart.js';
@@ -25,24 +25,25 @@ async function renderRelatedIngredient(productDisplayName) {
     description.innerHTML = (product.description).replace(/&nbsp;/g, ' '); // replace &nbsp; for natural word wrapping
 
     // add sample button
-    const addSampleBtn = a({ title: 'Add Sample', class: 'button add-sample-button' }, translate('add-sample'));
+    const addSampleBtn = a({ title: translate('add-sample'), class: 'button add-sample-button' }, translate('add-sample'));
     addSampleBtn.addEventListener('click', () => addIngredientToCart(product.productName, window.location.href));
 
-    const viewAllDocsLink = a({ class: 'view-all' }, 'View All Documents');
+    const viewAllDocsLink = a({ class: 'view-all' }, translate('view-all-documents'));
     viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(product));
 
     const relatedIngredientBlock = div({ class: 'related-ingredient' },
       div({ class: 'content' },
         h4({ class: 'product-name' }, product.heading),
+        product.productType ? div({ class: 'product-type' }, strong('Product Type: '), product.productType) : null,
         description,
         div({ class: 'cta-links' },
           viewAllDocsLink,
-          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, locale, product.productName, product.productId) }, 'Download All Documents'),
+          a({ class: 'download-all', href: API_PRODUCT.DOWNLOAD_ALL_DOCUMENTS(region, locale, product.productName, product.productId) }, translate('download-all-documents')),
         ),
       ),
       div({ class: 'buttons' },
         addSampleBtn,
-        a({ class: 'button secondary', href: `/${region}/${locale}/ingredient?name=${product.productName}`, title: 'Learn More' }, 'Learn More'),
+        a({ class: 'button secondary', href: `/${region}/${locale}/ingredient?name=${product.productName}`, title: translate('learn-more') }, translate('learn-more')),
       ),
     );
 

@@ -1,162 +1,173 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
-
 .related-ingredient {
-  --border-clr: #706f73;
-  --border-size: 2px;
+	--border-clr: #706f73;
+	--border-size: 2px;
 
 	background: var(--theme-clr-background);
 	margin: 0 1rem 1.5rem;
 	border: var(--border-size) solid var(--border-clr);
-  display: flex;
-  flex-direction: column;
-  min-height: 200px;
+	display: flex;
+	flex-direction: column;
+	min-height: 200px;
+}
 
-  h3 {
-    font-family: OpenSans-Regular, Helvetica, sans-serif;
-    font-size: 1.3rem;
-    line-height: 2rem;
-    letter-spacing: 0.0156rem;
-    font-weight: bolder;
-    margin: 22px 0;
-  }
+.related-ingredient h3 {
+	font-family: OpenSans-Regular, Helvetica, sans-serif;
+	font-size: 1.3rem;
+	line-height: 2rem;
+	letter-spacing: 0.0156rem;
+	font-weight: bolder;
+	margin: 22px 0;
+}
 
-  h4 {
-    font-family: MiloPro-Bold, Helvetica, sans-serif;
-    margin: 0 0 0.5rem;
-    font-size: 1.5rem;
-    line-height: 2rem;
-    color: var(--text-color);
-  }
+.related-ingredient h4 {
+	font-family: MiloPro-Bold, Helvetica, sans-serif;
+	margin: 0 0 0.5rem;
+	font-size: 1.5rem;
+	line-height: 2rem;
+	color: var(--text-color);
+}
 
-  .description {
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.related-ingredient .description {
+	display: -webkit-box;
+	-webkit-line-clamp: 5;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 
-    p {
-      font-size: 1rem;
-      font-family: OpenSans-Regular, Helvetica, sans-serif;
-      line-height: 1.5rem;
-      letter-spacing: 0.0156rem;
-      color: var(--text-color);
-      margin: 16px 0;
-    }
-  }
+.related-ingredient .description p {
+	font-size: 1rem;
+	font-family: OpenSans-Regular, Helvetica, sans-serif;
+	line-height: 1.5rem;
+	letter-spacing: 0.0156rem;
+	color: var(--text-color);
+	margin: 16px 0;
+}
 
-  .content {
-    flex: 1;
-    padding: 2.5rem .968rem 0.5rem;
+.related-ingredient .product-type {
+	font-size: 1rem;
+    line-height: 1.5rem;
+    letter-spacing: .25px;
+    color: #373738;
+    margin: 0 0 .5rem;
+}
 
-    .cta-links {
-      margin-top: 20px;
+.related-ingredient .content {
+	flex: 1;
+	padding: 2.5rem .968rem 0.5rem;
+}
 
-      a {
-        position: relative;
-        text-decoration: underline;
-        padding-left: 24px;
-        font-family: MiloPro-Bold, Helvetica, sans-serif;
-        letter-spacing: .032rem;
-        transition: color 0.3s ease;
-        font-size: 1rem;
-        color: var(--green);
-        cursor: pointer;
+.related-ingredient .content .cta-links {
+	margin-top: 20px;
+}
 
-        &:hover { color: var(--dark-green) }
+.related-ingredient .content .cta-links a {
+	position: relative;
+	text-decoration: underline;
+	padding-left: 24px;
+	font-family: MiloPro-Bold, Helvetica, sans-serif;
+	letter-spacing: .032rem;
+	transition: color 0.3s ease;
+	font-size: 1rem;
+	color: var(--green);
+	cursor: pointer;
+}
 
-        &::before {
-          font-family: ingredion-icon;
-          text-decoration: none !important;
-          position: absolute;
-          left: 0;
-          font-size: 1.2rem;
-          -webkit-font-smoothing: antialiased;
-        }
-      }
+.related-ingredient .content .cta-links a:hover {
+	color: var(--dark-green);
+}
 
-      .view-all::before { content: '\e920' }
+.related-ingredient .content .cta-links a::before {
+	font-family: ingredion-icon;
+	text-decoration: none !important;
+	position: absolute;
+	left: 0;
+	font-size: 1.2rem;
+	-webkit-font-smoothing: antialiased;
+}
 
-      .download-all {
-        display: none;
-      }
+.related-ingredient .content .cta-links .view-all::before {
+	content: '\e920';
+}
 
-      .download-all::before { 
-        content: '\e94b';
-        font-size: .9375rem; 
-      }
-    }
-  }
+.related-ingredient .content .cta-links .download-all {
+	display: none;
+}
 
-  .buttons {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    width: 21rem;
-    margin: 0 1.5rem;
-    gap: 2rem;
+.related-ingredient .content .cta-links .download-all::before {
+	content: '\e94b';
+	font-size: .9375rem;
+}
 
-    .button {
-      margin: 1rem 0;
-      text-decoration: none;
-    }
-  }
+.related-ingredient .buttons {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	width: 21rem;
+	margin: 0 1.5rem;
+	gap: 2rem;
+}
+
+.related-ingredient .buttons .button {
+	margin: 1rem 0;
+	text-decoration: none;
 }
 
 @media (width >= 1080px) {
-  .related-ingredient {
-    flex-direction: row;
-    margin: 0;
+	.related-ingredient {
+		flex-direction: row;
+		margin: 0;
+	}
 
-    .content {
-      flex: 1;
-      padding: 2.593rem 2.5rem 2.468rem 3.156rem;
+	.related-ingredient .content {
+		flex: 1;
+		padding: 2.593rem 2.5rem 2.468rem 3.156rem;
+	}
 
-      .cta-links {
-          display: flex;
-          gap: 2rem;
+	.related-ingredient .content .cta-links {
+		display: flex;
+		gap: 2rem;
+	}
 
-          .download-all {
-            display: block;
-          }
-      }
-    }
+	.related-ingredient .content .cta-links .download-all {
+		display: block;
+	}
 
-    .buttons {
-      width: 21rem;
-      border-left: var(--border-size) solid var(--border-clr);
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 0;
-      margin: 0;
-      gap: 0;
-    }
-  }
+	.related-ingredient .buttons {
+		width: 21rem;
+		border-left: var(--border-size) solid var(--border-clr);
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 0;
+		margin: 0;
+		gap: 0;
+	}
 }
 
 .related-ingredient-container {
-  background: rgb(239 239 239 / 40%);
-  padding: 7.5rem 0;
+	background: rgb(239 239 239 / 40%);
+	padding: 7.5rem 0;
+}
 
-  .default-content-wrapper {
-    max-width: 50.1875rem;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 2.5rem;
-    
-    h2, p {
-      text-align: center;
-    }
-  }
+.related-ingredient-container .default-content-wrapper {
+	max-width: 50.1875rem;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 2.5rem;
+}
 
-  .related-ingredient-wrapper {
-    margin-bottom: 2.5rem;
+.related-ingredient-container .default-content-wrapper h2, .related-ingredient-container .default-content-wrapper p {
+	text-align: center;
+}
 
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
+.related-ingredient-container .related-ingredient-wrapper {
+	margin-bottom: 2.5rem;
+}
+
+.related-ingredient-container .related-ingredient-wrapper:last-child {
+	margin-bottom: 0;
 }

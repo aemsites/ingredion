@@ -1,0 +1,32 @@
+.quality-image img,
+.quality-image picture {
+  width: auto;
+}
+
+.quality-image .center-align,
+.quality-image .center-align img {
+  margin: auto;
+}
+
+.quality-image .tiny {
+  width: 25%;
+}
+
+.quality-image .small {
+  width: 50%;
+}
+
+.quality-image .medium {
+  width: 75%;
+}
+
+.quality-image .large {
+  width: 100%;
+}
+
+@media (width < 48rem) {
+  .quality-image .section-width {
+    width: 100%;
+    padding: 0 15px;
+  }
+}

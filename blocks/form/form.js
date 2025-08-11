@@ -435,6 +435,7 @@ export async function createForm(formURL, submitUrl, problemOptionsUrl) {
 
   json.data.forEach((fd) => {
     fd.Label = translateFormLabels(fd.Label);
+    fd.Placeholder = translateFormLabels(fd.Placeholder);
     fd.Type = fd.Type || 'text-input';
     const fieldWrapper = document.createElement('div');
     const style = fd.Style ? ` form-${fd.Style}` : '';

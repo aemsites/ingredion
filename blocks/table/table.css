@@ -1,159 +1,167 @@
 /* stylelint-disable no-descending-specificity */
 .table table {
-    max-width: 76.5rem;
-    margin: 5rem auto;
-    border-collapse: collapse;
-    display: block;
-    -webkit-overflow-scrolling: touch;
+  max-width: 76.5rem;
+  margin: 5rem auto 0;
+  border-collapse: collapse;
+  display: block;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table div {
-    text-align: left;
+  text-align: left;
 }
 
-.table table td, 
+.table table td,
 .table table th {
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    padding: 1rem;
-    font-size: 1rem;
-    line-height: 1.5rem;
-    letter-spacing: 0.0156rem;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 1rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  letter-spacing: 0.0156rem;
 }
 
 .table table th {
-    background: var(--light-grey);
-    font-family: OpenSans-Bold, Helvetica, sans-serif;
-    text-align: center;
+  background: var(--light-grey);
+  font-family: OpenSans-Bold, Helvetica, sans-serif;
+  text-align: center;
 }
 
 .table table td {
-    font-family: OpenSans-Regular, Helvetica, sans-serif;
-    text-align: left;
-    background: transparent;
+  font-family: OpenSans-Regular, Helvetica, sans-serif;
+  text-align: left;
+  background: transparent;
 }
 
 .table table tr:nth-child(2n+2) td {
-    background: color-mix(in srgb, rgb(239 239 239) 50%, transparent);
+  background: color-mix(in srgb, rgb(239 239 239) 50%, transparent);
 }
 
 .table table td ul {
-    list-style-type: disc;
-    padding-left: 1.875rem;
-    margin-top: 0;
-    margin-bottom: 0;
+  list-style-type: disc;
+  padding-left: 1.875rem;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .table table td ul li {
-    padding-left: .625rem;
-    font-family: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    text-align: left;
-    color: var(--text-color);
+  padding-left: .625rem;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  text-align: left;
+  color: var(--text-color);
 }
 
 .table p {
-    margin: 0;
+  margin: 0;
 }
 
 .table table td p {
-    text-align: left;
-    color: var(--text-color);
+  text-align: left;
+  color: var(--text-color);
 }
 
-.table table td h2, 
-.table table td h3, 
+.table table td h2,
+.table table td h3,
 .table table td p {
-    color: var(--text-color);
+  color: var(--text-color);
 }
 
 .table.link {
-    color: var(--green);
-    text-decoration: underline;
-    margin: auto;
+  color: var(--green);
+  text-decoration: underline;
+  margin: auto;
 }
 
 .table.link:hover {
-    color: var(--dark-green);
+  color: var(--dark-green);
 }
 
-.table.formula {
-    table {
-        margin: 1rem auto;
-        display: table;
-
-        td, th {
-        color: var(--text-color);
-        border: 0;
-        border-bottom: 1px solid var(--border-color);
-        padding: 1rem;
-        font-size: 1rem;
-        line-height: 2rem;
-        letter-spacing: 0.0156rem;
-        background: none;
-    }
-
-        th,
-        tr:last-child {
-            border-top: 3px solid var(--border-color);
-            border-bottom: 3px solid var(--border-color);
-        }
-
-        th:first-child,
-        td:first-child {
-            text-align: left;
-            width: 80%;
-        }
-        
-        th:last-child,
-        td:last-child,
-        th:nth-last-child(2),
-        td:nth-last-child(2) {
-            width: 10%;
-            
-            h1, h2, h3, p {
-                text-align: center;
-            }
-        }
-
-        tr:nth-child(2n+2) td {
-            background: none;
-        }
-        
-        tr:last-child td p {
-            font-family: OpenSans-Bold, Helvetica, sans-serif;
-        }
-    }
+.table.formula table {
+  margin: 1rem auto;
+  display: table;
 }
 
-.table.list {
-    table {
-        margin: 1rem auto;
-        display: table;
-        width: 100%;
+.table.formula table td, .table.formula table th {
+  color: var(--text-color);
+  border: 0;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem;
+  font-size: 1rem;
+  line-height: 2rem;
+  letter-spacing: 0.0156rem;
+  background: none;
+}
 
-        td, th {
-            color: var(--text-color);
-            border: 0;
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem;
-            font-size: 1rem;
-            line-height: 2rem;
-            letter-spacing: 0.0156rem;
-            background: none;
-        }
-        
-        tr:nth-child(2n+2) td {
-            background: none;
-        }
-        
-        tr:first-child {
-            border-top: 3px solid var(--border-color);
-        }
-        
-        tr:last-child {
-            border-bottom: 3px solid var(--border-color);
-        }
-    }
+.table.formula table th,
+.table.formula table tr:last-child {
+  border-top: 3px solid var(--border-color);
+  border-bottom: 3px solid var(--border-color);
+}
+
+.table.formula table th:first-child,
+.table.formula table td:first-child {
+  text-align: left;
+  width: 80%;
+}
+
+.table.formula table th:last-child,
+.table.formula table td:last-child,
+.table.formula table th:nth-last-child(2),
+.table.formula table td:nth-last-child(2) {
+  width: 10%;
+}
+
+.table.formula table th:last-child h1, .table.formula table th:last-child h2, .table.formula table th:last-child h3, .table.formula table th:last-child p,
+.table.formula table td:last-child h1,
+.table.formula table td:last-child h2,
+.table.formula table td:last-child h3,
+.table.formula table td:last-child p,
+.table.formula table th:nth-last-child(2) h1,
+.table.formula table th:nth-last-child(2) h2,
+.table.formula table th:nth-last-child(2) h3,
+.table.formula table th:nth-last-child(2) p,
+.table.formula table td:nth-last-child(2) h1,
+.table.formula table td:nth-last-child(2) h2,
+.table.formula table td:nth-last-child(2) h3,
+.table.formula table td:nth-last-child(2) p {
+  text-align: center;
+}
+
+.table.formula table tr:nth-child(2n+2) td {
+  background: none;
+}
+
+.table.formula table tr:last-child td p {
+  font-family: OpenSans-Bold, Helvetica, sans-serif;
+}
+
+.table.list table {
+  margin: 1rem auto;
+  display: table;
+  width: 100%;
+}
+
+.table.list table td, .table.list table th {
+  color: var(--text-color);
+  border: 0;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem;
+  font-size: 1rem;
+  line-height: 2rem;
+  letter-spacing: 0.0156rem;
+  background: none;
+}
+
+.table.list table tr:nth-child(2n+2) td {
+  background: none;
+}
+
+.table.list table tr:first-child {
+  border-top: 3px solid var(--border-color);
+}
+
+.table.list table tr:last-child {
+  border-bottom: 3px solid var(--border-color);
 }

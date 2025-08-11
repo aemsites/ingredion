@@ -1,116 +1,116 @@
 .author {
-    display: flex;
-    flex-direction: column;
-    margin: 0 0.9375rem;
+  display: flex;
+  flex-direction: column;
+  margin: 0 0.9375rem;
 }
 
 .author.static-author-block {
-    flex-direction: row;
-    padding: 0 0 6.5625rem;
+  flex-direction: row;
+  padding: 0 0 6.5625rem;
 }
 
 .author-bio-image {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 
-    img {
-        box-shadow: 4px 10px 15px 0 rgba(0 0 0 / 10%);
-    }
+.author-bio-image img {
+  box-shadow: 4px 10px 15px 0 rgb(0 0 0 / 10%);
 }
 
 .static-author-block .author-bio-image {
-    display: block;
-    width: 100%;
-    max-width: 4.8125rem;
-    height: 5.125rem;
-    margin-right: 1.5rem;
+  display: block;
+  width: 100%;
+  max-width: 4.8125rem;
+  height: 5.125rem;
+  margin-right: 1.5rem;
 }
 
 .author-bio-text {
-    text-align: left;
-    margin-left: 0.625rem;
-    margin-top: 0.625rem;
+  text-align: left;
+  margin-left: 0.625rem;
+  margin-top: 0.625rem;
+}
 
-    .designation {
-        font-size: 1.375rem;
-        line-height: 2rem;
-        letter-spacing: .0156rem;
-        color: var(--text-color);
-        margin: 1rem 0;
-    }
+.author-bio-text .designation {
+  font-size: 1.375rem;
+  line-height: 2rem;
+  letter-spacing: .0156rem;
+  color: var(--text-color);
+  margin: 1rem 0;
 }
 
 .static-author-block .author-bio-text {
-    font-size: 1rem;
-    line-height: 1.5rem;
-    letter-spacing: .0156rem;
-    max-width: 33.25rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  letter-spacing: .0156rem;
+  max-width: 33.25rem;
 }
 
 .heading h1, .heading h2, .heading h3, .heading h4, .heading h5, .heading h6 {
-    font-family: MiloPro-Bold, Helvetica, sans-serif;
-    margin: 0 0 1rem;
-    color: #373738;
-    line-height: 2rem;
+  font-family: MiloPro-Bold, Helvetica, sans-serif;
+  margin: 0 0 1rem;
+  color: #373738;
+  line-height: 2rem;
 }
 
 .author-bio-text .heading h1 {
-    font-size: 2.5rem;
-    line-height: 3.5rem;
-    letter-spacing: -.0312rem;
+  font-size: 2.5rem;
+  line-height: 3.5rem;
+  letter-spacing: -.0312rem;
 }
 
 .body-text {
-    font-size: 1rem;
-    line-height: 1.5rem;
-    letter-spacing: .0156rem;
-    font-family: OpenSans-Regular, Helvetica, sans-serif;
-    color: #373738;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  letter-spacing: .0156rem;
+  font-family: OpenSans-Regular, Helvetica, sans-serif;
+  color: #373738;
 }
 
 .author-wrapper {
-    margin: 5rem 0 0;
-    padding-top: 0;
+  margin: 5rem 0 0;
+  padding-top: 0;
 }
 
 @media (width >= 67.5625rem) {
-    .author.static-author-block {
-        padding: 0;
-    }
+  .author.static-author-block {
+    padding: 0;
+  }
 
-    .author-bio-text .heading h1 {
-        font-size: 3.5rem;
-    }
+  .author-bio-text .heading h1 {
+    font-size: 3.5rem;
+  }
 
-    .author-bio-text .heading h4 {
-        font-size: 1.5rem;
-    }
+  .author-bio-text .heading h4 {
+    font-size: 1.5rem;
+  }
 
-    .static-author-block .author-bio-image {
-        margin-right: 2.5rem;
-        max-width: 10.625rem;
-        height: 11.1875rem;
-    }
+  .static-author-block .author-bio-image {
+    margin-right: 2.5rem;
+    max-width: 10.625rem;
+    height: 11.1875rem;
+  }
 }
 
 @media (width >= 48rem) {
-    .author:not(.static-author-block) {
-        flex-direction: row;
-    }
+  .author:not(.static-author-block) {
+    flex-direction: row;
+  }
 
-    .author:not(.static-author-block) .author-bio-image {
-        width: 25%;
-        margin-right: 0.625rem;
+  .author:not(.static-author-block) .author-bio-image {
+    width: 25%;
+    margin-right: 0.625rem;
+  }
 
-        img {
-            width: 100%;
-            height: 12.5rem;
-            object-fit: cover;
-        }
-    }
+  .author:not(.static-author-block) .author-bio-image img {
+    width: 100%;
+    height: 12.5rem;
+    object-fit: cover;
+  }
 
-    .author:not(.static-author-block) .author-bio-text {
-        width: 75%;
-    }
+  .author:not(.static-author-block) .author-bio-text {
+    width: 75%;
+  }
 }
