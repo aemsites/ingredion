@@ -3,7 +3,7 @@
   color: #373738;
   line-height: 2rem;
   margin-top: 1rem;
-  margin-bottom: 22px;
+  margin-bottom: 1rem;
 }
 
 .article-header-wrapper .type p {
@@ -21,6 +21,10 @@
   font-family: MiloPro-Bold, Helvetica, sans-serif;
   margin: 3.5rem 0 1rem;
   color: #373738;
+}
+
+.article-header-wrapper .type + h2 {
+    margin: 0;
 }
 
 .article-header-wrapper .date-tags p {
