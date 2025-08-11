@@ -93,3 +93,12 @@
 .article-detail .footer-wrapper {
   border-top-width: 2px;
 }
+
+.article-detail main .author-bio-image picture,
+.article-detail main .author-bio-image img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+  box-shadow: none;
+}
