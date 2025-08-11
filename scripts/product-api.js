@@ -1,7 +1,7 @@
 // This file contains all the product API endpoints
 
 // prod
-export const API_HOST = 'https://www.ingredion.com';
+export const API_HOST = 'https://preview.ingredion.com';
 
 // stage - testing (todo: remove before go-live)
 // export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
