@@ -23,7 +23,7 @@ function isMartechDisabled() {
 async function initLaunch(env) {
   const launchUrls = {
     dev: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-159a0321787a-development.min.js',
-    stage: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-509818e86df2-staging.min.js',
+    stage: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-159a0321787a-development.min.js',
     prod: 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-0e5b0f94b7f5.min.js',
   };
   if (!Object.keys(launchUrls).includes(env)) {
@@ -90,7 +90,7 @@ export async function initMartech() {
     return;
   }
   initDataLayer();
-  //await initLaunch(getEnvironment());
+  await initLaunch(getEnvironment());
   await loadScript('/scripts/gtm-init.js', { defer: true });
 }
 
