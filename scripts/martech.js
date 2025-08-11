@@ -82,7 +82,7 @@ export async function initMartech() {
     return;
   }
   initDataLayer();
-  await initLaunch(getEnvironment());
+  //await initLaunch(getEnvironment());
   await loadScript('/scripts/gtm-init.js', { defer: true });
 }
 
