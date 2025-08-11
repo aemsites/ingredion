@@ -41,7 +41,13 @@ function initDataLayer() {
   const pageLanguage = locale.split('-')[0];
   const productFacets = JSON.parse(localStorage.getItem('productFacets'));
 
-  window.dataLayer = {
+  // Initialize dataLayer as an array if it doesn't exist
+  if (!window.dataLayer || !Array.isArray(window.dataLayer)) {
+    window.dataLayer = [];
+  }
+
+  // Push the page data to the dataLayer array
+  window.dataLayer.push({
     page: {
       pageLevel1: pageHierarchy[0],
       pageLevel2: pageHierarchy[1],
@@ -63,13 +69,15 @@ function initDataLayer() {
       eventInfo3: '3',
       eventInfo4: '4',
     },
-  };
+  });
   if (productFacets) {
-    window.dataLayer.product = {
-      application: productFacets.applications?.options?.map((opt) => opt.label).join(',') || '',
-      subApplication: productFacets.subApplications?.options?.map((opt) => opt.label).join(',') || '',
-      productType: productFacets.productType?.options?.map((opt) => opt.label).join(',') || '',
-    };
+    window.dataLayer.push({
+      product: {
+        application: productFacets.applications?.options?.map((opt) => opt.label).join(',') || '',
+        subApplication: productFacets.subApplications?.options?.map((opt) => opt.label).join(',') || '',
+        productType: productFacets.productType?.options?.map((opt) => opt.label).join(',') || '',
+      },
+    });
   }
   localStorage.setItem('previousPageName', window.location.href);
 }
@@ -82,7 +90,7 @@ export async function initMartech() {
     return;
   }
   initDataLayer();
-  //await initLaunch(getEnvironment());
+  await initLaunch(getEnvironment());
   await loadScript('/scripts/gtm-init.js', { defer: true });
 }
 
