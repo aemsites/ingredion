@@ -91,10 +91,15 @@ export default async function decorate(doc) {
   $main.prepend($hero);
 
   // Add green line before author container
-  const $authorContainer = $main.querySelector('.author-wrapper');
+  const $authorContainer = $main.querySelectorAll('.author-wrapper');
   if ($authorContainer) {
-    const $lineBrekEnd = div({ class: 'line-break-end' });
-    $authorContainer.prepend($lineBrekEnd);
+    $authorContainer.forEach((element) => {
+      const $greenLine = element.querySelector('.green-line');
+      const $lineBreakEnd = div({ class: 'line-break-end' });
+      if ($greenLine) {
+        element.prepend($lineBreakEnd);
+      }
+    });
   }
 
   // Move section with class name "outside-blog" outside of article blog section
