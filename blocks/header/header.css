@@ -321,6 +321,7 @@ header .btn-tech-doc-samples a {
   letter-spacing: .042rem;
   transition: all 200ms;
   text-decoration: none;
+  display: inline-block;
 }
 
 header .btn-tech-doc-samples a:hover {
