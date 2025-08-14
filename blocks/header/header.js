@@ -33,12 +33,14 @@ const ingredientQuickSearchFragmentPath = `/${region}/${locale}/fragments/ingred
 const ingredientCategorySearchFragmentPath = `/${region}/${locale}/fragments/ingredient-finder-category`;
 
 function resetDropdownsMobile($header) {
-  $header.querySelectorAll('.category .dropdown').forEach((dropdown) => {
+  $header.querySelectorAll('.category .dropdown, .utility .dropdown, .region-language-selector-mobile').forEach((dropdown) => {
     dropdown.style.display = 'none';
 
     const container = dropdown.parentElement;
-    container.style.display = 'block';
-    container.classList.remove('active');
+    if(!dropdown.classList.contains('region-language-selector-mobile')) {
+      container.style.display = 'block';
+      container.classList.remove('active');
+    }
 
     dropdown.querySelectorAll('.dropdown-content.open').forEach((el) => {
       el.classList.remove('open');
@@ -63,6 +65,10 @@ function resetDropdownsMobile($header) {
     document.querySelectorAll('.btn-tech-doc-samples').forEach((el) => {
       el.style.display = 'block';
     });
+
+    if (document.querySelector('.region-language-selector-mobile').classList.contains('is-visible')) {
+      document.querySelector('.region-language-selector-mobile').classList.remove('is-visible');
+    }
   });
 }
 
@@ -261,7 +267,7 @@ async function buildDropdownsDesktop($header) {
       await buildIngredientFinderQuickDropdown($dropDown);
     }
 
-    if (subNavPath.includes('/header/dropdowns/region-selector')) {
+    if (subNavPath.includes('/header/dropdowns/region-selector') && (newDiv.parentElement.tagName === 'P')) {
       const utility = document.querySelector('.utility');
       const utilityFirstP = utility.querySelector('p');
       const dropdown = utilityFirstP.querySelector('.dropdown');
@@ -397,6 +403,25 @@ async function buildDropdownsMobile($header) {
       await buildIngredientFinderQuickDropdown($dropDown);
     }
 
+    if (subNavPath.includes('/header/dropdowns/region-selector') && newDiv.parentElement.tagName === 'LI') {
+      const parentMobileMenu = document.querySelector('.mobile-menu');
+      const utility = document.querySelector('.utility');
+      const utilitySelector = utility.querySelector('.utility > ul li:last-child');
+      const dropdown = utilitySelector.querySelector('.dropdown');
+      dropdown.classList.add('region-language-selector-mobile');
+      dropdown.classList.remove('dropdown');
+      parentMobileMenu.append(dropdown);
+
+      utilitySelector.addEventListener('click', () => {
+        if(!dropdown.classList.contains('is-visible')) {
+          dropdown.classList.add('is-visible');
+
+        }
+        else {
+          dropdown.classList.remove('is-visible');
+        }
+      });
+    }
     const openDropdown = throttle(
       () => {
         $header.querySelectorAll('.dropdown').forEach((dropdown) => {
@@ -407,7 +432,9 @@ async function buildDropdownsMobile($header) {
         });
 
         $dropDown.style.display = 'block';
-        $dropDown.parentElement.classList.add('active');
+        if (!$dropDown.classList.contains('region-language-selector-mobile')) {
+          $dropDown.parentElement.classList.add('active');
+        }
         viewAllButton.classList.add('active');
 
         const btnContainer = document.querySelector('.btn-container');
