@@ -37,7 +37,7 @@ function resetDropdownsMobile($header) {
     dropdown.style.display = 'none';
 
     const container = dropdown.parentElement;
-    if(!dropdown.classList.contains('region-language-selector-mobile')) {
+    if (!dropdown.classList.contains('region-language-selector-mobile')) {
       container.style.display = 'block';
       container.classList.remove('active');
     }
@@ -405,7 +405,6 @@ async function buildDropdownsMobile($header) {
 
     if (subNavPath.includes('/header/dropdowns/region-selector') && newDiv.parentElement.tagName === 'LI') {
       const parentMobileMenu = document.querySelector('.mobile-menu');
-      const utility = document.querySelector('.utility');
       const utilitySelector = utility.querySelector('.utility > ul li:last-child');
       const dropdown = utilitySelector.querySelector('.dropdown');
       dropdown.classList.add('region-language-selector-mobile');
@@ -413,11 +412,9 @@ async function buildDropdownsMobile($header) {
       parentMobileMenu.append(dropdown);
 
       utilitySelector.addEventListener('click', () => {
-        if(!dropdown.classList.contains('is-visible')) {
+        if (!dropdown.classList.contains('is-visible')) {
           dropdown.classList.add('is-visible');
-
-        }
-        else {
+        } else {
           dropdown.classList.remove('is-visible');
         }
       });
