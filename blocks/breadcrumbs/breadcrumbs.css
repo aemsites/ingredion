@@ -1,6 +1,7 @@
 .breadcrumbs-wrapper {
     max-width: var(--max-page-width);
     margin: auto;
+}
 
 .breadcrumbs {
     padding: 40px 16px;
