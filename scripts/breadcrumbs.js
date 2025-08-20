@@ -16,7 +16,7 @@ async function fetchIndex(homePath) {
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export async function breadcrumbs(ishide = 'false') {
+export async function breadcrumbs(ishide = false) {
   loadCSS(`${window.hlx.codeBasePath}/styles/breadcrumbs.css`);
   const $breadcrumbs = nav({ class: ishide ? 'breadcrumbs hide' : 'breadcrumbs' });
   // todo: update breadcrumbs - just static HTML for now
