@@ -1,4 +1,8 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
+.breadcrumbs.hide {
+  display: none;
+}
+
 .breadcrumbs ul {
   list-style: none;
   margin: 0;
