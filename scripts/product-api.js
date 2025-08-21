@@ -94,8 +94,7 @@ const resolveApiPath = (apiKey, region, locale) => {
 export const API_PRODUCT = {
   POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => {
     const key = `${region}-${locale}`;
-    const end-points = ['na-en-us', 'na-es-mx', 'sa-pt-br'];
-    const isSpecialEndpoint = end-points.includes(key);
+    const isSpecialEndpoint = ['na-en-us', 'na-es-mx', 'sa-pt-br'].includes(key);
     const host = isSpecialEndpoint ? API_HOST_SPECIAL : API_HOST;
     return `${host}${resolveApiPath('POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY', region, locale)}`;
   },
