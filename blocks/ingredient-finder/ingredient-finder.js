@@ -148,6 +148,8 @@ export default async function decorate(block) {
   const searchByCategoryHeading = translate('search-category-heading');
   const searchByIngredientsHeading = translate('search-ingredients-heading');
   const searchByKeywordsText = translate('search-by-keywords');
+  const ingredientUrl = translate('ingredients');
+  const ingredientFinderUrl = translate('ingredient-finder');
 
   async function searchIngredientsByName(searchValue) {
     if (!searchValue) return;
@@ -407,7 +409,7 @@ export default async function decorate(block) {
 
       if (block.closest('.header-dropdown')) {
         localStorage.setItem('query-params', queryParams);
-        window.location.href = `${window.location.origin}/${region}/${locale}/ingredients/ingredient-finder?${queryParams}`;
+        window.location.href = `${window.location.origin}/${region}/${locale}/${ingredientUrl}/${ingredientFinderUrl}?${queryParams}`;
       }
 
       const url = API_PRODUCT.SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY(region, locale);
@@ -500,7 +502,7 @@ export default async function decorate(block) {
     const currentUrl = new URL(window.location.href);
 
     if (
-      currentUrl.pathname === `/${region}/${locale}/ingredients/ingredient-finder`
+      currentUrl.pathname === `/${region}/${locale}/${ingredientUrl}/${ingredientFinderUrl}`
       && currentUrl.searchParams.get('activePage') === '1'
       && currentUrl.searchParams.get('perPage') === '6'
       && currentUrl.searchParams.has('q')
@@ -525,7 +527,7 @@ export default async function decorate(block) {
           perPage: '6',
           q: searchValue,
         });
-        window.location.href = `${window.location.origin}/${region}/${locale}/ingredients/ingredient-finder?${searchParams}`;
+        window.location.href = `${window.location.origin}/${region}/${locale}/${ingredientUrl}/${ingredientFinderUrl}?${searchParams}`;
       }
       await searchIngredientsByName(searchValue);
     };
