@@ -53,11 +53,11 @@ export const API_PATH_OVERRIDES = {
     'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.view.json',
     'sa-pt-br': '/content/ingredion-com/sa/pt-br/buscar/jcr:content/searchResults.view.json',
   },
-	DOWNLOAD_DOCUMENTS: {
-		'na-en-us': '/content/ingredion-com/ingredients/na',
-		'na-es-mx': '/content/ingredion-com/ingredients/es-mx',
-		'sa-pt-br': '/content/ingredion-com/ingredients/sa',
-	},
+  DOWNLOAD_DOCUMENTS: {
+    'na-en-us': '/content/ingredion-com/ingredients/na',
+    'na-es-mx': '/content/ingredion-com/ingredients/es-mx',
+    'sa-pt-br': '/content/ingredion-com/ingredients/sa',
+  },
   DOWNLOAD_ALL_DOCUMENTS: {
     'na-es-mx': '/bin/ingredion-com/documents-download.es-mx.download.zip',
     'na-kerr': '/bin/ingredion-com/documents-download.kerr.download.zip',
