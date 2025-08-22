@@ -49,12 +49,14 @@ export const API_PATH_OVERRIDES = {
     'na-kerr': '/bin/ingredion-com/searchResults.kerr.ingredients.json',
   },
   ALL_DOCUMENTS: {
-    'na-es-mx': '/bin/ingredion-com/documents.es-mx.view.json',
-    'na-kerr': '/bin/ingredion-com/documents.kerr.view.json',
+    'na-en-us': '/content/ingredion-com/na/en-us/search/jcr:content/searchResults.view.json',
+    'na-es-mx': '/content/ingredion-com/na/es-mx/buscar/jcr:content/searchResults.view.json',
+    'sa-pt-br': '/content/ingredion-com/sa/pt-br/buscar/jcr:content/searchResults.view.json',
   },
   DOWNLOAD_DOCUMENTS: {
-    'na-es-mx': '/bin/ingredion-com/documents-download.es-mx.download.zip',
-    'na-kerr': '/bin/ingredion-com/documents-download.kerr.download.zip',
+	  'na-en-us': '/content/ingredion-com/ingredients/na',
+    'na-es-mx': '/content/ingredion-com/ingredients/es-mx',
+    'sa-pt-br': '/content/ingredion-com/ingredients/sa',
   },
   DOWNLOAD_ALL_DOCUMENTS: {
     'na-es-mx': '/bin/ingredion-com/documents-download.es-mx.download.zip',
