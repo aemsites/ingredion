@@ -101,14 +101,14 @@ const resolveApiPath = (apiKey, region, locale) => {
 export const API_PRODUCT = {
   POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY: (region, locale) => {
     const key = `${region}-${locale}`;
-    const isSpecialEndpoint = key === 'na-en-us';
+    const isSpecialEndpoint = ['na-en-us', 'na-es-mx', 'sa-pt-br'].includes(key);
     const host = isSpecialEndpoint ? API_HOST_SPECIAL : API_HOST;
     return `${host}${resolveApiPath('POPULATE_INGREDIENT_CATEGORY_SUBCATEGORY', region, locale)}`;
   },
   SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY: (region, locale) => `${API_HOST}${resolveApiPath('SEARCH_INGREDIENT_BY_CATEGORY_SUBCATEGORY', region, locale)}`,
   INGREDIENT_SEARCH_TYPEAHEAD: (region, locale) => {
     const key = `${region}-${locale}`;
-    const isSpecialEndpoint = key === 'na-en-us';
+    const isSpecialEndpoint = ['na-en-us', 'na-es-mx', 'sa-pt-br'].includes(key);
     const host = isSpecialEndpoint ? API_HOST_SPECIAL : API_HOST;
     return `${host}${resolveApiPath('INGREDIENT_SEARCH_TYPEAHEAD', region, locale)}`;
   },
