@@ -1,8 +1,7 @@
 // This file contains all the product API endpoints
 
 // prod
-// export const API_HOST = 'https://www.ingredion.com';
-export const API_HOST = 'https://ingredion65prod.adobecqms.net';
+export const API_HOST = 'https://www.ingredion.com';
 
 // API host for specific endpoints (header search and typeahead)
 export const API_HOST_SPECIAL = window.location.origin;
