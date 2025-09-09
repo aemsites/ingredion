@@ -138,7 +138,7 @@ function renderMobile(block) {
     });
 
     let title = null;
-    dropdown.querySelectorAll('p').forEach((p) => {
+    dropdown.querySelectorAll('p, h5').forEach((p) => {
       if (!title && p.textContent.trim().length > 0) {
         title = p;
 

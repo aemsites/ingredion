@@ -3,7 +3,7 @@
 .ingredient-quick-search-bar {
 	position: relative;
 	flex: 2;
-	max-width: 50rem;
+	max-width: none;
 }
 
 .ingredient-quick-search-bar .form-typeahead {
@@ -96,8 +96,8 @@
 
 .ingredient-finder-wrapper {
 	flex-basis: 50%;
-	padding-right: 2.5rem;
 	margin: 0 !important;
+	padding-bottom: 2.5rem;
 }
 
 .ingredient-finder-form-categories {
@@ -168,7 +168,15 @@
 		display: flex;
 		max-width: 76.5rem;
 		border-bottom: 1px solid #d8d9d9;
-		padding-bottom: 2.5rem;
 		flex-wrap: wrap;
+	}
+
+	.ingredient-finder-wrapper {
+		width: 50%;
+		padding-right: 2.5rem;
+	}
+
+	.ingredient-quick-search-bar {
+		max-width: 50rem;
 	}
 }
