@@ -28,7 +28,7 @@ const REGION_LOCALE_MAP = new Map([
   ['sa', 'South America'],
   ['emea', 'Europe, Middle East, and Africa'],
   ['apac', 'Asia Pacific'],
-  ['kerr', 'United States - English']
+  ['kerr', 'United States - English'],
 ]);
 
 /**
