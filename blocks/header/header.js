@@ -186,7 +186,6 @@ async function buildIngredientFinderCategoryDropdown(dropdown) {
   const ingredientCategory = await loadFragment(ingredientCategorySearchFragmentPath);
   if (!ingredientCategory) return;
 
-  const [region,locale] = getRegionLocale();
   if (region === 'na' && locale === 'en-us') {
     return;
   }
