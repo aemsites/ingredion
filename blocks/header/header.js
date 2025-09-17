@@ -183,6 +183,9 @@ async function buildIngredientFinderQuickDropdown(dropdown) {
 }
 
 async function buildIngredientFinderCategoryDropdown(dropdown) {
+  if (region === 'na' && locale === 'kerr') {
+    return;
+  }
   const ingredientCategory = await loadFragment(ingredientCategorySearchFragmentPath);
   if (!ingredientCategory) return;
 
