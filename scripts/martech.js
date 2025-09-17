@@ -54,7 +54,7 @@ function initDataLayer() {
       pageHierarchy: pageHierarchy.join('/'),
     },
     user: {
-      country: pageHierarchy[1].split(' - ')[0],
+      country: pageHierarchy[1]?.split(' - ')[0] || '',
     },
     event: {
       eventName: 'eventName',
