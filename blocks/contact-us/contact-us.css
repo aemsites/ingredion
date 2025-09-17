@@ -56,7 +56,7 @@
   }
   
   .contact-us-wrapper .contact-us .contact-banner-content .contact-banner-primary {
-    padding: 0 2.5rem 0 0;
+    padding: 0 2rem 0 0;
     border-bottom: 0 !important;
     border-right: 1px solid #d8d9d9;
     width: 100%;
@@ -64,22 +64,14 @@
   }
   
   .contact-us-wrapper .contact-us .contact-banner-content .contact-banner-secondary {
-    padding: 0 0 0 6.5rem;
+    padding: 0 0 0 4rem;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    gap: 20px;
   }
 
   .contact-us-wrapper .contact-us .contact-banner-content .contact-banner-secondary > div {
-    width: 28.7%;
-    margin: 0 1.25rem;  
-  }
-  
-  .contact-us-wrapper .contact-us .contact-banner-content .contact-banner-secondary > div:first-child {
-    margin-left: 0;
-  }
-  
-  .contact-us-wrapper .contact-us .contact-banner-content .contact-banner-secondary > div:last-child {
-    margin-right: 0;
+    width: 45%;
   }
 }
