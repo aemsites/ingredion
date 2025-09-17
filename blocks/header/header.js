@@ -183,12 +183,13 @@ async function buildIngredientFinderQuickDropdown(dropdown) {
 }
 
 async function buildIngredientFinderCategoryDropdown(dropdown) {
-  const ingredientCategory = await loadFragment(ingredientCategorySearchFragmentPath);
-  if (!ingredientCategory) return;
-
   if (region === 'na' && locale === 'en-us') {
     return;
   }
+  
+  const ingredientCategory = await loadFragment(ingredientCategorySearchFragmentPath);
+  if (!ingredientCategory) return;
+
   const ingredientCategoryDiv = dropdown
     ?.querySelector('.header-dropdown')
     ?.querySelectorAll('div')[1];
