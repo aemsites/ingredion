@@ -463,7 +463,7 @@ export default class ProductApiRenderer {
       return facetGroup;
     };
 
-    const $appliedFilterHeading = h4('Filters Applied');
+    const $appliedFilterHeading = h4(translate('filters-applied'));
     const filtersList = div({ class: 'filters-list' });
 
     // Add applied facets if they exist
@@ -515,7 +515,7 @@ export default class ProductApiRenderer {
     }
 
     // Add Clear All button
-    const clearAll = div({ class: 'facet-clear-all' }, 'Clear All');
+    const clearAll = div({ class: 'facet-clear-all' }, translate('clear-all'));
     // hide clear all button if no facets are applied
     if (this.results.appliedFacets?.length === 0) {
       clearAll.style.display = 'none';
@@ -539,7 +539,7 @@ export default class ProductApiRenderer {
     });
     filtersList.appendChild(clearAll);
 
-    filtersList.append(h4('Filter Options'));
+    filtersList.append(h4(translate('filter-options')));
 
     // Add facet groups
     Object.entries(this.results.facets || {}).forEach(([key, data]) => {

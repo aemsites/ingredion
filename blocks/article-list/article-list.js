@@ -1,7 +1,7 @@
 /* eslint-disable function-call-argument-newline, max-len, function-paren-newline, object-curly-newline */
 import { div, h3, h4, p, a, strong, span, button, img } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture, readBlockConfig, loadCSS } from '../../scripts/aem.js';
-import { formatDate, translate } from '../../scripts/utils.js';
+import { formatDate, getRegionLocale, loadTranslations, translate } from '../../scripts/utils.js';
 import { parseEventDate } from '../../scripts/product-utils.js';
 import ArticleRenderer from './article-renderer.js';
 import { openVideoModal } from '../video/video-modal.js';
@@ -9,6 +9,9 @@ import { openVideoModal } from '../video/video-modal.js';
 loadCSS(`${window.hlx.codeBasePath}/blocks/video/video.css`);
 
 export default async function decorate(block) {
+  const [region, locale] = getRegionLocale();
+  await loadTranslations(locale);
+
   const {
     'article-data': jsonPath,
     'articles-per-page-options': articlesPerPageOptions,
@@ -30,7 +33,7 @@ export default async function decorate(block) {
     const $filterYearsDropdown = div();
     const $filterTypesDropdown = div();
     const $filterMarketsDropdown = div({ 'data-tag': 'Markets' }); // pass the tag
-    const $clearFilters = a({ class: 'clear-all' }, 'Clear All');
+    const $clearFilters = a({ class: 'clear-all' }, translate('clear-all'));
 
     const $articleCard = (article) => a({ class: 'card', href: article.path },
       a({ class: 'thumb', href: article.path },
@@ -87,7 +90,7 @@ export default async function decorate(block) {
     // Events view
     const $filterYearsDropdown = div();
     const $filterTypesDropdown = div();
-    const $clearFilters = a({ class: 'clear-all' }, 'Clear All');
+    const $clearFilters = a({ class: 'clear-all' }, translate('clear-all'));
 
     const $articleCard = (article) => div({ class: 'card events' },
       div({ class: 'image-wrapper' },
