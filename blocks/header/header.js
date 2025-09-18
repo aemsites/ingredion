@@ -19,8 +19,8 @@ const [region, locale] = getRegionLocale();
 const $originalLogo = a(
   { class: 'logo', href: `/${region}/${locale}/`, 'aria-label': 'Home' },
   createOptimizedPicture(
-    '/img/ingredion.webp',
-    'Ingredion logo',
+    (region === 'na' && locale === 'kerr') ? '/img/kerr-ingredion.webp' : '/img/ingredion.webp',
+    (region === 'na' && locale === 'kerr') ? 'kerr by Ingredion' : 'Ingredion logo',
     true,
     [
       { media: '(min-width: 1080px)', width: '120', height: '40' },
@@ -462,7 +462,7 @@ export default async function decorate(block) {
   const $btnCart = a(
     {
       class: 'icon-cart',
-      href: `/${region}/${locale}/${sampleCartLink}`,
+      href: (region === 'na' && locale === 'kerr') ? `/${region}/${locale}/contact/request-a-sample`:`/${region}/${locale}/${sampleCartLink}`,
       'aria-label': 'Cart',
     },
     '\u{e919}',
