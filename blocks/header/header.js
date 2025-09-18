@@ -19,7 +19,7 @@ const [region, locale] = getRegionLocale();
 const $originalLogo = a(
   { class: 'logo', href: `/${region}/${locale}/`, 'aria-label': 'Home' },
   createOptimizedPicture(
-    (region === 'na' && locale === 'kerr') ? '/img/kerr-ingredion.webp' : '/img/ingredion.webp',
+    (region === 'na' && locale === 'kerr') ? '/img/kerr-by-ingredion.webp' : '/img/ingredion.webp',
     (region === 'na' && locale === 'kerr') ? 'kerr by Ingredion' : 'Ingredion logo',
     true,
     [
