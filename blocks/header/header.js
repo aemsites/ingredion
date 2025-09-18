@@ -501,7 +501,7 @@ export default async function decorate(block) {
         (() => {
           const initialTab = input({ type: 'hidden', name: 'initialTab', id: 'initialTab', placeholder: 'All' });
           const selected = div({ class: 'selected' }, 'All');
-          const optionsList = ['All', 'Content & Resource', 'Ingredients', 'Technical Documents & SDS', 'Event'];
+          const optionsList = (region === 'na' && locale === 'kerr') ? ['All', 'Content & Resource', 'Ingredients', 'Technical Documents & SDS'] : ['All', 'Content & Resource', 'Ingredients', 'Technical Documents & SDS', 'Event'];
           const options = div({ class: 'dropdown-options hidden' },
             ...optionsList.map((text) => div({ class: 'dropdown-option' }, text)),
           );
