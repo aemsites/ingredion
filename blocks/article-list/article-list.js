@@ -9,7 +9,7 @@ import { openVideoModal } from '../video/video-modal.js';
 loadCSS(`${window.hlx.codeBasePath}/blocks/video/video.css`);
 
 export default async function decorate(block) {
-  const [region, locale] = getRegionLocale();
+  const [, locale] = getRegionLocale();
   await loadTranslations(locale);
 
   const {
