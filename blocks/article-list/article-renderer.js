@@ -565,12 +565,12 @@ export default class ArticleRenderer {
     });
 
     const $filter = document.createDocumentFragment();
-    const $filterHeading = h3('Filter Options');
+    const $filterHeading = h3(translate('filter-options'));
     $filter.append($filterHeading);
 
     // if filters are selected
     if (this.state.tags.length > 0) {
-      const $appliedFilterHeading = h4('Filters Applied');
+      const $appliedFilterHeading = h4(translate('filters-applied'));
       const $appliedFilters = ul({ class: 'applied-filters' });
 
       this.state.tags.forEach((tag) => {
@@ -592,7 +592,7 @@ export default class ArticleRenderer {
       });
 
       // clear all button
-      const $clearAll = li({ class: 'clear-all' }, 'Clear All');
+      const $clearAll = li({ class: 'clear-all' }, translate('clear-all'));
       $clearAll.addEventListener('click', () => {
         this.state.tags = []; // clear all tags
         this.state.searchQuery = ''; // clear search query
