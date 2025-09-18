@@ -16,11 +16,16 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 
 const isMobile = window.matchMedia('(width < 1080px)');
 const [region, locale] = getRegionLocale();
+const isKerr = region === 'na' && locale === 'kerr';
+
+const logoSrc = isKerr ? '/img/kerr-by-ingredion.webp' : '/img/ingredion.webp';
+const logoAlt = isKerr ? 'kerr by Ingredion' : 'Ingredion logo';
+
 const $originalLogo = a(
   { class: 'logo', href: `/${region}/${locale}/`, 'aria-label': 'Home' },
   createOptimizedPicture(
-    '/img/ingredion.webp',
-    'Ingredion logo',
+    logoSrc,
+    logoAlt,
     true,
     [
       { media: '(min-width: 1080px)', width: '120', height: '40' },
@@ -29,6 +34,7 @@ const $originalLogo = a(
     ],
   ),
 );
+
 const ingredientQuickSearchFragmentPath = `/${region}/${locale}/fragments/ingredient-finder-quick`;
 const ingredientCategorySearchFragmentPath = `/${region}/${locale}/fragments/ingredient-finder-category`;
 
@@ -466,6 +472,7 @@ export default async function decorate(block) {
   await loadTranslations(locale);
   const searchText = translate('search').toLowerCase();
   const sampleCartLink = translate('sample-cart-link').toLowerCase();
+  const requestCartLink = isKerr ? `/${region}/${locale}/contact/request-a-sample` : `/${region}/${locale}/${sampleCartLink}`;
   block.remove();
   const navPath = `/${region}/${locale}/header/header`;
   const navFrag = await loadFragment(navPath, false);
@@ -486,7 +493,7 @@ export default async function decorate(block) {
   const $btnCart = a(
     {
       class: 'icon-cart',
-      href: `/${region}/${locale}/${sampleCartLink}`,
+      href: requestCartLink,
       'aria-label': 'Cart',
     },
     '\u{e919}',
@@ -525,7 +532,7 @@ export default async function decorate(block) {
         (() => {
           const initialTab = input({ type: 'hidden', name: 'initialTab', id: 'initialTab', placeholder: 'All' });
           const selected = div({ class: 'selected' }, 'All');
-          const optionsList = ['All', 'Content & Resource', 'Ingredients', 'Technical Documents & SDS', 'Event'];
+          const optionsList = isKerr ? ['All', 'Content & Resource', 'Ingredients', 'Technical Documents & SDS'] : ['All', 'Content & Resource', 'Ingredients', 'Technical Documents & SDS', 'Event'];
           const options = div({ class: 'dropdown-options hidden' },
             ...optionsList.map((text) => div({ class: 'dropdown-option' }, text)),
           );
