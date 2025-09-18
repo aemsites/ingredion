@@ -462,7 +462,7 @@ export default async function decorate(block) {
   const $btnCart = a(
     {
       class: 'icon-cart',
-      href: (region === 'na' && locale === 'kerr') ? `/${region}/${locale}/contact/request-a-sample`:`/${region}/${locale}/${sampleCartLink}`,
+      href: (region === 'na' && locale === 'kerr') ? `/${region}/${locale}/contact/request-a-sample` : `/${region}/${locale}/${sampleCartLink}`,
       'aria-label': 'Cart',
     },
     '\u{e919}',
