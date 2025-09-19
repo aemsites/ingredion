@@ -346,25 +346,25 @@ async function displaySearchResults(
   // Create sections for each tab
   const sections = [
     {
-      title: 'Content & Resources',
+      title: translate('content-resources-tab'),
       count: contentResourcesResults?.length || 0,
       panel: () => createContentResourcesPanel(contentResourcesResults),
       index: 0,
     },
     {
-      title: 'Ingredients',
+      title: translate('ingredients-tab'),
       count: ingredientResults.totalItemsCount,
       panel: () => createIngredientPanel(ingredientResults),
       index: 1,
     },
     {
-      title: 'Technical & SDS Documents',
+      title: translate('technical-sds-documents-tab'),
       count: techDocsResults.totalItemsCount,
       panel: () => createTechDocsPanel(techDocsResults),
       index: 2,
     },
     {
-      title: 'Events',
+      title: translate('events-tab'),
       count: eventsResults?.length || 0,
       panel: () => {
         // Sort events by date (newest first) using parseEventDate
