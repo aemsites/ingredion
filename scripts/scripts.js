@@ -40,7 +40,7 @@ function addFavicon() {
   if (isKerr) {
     // Remove existing favicons (to avoid duplicates)
     const existing = document.querySelectorAll("link[rel*='icon']");
-    existing.forEach(el => el.parentNode.removeChild(el));
+    existing.forEach((el) => el.parentNode.removeChild(el));
 
     // Create new favicon link
     const link = document.createElement('link');
