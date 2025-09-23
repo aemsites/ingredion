@@ -31,18 +31,12 @@ export function unwrapNestedDivs(element) {
   });
 }
 
-/** adding favicon for Kerr */
-
 function addFavicon() {
   const [region, locale] = getRegionLocale();
   const isKerr = region === 'na' && locale === 'kerr';
-  // condition check for site
   if (isKerr) {
-    // Remove existing favicons (to avoid duplicates)
     const existing = document.querySelectorAll("link[rel*='icon']");
     existing.forEach((el) => el.parentNode.removeChild(el));
-
-    // Create new favicon link
     const link = document.createElement('link');
     link.rel = 'icon';
     link.type = 'image/x-icon';
