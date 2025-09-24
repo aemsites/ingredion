@@ -13,6 +13,7 @@ import {
   loadCSS,
   getMetadata,
 } from './aem.js';
+import { getRegionLocale } from './utils.js';
 
 /**
  * Recursively removes nested <div> elements from a given element.
@@ -28,6 +29,21 @@ export function unwrapNestedDivs(element) {
       element.removeChild(child);
     }
   });
+}
+
+function addFavicon() {
+  const [region, locale] = getRegionLocale();
+  const isKerr = region === 'na' && locale === 'kerr';
+  if (isKerr) {
+    const existing = document.querySelectorAll("link[rel*='icon']");
+    existing.forEach((el) => el.parentNode.removeChild(el));
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/x-icon';
+    link.href = '/icons/favicon_kerr.ico';
+
+    document.head.appendChild(link);
+  }
 }
 
 /** allow for link attributes to be added by authors
@@ -137,6 +153,7 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateLinks(main);
+  addFavicon();
 }
 
 /**
