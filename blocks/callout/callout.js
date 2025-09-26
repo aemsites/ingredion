@@ -50,6 +50,8 @@ export default function decorate(block) {
   }
 
   const header = h1 ?? h2 ?? h3;
+
+  // Add aria-label to super scripted SM text
   const textSM = header.querySelector('sup');
   if (textSM) setAriaLabelForSM(textSM);
 

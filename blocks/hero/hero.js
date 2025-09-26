@@ -26,7 +26,7 @@ export default function decorate(block) {
   const classListArray = Array.from(block.classList);
   const circleColor = circleColors.find((color) => classListArray.includes(color));
 
-  //Add aria-label to super scripted SM text
+  // Add aria-label to super scripted SM text
   const textSM = block.querySelector('h1 sup');
   if (textSM) setAriaLabelForSM(textSM);
 
