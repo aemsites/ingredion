@@ -1,4 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { setAriaLabelForSM } from '../../scripts/scripts.js';
 
 const circleColors = [
   'circle-blue',
@@ -24,6 +25,10 @@ export default function decorate(block) {
   const mobileBreakpoint = window.matchMedia('(max-width: 768px)');
   const classListArray = Array.from(block.classList);
   const circleColor = circleColors.find((color) => classListArray.includes(color));
+
+  //Add aria-label to super scripted SM text
+  const textSM = block.querySelector('h1 sup');
+  if (textSM) setAriaLabelForSM(textSM);
 
   // remove mobile row from DOM
   Array.from(block.children).forEach((row) => {

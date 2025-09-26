@@ -1,5 +1,6 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import { openVideoModal } from '../video/video-modal.js';
+import { setAriaLabelForSM } from '../../scripts/scripts.js';
 
 const themeColors = [
   'blue',
@@ -49,6 +50,8 @@ export default function decorate(block) {
   }
 
   const header = h1 ?? h2 ?? h3;
+  const textSM = header.querySelector('sup');
+  if (textSM) setAriaLabelForSM(textSM);
 
   const textWrapper = header ? header.closest('div') : textElement.closest('div');
   textWrapper.classList.add('callout-content');

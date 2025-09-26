@@ -101,6 +101,17 @@ export function parseClassFromString(inputString) {
 }
 
 /**
+ * Add a aria label to super scripted SM text"
+ * Useful in screen readers to read SM as service mark.
+ *
+ * @param {string} inputText
+ */
+export function setAriaLabelForSM(inputText) {
+  if (inputText.textContent == 'SM')
+    inputText.setAttribute('aria-label', 'service mark');
+}
+
+/**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
  */
