@@ -16,11 +16,16 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 
 const isMobile = window.matchMedia('(width < 1080px)');
 const [region, locale] = getRegionLocale();
+const isKerr = region === 'na' && locale === 'kerr';
+
+const logoSrc = isKerr ? '/img/kerr-by-ingredion.webp' : '/img/ingredion.webp';
+const logoAlt = isKerr ? 'kerr by Ingredion' : 'Ingredion logo';
+
 const $originalLogo = a(
   { class: 'logo', href: `/${region}/${locale}/`, 'aria-label': 'Home' },
   createOptimizedPicture(
-    '/img/ingredion.webp',
-    'Ingredion logo',
+    logoSrc,
+    logoAlt,
     true,
     [
       { media: '(min-width: 1080px)', width: '120', height: '40' },
@@ -29,16 +34,19 @@ const $originalLogo = a(
     ],
   ),
 );
+
 const ingredientQuickSearchFragmentPath = `/${region}/${locale}/fragments/ingredient-finder-quick`;
 const ingredientCategorySearchFragmentPath = `/${region}/${locale}/fragments/ingredient-finder-category`;
 
 function resetDropdownsMobile($header) {
-  $header.querySelectorAll('.category .dropdown').forEach((dropdown) => {
+  $header.querySelectorAll('.category .dropdown, .utility .dropdown, .region-language-selector-mobile').forEach((dropdown) => {
     dropdown.style.display = 'none';
 
     const container = dropdown.parentElement;
-    container.style.display = 'block';
-    container.classList.remove('active');
+    if (!dropdown.classList.contains('region-language-selector-mobile')) {
+      container.style.display = 'block';
+      container.classList.remove('active');
+    }
 
     dropdown.querySelectorAll('.dropdown-content.open').forEach((el) => {
       el.classList.remove('open');
@@ -63,6 +71,10 @@ function resetDropdownsMobile($header) {
     document.querySelectorAll('.btn-tech-doc-samples').forEach((el) => {
       el.style.display = 'block';
     });
+
+    if (document.querySelector('.region-language-selector-mobile').classList.contains('is-visible')) {
+      document.querySelector('.region-language-selector-mobile').classList.remove('is-visible');
+    }
   });
 }
 
@@ -183,6 +195,9 @@ async function buildIngredientFinderQuickDropdown(dropdown) {
 }
 
 async function buildIngredientFinderCategoryDropdown(dropdown) {
+  if (region === 'na' && locale === 'kerr') {
+    return;
+  }
   const ingredientCategory = await loadFragment(ingredientCategorySearchFragmentPath);
   if (!ingredientCategory) return;
 
@@ -261,7 +276,7 @@ async function buildDropdownsDesktop($header) {
       await buildIngredientFinderQuickDropdown($dropDown);
     }
 
-    if (subNavPath.includes('/header/dropdowns/region-selector')) {
+    if (subNavPath.includes('/header/dropdowns/region-selector') && (newDiv.parentElement.tagName === 'P')) {
       const utility = document.querySelector('.utility');
       const utilityFirstP = utility.querySelector('p');
       const dropdown = utilityFirstP.querySelector('.dropdown');
@@ -397,6 +412,22 @@ async function buildDropdownsMobile($header) {
       await buildIngredientFinderQuickDropdown($dropDown);
     }
 
+    if (subNavPath.includes('/header/dropdowns/region-selector') && newDiv.parentElement.tagName === 'LI') {
+      const parentMobileMenu = document.querySelector('.mobile-menu');
+      const utilitySelector = utility.querySelector('.utility > ul li:last-child');
+      const dropdown = utilitySelector.querySelector('.dropdown');
+      dropdown.classList.add('region-language-selector-mobile');
+      dropdown.classList.remove('dropdown');
+      parentMobileMenu.append(dropdown);
+
+      utilitySelector.addEventListener('click', () => {
+        if (!dropdown.classList.contains('is-visible')) {
+          dropdown.classList.add('is-visible');
+        } else {
+          dropdown.classList.remove('is-visible');
+        }
+      });
+    }
     const openDropdown = throttle(
       () => {
         $header.querySelectorAll('.dropdown').forEach((dropdown) => {
@@ -407,7 +438,9 @@ async function buildDropdownsMobile($header) {
         });
 
         $dropDown.style.display = 'block';
-        $dropDown.parentElement.classList.add('active');
+        if (!$dropDown.classList.contains('region-language-selector-mobile')) {
+          $dropDown.parentElement.classList.add('active');
+        }
         viewAllButton.classList.add('active');
 
         const btnContainer = document.querySelector('.btn-container');
@@ -439,6 +472,7 @@ export default async function decorate(block) {
   await loadTranslations(locale);
   const searchText = translate('search').toLowerCase();
   const sampleCartLink = translate('sample-cart-link').toLowerCase();
+  const requestCartLink = isKerr ? `/${region}/${locale}/contact/request-a-sample` : `/${region}/${locale}/${sampleCartLink}`;
   block.remove();
   const navPath = `/${region}/${locale}/header/header`;
   const navFrag = await loadFragment(navPath, false);
@@ -459,7 +493,7 @@ export default async function decorate(block) {
   const $btnCart = a(
     {
       class: 'icon-cart',
-      href: `/${region}/${locale}/${sampleCartLink}`,
+      href: requestCartLink,
       'aria-label': 'Cart',
     },
     '\u{e919}',
@@ -498,7 +532,7 @@ export default async function decorate(block) {
         (() => {
           const initialTab = input({ type: 'hidden', name: 'initialTab', id: 'initialTab', placeholder: 'All' });
           const selected = div({ class: 'selected' }, 'All');
-          const optionsList = ['All', 'Content & Resource', 'Ingredients', 'Technical Documents & SDS', 'Event'];
+          const optionsList = isKerr ? ['All', 'Content & Resource', 'Ingredients', 'Technical Documents & SDS'] : ['All', 'Content & Resource', 'Ingredients', 'Technical Documents & SDS', 'Event'];
           const options = div({ class: 'dropdown-options hidden' },
             ...optionsList.map((text) => div({ class: 'dropdown-option' }, text)),
           );

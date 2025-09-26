@@ -475,11 +475,11 @@ export default class ContentResourcesRenderer {
     });
 
     const $filter = document.createDocumentFragment();
-    $filter.append(h4('Filter Options'));
+    $filter.append(h4(translate('filter-options')));
 
     // if filters are selected
     if (this.state.tags.length > 0) {
-      const $appliedFilterHeading = h4('Filters Applied');
+      const $appliedFilterHeading = h4(translate('filters-applied'));
       const $appliedFilters = ul({ class: 'applied-filters' });
 
       this.state.tags.forEach((tag) => {
@@ -501,7 +501,7 @@ export default class ContentResourcesRenderer {
       });
 
       // clear all button
-      const $clearAll = li({ class: 'clear-all' }, 'Clear All');
+      const $clearAll = li({ class: 'clear-all' }, translate('clear-all'));
       $clearAll.addEventListener('click', () => {
         this.state.tags = []; // clear all tags
         this.state.currentPage = 0;
