@@ -107,8 +107,7 @@ export function parseClassFromString(inputString) {
  * @param {string} inputText
  */
 export function setAriaLabelForSM(inputText) {
-  if (inputText.textContent == 'SM')
-    inputText.setAttribute('aria-label', 'service mark');
+  if (inputText.textContent === 'SM') inputText.setAttribute('aria-label', 'service mark');
 }
 
 /**
