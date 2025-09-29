@@ -45,7 +45,7 @@ export default async function decorate(block) {
       const isVideo = article.tags && article.tags.includes('Resource Type / Video');
       if (isVideo && article['video-url']) {
         thumb = a({ class: 'thumb video', href: article.path },
-          createOptimizedPicture(article['video-thumbnail'], article.title, true, [{ width: '235' }]),
+          createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
           button({ class: 'play-button', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' })),
         );
         // Open modal on click of thumb or play button
