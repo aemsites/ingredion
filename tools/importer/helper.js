@@ -1120,11 +1120,13 @@ export function sanitizeMetaTags(tags) {
     if (tag.includes('Ingredion :')) {
       let temp = tag.replace('Ingredion :', '');
       temp = temp.split('/');
-      temp.forEach(item => faltTags.push(item.trim()));      
-    } else if (tag.includes('Ingredion-com :')) {   
-      let temp = tag.replace('Ingredion-com :', '');
-      temp = temp.split('/');
-      sanitizedTags.push(`${temp[0]}/${temp[temp.length - 1]}`);        
+      temp.forEach((item) => faltTags.push(item.trim()));
+    } else if (tag.includes('Ingredion-com :')) {
+      let temp = tag.replace('Ingredion-com :', '').trim();
+      if (temp) { // Only process if there's content after the prefix
+        temp = temp.split('/');
+        sanitizedTags.push(`${temp[0]}/${temp[temp.length - 1]}`);
+      }
     } else
       faltTags.push(tag);
   });  
