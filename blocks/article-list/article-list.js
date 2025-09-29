@@ -54,7 +54,7 @@ export default async function decorate(block) {
           openVideoModal(article['video-url'], true, false);
         };
         thumb.addEventListener('click', openVideoModalHandler);
-        watchVideoLink = a({ class: 'secondary watch-video-link', href: article.path }, 'Watch Video');
+        watchVideoLink = a({ class: 'secondary watch-video-link', href: article.path }, translate('watch-video'));
         watchVideoLink.addEventListener('click', openVideoModalHandler);
       }
 
@@ -218,7 +218,7 @@ export default async function decorate(block) {
           openVideoModal(article['video-url'], true, false);
         };
         thumb.addEventListener('click', openVideoModalHandler);
-        watchVideoBtn = a({ class: 'button secondary watch-video-btn', href: article.path }, 'Watch Video');
+        watchVideoBtn = a({ class: 'button secondary watch-video-btn', href: article.path }, translate('watch-video'));
         watchVideoBtn.addEventListener('click', openVideoModalHandler);
       }
 
