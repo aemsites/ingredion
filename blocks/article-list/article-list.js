@@ -36,7 +36,7 @@ export default async function decorate(block) {
     const $clearFilters = a({ class: 'clear-all' }, translate('clear-all'));
 
     const $articleCard = (article) => {
-      let watchVideoLink='';
+      let watchVideoLink = '';
       let thumb = a({ class: 'thumb', href: article.path },
         createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
       );
@@ -65,13 +65,13 @@ export default async function decorate(block) {
           h4(article.title),
           p({ class: 'date' }, formatDate(article.publishDate)),
           p(article.description),
-          div({ class: 'cards-link'},
+          div({ class: 'cards-link' },
             watchVideoLink,
             a({ class: 'arrow', href: article.path }, translate('learn-more')),
           ),
         ),
       );
-    }
+    };
 
     $articlePage = div({ class: 'article-list' },
       div({ class: 'filter-search-sort' },
