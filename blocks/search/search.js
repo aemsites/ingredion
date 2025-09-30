@@ -62,7 +62,7 @@ async function createContentResourcesPanel(contentResourcesResults) {
       };
       thumb.addEventListener('click', openVideoModalHandler);
 
-      watchVideoBtn = a({ class: 'button secondary watch-video-btn', href: article.path }, 'Watch Video');
+      watchVideoBtn = a({ class: 'button secondary watch-video-btn', href: article.path }, translate('watch-video'));
 
       watchVideoBtn.addEventListener('click', openVideoModalHandler);
     }
