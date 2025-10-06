@@ -35,18 +35,43 @@ export default async function decorate(block) {
     const $filterMarketsDropdown = div({ 'data-tag': 'Markets' }); // pass the tag
     const $clearFilters = a({ class: 'clear-all' }, translate('clear-all'));
 
-    const $articleCard = (article) => a({ class: 'card', href: article.path },
-      a({ class: 'thumb', href: article.path },
+    const $articleCard = (article) => {
+      let watchVideoLink = '';
+      let thumb = a({ class: 'thumb', href: article.path },
         createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
-      ),
-      div({ class: 'info' },
-        article.type && p({ class: 'type' }, JSON.parse(article.type)[0]),
-        h4(article.title),
-        p({ class: 'date' }, formatDate(article.publishDate)),
-        p(article.description),
-        a({ class: 'arrow', href: article.path }, translate('learn-more')),
-      ),
-    );
+      );
+
+      // If this is a video, override the click to open a modal on click
+      const isVideo = article.tags && article.tags.includes('Resource Type / Video');
+      if (isVideo && article['video-url']) {
+        thumb = a({ class: 'thumb video', href: article.path },
+          createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
+          button({ class: 'play-button', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' })),
+        );
+        // Open modal on click of thumb or play button
+        const openVideoModalHandler = (e) => {
+          e.preventDefault();
+          openVideoModal(article['video-url'], true, false);
+        };
+        thumb.addEventListener('click', openVideoModalHandler);
+        watchVideoLink = a({ class: 'secondary watch-video-link', href: article.path }, translate('watch-video'));
+        watchVideoLink.addEventListener('click', openVideoModalHandler);
+      }
+
+      return a({ class: 'card', href: article.path },
+        thumb,
+        div({ class: 'info' },
+          article.type && p({ class: 'type' }, JSON.parse(article.type)[0]),
+          h4(article.title),
+          p({ class: 'date' }, formatDate(article.publishDate)),
+          p(article.description),
+          div({ class: 'cards-link' },
+            watchVideoLink,
+            a({ class: 'arrow', href: article.path }, translate('learn-more')),
+          ),
+        ),
+      );
+    };
 
     $articlePage = div({ class: 'article-list' },
       div({ class: 'filter-search-sort' },
@@ -193,7 +218,7 @@ export default async function decorate(block) {
           openVideoModal(article['video-url'], true, false);
         };
         thumb.addEventListener('click', openVideoModalHandler);
-        watchVideoBtn = a({ class: 'button secondary watch-video-btn', href: article.path }, 'Watch Video');
+        watchVideoBtn = a({ class: 'button secondary watch-video-btn', href: article.path }, translate('watch-video'));
         watchVideoBtn.addEventListener('click', openVideoModalHandler);
       }
 
