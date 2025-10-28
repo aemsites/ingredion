@@ -60,6 +60,21 @@ function embedYoutube(url, autoplay, background) {
   return temp.children.item(0);
 }
 
+function embedBoxUrl(url) {
+  // Sample URL: https://app.box.com/s/p60c7tfpt5ttg94xkrw30thegyzv242d
+  const [, boxId] = url.pathname.split('/s/');
+  const temp = document.createElement('div');
+  temp.innerHTML = `<div class="video-modal" style="display: block;">
+    <div class="video-modal-wrapper">
+      <div class='video-modal-content'>
+        <iframe src="https://app.box.com/s/${boxId}" allowfullscreen title="Content from Box" loading="lazy"></iframe>
+        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal"></div>
+      </div>
+    </div>
+  </div>`;
+  return temp.children.item(0);
+}
+
 function getVideoElement(source, autoplay, background) {
   const video = document.createElement('video');
   video.setAttribute('controls', '');
@@ -90,6 +105,7 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
 
   const isYoutube = link.includes('youtube') || link.includes('youtu.be');
   const isVimeo = link.includes('vimeo');
+  const isBox = link.includes('box');
 
   if (isYoutube) {
     const embedWrapper = embedYoutube(url, autoplay, background);
@@ -105,6 +121,18 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
     });
   } else if (isVimeo) {
     const embedWrapper = embedVimeo(url, autoplay, background);
+    block.append(embedWrapper);
+    embedWrapper.querySelector('iframe').addEventListener('load', () => {
+      block.dataset.embedLoaded = true;
+    });
+    document.body.classList.add('modal-open');
+    embedWrapper.querySelector('.video-modal-close').addEventListener('click', () => {
+      embedWrapper.remove();
+      block.dataset.embedLoaded = false;
+      document.body.classList.remove('modal-open');
+    });
+  } else if (isBox) {
+    const embedWrapper = embedBoxUrl(url);
     block.append(embedWrapper);
     embedWrapper.querySelector('iframe').addEventListener('load', () => {
       block.dataset.embedLoaded = true;
