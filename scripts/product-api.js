@@ -1,7 +1,12 @@
 // This file contains all the product API endpoints
+import { getRegionLocale } from './utils.js';
 
-// prod
-export const API_HOST = 'https://www.ingredion.com';
+// prod - dynamically set based on region/locale
+const [, currentLocale] = getRegionLocale();
+const isKerr = currentLocale === 'kerr';
+export const API_HOST = isKerr
+  ? 'https://www.kerrbyingredion.com'
+  : 'https://www.ingredion.com';
 
 // stage - testing (todo: remove before go-live)
 // export const API_HOST = 'https://ingredion-stage65.adobecqms.net';
