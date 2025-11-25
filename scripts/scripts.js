@@ -386,15 +386,18 @@ async function loadLazy(doc) {
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
+
   const type = getMetadata('type');
   if (type !== 'noHeaderFooter') {
     loadHeader(doc.querySelector('header'));
     loadFooter(doc.querySelector('footer'));
+  } else {
+    const headerElement = doc.querySelector('header');
+    const footerElement = doc.querySelector('footer');
+    if (headerElement) headerElement.remove();
+    if (footerElement) footerElement.remove();
   }
-  // else {
-  //   const headerElement = doc.querySelector('header');
-  //   if (headerElement) headerElement.remove();    
-  // }
+
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
   addHeroObserver(doc);

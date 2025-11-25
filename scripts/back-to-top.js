@@ -9,6 +9,8 @@ export function initBackToTop() {
   const scrollThreshold = 1600;
   const footerBlock = document.querySelector('footer.footer-wrapper .footer.block');
 
+  if (!footerBlock) return;
+
   const scrollTopBtn = div({ class: 'scroll-top-btn' });
   const wrapper = div(
     { class: 'scroll-top-btn-wrapper' },
@@ -17,6 +19,7 @@ export function initBackToTop() {
   );
 
   scrollTopBtn.appendChild(wrapper);
+  
   footerBlock.prepend(scrollTopBtn);
 
   const toggleVisibility = () => {
