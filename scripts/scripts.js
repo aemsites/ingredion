@@ -390,6 +390,9 @@ async function loadLazy(doc) {
   if (type !== 'noHeaderFooter') {
     loadHeader(doc.querySelector('header'));
     loadFooter(doc.querySelector('footer'));
+  }else {
+    const headerElement = doc.querySelector('header');
+    if (headerElement) headerElement.remove();    
   }
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
