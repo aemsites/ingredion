@@ -267,6 +267,25 @@ function createSelect(fd, problemOptionsUrl) {
       }
     });
   }
+// hide and show fields based on Company_Profile selection
+  if (fd.Field === 'Company_Profile') {
+    hiddenInput.addEventListener('change', (e) => {
+      const distributorWrapper = document.querySelector('.Third_party_distributor');
+      const needWrapper = document.querySelector('.Need');
+      const customerWrapper = document.querySelector('.Customer_Roles');
+      const countryValue = e.target.value?.toUpperCase();
+      if (countryValue && (countryValue === 'BUYING THROUGH THIRD PARTY/DISTRIBUTOR')) {
+        distributorWrapper.style.display = 'block'
+        distributorWrapper.classList.add('field-valid');
+        customerWrapper.style.display = 'block';
+        needWrapper.style.display = 'none';
+      } else {
+        distributorWrapper.style.display = 'none';
+        customerWrapper.style.display = 'none';
+        needWrapper.style.display = 'block';
+      }
+    });
+  }
 
   if (fd.Field === 'Market') {
     hiddenInput.addEventListener('change', (e) => {
@@ -321,6 +340,10 @@ function createInput(fd) {
   }
   if (fd.Type === 'email') {
     input.classList.add('email');
+  }
+  // to make font black for Third_party_distributor and Role fields
+  if(fd.Field === 'Third_party_distributor' || fd.Field === 'Role'){
+    input.classList.add('field-valid');
   }
   input.setAttribute('placeholder', fd.Placeholder);
   if (fd.Pattern) {
