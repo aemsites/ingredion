@@ -240,6 +240,47 @@ async function loadCSS(href) {
 }
 
 /**
+ * Adds an alternate hreflang link into the document head.
+ * Uses getRegionLocale to dynamically construct the href based on current page region/locale.
+ * @param {string} [hreflang='en-US'] language-region value (e.g. "en-US")
+ * @param {string} [href] URL for the alternate page (auto-generated if not provided)
+ */
+async function addAlternateLink(){
+  try {
+    // Import getRegionLocale to get current region and locale
+    const { getRegionLocale } = await import('./utils.js');
+    const [region, locale] = getRegionLocale();
+    const href = `https://www.ingredion.com/${region}/${locale}/company/careers`;
+    // Convert locale format from en-us to en-US for hreflang (get last part and uppercase it)
+    const parts = locale.split('-');
+    const hreflang = `${parts[0]}-${parts[1].toUpperCase()}`; 
+    const selector = `link[rel="alternate"][hreflang="${hreflang}"][href="${href}"]`;
+    
+    if (!document.head.querySelector(selector)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = hreflang;
+      link.href = href;
+      document.head.appendChild(link);
+    }
+  } catch (err) {
+    // silently ignore if DOM is not available or other error
+    // eslint-disable-next-line no-console
+    console.debug('addAlternateLink error:', err);
+  }
+}
+
+// Ensure the alternate link is added once DOM is ready
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => addAlternateLink());
+  } else {
+    addAlternateLink();
+  }
+}
+
+
+/**
  * Loads a non module JS file.
  * @param {string} src URL to the JS file
  * @param {Object} attrs additional optional attributes
@@ -718,6 +759,7 @@ export {
   loadFooter,
   loadHeader,
   loadScript,
+  addAlternateLink,
   loadSection,
   loadSections,
   readBlockConfig,
