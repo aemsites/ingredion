@@ -19,7 +19,6 @@ export function initBackToTop() {
   );
 
   scrollTopBtn.appendChild(wrapper);
-  
   footerBlock.prepend(scrollTopBtn);
 
   const toggleVisibility = () => {
