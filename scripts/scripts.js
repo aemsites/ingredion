@@ -387,8 +387,16 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadHeader(doc.querySelector('header'));
-  loadFooter(doc.querySelector('footer'));
+  const type = getMetadata('type');
+  if (type !== 'noHeaderFooter') {
+    loadHeader(doc.querySelector('header'));
+    loadFooter(doc.querySelector('footer'));
+  } else {
+    const headerElement = doc.querySelector('header');
+    const footerElement = doc.querySelector('footer');
+    if (headerElement) headerElement.remove();
+    if (footerElement) footerElement.remove();
+  }
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
