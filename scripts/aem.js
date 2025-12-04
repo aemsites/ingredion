@@ -245,23 +245,24 @@ async function loadCSS(href) {
  * @param {string} [hreflang='en-US'] language-region value (e.g. "en-US")
  * @param {string} [href] URL for the alternate page (auto-generated if not provided)
  */
-async function addAlternateLink(){
+async function addAlternateLink() {
   try {
     // Import getRegionLocale to get current region and locale
+    let companycarrer = 'company/careers';
     const { getRegionLocale } = await import('./utils.js');
     const [region, locale] = getRegionLocale();
-    var companycarrer='company/careers';
     const parts = locale.split('-');
-    var hreflang = `${parts[0]}-${parts[1].toUpperCase()}`;
+    let hreflang = `${parts[0]}-${parts[1].toUpperCase()}`;
 
-    if (locale === 'es-mx')
-      companycarrer='compania/carrera';
-    else if (locale === 'pt-br')
-      companycarrer='institucional/carreiras-na-ingredion';
-    else if (locale === 'es-co')
-      companycarrer='nuestra-compania/carreras';
-    if(locale === 'en-uk')
+    if (locale === 'es-mx'){
+      companycarrer = 'compania/carrera'; 
+    }else if (locale === 'pt-br'){
+      companycarrer = 'institucional/carreiras-na-ingredion';
+    }else if (locale === 'es-co')
+      companycarrer = 'nuestra-compania/carreras';
+    if(locale === 'en-uk'){
         hreflang = 'en-GB';
+    }
     const href = `https://www.ingredion.com/${region}/${locale}/${companycarrer}`;
     const selector = `link[rel="alternate"][hreflang="${hreflang}"][href="${href}"]`;
     
