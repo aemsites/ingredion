@@ -247,29 +247,61 @@ async function loadCSS(href) {
  */
 async function addAlternateLink() {
   try {
-    // Import getRegionLocale to get current region and locale
-    let companycarrer = 'company/careers';
-    const { getRegionLocale } = await import('./utils.js');
-    const [region, locale] = getRegionLocale();
-    const parts = locale.split('-');
-    let hreflang = `${parts[0]}-${parts[1].toUpperCase()}`;
+    const selector1 = 'link[rel="alternate"][hreflang="en-US"][href="https://www.ingredion.com/na/en-us/company/careers"]';
+    const selector2 = 'link[rel="alternate"][hreflang="en-UK"][href="https://www.ingredion.com/emea/en-uk/company/careers"]';
+    const selector3 = 'link[rel="alternate"][hreflang="en-SG"][href="https://www.ingredion.com/apac/en-sg/company/careers"]';
+    const selector4 = 'link[rel="alternate"][hreflang="es-MX"][href="https://www.ingredion.com/na/es-mx/compania/carrera"]';
+    const selector5 = 'link[rel="alternate"][hreflang="es-CO"][href="https://www.ingredion.com/sa/es-co/nuestra-compania/carreras"]';
+    const selector6 = 'link[rel="alternate"][hreflang="pt-BR"][href="https://www.ingredion.com/sa/pt-br/institucional/carreiras-na-ingredion"]';
+    const selector7 = 'link[rel="alternate"][hreflang="ja-JP"][href="https://www.ingredion.com/apac/ja-jp/company/careers"]';
 
-    if (locale === 'es-mx') {
-      companycarrer = 'compania/carrera';
-    } else if (locale === 'pt-br') {
-      companycarrer = 'institucional/carreiras-na-ingredion';
-    } else if (locale === 'es-co') { companycarrer = 'nuestra-compania/carreras'; }
-    if (locale === 'en-uk') {
-      hreflang = 'en-GB';
-    }
-    const href = `https://www.ingredion.com/${region}/${locale}/${companycarrer}`;
-    const selector = `link[rel="alternate"][hreflang="${hreflang}"][href="${href}"]`;
-
-    if (!document.head.querySelector(selector)) {
+    if (!document.head.querySelector(selector1)) {
       const link = document.createElement('link');
       link.rel = 'alternate';
-      link.hreflang = hreflang;
-      link.href = href;
+      link.hreflang = 'en-US';
+      link.href = 'https://www.ingredion.com/na/en-us/company/careers';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector2)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'en-UK';
+      link.href = 'https://www.ingredion.com/emea/en-uk/company/careers';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector3)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'en-SG';
+      link.href = 'https://www.ingredion.com/apac/en-sg/company/careers';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector4)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'es-MX';
+      link.href = 'https://www.ingredion.com/na/es-mx/compania/carrera';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector5)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'es-CO';
+      link.href = 'https://www.ingredion.com/sa/es-co/nuestra-compania/carreras';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector6)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'pt-BR';
+      link.href = 'https://www.ingredion.com/sa/pt-br/institucional/carreiras-na-ingredion';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector7)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'ja-JP';
+      link.href = 'https://www.ingredion.com/apac/ja-jp/company/careers';
       document.head.appendChild(link);
     }
   } catch (err) {
