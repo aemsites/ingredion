@@ -250,10 +250,19 @@ async function addAlternateLink(){
     // Import getRegionLocale to get current region and locale
     const { getRegionLocale } = await import('./utils.js');
     const [region, locale] = getRegionLocale();
-    const href = `https://www.ingredion.com/${region}/${locale}/company/careers`;
-    // Convert locale format from en-us to en-US for hreflang (get last part and uppercase it)
+    var companycarrer='company/careers';
     const parts = locale.split('-');
-    const hreflang = `${parts[0]}-${parts[1].toUpperCase()}`; 
+    var hreflang = `${parts[0]}-${parts[1].toUpperCase()}`;
+
+    if (locale === 'es-mx')
+      companycarrer='compania/carrera';
+    else if (locale === 'pt-br')
+      companycarrer='institucional/carreiras-na-ingredion';
+    else if (locale === 'es-co')
+      companycarrer='nuestra-compania/carreras';
+    if(locale === 'en-uk')
+        hreflang = 'en-GB';
+    const href = `https://www.ingredion.com/${region}/${locale}/${companycarrer}`;
     const selector = `link[rel="alternate"][hreflang="${hreflang}"][href="${href}"]`;
     
     if (!document.head.querySelector(selector)) {
