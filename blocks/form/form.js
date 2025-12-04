@@ -259,6 +259,11 @@ function createSelect(fd, problemOptionsUrl) {
       const countryValue = e.target.value?.toUpperCase();
       if (countryValue && !['US', 'CA', 'MX'].includes(countryValue)) {
         stateWrapper.style.display = 'none';
+        if(countryValue === 'CN'){
+          // alert('china');
+          // const province=document.querySelector('.Zip');
+          // alert(province.label.textContent);
+        }
       } else {
         stateWrapper.style.display = 'block';
         stateWrapper.querySelectorAll('.form-dropdown__option').forEach((option) => {
@@ -273,15 +278,19 @@ function createSelect(fd, problemOptionsUrl) {
       const distributorWrapper = document.querySelector('.Third_party_distributor');
       const needWrapper = document.querySelector('.Need');
       const customerWrapper = document.querySelector('.Customer_Roles');
-      const countryValue = e.target.value?.toUpperCase();
-      if (countryValue && (countryValue === 'BUYING THROUGH THIRD PARTY/DISTRIBUTOR')) {
+      const companyValue = e.target.value?.toUpperCase();
+      if (companyValue && (companyValue === 'BUYING THROUGH THIRD PARTY/DISTRIBUTOR')) {
         distributorWrapper.style.display = 'block'
         distributorWrapper.classList.add('field-valid');
-        customerWrapper.style.display = 'block';
+        customerWrapper.style.display = 'none';
         needWrapper.style.display = 'none';
-      } else {
+      } else if (companyValue && (companyValue === 'ACADEMIC')){
         distributorWrapper.style.display = 'none';
         customerWrapper.style.display = 'none';
+        needWrapper.style.display = 'none';
+      }else{
+        distributorWrapper.style.display = 'none';
+        customerWrapper.style.display = 'block';
         needWrapper.style.display = 'block';
       }
     });
