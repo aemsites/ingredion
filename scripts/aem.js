@@ -254,18 +254,17 @@ async function addAlternateLink() {
     const parts = locale.split('-');
     let hreflang = `${parts[0]}-${parts[1].toUpperCase()}`;
 
-    if (locale === 'es-mx'){
-      companycarrer = 'compania/carrera'; 
-    }else if (locale === 'pt-br'){
+    if (locale === 'es-mx') {
+      companycarrer = 'compania/carrera';
+    } else if (locale === 'pt-br') {
       companycarrer = 'institucional/carreiras-na-ingredion';
-    }else if (locale === 'es-co')
-      companycarrer = 'nuestra-compania/carreras';
-    if(locale === 'en-uk'){
-        hreflang = 'en-GB';
+    } else if (locale === 'es-co') { companycarrer = 'nuestra-compania/carreras'; }
+    if (locale === 'en-uk') {
+      hreflang = 'en-GB';
     }
     const href = `https://www.ingredion.com/${region}/${locale}/${companycarrer}`;
     const selector = `link[rel="alternate"][hreflang="${hreflang}"][href="${href}"]`;
-    
+
     if (!document.head.querySelector(selector)) {
       const link = document.createElement('link');
       link.rel = 'alternate';
@@ -288,7 +287,6 @@ if (typeof document !== 'undefined') {
     addAlternateLink();
   }
 }
-
 
 /**
  * Loads a non module JS file.
