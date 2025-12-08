@@ -259,11 +259,40 @@ function createSelect(fd, problemOptionsUrl) {
       const countryValue = e.target.value?.toUpperCase();
       if (countryValue && !['US', 'CA', 'MX'].includes(countryValue)) {
         stateWrapper.style.display = 'none';
+        // if(countryValue === 'CN'){
+        //   const zipLabel = document.querySelector('label[for="Zip"]');
+        //   zipLabel.textContent = 'Province';
+        //   const zipInput = document.getElementById('Zip');
+        //   zipInput.setAttribute('placeholder', 'Province');
+        // }
       } else {
         stateWrapper.style.display = 'block';
         stateWrapper.querySelectorAll('.form-dropdown__option').forEach((option) => {
           option.style.display = option?.dataset?.country === countryValue ? 'flex' : 'none';
         });
+      }
+    });
+  }
+  // hide and show fields based on Company_Profile selection
+  if (fd.Field === 'Company_Profile') {
+    hiddenInput.addEventListener('change', (e) => {
+      const distributorWrapper = document.querySelector('.Third_party_distributor');
+      const needWrapper = document.querySelector('.Need');
+      const customerWrapper = document.querySelector('.Customer_Roles');
+      const companyValue = e.target.value?.toUpperCase();
+      if (companyValue && (companyValue.includes('THIRD PARTY/DISTRIBUTOR'))) {
+        distributorWrapper.style.display = 'block';
+        distributorWrapper.classList.add('field-valid');
+        customerWrapper.style.display = 'none';
+        needWrapper.style.display = 'none';
+      } else if (companyValue && (companyValue.includes('BUYING DIRECT') || companyValue === 'INGREDIENT SUPPLIER' || companyValue === 'FOODSERVICE' || companyValue === 'FINAL PRODUCT MANUFACTURER')) {
+        distributorWrapper.style.display = 'none';
+        customerWrapper.style.display = 'block';
+        needWrapper.style.display = 'block';
+      } else {
+        distributorWrapper.style.display = 'none';
+        customerWrapper.style.display = 'none';
+        needWrapper.style.display = 'none';
       }
     });
   }
@@ -321,6 +350,10 @@ function createInput(fd) {
   }
   if (fd.Type === 'email') {
     input.classList.add('email');
+  }
+  // to make font black for Third_party_distributor and Role fields
+  if (fd.Field === 'Third_party_distributor' || fd.Field === 'Role') {
+    input.classList.add('field-valid');
   }
   input.setAttribute('placeholder', fd.Placeholder);
   if (fd.Pattern) {
