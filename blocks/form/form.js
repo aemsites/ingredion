@@ -257,16 +257,17 @@ function createSelect(fd, problemOptionsUrl) {
     hiddenInput.addEventListener('change', (e) => {
       const stateWrapper = document.querySelector('.State');
       const countryValue = e.target.value?.toUpperCase();
+      const provinceWrapper = document.querySelector('.Province');
       if (countryValue && !['US', 'CA', 'MX'].includes(countryValue)) {
         stateWrapper.style.display = 'none';
-        // if(countryValue === 'CN'){
-        //   const zipLabel = document.querySelector('label[for="Zip"]');
-        //   zipLabel.textContent = 'Province';
-        //   const zipInput = document.getElementById('Zip');
-        //   zipInput.setAttribute('placeholder', 'Province');
-        // }
+        if (countryValue === 'CN') {
+          provinceWrapper.style.display = 'block';
+        } else {
+          provinceWrapper.style.display = 'none';
+        }
       } else {
         stateWrapper.style.display = 'block';
+        provinceWrapper.style.display = 'none';
         stateWrapper.querySelectorAll('.form-dropdown__option').forEach((option) => {
           option.style.display = option?.dataset?.country === countryValue ? 'flex' : 'none';
         });
