@@ -45,6 +45,26 @@ function addFavicon() {
     document.head.appendChild(link);
   }
 }
+async function analyticsScriptSrc() {
+  const [region, locale] = getRegionLocale();
+  const isKerr = region === 'na' && locale === 'kerr';
+  try {
+    if (isKerr) {
+      const selector = 'script[src="https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-0e5b0f94b7f5.min.js"]';
+
+      if (!document.head.querySelector(selector)) {
+        const script = document.createElement('script');
+        script.src = 'https://assets.adobedtm.com/988b70f7b756/aa64d2a496c3/launch-0e5b0f94b7f5.min.js';
+        script.async = true;
+        document.head.appendChild(script);
+      }
+    }
+  } catch (err) {
+    // silently ignore if DOM is not available or other error
+    // eslint-disable-next-line no-console
+    console.debug('analyticsScriptSrc error:', err);
+  }
+}
 
 /** allow for link attributes to be added by authors
  * example usage = Text [class:button,target:_blank,title:Title goes here]
@@ -208,6 +228,7 @@ export async function loadTemplate(doc, templateName) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+  analyticsScriptSrc();
   const templateName = getMetadata('template');
   const main = doc.querySelector('main');
   if (main) {
