@@ -476,11 +476,6 @@ async function fetchSearchResults(searchParams) {
     ]);
 
     // Filter the content resources and events based on the search query
-    let query1 = searchParams.get('q');
-    if (!Number.isNaN(query1.slice(-8))) {
-      query1 = query1.slice(-8);
-    }
-    const query = query1;
     const contentResourcesResults = query ? filterIndex(globalIndex, query) : [];
     const eventsResults = query ? filterIndex(eventsIndex, query) : [];
 
