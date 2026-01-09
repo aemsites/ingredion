@@ -38,9 +38,9 @@ function initDataLayer() {
   if (!pageHierarchy) {
     pageHierarchy = [getRegionLocaleMap(region), getRegionLocaleMap(locale), 'index'];
   }
-  const pageLanguage = locale.split('-')[0];
+  const pageLanguage = locale.split('-')[0] === 'kerr' ? 'en' : locale.split('-')[0];
   const productFacets = JSON.parse(localStorage.getItem('productFacets'));
-
+  pageHierarchy[1] = locale.split('-')[0] === 'kerr' ? 'Kerr by Ingredion' : pageHierarchy[1];
   window.dataLayer = {
     page: {
       pageLevel1: pageHierarchy[0],
