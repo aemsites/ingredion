@@ -9,7 +9,7 @@ function getEnvironment() {
   if (hostname.endsWith('.aem.page') || hostname.endsWith('.aem.live') || hostname === 'preview.ingredion.com') {
     return 'stage';
   }
-  if (hostname === 'www.ingredion.us' || hostname === 'www.ingredion.com') {
+  if (hostname === 'www.ingredion.us' || hostname === 'www.ingredion.com' || hostname === 'www.kerrbyingredion.com') {
     return 'prod';
   }
   return 'unknown';
