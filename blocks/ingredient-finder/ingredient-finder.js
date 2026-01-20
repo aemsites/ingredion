@@ -157,7 +157,7 @@ export default async function decorate(block) {
     const searchParams = new URLSearchParams({
       activePage: '1',
       perPage: '6',
-      q: searchValue,
+      q: (Number.isNaN(Number(searchValue.slice(-5))) || !Number.isNaN(Number(searchValue)) ? searchValue : searchValue.split('-').pop().trim()),
     });
     // update the url with the new query params
     window.history.pushState({}, '', `${pagePath}?${searchParams}`);
