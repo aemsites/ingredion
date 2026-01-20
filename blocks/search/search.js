@@ -476,6 +476,7 @@ async function fetchSearchResults(searchParams) {
     ]);
 
     // Filter the content resources and events based on the search query
+    const query = searchParams.get('q');
     const contentResourcesResults = query ? filterIndex(globalIndex, query) : [];
     const eventsResults = query ? filterIndex(eventsIndex, query) : [];
 
