@@ -45,7 +45,71 @@ function addFavicon() {
     document.head.appendChild(link);
   }
 }
+async function decorateAlternateLink() {
+  try {
+    const selector1 = 'link[rel="alternate"][hreflang="en-US"][href="https://www.ingredion.com/na/en-us/company/careers"]';
+    const selector2 = 'link[rel="alternate"][hreflang="en-UK"][href="https://www.ingredion.com/emea/en-uk/company/careers"]';
+    const selector3 = 'link[rel="alternate"][hreflang="en-SG"][href="https://www.ingredion.com/apac/en-sg/company/careers"]';
+    const selector4 = 'link[rel="alternate"][hreflang="es-MX"][href="https://www.ingredion.com/na/es-mx/compania/carrera"]';
+    const selector5 = 'link[rel="alternate"][hreflang="es-CO"][href="https://www.ingredion.com/sa/es-co/nuestra-compania/carreras"]';
+    const selector6 = 'link[rel="alternate"][hreflang="pt-BR"][href="https://www.ingredion.com/sa/pt-br/institucional/carreiras-na-ingredion"]';
+    const selector7 = 'link[rel="alternate"][hreflang="ja-JP"][href="https://www.ingredion.com/apac/ja-jp/company/careers"]';
 
+    if (!document.head.querySelector(selector1)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'en-US';
+      link.href = 'https://www.ingredion.com/na/en-us/company/careers';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector2)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'en-UK';
+      link.href = 'https://www.ingredion.com/emea/en-uk/company/careers';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector3)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'en-SG';
+      link.href = 'https://www.ingredion.com/apac/en-sg/company/careers';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector4)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'es-MX';
+      link.href = 'https://www.ingredion.com/na/es-mx/compania/carrera';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector5)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'es-CO';
+      link.href = 'https://www.ingredion.com/sa/es-co/nuestra-compania/carreras';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector6)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'pt-BR';
+      link.href = 'https://www.ingredion.com/sa/pt-br/institucional/carreiras-na-ingredion';
+      document.head.appendChild(link);
+    }
+    if (!document.head.querySelector(selector7)) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = 'ja-JP';
+      link.href = 'https://www.ingredion.com/apac/ja-jp/company/careers';
+      document.head.appendChild(link);
+    }
+  } catch (err) {
+    // silently ignore if DOM is not available or other error
+    // eslint-disable-next-line no-console
+    console.debug('decorateAlternateLink error:', err);
+  }
+}
 /** allow for link attributes to be added by authors
  * example usage = Text [class:button,target:_blank,title:Title goes here]
  * @param main
@@ -208,6 +272,7 @@ export async function loadTemplate(doc, templateName) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+  decorateAlternateLink();
   const templateName = getMetadata('template');
   const main = doc.querySelector('main');
   if (main) {
