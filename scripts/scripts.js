@@ -439,6 +439,24 @@ function autolinkModals(element) {
   });
 }
 
+
+function initEmbeddedMessaging() {
+  console.log('Initializing Embedded Messaging');
+  try {
+    embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+    embeddedservice_bootstrap.init(
+      '00DO500000C1DQv',
+      'USCA_Virtual_Sales_Enhanced_Web_Channel',
+      'https://ingredion--fcsit.sandbox.my.site.com/ESWUSCAVirtualSalesEnh1767787479852',
+      {
+        scrt2URL: 'https://ingredion--fcsit.sandbox.my.salesforce-scrt.com'
+      }
+    );
+  } catch (err) {
+    console.error('Error loading Embedded Messaging: ', err);
+  }
+};
+
 /**
  * Loads everything that doesn't need to be delayed.
  * @param {Element} doc The container element
@@ -456,12 +474,17 @@ async function loadLazy(doc) {
   if (type !== 'noHeaderFooter') {
     loadHeader(doc.querySelector('header'));
     loadFooter(doc.querySelector('footer'));
-  } else {
+    
+  } else if (type == 'chatbot'){
+        initEmbeddedMessaging();
+}else{
     const headerElement = doc.querySelector('header');
     const footerElement = doc.querySelector('footer');
     if (headerElement) headerElement.remove();
     if (footerElement) footerElement.remove();
   }
+
+  
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
