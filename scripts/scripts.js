@@ -457,7 +457,7 @@ function initEmbeddedMessaging() {
 
 function chatBotScript() {
   const script = document.createElement('script');
-  script.src ='https://ingredion--fcsit.sandbox.my.site.com/ESWUSCAVirtualSalesEnh1767787479852/assets/js/bootstrap.min.js';
+  script.src = 'https://ingredion--fcsit.sandbox.my.site.com/ESWUSCAVirtualSalesEnh1767787479852/assets/js/bootstrap.min.js';
   script.type = 'text/javascript';
   script.async = true;
   script.onload = () => {
