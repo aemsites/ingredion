@@ -447,7 +447,7 @@ function initEmbeddedMessaging() {
       'USCA_Virtual_Sales_Enhanced_Web_Channel',
       'https://ingredion--fcsit.sandbox.my.site.com/ESWUSCAVirtualSalesEnh1767787479852',
       {
-        scrt2URL: 'https://ingredion--fcsit.sandbox.my.salesforce-scrt.com',
+        scrt2URL: 'https://ingredion--fcsit.sandbox.my.salesforce-scrt.com'
       }
     );
   } catch (err) {
