@@ -44,6 +44,9 @@ export default function decorate(block) {
           iconWrapper.classList.add('icon-card');
           iconWrapper.href = linkHref;
           iconWrapper.title = linkTitle;
+          if (linkTitle.includes('[target:_blank]')) {
+            iconWrapper.setAttribute('target', '_blank');
+          }
 
           iconWrapper.innerHTML = `
             <div class='icon-card-wrapper'>
