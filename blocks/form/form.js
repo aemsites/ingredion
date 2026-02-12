@@ -283,7 +283,6 @@ function createSelect(fd, problemOptionsUrl) {
       const companyValue = e.target.value?.toUpperCase();
       if (companyValue && (companyValue.includes('THIRD PARTY/DISTRIBUTOR'))) {
         distributorWrapper.style.display = 'block';
-        distributorWrapper.classList.add('field-valid');
         customerWrapper.style.display = 'none';
         needWrapper.style.display = 'none';
       } else if (companyValue && (companyValue.includes('BUYING DIRECT') || companyValue === 'INGREDIENT SUPPLIER' || companyValue === 'FOODSERVICE' || companyValue === 'FINAL PRODUCT MANUFACTURER')) {
