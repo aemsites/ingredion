@@ -443,11 +443,11 @@ function initEmbeddedMessaging() {
   try {
     embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
     embeddedservice_bootstrap.init(
-      '00DO500000C1DQv',
-      'USCA_Virtual_Sales_Enhanced_Web_Channel',
-      'https://ingredion--fcsit.sandbox.my.site.com/ESWUSCAVirtualSalesEnh1767787479852',
+      '00D30000000mNMR',
+      'USCA_Virtual_Sales_Web_Channel',
+      'https://ingredion.my.site.com/ESWUSCAVirtualSalesWeb1770790871909',
       {
-        scrt2URL: 'https://ingredion--fcsit.sandbox.my.salesforce-scrt.com'
+        scrt2URL: 'https://ingredion.my.salesforce-scrt.com'
       }
     );
   } catch (err) {
@@ -465,7 +465,7 @@ function chatBotScript() {
   }
 
   const script = document.createElement('script');
-  script.src = 'https://ingredion--fcsit.sandbox.my.site.com/ESWUSCAVirtualSalesEnh1767787479852/assets/js/bootstrap.min.js';
+  script.src = 'https://ingredion.my.site.com/ESWUSCAVirtualSalesWeb1770790871909/assets/js/bootstrap.min.js';
   script.type = 'text/javascript';
   script.async = true;
   script.onload = () => {
