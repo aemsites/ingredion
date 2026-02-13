@@ -456,6 +456,14 @@ function initEmbeddedMessaging() {
 }
 
 function chatBotScript() {
+  try {
+    if (!window.location || !window.location.pathname || !window.location.pathname.includes('/na/en-us/')) {
+      return;
+    }
+  } catch (e) {
+    return;
+  }
+
   const script = document.createElement('script');
   script.src = 'https://ingredion--fcsit.sandbox.my.site.com/ESWUSCAVirtualSalesEnh1767787479852/assets/js/bootstrap.min.js';
   script.type = 'text/javascript';
@@ -484,12 +492,10 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   const type = getMetadata('type');
-  if (type !== 'chatbot' && type !== 'noHeaderFooter') {
+  if (type !== 'noHeaderFooter') {
     loadHeader(doc.querySelector('header'));
     loadFooter(doc.querySelector('footer'));
-  } else if (type === 'chatbot') {
-    chatBotScript();
-  } else {
+  }else {
     const headerElement = doc.querySelector('header');
     const footerElement = doc.querySelector('footer');
     if (headerElement) headerElement.remove();
@@ -511,7 +517,16 @@ async function loadLazy(doc) {
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3500);
+  window.setTimeout(() => {
+    import('./delayed.js');
+    try {
+      if (window.location && window.location.pathname && window.location.pathname.includes('/na/en-us/')) {
+        chatBotScript();
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, 3500);
   // load anything that can be postponed to the latest here
 }
 
