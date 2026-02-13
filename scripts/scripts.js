@@ -442,12 +442,13 @@ function autolinkModals(element) {
 function initEmbeddedMessaging() {
   try {
     embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+    // eslint-disable-next-line import/no-cycle
     embeddedservice_bootstrap.init(
       '00D30000000mNMR',
       'USCA_Virtual_Sales_Web_Channel',
       'https://ingredion.my.site.com/ESWUSCAVirtualSalesWeb1770790871909',
       {
-        scrt2URL: 'https://ingredion.my.salesforce-scrt.com'
+        scrt2URL: 'https://ingredion.my.salesforce-scrt.com',
       }
     );
   } catch (err) {
@@ -495,7 +496,8 @@ async function loadLazy(doc) {
   if (type !== 'noHeaderFooter') {
     loadHeader(doc.querySelector('header'));
     loadFooter(doc.querySelector('footer'));
-  }else {
+  }
+  else {
     const headerElement = doc.querySelector('header');
     const footerElement = doc.querySelector('footer');
     if (headerElement) headerElement.remove();
