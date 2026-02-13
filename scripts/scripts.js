@@ -442,7 +442,7 @@ function autolinkModals(element) {
 function initEmbeddedMessaging() {
   try {
     embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
-    // eslint-disable-next-line import/no-cycle
+    // eslint-disable-next-line camelcase
     embeddedservice_bootstrap.init(
       '00D30000000mNMR',
       'USCA_Virtual_Sales_Web_Channel',
