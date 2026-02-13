@@ -442,12 +442,13 @@ function autolinkModals(element) {
 function initEmbeddedMessaging() {
   try {
     embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+    // eslint-disable-next-line camelcase
     embeddedservice_bootstrap.init(
-      '00DO500000C1DQv',
-      'USCA_Virtual_Sales_Enhanced_Web_Channel',
-      'https://ingredion--fcsit.sandbox.my.site.com/ESWUSCAVirtualSalesEnh1767787479852',
+      '00D30000000mNMR',
+      'USCA_Virtual_Sales_Web_Channel',
+      'https://ingredion.my.site.com/ESWUSCAVirtualSalesWeb1770790871909',
       {
-        scrt2URL: 'https://ingredion--fcsit.sandbox.my.salesforce-scrt.com'
+        scrt2URL: 'https://ingredion.my.salesforce-scrt.com',
       }
     );
   } catch (err) {
@@ -456,8 +457,16 @@ function initEmbeddedMessaging() {
 }
 
 function chatBotScript() {
+  try {
+    if (!window.location || !window.location.pathname || !window.location.pathname.includes('/na/en-us/')) {
+      return;
+    }
+  } catch (e) {
+    return;
+  }
+
   const script = document.createElement('script');
-  script.src = 'https://ingredion--fcsit.sandbox.my.site.com/ESWUSCAVirtualSalesEnh1767787479852/assets/js/bootstrap.min.js';
+  script.src = 'https://ingredion.my.site.com/ESWUSCAVirtualSalesWeb1770790871909/assets/js/bootstrap.min.js';
   script.type = 'text/javascript';
   script.async = true;
   script.onload = () => {
@@ -484,12 +493,11 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   const type = getMetadata('type');
-  if (type !== 'chatbot' && type !== 'noHeaderFooter') {
+  if (type !== 'noHeaderFooter') {
     loadHeader(doc.querySelector('header'));
     loadFooter(doc.querySelector('footer'));
-  } else if (type === 'chatbot') {
-    chatBotScript();
-  } else {
+  }
+  else {
     const headerElement = doc.querySelector('header');
     const footerElement = doc.querySelector('footer');
     if (headerElement) headerElement.remove();
@@ -511,7 +519,16 @@ async function loadLazy(doc) {
  */
 function loadDelayed() {
   // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3500);
+  window.setTimeout(() => {
+    import('./delayed.js');
+    try {
+      if (window.location && window.location.pathname && window.location.pathname.includes('/na/en-us/')) {
+        chatBotScript();
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, 3500);
   // load anything that can be postponed to the latest here
 }
 
