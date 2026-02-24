@@ -492,7 +492,6 @@ export default async function decorate(block) {
   const $header = document.querySelector('header');
   let $btnCart;
   if (!hideCart) {
-      alert('Cart functionality is enabled for this region and locale. If this is unexpected, please contact the development team.');
       $btnCart = a(
         {
           class: 'icon-cart',
