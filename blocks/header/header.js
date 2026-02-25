@@ -491,30 +491,31 @@ export default async function decorate(block) {
 
   const $header = document.querySelector('header');
   let $btnCart;
-  if (!hideCart) {
-      $btnCart = a(
+
+if (!hideCart) {
+    $btnCart = a(
         {
-          class: 'icon-cart',
-          href: requestCartLink,
-          'aria-label': 'Cart',
+            class: 'icon-cart',
+            href: requestCartLink,
+            'aria-label': 'Cart',
         },
         '\u{e919}',
         span(
-          { class: 'count' },
-          (() => {
-            const cartCookies = getCookie('cartCookies');
-            if (!cartCookies || cartCookies.split('cookie ').length === 0) {
-              return '0';
-            }
-            return (cartCookies.split('cookie ').length - 1).toString();
-          })(),
+            { class: 'count' },
+            (() => {
+                const cartCookies = getCookie('cartCookies');
+                if (!cartCookies || cartCookies.split('cookie ').length === 0) {
+                    return '0';
+                }
+                return (cartCookies.split('cookie ').length - 1).toString();
+            })(),
         ),
-      );
-  
-      if ($btnCart.querySelector('.count').textContent === '0') {
+    );
+
+    if ($btnCart.querySelector('.count').textContent === '0') {
         $btnCart.querySelector('.count').classList.add('hide');
-      }
     }
+}
 
   const $btnBurger = button({ class: 'icon-burger', 'aria-label': 'Menu' });
   $btnBurger.addEventListener('click', () => {
