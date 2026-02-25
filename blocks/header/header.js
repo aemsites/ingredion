@@ -17,6 +17,7 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 const isMobile = window.matchMedia('(width < 1080px)');
 const [region, locale] = getRegionLocale();
 const isKerr = region === 'na' && locale === 'kerr';
+const hideCart = region === 'sa' && locale === 'es-ar';
 
 const logoSrc = isKerr ? '/img/kerr-by-ingredion.webp' : '/img/ingredion.webp';
 const logoAlt = isKerr ? 'kerr by Ingredion' : 'Ingredion logo';
@@ -489,28 +490,30 @@ export default async function decorate(block) {
   );
 
   const $header = document.querySelector('header');
+  let $btnCart;
+  if (!hideCart) {
+    $btnCart = a(
+      {
+        class: 'icon-cart',
+        href: requestCartLink,
+        'aria-label': 'Cart',
+      },
+      '\u{e919}',
+      span(
+        { class: 'count' },
+        (() => {
+          const cartCookies = getCookie('cartCookies');
+          if (!cartCookies || cartCookies.split('cookie ').length === 0) {
+            return '0';
+          }
+          return (cartCookies.split('cookie ').length - 1).toString();
+        })(),
+      ),
+    );
 
-  const $btnCart = a(
-    {
-      class: 'icon-cart',
-      href: requestCartLink,
-      'aria-label': 'Cart',
-    },
-    '\u{e919}',
-    span(
-      { class: 'count' },
-      (() => {
-        const cartCookies = getCookie('cartCookies');
-        if (!cartCookies || cartCookies.split('cookie ').length === 0) {
-          return '0';
-        }
-        return (cartCookies.split('cookie ').length - 1).toString();
-      })(),
-    ),
-  );
-
-  if ($btnCart.querySelector('.count').textContent === '0') {
-    $btnCart.querySelector('.count').classList.add('hide');
+    if ($btnCart.querySelector('.count').textContent === '0') {
+      $btnCart.querySelector('.count').classList.add('hide');
+    }
   }
 
   const $btnBurger = button({ class: 'icon-burger', 'aria-label': 'Menu' });
@@ -691,7 +694,7 @@ export default async function decorate(block) {
         div(
           { class: 'logo-cart-burger-wrap' },
           div({ class: 'btn-container' }, $originalLogo.cloneNode(true)),
-          $btnCart.cloneNode(true),
+          ...(!hideCart ? [$btnCart.cloneNode(true)] : []),
           $btnBurger,
         ),
         $searchBar,
@@ -712,7 +715,7 @@ export default async function decorate(block) {
         nav(
           { class: 'utility' },
           ...$utilityLinks.map((link) => link.cloneNode(true)),
-          $btnCart.cloneNode(true),
+          ...(!hideCart ? [$btnCart.cloneNode(true)] : []),
         ),
         div(
           { class: 'logo-search-btn-wrap' },
