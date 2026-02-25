@@ -492,13 +492,13 @@ export default async function decorate(block) {
   const $header = document.querySelector('header');
   let $btnCart;
 
-if (!hideCart) {
+  if (!hideCart) {
     $btnCart = a(
-        {
-            class: 'icon-cart',
-            href: requestCartLink,
-            'aria-label': 'Cart',
-        },
+      {
+        class: 'icon-cart',
+        href: requestCartLink,
+        'aria-label': 'Cart',
+      },
         '\u{e919}',
         span(
             { class: 'count' },
