@@ -512,9 +512,9 @@ export default async function decorate(block) {
     );
 
     if ($btnCart.querySelector('.count').textContent === '0') {
-        $btnCart.querySelector('.count').classList.add('hide');
+      $btnCart.querySelector('.count').classList.add('hide');
     }
-  } 
+  }
 
   const $btnBurger = button({ class: 'icon-burger', 'aria-label': 'Menu' });
   $btnBurger.addEventListener('click', () => {
