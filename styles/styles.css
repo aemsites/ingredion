@@ -725,3 +725,9 @@ main .padding-t-large {
   z-index: 2;
   padding: 0 !important;
 }
+
+.embeddedServiceHelpButton .helpButton {
+  width: 64px;
+  height: 64px;
+  font-size: 18px;
+}
