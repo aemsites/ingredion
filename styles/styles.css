@@ -728,21 +728,7 @@ main .padding-t-large {
 
 
 button#embeddedMessagingConversationButton {
-  width: 64px;
-  height: 64px;
+  width: 67px;
+  height: 67px;
   font-size: 18px;
-}
-
-.embeddedServiceHelpButton .helpButton {
-  width: 69px;
-  height: 69px;
-}
-
-embedded-messaging {
-  --embeddedmessaging-launcher-size: 72px;
-}
-
-embedded-messaging .launcher {
-  width: 72px !important;
-  height: 72px !important;
 }
