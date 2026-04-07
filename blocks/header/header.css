@@ -1007,3 +1007,21 @@ header nav.category > ul:nth-child(3) > li {
     padding: 0 4.25rem;
   }
 }
+
+header 
+a[href="https://asktest-usca.ingredion.com"],
+header
+ a[href="https://asktest-emea.ingredion.com"] {
+  color: inherit !important;
+  text-decoration: none !important;
+  font-weight: 500;
+}
+ 
+header 
+a[href="https://asktest-usca.ingredion.com"]:hover,
+header 
+a[href="https://asktest-emea.ingredion.com"]:hover {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+ 
