@@ -32,8 +32,11 @@ async function createIngredientPanel(ingredientResults) {
     addSampleBtn.addEventListener('click', () => addIngredientToCart(article.productName, window.location.href));
 
     const description = div({ class: 'description' });
-    description.innerHTML = (article.description).replace(/&nbsp;/g, ' ');
-
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = (article.description).replace(/&nbsp;/g, ' ');
+    tempDiv.querySelectorAll('a').forEach(link => link.setAttribute('tabindex', '-1'));
+    description.innerHTML = tempDiv.innerHTML;
+    
     const viewAllDocsLink = a({ class: 'view-all' }, translate('view-all-documents'));
     viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(article));
     const relatedIngredientBlock = div(
