@@ -28,7 +28,7 @@ async function createIngredientPanel(ingredientResults) {
   const $filtersList = div();
 
   const $articleCard = (article) => {
-    const addSampleBtn = a({ title: translate('add-sample'), class: 'button add-sample-button' }, translate('add-sample'));
+    const addSampleBtn = a({ title: translate('add-sample'), class: 'button add-sample-button', tabindex: '0' }, translate('add-sample'));
     addSampleBtn.addEventListener('click', () => addIngredientToCart(article.productName, window.location.href));
 
     const description = div({ class: 'description' });
@@ -37,7 +37,7 @@ async function createIngredientPanel(ingredientResults) {
     tempDiv.querySelectorAll('a').forEach(link => link.setAttribute('tabindex', '-1'));
     description.innerHTML = tempDiv.innerHTML;
     
-    const viewAllDocsLink = a({ class: 'view-all' }, translate('view-all-documents'));
+    const viewAllDocsLink = a({ class: 'view-all', tabindex: '0' }, translate('view-all-documents'));
     viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(article));
     const relatedIngredientBlock = div(
       { class: 'related-ingredient' },

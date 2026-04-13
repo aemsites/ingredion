@@ -326,9 +326,9 @@ export default class ProductApiRenderer {
       const facetGroupWrapper = div({ class: `facet-group__wrapper${isActive ? ' is-active' : ''}` });
 
       const header = div({ class: 'facet-group__header' });
-      const title = h5({ class: 'facet-group__title' });
+      const title = h5({ class: 'facet-group__title', tabindex: '0' });
       title.textContent = facetData.label;
-      const toggleIcon = span({ class: 'icon' });
+      const toggleIcon = span({ class: 'icon' , tabindex: '0'});
       toggleIcon.textContent = isOpen ? '－' : '＋';
       title.appendChild(toggleIcon);
       header.appendChild(title);
@@ -354,6 +354,27 @@ export default class ProductApiRenderer {
         checkbox.checked = isSelected;
         checkbox.value = option.label;
         checkbox.dataset.facetGroup = facetKey;
+        checkbox.setAttribute('tabindex', '0');
+
+        // Add focus/blur event listeners for visual indication
+        checkbox.addEventListener('focus', () => {
+          label.style.outline = '2px solid #010b11';
+          label.style.outlineOffset = '2px';
+        });
+        checkbox.addEventListener('blur', () => {
+          label.style.outline = '';
+          label.style.outlineOffset = '';
+        });
+
+        // Add keyboard event listener for Enter key
+        checkbox.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            checkbox.checked = !checkbox.checked;
+            // Trigger the change event to apply the filter
+            checkbox.dispatchEvent(new Event('change'));
+          }
+        });
 
         label.appendChild(checkbox);
         label.appendChild(document.createTextNode(`${option.label} (${option.count})`));
@@ -453,6 +474,17 @@ export default class ProductApiRenderer {
         const isCurrentlyOpen = this.groupState[facetKey];
         content.style.display = isCurrentlyOpen ? 'block' : 'none';
         toggleIcon.textContent = isCurrentlyOpen ? '－' : '＋';
+      });
+
+      // Add keyboard event listener for Enter key
+      toggleIcon.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.groupState[facetKey] = !this.groupState[facetKey];
+          const isCurrentlyOpen = this.groupState[facetKey];
+          content.style.display = isCurrentlyOpen ? 'block' : 'none';
+          toggleIcon.textContent = isCurrentlyOpen ? '－' : '＋';
+        }
       });
 
       facetGroupWrapper.appendChild(header);
