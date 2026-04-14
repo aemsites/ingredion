@@ -61,7 +61,7 @@ function createSelectDropdown({
   cssClass = [],
 }) {
   const $dropdown = div({ class: ['select-dropdown', cssClass] },
-    div({ class: 'selected' }, `${selectedValue || defaultText}${labelSuffix}`),
+    div({ class: 'selected', tabindex: '0' }, `${selectedValue || defaultText}${labelSuffix}`),
     ul({ class: 'options' }),
   );
 
@@ -100,8 +100,10 @@ function createSelectDropdown({
     $dropdown.querySelector('.options').appendChild($option);
   });
 
+  const $selected = $dropdown.querySelector('.selected');
+
   // Add click handler to toggle dropdown
-  $dropdown.querySelector('.selected').addEventListener('click', (event) => {
+  $selected.addEventListener('click', (event) => {
     event.stopPropagation();
 
     const thisOptionsList = $dropdown.querySelector('.options');
@@ -118,6 +120,26 @@ function createSelectDropdown({
       // Focus first option when opening
       const firstOption = thisOptionsList.querySelector('.option');
       if (firstOption) firstOption.focus();
+    }
+  });
+
+  // Add keyboard handler to open dropdown on Enter
+  $selected.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.stopPropagation();
+      const thisOptionsList = $dropdown.querySelector('.options');
+      const isCurrentlyOpen = thisOptionsList.classList.contains('open');
+
+      document.querySelectorAll('.select-dropdown .options.open').forEach((optionsList) => {
+        optionsList.classList.remove('open');
+      });
+
+      if (!isCurrentlyOpen) {
+        thisOptionsList.classList.add('open');
+        const firstOption = thisOptionsList.querySelector('.option');
+        if (firstOption) firstOption.focus();
+      }
     }
   });
 

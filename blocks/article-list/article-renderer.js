@@ -18,7 +18,7 @@ function createSelectDropdown({
   cssClass = [],
 }) {
   const $dropdown = div({ class: ['select-dropdown', cssClass] },
-    div({ class: 'selected' }, `${labelPrefix}${selectedValue || defaultText}${labelSuffix}`),
+    div({ class: 'selected', tabindex: '0' }, `${labelPrefix}${selectedValue || defaultText}${labelSuffix}`),
     ul({ class: 'options' }),
   );
 
