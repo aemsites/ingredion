@@ -273,7 +273,7 @@ export default async function decorate(block) {
       ...data.applications.map(createDropdownOption),
     );
     const $application = div(
-      { class: 'application select-dropdown' },
+      { class: 'application select-dropdown', tabindex: '0'  },
       initialTab,
       selected,
       options,
