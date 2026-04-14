@@ -279,6 +279,26 @@ export default async function decorate(block) {
       options,
     );
 
+    // Add keyboard event handling for accessibility
+    $application.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        options.classList.toggle('hidden');
+        dropdownOptions1.classList.add('hidden');
+      }
+    });
+
+    // Add focus/blur event listeners for visual indication
+    $application.addEventListener('focus', () => {
+      $application.style.outline = '2px solid #01090e';
+      $application.style.outlineOffset = '2px';
+    });
+    $application.addEventListener('blur', () => {
+      $application.style.outline = '';
+      $application.style.outlineOffset = '';
+    });
+
     const initialTab1 = input({
       type: 'hidden',
       name: 'initialTab',
@@ -288,11 +308,37 @@ export default async function decorate(block) {
     const selected1 = div({ class: 'selected disabled' }, subApplicationText);
     const dropdownOptions1 = div({ class: 'dropdown-options hidden' });
     const $subApplication = div(
-      { class: 'sub-application select-dropdown disabled' },
+      { class: 'sub-application select-dropdown disabled', tabindex: '0' },
       initialTab1,
       selected1,
       dropdownOptions1,
     );
+
+    // Add keyboard event handling for accessibility
+    $subApplication.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !$subApplication.classList.contains('disabled')) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropdownOptions1.classList.toggle('hidden');
+      }
+    });
+
+    // Add focus/blur event listeners for visual indication
+    $subApplication.addEventListener('focus', () => {
+      if (!$subApplication.classList.contains('disabled')) {
+        $subApplication.style.outline = '2px solid #01090e';
+        $subApplication.style.outlineOffset = '2px';
+      }
+    });
+    $subApplication.addEventListener('blur', () => {
+      $subApplication.style.outline = '';
+      $subApplication.style.outlineOffset = '';
+    });
+
+    // Initially disable tabindex if disabled
+    if ($subApplication.classList.contains('disabled')) {
+      $subApplication.removeAttribute('tabindex');
+    }
 
     if (applications) {
       selected.textContent = applications;
@@ -371,6 +417,7 @@ export default async function decorate(block) {
           selected1.textContent = subApplicationText;
           selected1.classList.remove('disabled');
           $subApplication.classList.remove('disabled');
+          $subApplication.setAttribute('tabindex', '0');
         }
         queryParams = queryParams.replace(/&subApplicationID=[^&]*&subApplications=[^&]*/, '');
         window.history.pushState({}, '', `${pagePath}?${queryParams}`);
