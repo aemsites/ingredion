@@ -124,18 +124,6 @@ function createDropdownOption(item) {
     }
   });
 
-  // Add focus/blur visual indicators
-  optionDiv.addEventListener('focus', () => {
-    optionDiv.style.backgroundColor = '#f0f0f0';
-    optionDiv.style.outline = '2px solid #01090e';
-    optionDiv.style.outlineOffset = '-2px';
-  });
-  optionDiv.addEventListener('blur', () => {
-    optionDiv.style.backgroundColor = '';
-    optionDiv.style.outline = '';
-    optionDiv.style.outlineOffset = '';
-  });
-
   return optionDiv;
 }
 
@@ -297,32 +285,6 @@ export default async function decorate(block) {
       { class: 'dropdown-options hidden' },
       ...data.applications.map(createDropdownOption),
     );
-
-    // Add keyboard navigation for dropdown options
-    options.addEventListener('keydown', (e) => {
-      if (options.classList.contains('hidden')) return;
-
-      const currentOptions = Array.from(options.querySelectorAll('.dropdown-option'));
-      const currentIndex = currentOptions.findIndex(opt => opt === document.activeElement);
-
-      switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault();
-          const nextIndex = Math.min(currentIndex + 1, currentOptions.length - 1);
-          currentOptions[nextIndex].focus();
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          const prevIndex = Math.max(currentIndex - 1, 0);
-          currentOptions[prevIndex].focus();
-          break;
-        case 'Escape':
-          e.preventDefault();
-          options.classList.add('hidden');
-          $application.focus();
-          break;
-      }
-    });
     const $application = div(
       { class: 'application select-dropdown', tabindex: '0'  },
       initialTab,
@@ -335,14 +297,8 @@ export default async function decorate(block) {
       if (e.key === 'Enter') {
         e.preventDefault();
         e.stopPropagation();
-        const wasHidden = options.classList.contains('hidden');
         options.classList.toggle('hidden');
         dropdownOptions1.classList.add('hidden');
-        if (wasHidden && !options.classList.contains('hidden')) {
-          // Focus first option when opening
-          const firstOption = options.querySelector('.dropdown-option');
-          if (firstOption) firstOption.focus();
-        }
       }
     });
 
@@ -364,32 +320,6 @@ export default async function decorate(block) {
     });
     const selected1 = div({ class: 'selected disabled' }, subApplicationText);
     const dropdownOptions1 = div({ class: 'dropdown-options hidden' });
-
-    // Add keyboard navigation for sub-application dropdown options
-    dropdownOptions1.addEventListener('keydown', (e) => {
-      if (dropdownOptions1.classList.contains('hidden')) return;
-
-      const currentOptions = Array.from(dropdownOptions1.querySelectorAll('.dropdown-option'));
-      const currentIndex = currentOptions.findIndex(opt => opt === document.activeElement);
-
-      switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault();
-          const nextIndex = Math.min(currentIndex + 1, currentOptions.length - 1);
-          currentOptions[nextIndex].focus();
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          const prevIndex = Math.max(currentIndex - 1, 0);
-          currentOptions[prevIndex].focus();
-          break;
-        case 'Escape':
-          e.preventDefault();
-          dropdownOptions1.classList.add('hidden');
-          $subApplication.focus();
-          break;
-      }
-    });
     const $subApplication = div(
       { class: 'sub-application select-dropdown disabled', tabindex: '0' },
       initialTab1,
@@ -402,13 +332,7 @@ export default async function decorate(block) {
       if (e.key === 'Enter' && !$subApplication.classList.contains('disabled')) {
         e.preventDefault();
         e.stopPropagation();
-        const wasHidden = dropdownOptions1.classList.contains('hidden');
         dropdownOptions1.classList.toggle('hidden');
-        if (wasHidden && !dropdownOptions1.classList.contains('hidden')) {
-          // Focus first option when opening
-          const firstOption = dropdownOptions1.querySelector('.dropdown-option');
-          if (firstOption) firstOption.focus();
-        }
       }
     });
 
@@ -482,11 +406,6 @@ export default async function decorate(block) {
       const wasHidden = options.classList.contains('hidden');
       options.classList.toggle('hidden');
       dropdownOptions1.classList.add('hidden');
-      if (wasHidden && !options.classList.contains('hidden')) {
-        // Focus first option when opening
-        const firstOption = options.querySelector('.dropdown-option');
-        if (firstOption) firstOption.focus();
-      }
     });
 
     options.addEventListener('click', (e) => {
@@ -526,13 +445,7 @@ export default async function decorate(block) {
         return;
       }
       e.stopPropagation();
-      const wasHidden = dropdownOptions1.classList.contains('hidden');
       dropdownOptions1.classList.toggle('hidden');
-      if (wasHidden && !dropdownOptions1.classList.contains('hidden')) {
-        // Focus first option when opening
-        const firstOption = dropdownOptions1.querySelector('.dropdown-option');
-        if (firstOption) firstOption.focus();
-      }
     });
 
     dropdownOptions1.addEventListener('click', (e) => {

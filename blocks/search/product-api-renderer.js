@@ -75,10 +75,21 @@ function createSelectDropdown({
     const $option = li({
       class: `option ${isActive ? 'active' : ''}`,
       style: isActive ? 'padding-right: 30px;' : '',
+      tabindex: '0',
     },
     label,
     count !== undefined ? small(` (${count})`) : '',
     );
+
+    // Add keyboard event handling for accessibility
+    $option.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        onSelect(value, $option, $dropdown);
+        $dropdown.querySelector('.options').classList.remove('open');
+      }
+    });
 
     $option.addEventListener('click', (event) => {
       event.stopPropagation();
@@ -102,7 +113,12 @@ function createSelectDropdown({
     });
 
     // open this one if it was closed
-    if (!isCurrentlyOpen) thisOptionsList.classList.add('open');
+    if (!isCurrentlyOpen) {
+      thisOptionsList.classList.add('open');
+      // Focus first option when opening
+      const firstOption = thisOptionsList.querySelector('.option');
+      if (firstOption) firstOption.focus();
+    }
   });
 
   // Close all dropdowns when clicking outside
