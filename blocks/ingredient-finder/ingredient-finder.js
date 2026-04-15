@@ -30,6 +30,12 @@ async function createIngredientPanel(ingredientResults) {
   const $articleCard = (article) => {
     const addSampleBtn = a({ title: translate('add-sample'), class: 'button add-sample-button', tabindex: '0' }, translate('add-sample'));
     addSampleBtn.addEventListener('click', () => addIngredientToCart(article.productName, window.location.href));
+    addSampleBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addIngredientToCart(article.productName, window.location.href);
+      }
+    });
 
     const description = div({ class: 'description' });
     const tempDiv = document.createElement('div');
@@ -39,6 +45,12 @@ async function createIngredientPanel(ingredientResults) {
     
     const viewAllDocsLink = a({ class: 'view-all', tabindex: '0' }, translate('view-all-documents'));
     viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(article));
+    viewAllDocsLink.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        viewAllDocsModal(article);
+      }
+    });
     const relatedIngredientBlock = div(
       { class: 'related-ingredient' },
       div(
