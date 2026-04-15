@@ -469,7 +469,8 @@ main > .section > .default-content-wrapper {
 @media (width <= 1079px) {
   .cards .dots-nav {
     text-align: center;
-    margin-top: 10px;
+    margin-bottom: 15px;
+    position: relative;
   }
 
   .cards .dots-nav .dot {
@@ -484,6 +485,64 @@ main > .section > .default-content-wrapper {
 
   .cards .dots-nav .dot[active="true"] {
     background-color: var(--green);
+  }
+
+  .cards .dots-nav .card-prev,
+  .cards .dots-nav .card-next {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    border: none;
+    width: 40px;
+    height: 2.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    box-shadow: 4px 10px 15px 0 rgb(0 0 0 / 10%);
+    cursor: pointer;
+  }
+
+  .cards .dots-nav .card-prev:disabled,
+  .cards .dots-nav .card-next:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .cards .dots-nav .card-prev {
+    right: 4.5rem;
+  }
+
+  .cards .dots-nav .card-next {
+    right: 1rem;
+  }
+
+  .cards .dots-nav .card-prev::after,
+  .cards .dots-nav .card-next::after {
+    display: block;
+    content: '';
+    border: 1.5px solid;
+    border-color: var(--green);
+    border-bottom: 0;
+    border-left: 0;
+    height: 6px;
+    width: 6px;
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 2px);
+    transform: translate(-50%, -50%) rotate(-135deg);
+  }
+
+  .cards .dots-nav .card-next::after {
+    transform: translate(-50%, -50%) rotate(45deg);
+    left: calc(50% - 2px);
+  }
+
+  .cards .dots-nav .card-prev:disabled::after,
+  .cards .dots-nav .card-next:disabled::after,
+  .cards .dots-nav .card-prev:hover::after,
+  .cards .dots-nav .card-next:hover::after {
+    opacity: .75;
+    border-color: var(--dark-grey);
   }
 }
 

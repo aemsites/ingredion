@@ -8,12 +8,18 @@ function showCard(block, cardIndex = 0) {
   const cards = block.querySelectorAll('li');
   const realCardIndex = Math.max(0, Math.min(cardIndex, cards.length - 1));
   const activeCard = block.querySelector(`li[card-index="${realCardIndex}"]`);
-  const indicators = block.querySelectorAll('.dots-nav span');
+  const indicators = block.querySelectorAll('.dots-nav span.dot');
 
   indicators.forEach((indicator, i) => {
     if (i !== realCardIndex) indicator.removeAttribute('active');
     else indicator.setAttribute('active', 'true');
   });
+
+  // disable prev/next buttons when on first or last card
+  const prevBtn = block.querySelector('.card-prev');
+  const nextBtn = block.querySelector('.card-next');
+  if (prevBtn) prevBtn.toggleAttribute('disabled', realCardIndex === 0);
+  if (nextBtn) nextBtn.toggleAttribute('disabled', realCardIndex === cards.length - 1);
 
   const cardWidth = activeCard.offsetWidth + 25;
   const scrollPosition = cardWidth * realCardIndex;
@@ -95,10 +101,28 @@ function enableDragging(block) {
 function bindEvents(block) {
   block.querySelectorAll('.dots-nav').forEach((btn) => {
     btn.addEventListener('click', (e) => {
-      const cardIndex = parseInt(e.target.dataset.index, 10);
-      showCard(block, cardIndex);
+      if (e.target.classList.contains('dot')) {
+        const cardIndex = parseInt(e.target.dataset.index, 10);
+        showCard(block, cardIndex);
+      }
     });
   });
+
+  // prev/next button handlers
+  const prevBtn = block.querySelector('.card-prev');
+  const nextBtn = block.querySelector('.card-next');
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      showCard(block, parseInt(block.dataset.activeCard, 10) - 1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      showCard(block, parseInt(block.dataset.activeCard, 10) + 1);
+    });
+  }
 }
 
 export default async function decorate(block) {
@@ -195,22 +219,36 @@ export default async function decorate(block) {
       });
     }
   });
-  ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
-  block.textContent = '';
-  block.append(ul);
-  if (block.classList.contains('slim')) {
-    const dotsNav = document.createElement('div');
-    dotsNav.className = 'dots-nav';
-    [...ul.children].forEach((_, index) => {
-      const dot = document.createElement('span');
-      if (index === 0) {
-        if (index === 0) dot.setAttribute('active', 'true');
-      }
-      dot.className = 'dot';
-      dot.dataset.index = index;
-      dotsNav.append(dot);
-    });
-    block.append(dotsNav);
+    block.append(ul);
+    
+    if (block.classList.contains('slim')) {
+      const dotsNav = document.createElement('div');
+      dotsNav.className = 'dots-nav';
+      [...ul.children].forEach((_, index) => {
+        const dot = document.createElement('span');
+        if (index === 0) {
+          dot.setAttribute('active', 'true');
+        }
+        dot.className = 'dot';
+        dot.dataset.index = index;
+        dotsNav.append(dot);
+      });
+
+      // Create prev/next buttons
+      const prevBtn = document.createElement('button');
+      prevBtn.type = 'button';
+      prevBtn.className = 'card-prev';
+      prevBtn.setAttribute('aria-label', 'Previous Card');
+      prevBtn.setAttribute('disabled', 'true');
+      dotsNav.append(prevBtn);
+
+      const nextBtn = document.createElement('button');
+      nextBtn.type = 'button';
+      nextBtn.className = 'card-next';
+      nextBtn.setAttribute('aria-label', 'Next Card');
+      dotsNav.append(nextBtn);
+
+      block.insertBefore(dotsNav, ul);
 
     if (!isDesktop.matches) {
       bindEvents(block);
