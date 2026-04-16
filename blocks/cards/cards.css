@@ -454,23 +454,28 @@ main > .section > .default-content-wrapper {
 
 @media (width >= 1080px) {
   .cards .dots-nav,
+  .cards .cards-nav-top,
   .cards button.slide-prev,
   .cards button.slide-next {
     display: none;
   }
 }
 
-@media (width >= 1080px) {
-  .cards .dots-nav {
-    display: none;
-  }
-}
-
 @media (width <= 1079px) {
+  .cards .cards-nav-top {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+    position: relative;
+    z-index: 11;
+  }
+
   .cards .dots-nav {
     text-align: center;
-    margin-bottom: 15px;
-    position: relative;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .cards .dots-nav .dot {
@@ -487,37 +492,27 @@ main > .section > .default-content-wrapper {
     background-color: var(--green);
   }
 
-  .cards .dots-nav .card-prev,
-  .cards .dots-nav .card-next {
-    position: absolute;
+  .cards .card-prev,
+  .cards .card-next {
     background: #fff;
     border-radius: 50%;
     border: none;
     width: 40px;
     height: 2.5rem;
-    top: 50%;
-    transform: translateY(-50%);
     z-index: 10;
     box-shadow: 4px 10px 15px 0 rgb(0 0 0 / 10%);
     cursor: pointer;
+    position: relative;
   }
 
-  .cards .dots-nav .card-prev:disabled,
-  .cards .dots-nav .card-next:disabled {
+  .cards .card-prev:disabled,
+  .cards .card-next:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
-  .cards .dots-nav .card-prev {
-    right: 4.5rem;
-  }
-
-  .cards .dots-nav .card-next {
-    right: 1rem;
-  }
-
-  .cards .dots-nav .card-prev::after,
-  .cards .dots-nav .card-next::after {
+  .cards .card-prev::after,
+  .cards .card-next::after {
     display: block;
     content: '';
     border: 1.5px solid;
@@ -532,15 +527,15 @@ main > .section > .default-content-wrapper {
     transform: translate(-50%, -50%) rotate(-135deg);
   }
 
-  .cards .dots-nav .card-next::after {
+  .cards .card-next::after {
     transform: translate(-50%, -50%) rotate(45deg);
     left: calc(50% - 2px);
   }
 
-  .cards .dots-nav .card-prev:disabled::after,
-  .cards .dots-nav .card-next:disabled::after,
-  .cards .dots-nav .card-prev:hover::after,
-  .cards .dots-nav .card-next:hover::after {
+  .cards .card-prev:disabled::after,
+  .cards .card-next:disabled::after,
+  .cards .card-prev:hover::after,
+  .cards .card-next:hover::after {
     opacity: .75;
     border-color: var(--dark-grey);
   }

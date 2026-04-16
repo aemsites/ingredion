@@ -99,14 +99,15 @@ function enableDragging(block) {
 }
 
 function bindEvents(block) {
-  block.querySelectorAll('.dots-nav').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
+  const dotsContainer = block.querySelector('.dots-nav');
+  if (dotsContainer) {
+    dotsContainer.addEventListener('click', (e) => {
       if (e.target.classList.contains('dot')) {
         const cardIndex = parseInt(e.target.dataset.index, 10);
         showCard(block, cardIndex);
       }
     });
-  });
+  }
 
   // prev/next button handlers
   const prevBtn = block.querySelector('.card-prev');
@@ -222,8 +223,28 @@ export default async function decorate(block) {
     block.append(ul);
     
     if (block.classList.contains('slim')) {
-      const dotsNav = document.createElement('div');
-      dotsNav.className = 'dots-nav';
+      // Create navigation buttons container (top)
+      const navContainer = document.createElement('div');
+      navContainer.className = 'cards-nav-top';
+      
+      const prevBtn = document.createElement('button');
+      prevBtn.type = 'button';
+      prevBtn.className = 'card-prev';
+      prevBtn.setAttribute('aria-label', 'Previous Card');
+      prevBtn.setAttribute('disabled', 'true');
+      navContainer.append(prevBtn);
+
+      const nextBtn = document.createElement('button');
+      nextBtn.type = 'button';
+      nextBtn.className = 'card-next';
+      nextBtn.setAttribute('aria-label', 'Next Card');
+      navContainer.append(nextBtn);
+
+      block.insertBefore(navContainer, ul);
+
+      // Create dots navigation container (bottom)
+      const dotsContainer = document.createElement('div');
+      dotsContainer.className = 'dots-nav';
       [...ul.children].forEach((_, index) => {
         const dot = document.createElement('span');
         if (index === 0) {
@@ -231,24 +252,10 @@ export default async function decorate(block) {
         }
         dot.className = 'dot';
         dot.dataset.index = index;
-        dotsNav.append(dot);
+        dotsContainer.append(dot);
       });
 
-      // Create prev/next buttons
-      const prevBtn = document.createElement('button');
-      prevBtn.type = 'button';
-      prevBtn.className = 'card-prev';
-      prevBtn.setAttribute('aria-label', 'Previous Card');
-      prevBtn.setAttribute('disabled', 'true');
-      dotsNav.append(prevBtn);
-
-      const nextBtn = document.createElement('button');
-      nextBtn.type = 'button';
-      nextBtn.className = 'card-next';
-      nextBtn.setAttribute('aria-label', 'Next Card');
-      dotsNav.append(nextBtn);
-
-      block.insertBefore(dotsNav, ul);
+      block.append(dotsContainer);
 
     if (!isDesktop.matches) {
       bindEvents(block);
