@@ -726,22 +726,16 @@ export default async function decorate(block) {
         $navCategory.cloneNode(true),
       );
       await buildDropdownsDesktop($header);
-      // Ensure "Ask Ingredion" opens in a new tab (handles dynamic render)
-setTimeout(() => {
-  const askLink = $header.querySelector('a[title="Ask Ingredion"]');
-  if (askLink) {
-    askLink.setAttribute('target', '_blank');
-    askLink.setAttribute('rel', 'noopener noreferrer');
-  }
-}, 500);
-      // Force "Ask Ingredion" to always open in new tab
-$header.addEventListener('click', (e) => {
+      $header.addEventListener('click', (e) => {
   const link = e.target.closest('a[title="Ask Ingredion"]');
   if (link) {
     e.preventDefault();
-    window.open(link.href, '_blank');
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+ 
+    window.open(link.href, '_blank', 'noopener,noreferrer');
   }
-});
+}, true);
     }
   }
 
