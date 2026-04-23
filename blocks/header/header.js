@@ -731,4 +731,11 @@ export default async function decorate(block) {
 
   handleView();
   isMobile.addEventListener('change', handleView);
+  //
+  setTimeout(() => {
+    document.querySelectorAll('a[title="Ask Ingredion"]').forEach(link => {
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+    });
+  }, 500);
 }
