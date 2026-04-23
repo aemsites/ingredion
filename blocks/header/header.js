@@ -726,12 +726,15 @@ export default async function decorate(block) {
         $navCategory.cloneNode(true),
       );
       await buildDropdownsDesktop($header);
-      // Ensure "Ask Ingredion" opens in a new tab
-const askLink = $header.querySelector('a[title="Ask Ingredion"]');
-if (askLink) {
-  askLink.setAttribute('target', '_blank');
-  askLink.setAttribute('rel', 'noopener noreferrer');
-}
+      // Ensure "Ask Ingredion" opens in a new tab (handles dynamic render)
+setTimeout(() => {
+  const askLink = $header.querySelector('a[title="Ask Ingredion"]');
+  if (askLink) {
+    askLink.setAttribute('target', '_blank');
+    askLink.setAttribute('rel', 'noopener noreferrer');
+  }
+}, 500);
+ 
     }
   }
 
