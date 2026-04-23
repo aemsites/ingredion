@@ -726,9 +726,11 @@ export default async function decorate(block) {
         $navCategory.cloneNode(true),
       );
       await buildDropdownsDesktop($header);
-      // Force "Ask Ingredion" link to open in new tab (DOM-level fix)
+// Ensure "Ask Ingredion" link opens in a new tab
+// This is required as per business requirement for AI Agent to open separately
+// Applied after header render to avoid override from AEM/EDS dynamic behavior
 const askLink = [...$header.querySelectorAll('a')]
-  .find(a => a.textContent.trim() === 'Ask Ingredion');
+  .find(a => a.textContent.includes('Ask Ingredion'));
  
 if (askLink) {
   askLink.target = '_blank';
