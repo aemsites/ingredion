@@ -220,10 +220,10 @@ export default async function decorate(block) {
       });
     }
   });
-  block.append(ul); 
+  block.append(ul);
   if (block.classList.contains('slim')) {
     const navContainer = document.createElement('div');
-    navContainer.className = 'cards-nav-top';  
+    navContainer.className = 'cards-nav-top';
     const prevBtn = document.createElement('button');
     prevBtn.type = 'button';
     prevBtn.className = 'card-prev';
@@ -231,15 +231,12 @@ export default async function decorate(block) {
     prevBtn.setAttribute('disabled', 'true');
     navContainer.append(prevBtn);
     const nextBtn = document.createElement('button');
-      nextBtn.type = 'button';
-      nextBtn.className = 'card-next';
-      nextBtn.setAttribute('aria-label', 'Next Card');
-      navContainer.append(nextBtn);
-
-      block.insertBefore(navContainer, ul);
-
-      // Create dots navigation container (bottom)
-      const dotsContainer = document.createElement('div');
+    nextBtn.type = 'button';
+    nextBtn.className = 'card-next';
+    nextBtn.setAttribute('aria-label', 'Next Card');
+    navContainer.append(nextBtn);
+    block.insertBefore(navContainer, ul);
+    const dotsContainer = document.createElement('div');
       dotsContainer.className = 'dots-nav';
       [...ul.children].forEach((_, index) => {
         const dot = document.createElement('span');
