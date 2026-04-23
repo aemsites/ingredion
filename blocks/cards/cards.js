@@ -222,17 +222,15 @@ export default async function decorate(block) {
   });
   block.append(ul); 
   if (block.classList.contains('slim')) {
-      // Create navigation buttons container (top)
     const navContainer = document.createElement('div');
     navContainer.className = 'cards-nav-top';  
     const prevBtn = document.createElement('button');
-      prevBtn.type = 'button';
-      prevBtn.className = 'card-prev';
-      prevBtn.setAttribute('aria-label', 'Previous Card');
-      prevBtn.setAttribute('disabled', 'true');
-      navContainer.append(prevBtn);
-
-      const nextBtn = document.createElement('button');
+    prevBtn.type = 'button';
+    prevBtn.className = 'card-prev';
+    prevBtn.setAttribute('aria-label', 'Previous Card');
+    prevBtn.setAttribute('disabled', 'true');
+    navContainer.append(prevBtn);
+    const nextBtn = document.createElement('button');
       nextBtn.type = 'button';
       nextBtn.className = 'card-next';
       nextBtn.setAttribute('aria-label', 'Next Card');
