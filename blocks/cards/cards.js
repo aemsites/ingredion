@@ -246,9 +246,8 @@ export default async function decorate(block) {
       dot.className = 'dot';
       dot.dataset.index = index;
       dotsContainer.append(dot);
-      });
-
-      block.append(dotsContainer);
+    });
+    block.append(dotsContainer);
 
     if (!isDesktop.matches) {
       bindEvents(block);
