@@ -727,7 +727,11 @@ export default async function decorate(block) {
       );
       await buildDropdownsDesktop($header);
       $header.addEventListener('click', (e) => {
-  const link = e.target.closest('a[title="Ask Ingredion"]');
+  const anchor = e.target.closest('a');
+  const link = anchor && anchor.getAttribute('title') === 'Ask Ingredion'
+    ? anchor
+    : null;
+ 
   if (link) {
     e.preventDefault();
     e.stopPropagation();
