@@ -726,20 +726,14 @@ export default async function decorate(block) {
         $navCategory.cloneNode(true),
       );
       await buildDropdownsDesktop($header);
-      $header.addEventListener('click', (e) => {
-  const anchor = e.target.closest('a');
-  const link = anchor && anchor.getAttribute('title') === 'Ask Ingredion'
-    ? anchor
-    : null;
+      // Force "Ask Ingredion" link to open in new tab (DOM-level fix)
+const askLink = [...$header.querySelectorAll('a')]
+  .find(a => a.textContent.trim() === 'Ask Ingredion');
  
-  if (link) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
- 
-    window.open(link.href, '_blank', 'noopener,noreferrer');
-  }
-}, true);
+if (askLink) {
+  askLink.target = '_blank';
+  askLink.rel = 'noopener noreferrer';
+}
     }
   }
 
