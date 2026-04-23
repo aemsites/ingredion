@@ -40,9 +40,9 @@ async function createIngredientPanel(ingredientResults) {
     const description = div({ class: 'description' });
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = (article.description).replace(/&nbsp;/g, ' ');
-    tempDiv.querySelectorAll('a').forEach(link => link.setAttribute('tabindex', '-1'));
+    tempDiv.querySelectorAll('a').forEach((link) => link.setAttribute('tabindex', '-1'));
     description.innerHTML = tempDiv.innerHTML;
-    
+
     const viewAllDocsLink = a({ class: 'view-all', tabindex: '0' }, translate('view-all-documents'));
     viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(article));
     viewAllDocsLink.addEventListener('keydown', (e) => {
@@ -298,21 +298,11 @@ export default async function decorate(block) {
       ...data.applications.map(createDropdownOption),
     );
     const $application = div(
-      { class: 'application select-dropdown', tabindex: '0'  },
+      { class: 'application select-dropdown', tabindex: '0' },
       initialTab,
       selected,
       options,
     );
-
-    // Add keyboard event handling for accessibility
-    $application.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        e.stopPropagation();
-        options.classList.toggle('hidden');
-        dropdownOptions1.classList.add('hidden');
-      }
-    });
 
     // Add focus/blur event listeners for visual indication
     $application.addEventListener('focus', () => {
@@ -338,7 +328,15 @@ export default async function decorate(block) {
       selected1,
       dropdownOptions1,
     );
-
+    // Add keyboard event handling for accessibility
+    $application.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        options.classList.toggle('hidden');
+        dropdownOptions1.classList.add('hidden');
+      }
+    });
     // Add keyboard event handling for accessibility
     $subApplication.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !$subApplication.classList.contains('disabled')) {
@@ -415,7 +413,6 @@ export default async function decorate(block) {
 
     selected.addEventListener('click', (e) => {
       e.stopPropagation();
-      const wasHidden = options.classList.contains('hidden');
       options.classList.toggle('hidden');
       dropdownOptions1.classList.add('hidden');
     });

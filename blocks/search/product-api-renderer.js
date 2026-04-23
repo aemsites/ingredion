@@ -366,7 +366,7 @@ export default class ProductApiRenderer {
       const header = div({ class: 'facet-group__header' });
       const title = h5({ class: 'facet-group__title', tabindex: '0' });
       title.textContent = facetData.label;
-      const toggleIcon = span({ class: 'icon' , tabindex: '0'});
+      const toggleIcon = span({ class: 'icon', tabindex: '0' });
       toggleIcon.textContent = isOpen ? '－' : '＋';
       title.appendChild(toggleIcon);
       header.appendChild(title);
