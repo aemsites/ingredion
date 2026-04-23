@@ -734,7 +734,14 @@ setTimeout(() => {
     askLink.setAttribute('rel', 'noopener noreferrer');
   }
 }, 500);
- 
+      // Force "Ask Ingredion" to always open in new tab
+$header.addEventListener('click', (e) => {
+  const link = e.target.closest('a[title="Ask Ingredion"]');
+  if (link) {
+    e.preventDefault();
+    window.open(link.href, '_blank');
+  }
+});
     }
   }
 
