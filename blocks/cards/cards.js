@@ -237,15 +237,15 @@ export default async function decorate(block) {
     navContainer.append(nextBtn);
     block.insertBefore(navContainer, ul);
     const dotsContainer = document.createElement('div');
-      dotsContainer.className = 'dots-nav';
-      [...ul.children].forEach((_, index) => {
-        const dot = document.createElement('span');
-        if (index === 0) {
-          dot.setAttribute('active', 'true');
-        }
-        dot.className = 'dot';
-        dot.dataset.index = index;
-        dotsContainer.append(dot);
+    dotsContainer.className = 'dots-nav';
+    [...ul.children].forEach((_, index) => {
+      const dot = document.createElement('span');
+      if (index === 0) {
+        dot.setAttribute('active', 'true');
+      }
+      dot.className = 'dot';
+      dot.dataset.index = index;
+      dotsContainer.append(dot);
       });
 
       block.append(dotsContainer);
