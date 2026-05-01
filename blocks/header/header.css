@@ -1010,9 +1010,9 @@ header nav.category > ul:nth-child(3) > li {
 
 /*Ask Ingredion link fix */
 header 
-a[href="https://asktest-usca.ingredion.com"],
+a[href="https://ask-usca.ingredion.com"],
 header
- a[href="https://asktest-emea.ingredion.com"] {
+ a[href="https://ask-emea.ingredion.com"] {
   color: inherit !important;
   text-decoration: none !important;
   font-weight: 500;
