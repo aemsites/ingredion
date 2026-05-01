@@ -1019,9 +1019,9 @@ header
 }
  
 header 
-a[href="https://asktest-usca.ingredion.com"]:hover,
+a[href="https://ask-usca.ingredion.com"]:hover,
 header 
-a[href="https://asktest-emea.ingredion.com"]:hover {
+a[href="https://ask-emea.ingredion.com"]:hover {
   color: inherit !important;
   text-decoration: none !important;
 }
