@@ -262,13 +262,17 @@ async function buildDropdownsDesktop($header) {
     // Replace the link with the div
     link.parentElement.replaceChild(newDiv, link);
     newDiv.setAttribute('data-dropdown', 'true');
+    newDiv.setAttribute('tabindex', '0');
+    newDiv.setAttribute('role', 'button');
+    newDiv.setAttribute('aria-expanded', 'false');
+    newDiv.setAttribute('aria-haspopup', 'true');
 
     const subNavFrag = await loadFragment(subNavPath);
     if (!subNavFrag) {
       newDiv.remove();
       return;
     }
-    const $dropDown = div({ class: 'dropdown' });
+    const $dropDown = div({ class: 'dropdown', role: 'menu' });
     while (subNavFrag.firstElementChild) $dropDown.append(subNavFrag.firstElementChild);
     newDiv.parentElement.append($dropDown);
 
@@ -281,12 +285,14 @@ async function buildDropdownsDesktop($header) {
       const utility = document.querySelector('.utility');
       const utilityFirstP = utility.querySelector('p');
       const dropdown = utilityFirstP.querySelector('.dropdown');
-      utilityFirstP.addEventListener('click', () => {
+      
+      const toggleDropdown = () => {
         if (activeDropdown === dropdown) {
           // If this dropdown is already active, close it
           if (activeDropdown && activeDropdown.parentElement) {
             activeDropdown.parentElement.classList.remove('active');
           }
+          newDiv.setAttribute('aria-expanded', 'false');
           activeDropdown = null;
         } else {
           // If another dropdown is active, close it first
@@ -295,9 +301,28 @@ async function buildDropdownsDesktop($header) {
           }
           // Open this dropdown
           dropdown.parentElement.classList.add('active');
+          newDiv.setAttribute('aria-expanded', 'true');
           activeDropdown = dropdown;
         }
+      };
+
+      utilityFirstP.addEventListener('click', toggleDropdown);
+      // Add keyboard support
+      utilityFirstP.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleDropdown();
+        } else if (e.key === 'Escape' && activeDropdown === dropdown) {
+          e.preventDefault();
+          if (activeDropdown && activeDropdown.parentElement) {
+            activeDropdown.parentElement.classList.remove('active');
+          }
+          newDiv.setAttribute('aria-expanded', 'false');
+          activeDropdown = null;
+          utilityFirstP.focus();
+        }
       });
+      
       document.addEventListener('click', (e) => {
         const isClickOnDropdown = dropdown.contains(e.target);
         const isClickOnTrigger = utilityFirstP.contains(e.target);
@@ -305,6 +330,7 @@ async function buildDropdownsDesktop($header) {
           if (activeDropdown && activeDropdown.parentElement) {
             activeDropdown.parentElement.classList.remove('active');
           }
+          newDiv.setAttribute('aria-expanded', 'false');
           activeDropdown = null;
         }
       });
@@ -315,6 +341,7 @@ async function buildDropdownsDesktop($header) {
             activeDropdown.parentElement.classList.remove('active');
           }
           $dropDown.parentElement.classList.add('active');
+          newDiv.setAttribute('aria-expanded', 'true');
           activeDropdown = $dropDown;
         },
         100,
@@ -326,6 +353,7 @@ async function buildDropdownsDesktop($header) {
         const isInTrigger = newDiv.contains(relatedTarget);
         if (!isInDropdown && !isInTrigger && activeDropdown && activeDropdown.parentElement) {
           activeDropdown.parentElement.classList.remove('active');
+          newDiv.setAttribute('aria-expanded', 'false');
           activeDropdown = null;
         }
       };
@@ -333,6 +361,20 @@ async function buildDropdownsDesktop($header) {
       newDiv.addEventListener('pointerenter', openDropdown);
       newDiv.addEventListener('pointerleave', closeDropdown);
       $dropDown.addEventListener('pointerleave', closeDropdown);
+      
+      // Add keyboard support
+      newDiv.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openDropdown();
+        } else if (e.key === 'Escape' && activeDropdown && activeDropdown.parentElement) {
+          e.preventDefault();
+          activeDropdown.parentElement.classList.remove('active');
+          newDiv.setAttribute('aria-expanded', 'false');
+          activeDropdown = null;
+          newDiv.focus();
+        }
+      });
     }
   }
 
@@ -687,6 +729,27 @@ export default async function decorate(block) {
 
   const $navCategory = nav({ class: 'category' }, ...$categoryNav);
 
+  // Create skip to content button helper function
+  function createSkipButton() {
+    const skipBtn = button(
+      { class: 'skip-button', id: 'skip-id', tabindex: '0', 'aria-label': 'Skip to main content' },
+      'Skip to content',
+    );
+
+    skipBtn.addEventListener('click', () => {
+      const main = document.querySelector('main');
+      if (main) {
+        main.setAttribute('tabindex', '-1');
+        main.focus();
+        main.addEventListener('blur', () => {
+          main.removeAttribute('tabindex');
+        }, { once: true });
+      }
+    });
+
+    return skipBtn;
+  }
+
   async function handleView() {
     $header.innerHTML = '';
     if (isMobile.matches) {
@@ -723,6 +786,7 @@ export default async function decorate(block) {
           $searchBar,
           $btnTechDocSamples.cloneNode(true),
         ),
+        createSkipButton(),
         $navCategory.cloneNode(true),
       );
       await buildDropdownsDesktop($header);
