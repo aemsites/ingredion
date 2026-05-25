@@ -19,7 +19,7 @@ function embedVimeo(url, autoplay) {
         <iframe src="https://player.vimeo.com/video/${video}${suffix}" 
           frameborder="0" allow="autoplay" scrolling="no" allowfullscreen data-ready="true"  
           title="Content from Vimeo" loading="lazy"></iframe>
-        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal"></div>
+        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal" role="button"></div>
       </div>
     </div>
   </div>`;
@@ -53,7 +53,7 @@ function embedYoutube(url, autoplay, background) {
         <iframe src="https://www.youtube.com${vid ? `/embed/${vid}?rel=0&v=${vid}${suffix}` : embed}"
         "rameborder="0" allow="autoplay" scrolling="no" allowfullscreen data-ready="true"
         title="Content from YouTube" loading="lazy"></iframe>
-        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal"></div>
+        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal" role="button"></div>
       </div>
     </div>
   </div>`;
@@ -68,7 +68,7 @@ function embedBoxUrl(url) {
     <div class="video-modal-wrapper">
       <div class='video-modal-content'>
         <iframe src="https://app.box.com/s/${boxId}" allowfullscreen title="Content from Box" loading="lazy"></iframe>
-        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal"></div>
+        <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal" role="button"></div>
       </div>
     </div>
   </div>`;
@@ -114,11 +114,26 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
       block.dataset.embedLoaded = true;
     });
     document.body.classList.add('modal-open');
-    embedWrapper.querySelector('.video-modal-close').addEventListener('click', () => {
+    const closeBtn = embedWrapper.querySelector('.video-modal-close');
+    const closeHandler = () => {
       embedWrapper.remove();
       block.dataset.embedLoaded = false;
       document.body.classList.remove('modal-open');
+      document.removeEventListener('keydown', escapeHandler);
+    };
+    const escapeHandler = (e) => {
+      if (e.key === 'Escape' && document.body.classList.contains('modal-open')) {
+        closeHandler();
+      }
+    };
+    closeBtn.addEventListener('click', closeHandler);
+    closeBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        closeHandler();
+      }
     });
+    document.addEventListener('keydown', escapeHandler);
   } else if (isVimeo) {
     const embedWrapper = embedVimeo(url, autoplay, background);
     block.append(embedWrapper);
@@ -126,11 +141,26 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
       block.dataset.embedLoaded = true;
     });
     document.body.classList.add('modal-open');
-    embedWrapper.querySelector('.video-modal-close').addEventListener('click', () => {
+    const closeBtn = embedWrapper.querySelector('.video-modal-close');
+    const closeHandler = () => {
       embedWrapper.remove();
       block.dataset.embedLoaded = false;
       document.body.classList.remove('modal-open');
+      document.removeEventListener('keydown', escapeHandler);
+    };
+    const escapeHandler = (e) => {
+      if (e.key === 'Escape' && document.body.classList.contains('modal-open')) {
+        closeHandler();
+      }
+    };
+    closeBtn.addEventListener('click', closeHandler);
+    closeBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        closeHandler();
+      }
     });
+    document.addEventListener('keydown', escapeHandler);
   } else if (isBox) {
     const embedWrapper = embedBoxUrl(url);
     block.append(embedWrapper);
@@ -138,11 +168,26 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
       block.dataset.embedLoaded = true;
     });
     document.body.classList.add('modal-open');
-    embedWrapper.querySelector('.video-modal-close').addEventListener('click', () => {
+    const closeBtn = embedWrapper.querySelector('.video-modal-close');
+    const closeHandler = () => {
       embedWrapper.remove();
       block.dataset.embedLoaded = false;
       document.body.classList.remove('modal-open');
+      document.removeEventListener('keydown', escapeHandler);
+    };
+    const escapeHandler = (e) => {
+      if (e.key === 'Escape' && document.body.classList.contains('modal-open')) {
+        closeHandler();
+      }
+    };
+    closeBtn.addEventListener('click', closeHandler);
+    closeBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        closeHandler();
+      }
     });
+    document.addEventListener('keydown', escapeHandler);
   } else {
     const videoEl = getVideoElement(link, autoplay, background);
     block.append(videoEl);
@@ -184,8 +229,15 @@ export default async function decorate(block) {
         'beforeend',
         '<button class="play-button" aria-label="Play video"><span class="icon-play-button"></span></button>',
       );
-      wrapper.addEventListener('click', () => {
+      const playHandler = () => {
         loadVideoEmbed(block, link, true, false);
+      };
+      wrapper.addEventListener('click', playHandler);
+      wrapper.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          playHandler();
+        }
       });
     }
     block.append(wrapper);
