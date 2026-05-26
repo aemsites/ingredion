@@ -146,14 +146,129 @@ export default async function decorate(block) {
         if (!autoplay) {
           wrapper.insertAdjacentHTML(
             'beforeend',
-            '<div class="video-placeholder-play"><button type="button" class="button play" title="Play"></button></div>',
+            '<div class="video-placeholder-play"><button type="button" class="button play" title="Play" aria-label="Play video"></button></div>',
           );
-          wrapper.addEventListener('click', () => {
+          const playBtn = wrapper.querySelector('.video-placeholder-play button');
+          const openVideo = () => {
             openVideoModal(link.href, true, false);
+            
+            // Ensure autoplay works and set focus for keyboard accessibility
+            const checkAndPlay = () => {
+              const videoModal = document.querySelector('.video-modal');
+              if (videoModal) {
+                // For HTML5 video
+                const htmlVideo = videoModal.querySelector('video');
+                if (htmlVideo) {
+                  htmlVideo.play().catch(() => {
+                    // Autoplay blocked
+                  });
+                  // Set focus to video for keyboard accessibility of controls
+                  setTimeout(() => htmlVideo.focus(), 0);
+                  
+                  // Add Escape key handler for video
+                  const videoEscapeHandler = (e) => {
+                    if (e.key === 'Escape') {
+                      e.preventDefault();
+                      const closeBtn = videoModal.querySelector('.video-modal-close');
+                      if (closeBtn) closeBtn.click();
+                    }
+                  };
+                  htmlVideo.addEventListener('keydown', videoEscapeHandler, true);
+                  return;
+                }
+                
+                // For iframe (YouTube, Vimeo)
+                const iframe = videoModal.querySelector('iframe');
+                if (iframe) {
+                  // Set focus to iframe for keyboard accessibility
+                  setTimeout(() => iframe.focus(), 0);
+                  
+                  // Iframe autoplay is handled by URL parameters, but double-check it loaded
+                  if (iframe.src && !iframe.src.includes('autoplay=1')) {
+                    // If iframe doesn't have autoplay in URL, add it and reload
+                    iframe.src = iframe.src + (iframe.src.includes('?') ? '&' : '?') + 'autoplay=1';
+                  }
+                  return;
+                }
+                
+                // Check again in 200ms
+                setTimeout(checkAndPlay, 200);
+              } else {
+                // Modal not found yet, check again
+                setTimeout(checkAndPlay, 100);
+              }
+            };
+            
+            setTimeout(checkAndPlay, 500);
+          };
+          
+          // Click handler for play button
+          playBtn.addEventListener('click', openVideo);
+          
+          // Keyboard handlers for play button (Space and Enter)
+          playBtn.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Enter') {
+              e.preventDefault();
+              openVideo();
+            }
           });
+          
+          // Click on wrapper also opens video
+          wrapper.addEventListener('click', (e) => {
+            if (e.target !== playBtn && !playBtn.contains(e.target)) {
+              openVideo();
+            }
+          });
+          
           link.addEventListener('click', (e) => {
             e.preventDefault();
-            openVideoModal(link.href, true, false);
+            openVideo();
+          });
+          
+          // Global keyboard handler for Escape to close modal
+          const handleEscapeKey = (e) => {
+            if (e.key === 'Escape' && document.body.classList.contains('modal-open')) {
+              document.removeEventListener('keydown', handleEscapeKey);
+              document.removeEventListener('keydown', handleSpaceKey);
+            }
+          };
+          
+          // Global keyboard handler for Space to pause/resume video in modal
+          const handleSpaceKey = (e) => {
+            if (e.key === ' ' && document.body.classList.contains('modal-open')) {
+              const videoModal = document.querySelector('.video-modal');
+              if (videoModal) {
+                const video = videoModal.querySelector('video');
+                if (video) {
+                  e.preventDefault();
+                  if (video.paused) {
+                    video.play();
+                  } else {
+                    video.pause();
+                  }
+                }
+              }
+            }
+          };
+          
+          // Store original open video function and wrap it to add keyboard listeners
+          const originalOpenVideo = openVideo;
+          wrapper.addEventListener('click', () => {
+            setTimeout(() => {
+              if (document.body.classList.contains('modal-open')) {
+                document.addEventListener('keydown', handleEscapeKey);
+                document.addEventListener('keydown', handleSpaceKey);
+              }
+            }, 0);
+          });
+          
+          playBtn.addEventListener('click', () => {
+            setTimeout(() => {
+              if (document.body.classList.contains('modal-open')) {
+                document.addEventListener('keydown', handleEscapeKey);
+                document.addEventListener('keydown', handleSpaceKey);
+              }
+            }, 0);
           });
         }
         li.prepend(wrapper);
