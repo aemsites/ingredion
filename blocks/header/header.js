@@ -729,22 +729,42 @@ export default async function decorate(block) {
 
   const $navCategory = nav({ class: 'category' }, ...$categoryNav);
 
-  // Create skip to content button helper function
   function createSkipButton() {
     const skipBtn = button(
-      { class: 'skip-button', id: 'skip-id', tabindex: '0', 'aria-label': 'Skip to main content' },
+      {
+        class: 'skip-button',
+        id: 'skip-id',
+        tabindex: '0',
+        'aria-label': 'Skip to main content',
+        type: 'button',
+      },
       'Skip to content',
     );
 
     skipBtn.addEventListener('click', () => {
-      const main = document.querySelector('main');
-      if (main) {
-        main.setAttribute('tabindex', '-1');
-        main.focus();
-        main.addEventListener('blur', () => {
-          main.removeAttribute('tabindex');
-        }, { once: true });
-      }
+      // Find first interactive element inside main content
+      const target = document.querySelector(
+        [
+          'main a[href]',
+          'main button:not([disabled])',
+          'main input:not([disabled])',
+          'main select:not([disabled])',
+          'main textarea:not([disabled])',
+          'main [tabindex]:not([tabindex="-1"])',
+        ].join(','),
+      );
+
+      // Exit if no interactive element exists
+      if (!target) return;
+
+      // Move keyboard focus
+      target.focus();
+
+      // Bring focused element into viewport
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
     });
 
     return skipBtn;
