@@ -729,14 +729,14 @@ export default async function decorate(block) {
 // Ensure "Ask Ingredion" link opens in a new tab
 // This is required as per business requirement for AI Agent to open separately
 // Applied after header render to avoid override from AEM/EDS dynamic behavior
-const askLink = [...$header.querySelectorAll('a')]
-  .find(a => a.textContent.includes('Ask Ingredion'));
+const askLinks = [...$header.querySelectorAll('a')]
+  .filter(a => a.textContent.includes('Ask Ingredion'));
  
-if (askLink) {
-  askLink.target = '_blank';
-  askLink.rel = 'noopener noreferrer';
-  askLink.title = 'Ask Ingredion for Solution Recommendations';
-}
+askLinks.forEach((link) => {
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  link.title = 'Ask Ingredion for Solution Recommendations';
+});
     }
   }
 
