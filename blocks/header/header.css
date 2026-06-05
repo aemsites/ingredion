@@ -1021,15 +1021,3 @@ header
   text-decoration: none !important;
   font-weight: 500;
 }
- 
-header 
-a[href="https://ask-usca.ingredion.com"]:hover,
-header 
-a[href="https://asktest-usca.ingredion.com"]:hover,
-header 
-a[href="https://ask-emea.ingredion.com"]:hover,
-header 
-a[href="https://asktest-emea.ingredion.com"]:hover{
-  
-}
- 
