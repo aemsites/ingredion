@@ -1020,3 +1020,10 @@ header
   color: inherit !important;
   text-decoration: none !important;
 }
+header a[href="https://ask-usca.ingredion.com"]:hover,
+header a[href="https://asktest-usca.ingredion.com"]:hover,
+header a[href="https://ask-emea.ingredion.com"]:hover,
+header a[href="https://asktest-emea.ingredion.com"]:hover {
+  color: var(--green) !important;
+}
+ 
