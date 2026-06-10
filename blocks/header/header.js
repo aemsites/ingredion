@@ -735,7 +735,6 @@ const askLinks = [...$header.querySelectorAll('a')]
 askLinks.forEach((link) => {
   link.target = '_blank';
   link.rel = 'noopener noreferrer';
-  link.title = 'Ask Ingredion for Solution Recommendations';
 });
     }
   }
