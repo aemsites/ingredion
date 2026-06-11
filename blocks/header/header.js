@@ -727,6 +727,13 @@ export default async function decorate(block) {
       );
       await buildDropdownsDesktop($header);
 // Ensure "Ask Ingredion" link opens in a new tab
+      console.log(
+  [...$header.querySelectorAll('a')].map(a => ({
+    text: a.textContent,
+    href: a.href
+  }))
+);
+ 
 const askLink = [...$header.querySelectorAll('a')]
   .find(a => a.textContent.includes('Ask Ingredion'));
 if (askLink) {
