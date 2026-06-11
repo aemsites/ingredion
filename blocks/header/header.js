@@ -742,6 +742,7 @@ if (askLink) {
     e.preventDefault();
     window.open(askLink.href, '_blank', 'noopener,noreferrer');
   });
+}
     }
   }
 
