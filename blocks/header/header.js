@@ -709,7 +709,7 @@ export default async function decorate(block) {
         ),
       );
       await buildDropdownsMobile($header);
-      
+      //Ask Ingredion mobile link should open in new tab
       const mobileAskLinks = $header.querySelectorAll('.mobile-menu a');
  
 mobileAskLinks.forEach((link) => {
