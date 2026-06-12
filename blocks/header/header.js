@@ -285,7 +285,6 @@ async function buildDropdownsDesktop($header) {
       const utility = document.querySelector('.utility');
       const utilityFirstP = utility.querySelector('p');
       const dropdown = utilityFirstP.querySelector('.dropdown');
-      
       const toggleDropdown = () => {
         if (activeDropdown === dropdown) {
           // If this dropdown is already active, close it
@@ -322,7 +321,6 @@ async function buildDropdownsDesktop($header) {
           utilityFirstP.focus();
         }
       });
-      
       document.addEventListener('click', (e) => {
         const isClickOnDropdown = dropdown.contains(e.target);
         const isClickOnTrigger = utilityFirstP.contains(e.target);
@@ -361,7 +359,6 @@ async function buildDropdownsDesktop($header) {
       newDiv.addEventListener('pointerenter', openDropdown);
       newDiv.addEventListener('pointerleave', closeDropdown);
       $dropDown.addEventListener('pointerleave', closeDropdown);
-      
       // Add keyboard support
       newDiv.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {

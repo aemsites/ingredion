@@ -115,13 +115,14 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
     });
     document.body.classList.add('modal-open');
     const closeBtn = embedWrapper.querySelector('.video-modal-close');
+    let escapeHandler;
     const closeHandler = () => {
       embedWrapper.remove();
       block.dataset.embedLoaded = false;
       document.body.classList.remove('modal-open');
       document.removeEventListener('keydown', escapeHandler);
     };
-    const escapeHandler = (e) => {
+    escapeHandler = (e) => {
       if (e.key === 'Escape' && document.body.classList.contains('modal-open')) {
         closeHandler();
       }
@@ -142,13 +143,14 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
     });
     document.body.classList.add('modal-open');
     const closeBtn = embedWrapper.querySelector('.video-modal-close');
+    let escapeHandler;
     const closeHandler = () => {
       embedWrapper.remove();
       block.dataset.embedLoaded = false;
       document.body.classList.remove('modal-open');
       document.removeEventListener('keydown', escapeHandler);
     };
-    const escapeHandler = (e) => {
+    escapeHandler = (e) => {
       if (e.key === 'Escape' && document.body.classList.contains('modal-open')) {
         closeHandler();
       }
@@ -169,13 +171,14 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
     });
     document.body.classList.add('modal-open');
     const closeBtn = embedWrapper.querySelector('.video-modal-close');
+    let escapeHandler;
     const closeHandler = () => {
       embedWrapper.remove();
       block.dataset.embedLoaded = false;
       document.body.classList.remove('modal-open');
       document.removeEventListener('keydown', escapeHandler);
     };
-    const escapeHandler = (e) => {
+    escapeHandler = (e) => {
       if (e.key === 'Escape' && document.body.classList.contains('modal-open')) {
         closeHandler();
       }

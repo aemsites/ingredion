@@ -294,4 +294,3 @@ export default function decorate(block) {
     block.hasResizeListener = true;
   }
 }
-
