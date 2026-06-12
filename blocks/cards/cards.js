@@ -146,14 +146,106 @@ export default async function decorate(block) {
         if (!autoplay) {
           wrapper.insertAdjacentHTML(
             'beforeend',
-            '<div class="video-placeholder-play"><button type="button" class="button play" title="Play"></button></div>',
+            '<div class="video-placeholder-play"><button type="button" class="button play" title="Play" aria-label="Play video"></button></div>',
           );
-          wrapper.addEventListener('click', () => {
+          const playBtn = wrapper.querySelector('.video-placeholder-play button');
+          const openVideo = () => {
             openVideoModal(link.href, true, false);
+            const checkAndPlay = () => {
+              const videoModal = document.querySelector('.video-modal');
+              if (videoModal) {
+                // For HTML5 video
+                const htmlVideo = videoModal.querySelector('video');
+                if (htmlVideo) {
+                  htmlVideo.play().catch(() => {
+                  });
+                  setTimeout(() => htmlVideo.focus(), 0);
+                  const videoEscapeHandler = (e) => {
+                    if (e.key === 'Escape') {
+                      e.preventDefault();
+                      const closeBtn = videoModal.querySelector('.video-modal-close');
+                      if (closeBtn) closeBtn.click();
+                    }
+                  };
+                  htmlVideo.addEventListener('keydown', videoEscapeHandler, true);
+                  return;
+                }
+                // For iframe (YouTube, Vimeo)
+                const iframe = videoModal.querySelector('iframe');
+                if (iframe) {
+                  setTimeout(() => iframe.focus(), 0);
+                  if (iframe.src && !iframe.src.includes('autoplay=1')) {
+                    try {
+                      const url = new URL(iframe.src, window.location.href);
+                      url.searchParams.set('autoplay', '1');
+                      iframe.src = url.toString();
+                    } catch (err) {
+                      iframe.src = iframe.src.concat(iframe.src.includes('?') ? '&' : '?', 'autoplay=1');
+                    }
+                  }
+                  return;
+                }
+                setTimeout(checkAndPlay, 200);
+              } else {
+                setTimeout(checkAndPlay, 100);
+              }
+            };
+            setTimeout(checkAndPlay, 500);
+          };
+          playBtn.addEventListener('click', openVideo);
+          playBtn.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Enter') {
+              e.preventDefault();
+              openVideo();
+            }
+          });
+          wrapper.addEventListener('click', (e) => {
+            if (e.target !== playBtn && !playBtn.contains(e.target)) {
+              openVideo();
+            }
           });
           link.addEventListener('click', (e) => {
             e.preventDefault();
-            openVideoModal(link.href, true, false);
+            openVideo();
+          });
+          let handleSpaceKey;
+          const handleEscapeKey = (e) => {
+            if (e.key === 'Escape' && document.body.classList.contains('modal-open')) {
+              document.removeEventListener('keydown', handleEscapeKey);
+              document.removeEventListener('keydown', handleSpaceKey);
+            }
+          };
+          handleSpaceKey = (e) => {
+            if (e.key === ' ' && document.body.classList.contains('modal-open')) {
+              const videoModal = document.querySelector('.video-modal');
+              if (videoModal) {
+                const video = videoModal.querySelector('video');
+                if (video) {
+                  e.preventDefault();
+                  if (video.paused) {
+                    video.play();
+                  } else {
+                    video.pause();
+                  }
+                }
+              }
+            }
+          };
+          wrapper.addEventListener('click', () => {
+            setTimeout(() => {
+              if (document.body.classList.contains('modal-open')) {
+                document.addEventListener('keydown', handleEscapeKey);
+                document.addEventListener('keydown', handleSpaceKey);
+              }
+            }, 0);
+          });
+          playBtn.addEventListener('click', () => {
+            setTimeout(() => {
+              if (document.body.classList.contains('modal-open')) {
+                document.addEventListener('keydown', handleEscapeKey);
+                document.addEventListener('keydown', handleSpaceKey);
+              }
+            }, 0);
           });
         }
         li.prepend(wrapper);
@@ -176,22 +268,18 @@ export default async function decorate(block) {
           wrapper.className = 'section-title-description-wrapper';
           block.insertAdjacentElement('beforebegin', wrapper);
         }
-
         const imageContainer = li.querySelector('.cards-card-image');
         const bodyContainer = li.querySelector('.cards-card-body');
         const textLink = bodyContainer.querySelector('a');
-
         if (textLink && imageContainer && bodyContainer) {
           const linkHref = textLink.href;
           const h3 = document.createElement('h3');
           h3.textContent = textLink.textContent;
           h3.title = textLink.title || '';
           textLink.parentNode.replaceWith(h3);
-
           const wrapperLink = document.createElement('a');
           wrapperLink.href = linkHref;
           wrapperLink.title = textLink.title || '';
-
           li.prepend(wrapperLink);
           wrapperLink.appendChild(imageContainer);
           wrapperLink.appendChild(bodyContainer);
@@ -248,7 +336,6 @@ export default async function decorate(block) {
       dotsContainer.append(dot);
     });
     block.append(dotsContainer);
-
     if (!isDesktop.matches) {
       bindEvents(block);
       enableDragging(block);

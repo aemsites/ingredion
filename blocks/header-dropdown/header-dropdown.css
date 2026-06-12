@@ -686,3 +686,19 @@ li.active .header-dropdown.mobile {
   position: static;
   padding-right: 0.3rem;
 }
+
+/* Focus styles for keyboard accessibility */
+.header-dropdown.submenu ul.nav-list li:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+}
+
+.header-dropdown.mobile .dropdown-title:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+}
+
+.header-dropdown .dropdown-content a:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+}
