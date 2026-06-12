@@ -189,7 +189,7 @@ export default async function decorate(block) {
               } else {
                 setTimeout(checkAndPlay, 100);
               }
-            };        
+            };
             setTimeout(checkAndPlay, 500);
           };
           playBtn.addEventListener('click', openVideo);
@@ -208,13 +208,14 @@ export default async function decorate(block) {
             e.preventDefault();
             openVideo();
           });
+          let handleSpaceKey;
           const handleEscapeKey = (e) => {
             if (e.key === 'Escape' && document.body.classList.contains('modal-open')) {
               document.removeEventListener('keydown', handleEscapeKey);
               document.removeEventListener('keydown', handleSpaceKey);
             }
           };
-          const handleSpaceKey = (e) => {
+          handleSpaceKey = (e) => {
             if (e.key === ' ' && document.body.classList.contains('modal-open')) {
               const videoModal = document.querySelector('.video-modal');
               if (videoModal) {
@@ -230,7 +231,6 @@ export default async function decorate(block) {
               }
             }
           };
-          const originalOpenVideo = openVideo;
           wrapper.addEventListener('click', () => {
             setTimeout(() => {
               if (document.body.classList.contains('modal-open')) {
@@ -239,7 +239,6 @@ export default async function decorate(block) {
               }
             }, 0);
           });
-          
           playBtn.addEventListener('click', () => {
             setTimeout(() => {
               if (document.body.classList.contains('modal-open')) {
