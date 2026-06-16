@@ -5,6 +5,23 @@
 >
 
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<script nonce="aem">
+  (function () {
+
+    var GATED_PATH = '/na/en-us/legal/offer-communications';
+    var TERMS_PATH = '/drafts/shajahan/legal-terms';
+    var CONSENT_COOKIE = 'offerCommsConsent';
+
+    function getCookie(name) {
+      var match = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+    var currentPath = window.location.pathname.replace(/\/+$/, '');
+    if (currentPath === GATED_PATH && getCookie(CONSENT_COOKIE) !== 'agreed') {
+      window.location.replace(TERMS_PATH);
+    }
+  })();
+</script>
 <script nonce="aem" src="/scripts/aem.js" type="module"></script>
 <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
 <link rel="stylesheet" href="/styles/styles.css"/>
