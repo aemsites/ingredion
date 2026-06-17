@@ -1,37 +1,32 @@
+const GATED_PATH = '/na/en-us/legal/offer-communications';
 const TERMS_PATH = '/drafts/shajahan/disclaimer-content';
- 
+
 export default function decorateLegalGate() {
   const currentPath = window.location.pathname.replace(/\/+$/, '');
-  if (currentPath !== TERMS_PATH) return; 
-  document.querySelectorAll('a.button').forEach((link) => {
-    const label = link.textContent.trim().toLowerCase();
- 
-    if (label === 'i accept') {
-      link.addEventListener(
-        'click',
-        (event) => {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          const url = new URL(link.href, window.location.origin);
-          url.searchParams.set('consent', 'agreed');
-          window.location.replace(url.toString());
-        },
-        true,
-      );
-    } else if (label === 'i decline') {
-      link.addEventListener(
-        'click',
-        (event) => {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          window.location.replace(link.href);
-        },
-        true,
-      );
-    }
-  });
+  if (currentPath !== TERMS_PATH) return;
+
+  document.addEventListener(
+    'click',
+    (event) => {
+      const link = event.target.closest('a.button, button.button');
+      if (!link) return;
+      const label = link.textContent.trim().toLowerCase();
+
+      if (label === 'i accept') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const url = new URL(link.href, window.location.origin);
+        url.searchParams.set('consent', 'agreed');
+        window.location.replace(url.toString());
+      } else if (label === 'i decline') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        window.location.replace(link.href || '/');
+      }
+    },
+    true,
+  );
 }
- 
 
 //old approach
 

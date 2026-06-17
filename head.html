@@ -10,9 +10,9 @@
   (function () {
     var GATED_PATH = '/na/en-us/legal/offer-communications';
     var TERMS_PATH = '/drafts/shajahan/disclaimer-content';
- 
+
     var currentPath = window.location.pathname.replace(/\/+$/, '');
- 
+
     if (currentPath === GATED_PATH) {
       var params = new URLSearchParams(window.location.search);
       if (params.get('consent') === 'agreed') {
