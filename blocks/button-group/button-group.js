@@ -1,24 +1,18 @@
 export default function decorate(block) {
-  const rows = [...block.children];
-  if (rows.length < 2) {
-    return;
-  }
-  const labels = [...rows[0].children];
-  const links = [...rows[1].children];
-  const wrapper = document.createElement('div');
-  wrapper.classList.add('button-group-wrapper');
-  labels.forEach((labelCell, index) => {
-    const label = labelCell.textContent.trim();
-    const href = links[index]?.textContent.trim();
-    if (!label || !href) {
-      return;
-    }
-    const anchor = document.createElement('a');
-    anchor.href = href;
-    anchor.title = label;
-    anchor.textContent = label;
-    anchor.classList.add('button');
-    wrapper.append(anchor);
-  });
-  block.replaceChildren(wrapper);
+ const wrapper = document.createElement('div');
+ wrapper.className = 'button-group-wrapper';
+ [...block.children].forEach((row) => {
+   const cells = [...row.children];
+   if (cells.length < 2) return;
+   const label = cells[0].textContent.trim();
+   const href = cells[1].textContent.trim();
+   if (!label || !href) return;
+   const link = document.createElement('a');
+   link.href = href;
+   link.textContent = label;
+   link.title = label;
+   link.classList.add('button');
+   wrapper.append(link);
+ });
+ block.replaceChildren(wrapper);
 } 
