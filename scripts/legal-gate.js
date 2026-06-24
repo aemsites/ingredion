@@ -1,4 +1,3 @@
-const GATED_PATH = '/na/en-us/legal/offer-communications';
 const TERMS_PATH = '/na/en-us/legal/disclaimer-content';
 
 export default function decorateLegalGate() {

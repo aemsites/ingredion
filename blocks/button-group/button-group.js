@@ -12,7 +12,7 @@ export default function decorate(block) {
     link.textContent = label;
     link.title = label;
     link.classList.add('button');
-   wrapper.append(link);
- });
- block.replaceChildren(wrapper);
+    wrapper.append(link);
+  });
+  block.replaceChildren(wrapper);
 }

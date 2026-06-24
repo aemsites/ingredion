@@ -14,7 +14,7 @@ import {
   getMetadata,
 } from './aem.js';
 import { getRegionLocale } from './utils.js';
-import decorateLegalGate  from './legal-gate.js';
+import decorateLegalGate from './legal-gate.js';
 
 /**
  * Recursively removes nested <div> elements from a given element.
@@ -285,7 +285,10 @@ async function loadEager(doc) {
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
 
-  // legal gate should be decorated as early as possible to avoid showing the content before the gate is applied.
+  /**
+   * gate should be decorated asap to avoid showing the content before the
+   * gate is applied.
+   */
   decorateLegalGate();
 
   try {
