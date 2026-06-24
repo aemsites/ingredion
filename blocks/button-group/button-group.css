@@ -1,0 +1,17 @@
+.button-group-wrapper { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  gap: 30px; 
+} 
+  
+.button-group-wrapper .button { 
+  margin: 0; 
+}
+
+@media (max-width: 768px) {
+  .button-group-wrapper {
+    flex-direction: column; 
+    gap: 16px; 
+  }
+} 
