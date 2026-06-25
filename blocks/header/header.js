@@ -789,15 +789,14 @@ export default async function decorate(block) {
         ),
       );
       await buildDropdownsMobile($header);
-      //Ask Ingredion mobile link should open in new tab
       const mobileAskLinks = $header.querySelectorAll('.mobile-menu a');
  
-mobileAskLinks.forEach((link) => {
-  if (link.textContent?.includes('Ask Ingredion')) {
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-  }
-});
+      mobileAskLinks.forEach((link) => {
+        if (link.textContent?.includes('Ask Ingredion')) {
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+        }
+      });
     } else {
       document.body.classList.remove('menu-open');
       $header.append(
