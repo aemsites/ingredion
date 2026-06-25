@@ -1,6 +1,39 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword, no-descending-specificity */
 @import url("../../styles/select-dropdown.css");
 
+/* Skip to content button styling */
+header button.skip-button {
+  position: absolute;
+  clip-path: inset(100%);
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: #e8e8e8;
+  color: #000;
+  font-size: 1rem;
+  font-weight: normal;
+  border: none;
+  border-bottom: 2px solid #000;
+  cursor: pointer;
+  text-decoration: underline;
+  white-space: nowrap;
+  text-align: center;
+  outline: none;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+header button.skip-button:hover {
+  background: #d0d0d0;
+}
+
+header button.skip-button:focus,
+header button.skip-button:focus-visible {
+  position: relative;
+  clip-path: none;
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
 body.menu-open {
   overflow: hidden;
   height: 100%;
@@ -1006,6 +1039,22 @@ header nav.category > ul:nth-child(3) > li {
     background-color: #efefef;
     padding: 0 4.25rem;
   }
+}
+
+/* Focus styles for keyboard accessibility */
+header nav.category > ul > li > div[data-dropdown="true"]:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+header nav.utility > p:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+}
+
+header nav.category > ul > li > a:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
 }
 
 /*Ask Ingredion link fix */
