@@ -61,7 +61,7 @@ function createSelectDropdown({
   cssClass = [],
 }) {
   const $dropdown = div({ class: ['select-dropdown', cssClass] },
-    div({ class: 'selected' }, `${selectedValue || defaultText}${labelSuffix}`),
+    div({ class: 'selected', tabindex: '0' }, `${selectedValue || defaultText}${labelSuffix}`),
     ul({ class: 'options' }),
   );
 
@@ -75,10 +75,21 @@ function createSelectDropdown({
     const $option = li({
       class: `option ${isActive ? 'active' : ''}`,
       style: isActive ? 'padding-right: 30px;' : '',
+      tabindex: '0',
     },
     label,
     count !== undefined ? small(` (${count})`) : '',
     );
+
+    // Add keyboard event handling for accessibility
+    $option.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        onSelect(value, $option, $dropdown);
+        $dropdown.querySelector('.options').classList.remove('open');
+      }
+    });
 
     $option.addEventListener('click', (event) => {
       event.stopPropagation();
@@ -89,8 +100,10 @@ function createSelectDropdown({
     $dropdown.querySelector('.options').appendChild($option);
   });
 
+  const $selected = $dropdown.querySelector('.selected');
+
   // Add click handler to toggle dropdown
-  $dropdown.querySelector('.selected').addEventListener('click', (event) => {
+  $selected.addEventListener('click', (event) => {
     event.stopPropagation();
 
     const thisOptionsList = $dropdown.querySelector('.options');
@@ -102,7 +115,32 @@ function createSelectDropdown({
     });
 
     // open this one if it was closed
-    if (!isCurrentlyOpen) thisOptionsList.classList.add('open');
+    if (!isCurrentlyOpen) {
+      thisOptionsList.classList.add('open');
+      // Focus first option when opening
+      const firstOption = thisOptionsList.querySelector('.option');
+      if (firstOption) firstOption.focus();
+    }
+  });
+
+  // Add keyboard handler to open dropdown on Enter
+  $selected.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.stopPropagation();
+      const thisOptionsList = $dropdown.querySelector('.options');
+      const isCurrentlyOpen = thisOptionsList.classList.contains('open');
+
+      document.querySelectorAll('.select-dropdown .options.open').forEach((optionsList) => {
+        optionsList.classList.remove('open');
+      });
+
+      if (!isCurrentlyOpen) {
+        thisOptionsList.classList.add('open');
+        const firstOption = thisOptionsList.querySelector('.option');
+        if (firstOption) firstOption.focus();
+      }
+    }
   });
 
   // Close all dropdowns when clicking outside
@@ -326,9 +364,9 @@ export default class ProductApiRenderer {
       const facetGroupWrapper = div({ class: `facet-group__wrapper${isActive ? ' is-active' : ''}` });
 
       const header = div({ class: 'facet-group__header' });
-      const title = h5({ class: 'facet-group__title' });
+      const title = h5({ class: 'facet-group__title', tabindex: '0' });
       title.textContent = facetData.label;
-      const toggleIcon = span({ class: 'icon' });
+      const toggleIcon = span({ class: 'icon', tabindex: '0' });
       toggleIcon.textContent = isOpen ? '－' : '＋';
       title.appendChild(toggleIcon);
       header.appendChild(title);
@@ -354,6 +392,27 @@ export default class ProductApiRenderer {
         checkbox.checked = isSelected;
         checkbox.value = option.label;
         checkbox.dataset.facetGroup = facetKey;
+        checkbox.setAttribute('tabindex', '0');
+
+        // Add focus/blur event listeners for visual indication
+        checkbox.addEventListener('focus', () => {
+          label.style.outline = '2px solid #010b11';
+          label.style.outlineOffset = '2px';
+        });
+        checkbox.addEventListener('blur', () => {
+          label.style.outline = '';
+          label.style.outlineOffset = '';
+        });
+
+        // Add keyboard event listener for Enter key
+        checkbox.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            checkbox.checked = !checkbox.checked;
+            // Trigger the change event to apply the filter
+            checkbox.dispatchEvent(new Event('change'));
+          }
+        });
 
         label.appendChild(checkbox);
         label.appendChild(document.createTextNode(`${option.label} (${option.count})`));
@@ -453,6 +512,17 @@ export default class ProductApiRenderer {
         const isCurrentlyOpen = this.groupState[facetKey];
         content.style.display = isCurrentlyOpen ? 'block' : 'none';
         toggleIcon.textContent = isCurrentlyOpen ? '－' : '＋';
+      });
+
+      // Add keyboard event listener for Enter key
+      toggleIcon.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.groupState[facetKey] = !this.groupState[facetKey];
+          const isCurrentlyOpen = this.groupState[facetKey];
+          content.style.display = isCurrentlyOpen ? 'block' : 'none';
+          toggleIcon.textContent = isCurrentlyOpen ? '－' : '＋';
+        }
       });
 
       facetGroupWrapper.appendChild(header);

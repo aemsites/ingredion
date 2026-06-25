@@ -3,7 +3,7 @@ import { div, ul, li, span, a } from '../../scripts/dom-helpers.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 function buildSubMenu(block) {
-  const $navList = ul({ class: 'nav-list', 'data-height': '' });
+  const $navList = ul({ class: 'nav-list', 'data-height': '', role: 'menu' });
   const $navItems = div({ class: 'nav-items' });
 
   const removeActiveItem = () => {
@@ -43,17 +43,41 @@ function buildSubMenu(block) {
         let $section;
 
         if (linkElement && linkElement.href) {
-          $section = li({ 'data-item': rowN },
+          $section = li({ 'data-item': rowN, role: 'menuitem', tabindex: '-1' },
             a({ href: linkElement.href }, col.textContent),
           );
         } else {
-          $section = li({ 'data-item': rowN }, col.textContent);
+          $section = li({ 'data-item': rowN, role: 'menuitem', tabindex: '-1' }, col.textContent);
         }
 
         $section.addEventListener('click', () => setActiveItem($section, rowN));
         $section.addEventListener('mouseover', () => setActiveItem($section, rowN));
+        // Add keyboard support for menu items
+        $section.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setActiveItem($section, rowN);
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            const nextItem = $section.nextElementSibling;
+            if (nextItem) {
+              nextItem.focus();
+              setActiveItem(nextItem, parseInt(nextItem.getAttribute('data-item'), 10));
+            }
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prevItem = $section.previousElementSibling;
+            if (prevItem) {
+              prevItem.focus();
+              setActiveItem(prevItem, parseInt(prevItem.getAttribute('data-item'), 10));
+            }
+          }
+        });
         // set first item as active
-        if (rowN === 0) $section.classList.add('active');
+        if (rowN === 0) {
+          $section.classList.add('active');
+          $section.setAttribute('tabindex', '0');
+        }
         $navList.append($section);
       } else {
         col.setAttribute('data-height', '');
@@ -160,6 +184,9 @@ function renderMobile(block) {
 
     title.classList.add('dropdown-title');
     title.classList.remove('open');
+    title.setAttribute('tabindex', '0');
+    title.setAttribute('role', 'button');
+    title.setAttribute('aria-expanded', 'false');
 
     if (!title.querySelector('.icon-add') && !title.querySelector('.icon-subtract')) {
       title.appendChild(span({ class: 'icon-add open' }));
@@ -181,13 +208,27 @@ function renderMobile(block) {
 
     let isOpen = false;
 
-    title.addEventListener('click', () => {
+    const toggleDropdown = () => {
       isOpen = !isOpen;
       dropdownItems.forEach((dropdownItem) => {
         dropdownItem.classList.toggle('open', isOpen);
       });
       title.querySelector('.icon-add').classList.toggle('open', !isOpen);
       title.querySelector('.icon-subtract').classList.toggle('open', isOpen);
+      title.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    };
+
+    title.addEventListener('click', toggleDropdown);
+    // Add keyboard support for title
+    title.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleDropdown();
+      } else if (e.key === 'Escape' && isOpen) {
+        e.preventDefault();
+        isOpen = true;
+        toggleDropdown();
+      }
     });
   });
 

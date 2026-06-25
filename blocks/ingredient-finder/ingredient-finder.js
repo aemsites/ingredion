@@ -28,14 +28,29 @@ async function createIngredientPanel(ingredientResults) {
   const $filtersList = div();
 
   const $articleCard = (article) => {
-    const addSampleBtn = a({ title: translate('add-sample'), class: 'button add-sample-button' }, translate('add-sample'));
+    const addSampleBtn = a({ title: translate('add-sample'), class: 'button add-sample-button', tabindex: '0' }, translate('add-sample'));
     addSampleBtn.addEventListener('click', () => addIngredientToCart(article.productName, window.location.href));
+    addSampleBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addIngredientToCart(article.productName, window.location.href);
+      }
+    });
 
     const description = div({ class: 'description' });
-    description.innerHTML = (article.description).replace(/&nbsp;/g, ' ');
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = (article.description).replace(/&nbsp;/g, ' ');
+    tempDiv.querySelectorAll('a').forEach((link) => link.setAttribute('tabindex', '-1'));
+    description.innerHTML = tempDiv.innerHTML;
 
-    const viewAllDocsLink = a({ class: 'view-all' }, translate('view-all-documents'));
+    const viewAllDocsLink = a({ class: 'view-all', tabindex: '0' }, translate('view-all-documents'));
     viewAllDocsLink.addEventListener('click', () => viewAllDocsModal(article));
+    viewAllDocsLink.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        viewAllDocsModal(article);
+      }
+    });
     const relatedIngredientBlock = div(
       { class: 'related-ingredient' },
       div(
@@ -104,11 +119,24 @@ function createDropdownOption(item) {
     ? encodeURIComponent(item.key).replace(/%20/g, '+')
     : item.key || '';
   const processedLabel = encodeURIComponent(item.label).replace(/%20/g, '+');
-  return div({
+  const optionDiv = div({
     class: 'dropdown-option',
     'data-key': processedKey,
     'data-encoded-label': processedLabel,
+    tabindex: '0',
   }, item.label);
+
+  // Add keyboard event handling
+  optionDiv.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      // Trigger the selection logic
+      optionDiv.click();
+    }
+  });
+
+  return optionDiv;
 }
 
 function attachIngredientResults(block, ingredientResults, totalItemsCount, searchValue) {
@@ -270,11 +298,21 @@ export default async function decorate(block) {
       ...data.applications.map(createDropdownOption),
     );
     const $application = div(
-      { class: 'application select-dropdown' },
+      { class: 'application select-dropdown', tabindex: '0' },
       initialTab,
       selected,
       options,
     );
+
+    // Add focus/blur event listeners for visual indication
+    $application.addEventListener('focus', () => {
+      $application.style.outline = '2px solid #01090e';
+      $application.style.outlineOffset = '2px';
+    });
+    $application.addEventListener('blur', () => {
+      $application.style.outline = '';
+      $application.style.outlineOffset = '';
+    });
 
     const initialTab1 = input({
       type: 'hidden',
@@ -285,11 +323,45 @@ export default async function decorate(block) {
     const selected1 = div({ class: 'selected disabled' }, subApplicationText);
     const dropdownOptions1 = div({ class: 'dropdown-options hidden' });
     const $subApplication = div(
-      { class: 'sub-application select-dropdown disabled' },
+      { class: 'sub-application select-dropdown disabled', tabindex: '0' },
       initialTab1,
       selected1,
       dropdownOptions1,
     );
+    // Add keyboard event handling for accessibility
+    $application.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        options.classList.toggle('hidden');
+        dropdownOptions1.classList.add('hidden');
+      }
+    });
+    // Add keyboard event handling for accessibility
+    $subApplication.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !$subApplication.classList.contains('disabled')) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropdownOptions1.classList.toggle('hidden');
+      }
+    });
+
+    // Add focus/blur event listeners for visual indication
+    $subApplication.addEventListener('focus', () => {
+      if (!$subApplication.classList.contains('disabled')) {
+        $subApplication.style.outline = '2px solid #01090e';
+        $subApplication.style.outlineOffset = '2px';
+      }
+    });
+    $subApplication.addEventListener('blur', () => {
+      $subApplication.style.outline = '';
+      $subApplication.style.outlineOffset = '';
+    });
+
+    // Initially disable tabindex if disabled
+    if ($subApplication.classList.contains('disabled')) {
+      $subApplication.removeAttribute('tabindex');
+    }
 
     if (applications) {
       selected.textContent = applications;
@@ -368,6 +440,7 @@ export default async function decorate(block) {
           selected1.textContent = subApplicationText;
           selected1.classList.remove('disabled');
           $subApplication.classList.remove('disabled');
+          $subApplication.setAttribute('tabindex', '0');
         }
         queryParams = queryParams.replace(/&subApplicationID=[^&]*&subApplications=[^&]*/, '');
         window.history.pushState({}, '', `${pagePath}?${queryParams}`);
