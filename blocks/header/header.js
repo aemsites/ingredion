@@ -816,7 +816,7 @@ export default async function decorate(block) {
       await buildDropdownsDesktop($header);
       // Ensure "Ask Ingredion" link opens in a new tab
       const askLink = [...$header.querySelectorAll('a')]
-        .find(ask => (ask.textContent.includes('Ask Ingredion')));
+        .find((ask) => ask.textContent.includes('Ask Ingredion'));
       if (askLink) {
         askLink.target = '_blank';
         askLink.rel = 'noopener noreferrer';
