@@ -790,7 +790,6 @@ export default async function decorate(block) {
       );
       await buildDropdownsMobile($header);
       const mobileAskLinks = $header.querySelectorAll('.mobile-menu a');
- 
       mobileAskLinks.forEach((link) => {
         if (link.textContent?.includes('Ask Ingredion')) {
           link.target = '_blank';
@@ -815,13 +814,13 @@ export default async function decorate(block) {
         $navCategory.cloneNode(true),
       );
       await buildDropdownsDesktop($header);
-// Ensure "Ask Ingredion" link opens in a new tab
-const askLink = [...$header.querySelectorAll('a')]
-  .find(a => a.textContent.includes('Ask Ingredion'));
-if (askLink) {
-  askLink.target = '_blank';
-  askLink.rel = 'noopener noreferrer';
-}
+      // Ensure "Ask Ingredion" link opens in a new tab
+      const askLink = [...$header.querySelectorAll('a')]
+        .find(a => a.textContent.includes('Ask Ingredion'));
+      if (askLink) {
+        askLink.target = '_blank';
+        askLink.rel = 'noopener noreferrer';
+      }
     }
   }
   handleView();
