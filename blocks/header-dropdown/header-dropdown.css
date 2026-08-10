@@ -144,6 +144,45 @@
     display: block;
     border-bottom: none;
   }
+
+  .header-dropdown.static.columns-4 {
+    padding: 2.5rem 4.25rem 0;
+  }
+  
+  .header-dropdown.static.columns-4>div>div {
+    padding: 0;
+  }
+  
+  .header-dropdown.static.columns-4>div>div li>strong>a {
+    font-family: opensans-bold, helvetica, sans-serif;
+  }
+  
+  .header-dropdown.static.columns-4>div>div:first-of-type {
+    border-bottom: none;
+    max-width: 17.1875rem;
+    min-width: 11.875rem;
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+  
+  .header-dropdown.static.columns-4>div>div:nth-of-type(2),
+  .header-dropdown.static.columns-4>div>div:nth-of-type(3) {
+    max-width: 10.6875rem;
+    height: 25rem;
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+  
+  .header-dropdown.static.columns-4>div>div:nth-of-type(2) .button-container a.button,
+  .header-dropdown.static.columns-4>div>div:nth-of-type(3) .button-container a.button {
+    text-transform: none;
+  }
+  
+  .header-dropdown.static.columns-4>div>div:nth-of-type(4) {
+    max-width: 23.8125rem;
+    display: block;
+    border-bottom: none;
+  }
 }
 
 .header-dropdown.submenu ul.nav-list {
