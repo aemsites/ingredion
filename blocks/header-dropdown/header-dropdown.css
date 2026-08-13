@@ -160,7 +160,7 @@
   
   .header-dropdown.static.columns-4>div>div:first-of-type {
     border-bottom: none;
-    /* max-width: 17.1875rem; */
+    max-width: 23.1875rem;
     min-width: 11.875rem;
     overflow-y: auto;
     scrollbar-width: none;
