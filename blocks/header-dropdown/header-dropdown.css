@@ -111,6 +111,9 @@
 
   .header-dropdown.static.columns-3 > div > div {
     padding: 0;
+    height: 25rem;
+    overflow-y: scroll;
+    scrollbar-width: none;
   }
 
   .header-dropdown.static.columns-3 > div > div li > strong > a {
@@ -121,8 +124,6 @@
     border-bottom: none;
     max-width: 17.1875rem;
     min-width: 11.875rem;
-    overflow-y: scroll;
-    scrollbar-width: none;
   }
 
   /* .header-dropdown.static.columns-3 > div > div:first-of-type .button-container a.button {
@@ -131,9 +132,6 @@
 
   .header-dropdown.static.columns-3 > div > div:nth-of-type(2) {
     max-width: 10.6875rem;
-    height: 25rem;
-    overflow-y: scroll;
-    scrollbar-width: none;
   }
 
   .header-dropdown.static.columns-3 > div > div:nth-of-type(2) .button-container a.button {
