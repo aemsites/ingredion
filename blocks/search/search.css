@@ -525,7 +525,7 @@
 .article-list .filter-results-wrapper .results .articles .card .thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit:contain;
 }
 
 .article-list .filter-results-wrapper .results .articles .card .info {

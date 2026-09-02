@@ -325,6 +325,7 @@ function createSubmitButton(fd) {
   if (fd.Extra) {
     button.dataset.redirectUrl = fd.Extra;
   }
+  console.log('Submit button created with label:', fd.Label);
   return button;
 }
 
@@ -546,10 +547,23 @@ export default async function decorate(block) {
     // Add form submit handler for client-side validation
     formElement.addEventListener('submit', (e) => {
       // set phone number to full phone number
-      const phoneNumber = formElement.querySelector('input[name="Phone"]').getAttribute('full-phone-number');
-      if (phoneNumber) {
-        formElement.querySelector('input[name="Phone"]').value = phoneNumber;
+      const phoneField = formElement.querySelector('input[name="Phone"]');
+      if (phoneField) {
+        const phoneNumber = phoneField.getAttribute('full-phone-number');
+        if (phoneNumber) {
+          phoneField.value = phoneNumber;
+        }
       }
+
+      const emailField = formElement.querySelector(
+        'input[type="email"], input[name="Email"], input[name="email"]'
+      );
+
+      if (emailField && emailField.value.trim()) {
+        console.log('Email value:', emailField.value);
+        e.preventDefault();
+      }
+
       if (!formElement.checkValidity()) {
         e.preventDefault();
       }
