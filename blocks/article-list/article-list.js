@@ -38,14 +38,14 @@ export default async function decorate(block) {
     const $articleCard = (article) => {
       let watchVideoLink = '';
       let thumb = a({ class: 'thumb', href: article.path },
-        createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
+        createOptimizedPicture(article.image, article.title, true, [{ width: '600' }]),
       );
 
       // If this is a video, override the click to open a modal on click
       const isVideo = article.tags && article.tags.includes('Resource Type / Video');
       if (isVideo && article['video-url']) {
         thumb = a({ class: 'thumb video', href: article.path },
-          createOptimizedPicture(article.image, article.title, true, [{ width: '235' }]),
+          createOptimizedPicture(article.image, article.title, true, [{ width: '600' }]),
           button({ class: 'play-button', 'aria-label': 'Play video' }, span({ class: 'icon-play-button' })),
         );
         // Open modal on click of thumb or play button
