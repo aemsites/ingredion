@@ -85,6 +85,7 @@ function getVideoElement(source, autoplay, background) {
     video.removeAttribute('controls');
     video.addEventListener('canplay', () => {
       video.muted = false;
+      
       if (autoplay) video.play();
     });
   }
