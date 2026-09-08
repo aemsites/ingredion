@@ -84,7 +84,7 @@ function getVideoElement(source, autoplay, background) {
     video.setAttribute('playsinline', '');
     video.removeAttribute('controls');
     video.addEventListener('canplay', () => {
-      video.muted = true;
+      video.muted = false;
       if (autoplay) video.play();
     });
   }
