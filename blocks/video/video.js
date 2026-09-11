@@ -32,7 +32,7 @@ function embedYoutube(url, autoplay, background) {
   if (background || autoplay) {
     const suffixParams = {
       autoplay: autoplay ? '1' : '0',
-      mute: background ? '1' : '0',
+      mute: background ? '0' : '1',
       controls: background ? '0' : '1',
       disablekb: background ? '1' : '0',
       loop: background ? '1' : '0',
@@ -84,7 +84,8 @@ function getVideoElement(source, autoplay, background) {
     video.setAttribute('playsinline', '');
     video.removeAttribute('controls');
     video.addEventListener('canplay', () => {
-      video.muted = true;
+      video.muted = false;
+
       if (autoplay) video.play();
     });
   }
