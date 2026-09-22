@@ -32,7 +32,7 @@ function embedYoutube(url, autoplay, background) {
   if (background || autoplay) {
     const suffixParams = {
       autoplay: autoplay ? '1' : '0',
-      mute: background ? '1' : '0',
+      mute: background ? '0' : '1',
       controls: background ? '1' : '0',
       disablekb: background ? '1' : '0',
       loop: background ? '1' : '0',
