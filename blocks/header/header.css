@@ -211,10 +211,11 @@ header nav.utility > p .dropdown .row .default-content-wrapper h4 {
 
 header nav.utility > p .dropdown .header-dropdown.static.columns-4 {
   white-space: nowrap;
+  padding: 0 40px;
 }
 
 header nav.utility > p .dropdown .header-dropdown.static.columns-4 > div > div {
-  padding: 0 0 60px 20px;
+  padding: 0;
 }
 
 header nav.utility > p.active .dropdown {
