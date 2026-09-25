@@ -33,7 +33,7 @@ function embedYoutube(url, autoplay, background) {
     const suffixParams = {
       autoplay: autoplay ? '1' : '0',
       mute: background ? '0' : '1',
-      controls: background ? '0' : '1',
+      controls: background ? '1' : '0',
       disablekb: background ? '1' : '0',
       loop: background ? '1' : '0',
       playsinline: background ? '1' : '0',
