@@ -52,7 +52,7 @@ function embedYoutube(url, autoplay, background, eager) {
       <div class='video-modal-content'>
         <iframe src="https://www.youtube.com${vid ? `/embed/${vid}?rel=0&v=${vid}${suffix}` : embed}"
         frameborder="0" allow="autoplay" scrolling="no" allowfullscreen data-ready="true"
-        title="Content from YouTube" loading="${eager ? 'eager' : 'lazy'}"></iframe>
+        title="Content from YouTube"></iframe>
         <div class="video-modal-close icon-close-blk" tabindex="0" aria-label="Close Video Modal" role="button"></div>
       </div>
     </div>
