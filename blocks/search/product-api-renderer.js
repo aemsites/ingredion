@@ -421,7 +421,7 @@ export default class ProductApiRenderer {
         checkbox.addEventListener('change', async () => {
           const filter = {
             group: facetKey,
-            value: option.value,
+            value: option.label,
             checked: checkbox.checked,
           };
 
@@ -431,8 +431,9 @@ export default class ProductApiRenderer {
 
             // Update URL parameters based on checkbox state
             if (filter.checked) {
-              const newValue = currentValue ? `${currentValue},${filter.value}` : filter.value;
-              url.searchParams.set(filter.group, newValue);
+              const values = currentValue ? currentValue.split(',') : [];
+              if (!values.includes(filter.value)) values.push(filter.value);
+              url.searchParams.set(filter.group, values.join(','));
             } else {
               const values = currentValue.split(',').filter((v) => v !== filter.value);
               if (values.length > 0) {
@@ -453,14 +454,15 @@ export default class ProductApiRenderer {
 
             // Update appliedFacets based on checkbox state
             if (filter.checked) {
-              this.results.appliedFacets = [
-                ...(this.results.appliedFacets || []),
-                {
+              const appliedFacets = this.results.appliedFacets || [];
+              if (!appliedFacets.some((facet) => facet.group === filter.group && facet.value === filter.value)) {
+                appliedFacets.push({
                   group: filter.group,
                   value: filter.value,
                   label: option.label,
-                },
-              ];
+                });
+              }
+              this.results.appliedFacets = appliedFacets;
             } else {
               this.results.appliedFacets = (this.results.appliedFacets || [])
                 .filter((f) => !(f.group === filter.group && f.value === filter.value));
