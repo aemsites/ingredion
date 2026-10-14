@@ -201,6 +201,54 @@ const loadVideoEmbed = (block, link, autoplay, background) => {
   }
 };
 
+function getVideoSchemaData(block, link) {
+  const url = new URL(link);
+  const videoId = new URLSearchParams(url.search).get('v')
+    || url.pathname.split('/').filter(Boolean).pop();
+  if (!videoId || !/^[\w-]{11}$/.test(videoId)) return null;
+
+  const rowValue = (label) => {
+    const row = [...block.children].find((element) => {
+      const cells = [...element.children];
+      return cells.length > 1 && cells[0].textContent.trim().toLowerCase() === label;
+    });
+    return row?.children[1].textContent.trim() || '';
+  };
+
+  const name = rowValue('title');
+  const description = rowValue('description');
+  if (!name || !description) return null;
+
+  const poster = block.querySelector('picture img')?.getAttribute('src');
+  const thumbnailUrl = poster
+    ? new URL(poster, window.location.href).href
+    : `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  const uploadDate = rowValue('upload date');
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name,
+    description,
+    thumbnailUrl,
+    embedUrl: `https://www.youtube.com/embed/${videoId}`,
+  };
+  if (uploadDate && !Number.isNaN(Date.parse(uploadDate))) {
+    schema.uploadDate = new Date(uploadDate).toISOString();
+  }
+  return { videoId, schema };
+}
+
+function addVideoSchema(block, link) {
+  if (!block.classList.contains('schema-test') || !link) return;
+  const data = getVideoSchemaData(block, link);
+  if (!data) return;
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.dataset.videoSchema = data.videoId;
+  script.textContent = JSON.stringify(data.schema);
+  document.head.append(script);
+}
+
 export default async function decorate(block) {
   const placeholder = block.querySelector('picture');
   const link = block.querySelector('a')?.href;
