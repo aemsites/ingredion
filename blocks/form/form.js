@@ -526,6 +526,7 @@ export async function createForm(formURL, submitUrl, problemOptionsUrl) {
       form.append(fieldWrapper);
     }
   });
+  
   return form;
 }
 
@@ -579,7 +580,6 @@ export default async function decorate(block) {
       }
 
       const honeypot = formElement.querySelector('textarea[name="Honeypot"]');
-      honeypot.value = 'Hello im a bot';
       if (honeypot && honeypot.value) {
         e.preventDefault();
       }
