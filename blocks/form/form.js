@@ -526,7 +526,7 @@ export async function createForm(formURL, submitUrl, problemOptionsUrl) {
       form.append(fieldWrapper);
     }
   });
-  
+
   return form;
 }
 
