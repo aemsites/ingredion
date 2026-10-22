@@ -578,6 +578,11 @@ export default async function decorate(block) {
         const messageTextArea = formElement.querySelector('textarea[name="Message"]');
         messageTextArea.value += `${ingredient.value}`;
       }
+
+      const honeypot = formElement.querySelector('textarea[name="Honeypot"]');
+      if (honeypot && honeypot.value) {
+        e.preventDefault();
+      }
     });
 
     form.replaceWith(formElement);
