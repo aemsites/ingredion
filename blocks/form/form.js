@@ -526,15 +526,6 @@ export async function createForm(formURL, submitUrl, problemOptionsUrl) {
       form.append(fieldWrapper);
     }
   });
-
-  const honeypot = form.querySelector('textarea[name="Honeypot"]');
-  if (honeypot && !form.querySelector('label[for="Honeypot"]')) {
-    const label = document.createElement('label');
-    label.setAttribute('for', 'Honeypot');
-    label.textContent = 'Honeypot';
-    honeypot.parentElement.insertBefore(label, honeypot);
-  }
-
   return form;
 }
 
@@ -588,11 +579,9 @@ export default async function decorate(block) {
       }
 
       const honeypot = formElement.querySelector('textarea[name="Honeypot"]');
-      // honeypot.value = 'Hello, I am a bot!';
+      honeypot.value = 'Hello im a bot';
       if (honeypot && honeypot.value) {
         e.preventDefault();
-        // toggleError(honeypot, true, 'Please check your form entries');
-        alert(`Honeypot value : ${honeypot.value}`);
       }
     });
 
