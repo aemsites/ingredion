@@ -319,10 +319,10 @@
 
 main > .section > .cards-wrapper,
 main > .section > .default-content-wrapper {
-  margin-left: 0.9375rem;
-  margin-right: 0.9375rem;
+  /* margin-left: 0.9375rem;
+  margin-right: 0.9375rem; */
   max-width: 76.5rem;
-  padding: 0;
+  padding:0 10px;
 }
 
 .section.cards-container .default-content-wrapper p {
