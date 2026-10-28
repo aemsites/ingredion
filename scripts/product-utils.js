@@ -138,8 +138,11 @@ export async function viewAllDocsModal(product) {
   const [region, locale] = getRegionLocale();
 
   // Get product documents after we have the product ID
+  alert('Product docs response: ' + API_PRODUCT.ALL_DOCUMENTS(region, locale, product.productId)); // Debugging line
   const productDocsResponse = await fetch(
-    API_PRODUCT.ALL_DOCUMENTS(region, locale, product.productId));
+    'https://preview.ingredion.com/bin/ingredion-com/documents.sa.view.json?productId=41')
+    //API_PRODUCT.ALL_DOCUMENTS(region, locale, product.productId));
+    alert('Product docs response: ' + productDocsResponse); // Debugging line
   const productDocs = await productDocsResponse.json();
 
   // Function to render modal content based on viewport size

@@ -578,6 +578,7 @@ export default async function decorate(block) {
         const messageTextArea = formElement.querySelector('textarea[name="Message"]');
         messageTextArea.value += `${ingredient.value}`;
       }
+      alert('Form submitted successfully!'); // Show alert on successful submission
     });
 
     form.replaceWith(formElement);
