@@ -1,92 +1,169 @@
 .ask-ingredion-banner {
-  width: 100%;
-  background-color: #509e2f;
-  padding: 16px 40px;
-  box-sizing: border-box;
+    width: 100%;
+    background-color: #61A037;
+    padding: 16px 40px;
+    box-sizing: border-box;
 }
 
-.ask-ingredion-banner > div{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  color: #fff;
+.ask-ingredion-banner>div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    color: #fff;
 }
 
 .ask-ingredion-banner p {
-  margin: 0;
-  color: #fff;
-  line-height: 1.4;
-  display: contents;
+    font-family: Milo Pro;
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 26px;
+    leading-trim: NONE;
+    line-height: 100%;
+    letter-spacing: 0%;
+    margin: 0;
+    color: #fff;
+    line-height: 1.4;
+    display: contents;
 }
 
 main .ask-ingredion-banner-container {
-  max-width: none;
-  margin: 0;
-  padding: 0;
+    max-width: none;
+    margin: 0;
+    padding: 0;
 }
 
-main .ask-ingredion-banner-container > div {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  padding: 0;
+main .ask-ingredion-banner-container>div {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
 }
 
-.ask-ingredion-banner > div > div:nth-child(2) {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  width: fit-content;
-  gap: 0;
-  white-space: nowrap;
-  flex-shrink: 0;
-  border: 1px solid #fff;
+.ask-ingredion-banner>div>div:nth-child(2) {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    width: fit-content;
+    gap: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: 1px solid #fff;
 }
 
 .ask-ingredion-banner a.button,
 .ask-ingredion-banner a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  flex-shrink: 0;
-  min-height: 40px;
-  margin: 0;
-  padding: 10px 18px;
-  border-radius: 0;
-  background: transparent;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1;
-  text-decoration: none;
-  white-space: nowrap;
-  cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    min-height: 40px;
+    margin: 0;
+    padding: 10px 18px;
+    border-radius: 0;
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
 }
 
-.ask-ingredion-banner > div > div:nth-child(2) a {
-  padding-right: 6px;
-  padding-left: 6px;
+.ask-ingredion-banner>div>div:nth-child(2) a {
+    padding-right: 6px;
+    padding-left: 6px;
 }
 
-.ask-ingredion-banner > div > div:nth-child(2) img {
-  display: block;
-  flex-shrink: 0;
-  height: 21px;
-  width: 37.62px;
+.ask-ingredion-banner>div>div:nth-child(2) img {
+    display: block;
+    flex-shrink: 0;
+    height: 21px;
+    width: 37.62px;
+}
+
+@media (max-width: 1024px) {
+    .ask-ingredion-banner p {
+        font-family: Milo Pro;
+        font-weight: 500;
+        font-style: Medium;
+        font-size: 14px;
+        leading-trim: NONE;
+        line-height: 100%;
+        letter-spacing: 0%;
+        margin: 0;
+        color: #fff;
+        line-height: 1.4;
+        display: contents;
+    }
+}
+
+@media (max-width: 768px) {
+    .ask-ingredion-banner p {
+        font-family: Milo Pro;
+        font-weight: 500;
+        font-style: Medium;
+        font-size: 11px;
+        leading-trim: NONE;
+        line-height: 100%;
+        letter-spacing: 0%;
+        margin: 0;
+        color: #fff;
+        line-height: 1.4;
+        display: contents;
+    }
+
+    .ask-ingredion-banner a.button {
+        width: 106.236328125;
+        height: 18.961254119873047;
+        border-width: 0.48px;
+        angle: 0 deg;
+        opacity: 1;
+        top: 475.63px;
+        left: 495.92px;
+        padding-top: 7.69px;
+        padding-right: 13.46px;
+        padding-bottom: 7.69px;
+        padding-left: 13.46px;
+        gap: 4.81px;
+    }
+
+    .ask-ingredion-banner a {
+        width: 76;
+        height: 10;
+        angle: 0 deg;
+        opacity: 1;
+        font-family: Milo Pro;
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 8px;
+        leading-trim: NONE;
+        line-height: 100%;
+        letter-spacing: 0%;
+        text-align: center;
+    }
+
+    .ask-ingredion-banner>div>div:nth-child(2) img {
+        width: 18.189388275146484;
+        height: 10.152216911315918;
+        angle: 0 deg;
+        opacity: 1;
+        top: 479.82px;
+        left: 583.84px;
+    }
 }
 
 @media (max-width: 430px) {
-  .ask-ingredion-banner {
-    padding: 16px 20px;
-  }
+    .ask-ingredion-banner {
+        padding: 16px 20px;
+    }
 
-  .ask-ingredion-banner > div {
-    align-items: center;
-    flex-direction: column;
-    gap: 12px;
-    text-align: center;
-  }
+    .ask-ingredion-banner>div {
+        align-items: center;
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
 }
-
