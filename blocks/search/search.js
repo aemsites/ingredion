@@ -446,6 +446,7 @@ async function displaySearchResults(
 async function fetchSearchResults(searchParams) {
   const globalIndexUrl = `/${region}/${locale}/indexes/global-index.json`;
   const newsEventsIndexUrl = `/${region}/${locale}/indexes/news-events-index.json`;
+  const serializeParams = (params) => params.toString().replace(/\*/g, '%2A');
 
   // Create a cache object to store promises
   const cache = new Map();
@@ -459,8 +460,8 @@ async function fetchSearchResults(searchParams) {
 
   try {
     // Construct the ingredient and tech docs URLs with all search params
-    const ingredientUrl = `${API_PRODUCT.SEARCH_INGREDIENTS(region, locale)}?${searchParams.toString()}`;
-    const techDocsUrl = `${API_PRODUCT.SEARCH_DOCUMENTS(region, locale)}?${searchParams.toString()}`;
+    const ingredientUrl = `${API_PRODUCT.SEARCH_INGREDIENTS(region, locale)}?${serializeParams(searchParams)}`;
+    const techDocsUrl = `${API_PRODUCT.SEARCH_DOCUMENTS(region, locale)}?${serializeParams(searchParams)}`;
 
     // Make all requests in parallel and cache the index requests
     const [
@@ -475,13 +476,26 @@ async function fetchSearchResults(searchParams) {
       fetchWithCache(newsEventsIndexUrl),
     ]);
 
+    let resolvedIngredientResults = ingredientResults;
+    const query = searchParams.get('q') || '';
+    const fallbackQuery = query.trim().split(/\s+/).pop();
+    if (Number(ingredientResults?.totalItemsCount) === 0
+      && fallbackQuery
+      && fallbackQuery !== query) {
+      const fallbackParams = new URLSearchParams(searchParams);
+      fallbackParams.set('q', fallbackQuery);
+      const response = await fetch(
+        `${API_PRODUCT.SEARCH_INGREDIENTS(region, locale)}?${serializeParams(fallbackParams)}`,
+      );
+      if (!response.ok) throw new Error('Ingredient fallback search request failed');
+      resolvedIngredientResults = await response.json();
+    }
     // Filter the content resources and events based on the search query
-    const query = searchParams.get('q');
     const contentResourcesResults = query ? filterIndex(globalIndex, query) : [];
     const eventsResults = query ? filterIndex(eventsIndex, query) : [];
 
     return {
-      ingredientResults,
+      ingredientResults: resolvedIngredientResults,
       techDocsResults,
       contentResourcesResults,
       eventsResults,
