@@ -1,5 +1,10 @@
 export default function decorate(block) {
-  const link = block.querySelector('a');
+  const links = block.querySelectorAll('a');
+  const link = links[0];
+
+  if (links.length === 1) {
+    block.classList.add('single');
+  }
 
   if (link) {
     link.classList.add('button');
