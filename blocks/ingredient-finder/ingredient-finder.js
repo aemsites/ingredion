@@ -187,13 +187,11 @@ export default async function decorate(block) {
       perPage: '6',
       q: (Number.isNaN(Number(searchValue.slice(-5))) || !Number.isNaN(Number(searchValue)) ? searchValue : searchValue.split(' ').pop().trim()),
     });
-    // alert(`Searching for: ${searchParams.get('q')}`); // Alert to show the search query
     let data;
     try {
       let response = await fetch(`${url}?${searchParams.toString()}`);
       if (!response.ok) throw new Error('Network response was not ok');
       data = await response.json();
- 
       const fallbackQuery = searchValue.split(' ').pop().trim();
       if (data.totalItemsCount === 0 && fallbackQuery && fallbackQuery !== searchParams.get('q')) {
         searchParams.set('q', fallbackQuery);
