@@ -202,7 +202,6 @@ export default async function decorate(block) {
     } catch (error) {
       console.error('Error searching ingredients:', error);
     }
- 
     // update the url with the query params used for the final search
     window.history.pushState({}, '', `${pagePath}?${searchParams}`);
     loadCSS('/blocks/related-ingredient/related-ingredient.css');
