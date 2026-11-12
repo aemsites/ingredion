@@ -185,19 +185,25 @@ export default async function decorate(block) {
     const searchParams = new URLSearchParams({
       activePage: '1',
       perPage: '6',
-      q: (Number.isNaN(Number(searchValue.slice(-5))) || !Number.isNaN(Number(searchValue)) ? searchValue : searchValue.split('-').pop().trim()),
+      q: (Number.isNaN(Number(searchValue.slice(-5))) || !Number.isNaN(Number(searchValue)) ? searchValue : searchValue.split(' ').pop().trim()),
     });
-    // update the url with the new query params
-    window.history.pushState({}, '', `${pagePath}?${searchParams}`);
     let data;
     try {
-      const response = await fetch(`${url}?${searchParams.toString()}`);
+      let response = await fetch(`${url}?${searchParams.toString()}`);
       if (!response.ok) throw new Error('Network response was not ok');
       data = await response.json();
+      const fallbackQuery = searchValue.split(' ').pop().trim();
+      if (data.totalItemsCount === 0 && fallbackQuery && fallbackQuery !== searchParams.get('q')) {
+        searchParams.set('q', fallbackQuery);
+        response = await fetch(`${url}?${searchParams.toString()}`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        data = await response.json();
+      }
     } catch (error) {
       console.error('Error searching ingredients:', error);
     }
-
+    // update the url with the query params used for the final search
+    window.history.pushState({}, '', `${pagePath}?${searchParams}`);
     loadCSS('/blocks/related-ingredient/related-ingredient.css');
     const ingredientResults = await createIngredientPanel(data);
     ingredientResults.classList.add('search', 'ingredient-finder-results');
